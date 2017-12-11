@@ -16,12 +16,12 @@ public enum ApiVersion {
     UNKNOWN("unknown");
 
     /** All of the version, mapped by version string. */
-    private static final ConcurrentMap<String, ApiVersion> versions =
+    private static final ConcurrentMap<String, ApiVersion> VERSIONS =
             new ConcurrentHashMap<>();
 
     static {
         for (final ApiVersion apiVersion : values()) {
-            versions.put(
+            VERSIONS.put(
                     apiVersion.getVersion(),
                     apiVersion);
         }
@@ -41,7 +41,7 @@ public enum ApiVersion {
 
     @JsonCreator
     public static ApiVersion forValue(final String value) {
-        return versions.getOrDefault(
+        return VERSIONS.getOrDefault(
                 value,
                 UNKNOWN);
     }

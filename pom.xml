@@ -21,6 +21,7 @@
 
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
+        <guava.version>23.5-jre</guava.version>
         <jackson.version>2.9.3</jackson.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
@@ -50,6 +51,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
             </dependency>
 
             <!-- JSON -->
