@@ -1,7 +1,8 @@
 package mn.foreman.model.miners;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import mn.foreman.model.AbstractBuilder;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;

@@ -1,13 +1,14 @@
 package mn.foreman.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import mn.foreman.model.metadata.ApiVersion;
 import mn.foreman.model.metadata.Metadata;
 import mn.foreman.model.miners.Asic;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.SpeedInfo;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.Test;
 
 import java.io.IOException;
