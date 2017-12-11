@@ -9,22 +9,66 @@
     <packaging>pom</packaging>
     <version>1.0</version>
 
-    <name>foreman-apps: buildmaster</name>
+    <name>foreman: buildmaster</name>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
 
-        <maven-compiler-plugin.version>3.7</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
         <surefire.version>2.20.1</surefire.version>
 
-        <slf.version>1.7.25</slf.version>
+        <commons-lang.version>3.7</commons-lang.version>
+        <easymock.version>3.5.1</easymock.version>
+        <jackson.version>2.9.3</jackson.version>
+        <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
+        <slf.version>1.7.25</slf.version>
+
+        <!-- Our versions -->
+        <foreman.version>1.0.0-SNAPSHOT</foreman.version>
     </properties>
+
+    <modules>
+        <module>foreman-cgminer</module>
+        <module>foreman-model</module>
+        <module>foreman-pickaxe</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
+            <!-- Our libraries -->
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-model</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+
+            <!-- Util -->
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-lang3</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+
+            <!-- JSON -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${jackson.version}</version>
+            </dependency>
+
             <!-- Logging -->
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -35,6 +79,20 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
+            </dependency>
+
+            <!-- Testing -->
+            <dependency>
+                <groupId>org.easymock</groupId>
+                <artifactId>easymock</artifactId>
+                <version>${easymock.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
