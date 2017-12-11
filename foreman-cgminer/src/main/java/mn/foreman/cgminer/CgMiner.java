@@ -75,59 +75,6 @@ public class CgMiner
         this.apiPort = apiPort;
     }
 
-    /**
-     * Queries for and adds ASIC metrics to the provided builder.
-     *
-     * @param builder The builder to update.
-     */
-    private void addAsicStats(
-            final MinerStats.Builder builder) {
-        final CgMinerResponse response =
-                query(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.DEVS)
-                                .build(),
-                        this.apiIp,
-                        this.apiPort);
-
-        if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
-
-            // Could contain GPU and PGA metrics.  Ignore all of those for now.
-            // We only care about ASICs at this point in time.
-            final Map<Boolean, List<Map<String, String>>> splitValues =
-                    values.stream().collect(
-                            Collectors.groupingBy(
-                                    value -> value.containsKey("ASC")));
-            final List<Map<String, String>> asicValues = splitValues.get(true);
-            if ((asicValues != null) && (!asicValues.isEmpty())) {
-                asicValues.forEach(
-                        value -> addAsicStats(builder, value));
-            }
-        }
-    }
-
-    /**
-     * Queries for and adds pool metrics to the provided builder.
-     *
-     * @param builder The builder to update.
-     */
-    private void addPoolStats(
-            final MinerStats.Builder builder) {
-        final CgMinerResponse response =
-                query(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        this.apiIp,
-                        this.apiPort);
-
-        if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
-            values.forEach(value -> addPoolStats(builder, value));
-        }
-    }
-
     @Override
     public MinerStats getStats() {
         LOG.debug("Obtaining stats from {}-{}:{}",
@@ -264,5 +211,62 @@ public class CgMiner
         }
 
         return response;
+    }
+
+    /**
+     * Queries for and adds ASIC metrics to the provided builder.
+     *
+     * @param builder The builder to update.
+     */
+    private void addAsicStats(
+            final MinerStats.Builder builder) {
+        final CgMinerResponse response =
+                query(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.DEVS)
+                                .build(),
+                        this.apiIp,
+                        this.apiPort);
+
+        if (response.hasValues()) {
+            final List<Map<String, String>> values = response.getValues();
+
+            // Could contain GPU and PGA metrics.  Ignore all of those for now.
+            // We only care about ASICs at this point in time.
+            final Map<Boolean, List<Map<String, String>>> splitValues =
+                    values.stream().collect(
+                            Collectors.groupingBy(
+                                    value -> value.containsKey("ASC")));
+            final List<Map<String, String>> asicValues = splitValues.get(true);
+            if ((asicValues != null) && (!asicValues.isEmpty())) {
+                asicValues.forEach(
+                        value -> addAsicStats(builder, value));
+            }
+        } else {
+            LOG.debug("No ACICs founds");
+        }
+    }
+
+    /**
+     * Queries for and adds pool metrics to the provided builder.
+     *
+     * @param builder The builder to update.
+     */
+    private void addPoolStats(
+            final MinerStats.Builder builder) {
+        final CgMinerResponse response =
+                query(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.POOLS)
+                                .build(),
+                        this.apiIp,
+                        this.apiPort);
+
+        if (response.hasValues()) {
+            final List<Map<String, String>> values = response.getValues();
+            values.forEach(value -> addPoolStats(builder, value));
+        } else {
+            LOG.debug("No pools found");
+        }
     }
 }

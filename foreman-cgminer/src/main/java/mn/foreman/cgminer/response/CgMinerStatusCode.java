@@ -46,6 +46,11 @@ public enum CgMinerStatusCode {
         this.code = code;
     }
 
+    @JsonCreator
+    public static CgMinerStatusCode forValue(final String value) {
+        return CODES.get(value);
+    }
+
     /**
      * Returns the code.
      *
@@ -58,10 +63,5 @@ public enum CgMinerStatusCode {
     @JsonValue
     public String toValue() {
         return getCode();
-    }
-
-    @JsonCreator
-    public static CgMinerStatusCode forValue(final String value) {
-        return CODES.get(value);
     }
 }

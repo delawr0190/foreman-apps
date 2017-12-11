@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A common parent to all cgminer responses.
+ * A generic cgminer response.
+ *
+ * <p>Note: the {@link #values} will be populated differently depending on what
+ * command was executed.</p>
  *
  * <p>The {@link CgMinerStatusSection} is always present, even on a failed
  * command.</p>

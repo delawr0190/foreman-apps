@@ -4,34 +4,41 @@ package mn.foreman.cgminer.request;
 public enum CgMinerCommand {
 
     /**
+     * The following description was retrieved from the <a href="https://github
+     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
+     *
      * <pre>
-     * CgMinerRequest       Reply Section  Details
-     * -------       -------------  -------
-     * pools         POOLS          The status of each pool e.g.
-     *                              Pool=0,URL=http://pool.com:6311,Status=Alive,...|
+     * CgMinerRequest   Reply Section  Details
+     * -------          -------------  -------
+     * pools            POOLS          The status of each pool e.g.
+     *                                 Pool=0,URL=http://pool.com:6311,Status=Alive,...|
      * </pre>
      */
     POOLS("pools"),
 
     /**
+     * The following description was retrieved from the <a href="https://github
+     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
+     *
      * <pre>
-     * CgMinerRequest       Reply Section  Details
-     * -------       -------------  -------
-     * devs          DEVS           Each available PGA and ASC with their
-     *                              details
-     *                              e.g. ASC=0,Accepted=NN,MHSav=NNN,...,Intensity=D|
-     *                              Last Share Time=NNN,
-     *                                  <- standand long time in sec (or 0 if
-     *                                     none) of last accepted share
-     *                              Last Share Pool=N,
-     *                                  <- pool number (or -1 if none)
-     *                              Last Valid Work=NNN,
-     *                                  <- standand long time in sec of last
-     *                                     work returned that wasn't an HW:
-     *                              Will not report PGAs if PGA mining is
-     *                              disabled
-     *                              Will not report ASCs if ASC mining is
-     *                              disabled
+     * CgMinerRequest   Reply Section  Details
+     * -------          -------------  -------
+     * devs             DEVS           Each available PGA and ASC with their
+     *                                 details
+     *                                 e.g. ASC=0,Accepted=NN,MHSav=NNN,...,
+     *                                 Intensity=D|
+     *                                 Last Share Time=NNN,
+     *                                     <- standand long time in sec (or 0
+     *                                        if none) of last accepted share
+     *                                 Last Share Pool=N,
+     *                                     <- pool number (or -1 if none)
+     *                                 Last Valid Work=NNN,
+     *                                     <- standand long time in sec of last
+     *                                        work returned that wasn't an HW:
+     *                                 Will not report PGAs if PGA mining is
+     *                                 disabled
+     *                                 Will not report ASCs if ASC mining is
+     *                                 disabled
      * </pre>
      */
     DEVS("devs");
