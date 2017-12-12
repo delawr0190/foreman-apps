@@ -20,9 +20,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -40,6 +42,10 @@ public class CgMiner
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMiner.class);
+
+    /** The socket operation timeout. */
+    private static final int TIMEOUT_IN_MILLIS =
+            (int) TimeUnit.SECONDS.toMillis(5);
 
     /** The API IP. */
     private final String apiIp;
@@ -143,7 +149,7 @@ public class CgMiner
      *
      * <p>Note: if an exception occurs throughout this function, a {@link
      * CgMinerResponse} will be returned with a {@link CgMinerStatusCode#FATAL}
-     * set and the exception will reside in the {@link CgMinerStatusSection#description}.</p>
+     * set and the reason will reside in the {@link CgMinerStatusSection#description}.</p>
      *
      * @param request The request to send.
      * @param ip      The IP.
@@ -155,59 +161,74 @@ public class CgMiner
             final CgMinerRequest request,
             final String ip,
             final int port) {
-        CgMinerResponse response;
+        CgMinerResponse response = null;
 
-        try (final Socket socket =
-                     new Socket(ip, port);
-             final InputStreamReader inputStreamReader =
-                     new InputStreamReader(socket.getInputStream());
-             final BufferedReader bufferedReader =
-                     new BufferedReader(inputStreamReader);
-             final OutputStreamWriter outputStream =
-                     new OutputStreamWriter(
-                             socket.getOutputStream(), "UTF-8")) {
+        final Socket socket = new Socket();
+        try {
+            socket.connect(new InetSocketAddress(ip, port), TIMEOUT_IN_MILLIS);
 
-            final ObjectMapper objectMapper =
-                    new ObjectMapper();
+            try (final InputStreamReader inputStreamReader =
+                         new InputStreamReader(socket.getInputStream());
+                 final BufferedReader bufferedReader =
+                         new BufferedReader(inputStreamReader);
+                 final OutputStreamWriter outputStream =
+                         new OutputStreamWriter(
+                                 socket.getOutputStream(), "UTF-8")) {
 
-            final String message =
-                    objectMapper.writeValueAsString(request);
-            LOG.debug("Sending message ({}) to {}:{}",
-                    message,
-                    ip,
-                    port);
+                final ObjectMapper objectMapper =
+                        new ObjectMapper();
 
-            outputStream.write(message, 0, message.length());
-            outputStream.flush();
+                final String message =
+                        objectMapper.writeValueAsString(request);
+                LOG.debug("Sending message ({}) to {}:{}",
+                        message,
+                        ip,
+                        port);
 
-            final char[] buffer = new char[2048];
+                outputStream.write(message, 0, message.length());
+                outputStream.flush();
 
-            final StringBuilder stringBuilder = new StringBuilder();
+                final char[] buffer = new char[2048];
 
-            int read;
-            while ((read =
-                    bufferedReader.read(buffer, 0, buffer.length)) > 0) {
-                stringBuilder.append(buffer, 0, read);
+                final StringBuilder stringBuilder = new StringBuilder();
+
+                int read;
+                while ((read =
+                        bufferedReader.read(buffer, 0, buffer.length)) > 0) {
+                    stringBuilder.append(buffer, 0, read);
+                }
+
+                response =
+                        objectMapper.readValue(
+                                stringBuilder.toString().trim(),
+                                CgMinerResponse.class);
+
+                LOG.debug("Read response: {}", response);
+            } catch (final IOException ioe) {
+                LOG.warn("Exception occurred while querying {}:{}",
+                        ip,
+                        port,
+                        ioe);
             }
-
-            response =
-                    objectMapper.readValue(
-                            stringBuilder.toString().trim(),
-                            CgMinerResponse.class);
-
-            LOG.debug("Read response: {}", response);
         } catch (final IOException ioe) {
-            LOG.warn("Exception occurred while querying", ioe);
-            response =
-                    new CgMinerResponse.Builder()
-                            .setStatusSection(
-                                    new CgMinerStatusSection.Builder()
-                                            .setStatusCode(
-                                                    CgMinerStatusCode.FATAL)
-                                            .setDescription(
-                                                    ioe.getLocalizedMessage())
-                                            .build())
-                            .build();
+            LOG.warn("Exception occurred while connecting to {}:{}",
+                    ip,
+                    port,
+                    ioe);
+        } finally {
+            if (response == null) {
+                final CgMinerStatusSection statusSection =
+                        new CgMinerStatusSection.Builder()
+                                .setStatusCode(
+                                        CgMinerStatusCode.FATAL)
+                                .setDescription(
+                                        "Failed to connect")
+                                .build();
+                response =
+                        new CgMinerResponse.Builder()
+                                .setStatusSection(statusSection)
+                                .build();
+            }
         }
 
         return response;

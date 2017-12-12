@@ -28,6 +28,9 @@ public class YmlConfigurationFactoryTest {
                 "nicebro",
                 configuration.getApiKey());
         assertEquals(
+                "http://localhost:80",
+                configuration.getForemanApiUrl());
+        assertEquals(
                 60,
                 configuration.getPollFrequencyInSeconds());
 

@@ -23,6 +23,13 @@ public interface Configuration {
     List<CgMinerConfig> getCgminerConfigs();
 
     /**
+     * Returns the FOREMAN API URL.
+     *
+     * @return The FOREMAN API URL.
+     */
+    String getForemanApiUrl();
+
+    /**
      * Returns the poll frequency in seconds.
      *
      * @return The poll frequency in seconds.

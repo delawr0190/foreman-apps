@@ -19,6 +19,9 @@ public class YmlConfiguration
     /** The cgminer configurations. */
     private final List<CgMinerConfig> cgminerConfigs;
 
+    /** The FOREMAN API URL. */
+    private final String foremanApiUrl;
+
     /** How frequently to poll, in seconds. */
     private final int pollFrequencyInSeconds;
 
@@ -27,14 +30,19 @@ public class YmlConfiguration
      *
      * <p>Note: intentionally hidden (built via JACKSON).</p>
      *
+     * @param foremanApiUrl          The FOREMAN API URL.
      * @param apiKey                 The API key.
      * @param cgMinerConfigs         The {@link CgMinerConfig cgminer configs}.
      * @param pollFrequencyInSeconds How frequently to poll, in seconds.
      */
     private YmlConfiguration(
+            @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("apiKey") final String apiKey,
             @JsonProperty("cgminers") final List<CgMinerConfig> cgMinerConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
+        Validate.notEmpty(
+                foremanApiUrl,
+                "foremanApiUrl cannot be empty");
         Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
@@ -44,6 +52,7 @@ public class YmlConfiguration
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, pollFrequencyInSeconds,
                 "pollFrequencyInSeconds must be positive");
+        this.foremanApiUrl = foremanApiUrl;
         this.apiKey = apiKey;
         this.cgminerConfigs = new ArrayList<>(cgMinerConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
@@ -57,6 +66,11 @@ public class YmlConfiguration
     @Override
     public List<CgMinerConfig> getCgminerConfigs() {
         return Collections.unmodifiableList(this.cgminerConfigs);
+    }
+
+    @Override
+    public String getForemanApiUrl() {
+        return this.foremanApiUrl;
     }
 
     @Override
