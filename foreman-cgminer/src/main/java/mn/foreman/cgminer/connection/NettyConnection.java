@@ -12,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -71,11 +70,6 @@ public class NettyConnection
 
     @Override
     public Optional<String> query(final String request) {
-        // Latch is set to 1 so we only wait for a single message to return.
-        // This function is blocking - only returns after the response is
-        // received.
-        final CountDownLatch responseLatch = new CountDownLatch(1);
-
         final AtomicReference<String> response = new AtomicReference<>();
 
         final Bootstrap bootstrap = new Bootstrap();
@@ -99,7 +93,6 @@ public class NettyConnection
                                             throws Exception {
                                         super.channelRead(context, message);
                                         response.set((String) message);
-                                        responseLatch.countDown();
                                     }
 
                                     @Override
@@ -108,7 +101,6 @@ public class NettyConnection
                                             final Throwable cause)
                                             throws Exception {
                                         super.exceptionCaught(context, cause);
-                                        responseLatch.countDown();
                                     }
                                 });
                     }

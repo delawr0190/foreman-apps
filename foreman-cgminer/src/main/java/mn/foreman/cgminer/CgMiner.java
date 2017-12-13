@@ -166,6 +166,8 @@ public class CgMiner
             if ((asicValues != null) && (!asicValues.isEmpty())) {
                 asicValues.forEach(
                         value -> addAsicStats(builder, value));
+            } else {
+                LOG.debug("No ASICs found");
             }
         } else {
             LOG.debug("No ACICs founds");
