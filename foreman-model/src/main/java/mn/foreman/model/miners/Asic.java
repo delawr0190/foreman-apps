@@ -123,7 +123,7 @@ public class Asic {
          *
          * @param name The name.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -135,7 +135,7 @@ public class Asic {
          *
          * @param temperature The temperature.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setTemperature(final BigDecimal temperature) {
             this.temperature = temperature;

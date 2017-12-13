@@ -121,7 +121,7 @@ public class MetricsReport {
          *
          * @param stats The {@link MinerStats} to add.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder addMinerStats(final MinerStats stats) {
             this.minerStats.add(stats);
@@ -140,7 +140,7 @@ public class MetricsReport {
          *
          * @param metadata The metadata.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setMetadata(final Metadata metadata) {
             this.metadata = metadata;

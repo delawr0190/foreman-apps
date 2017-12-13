@@ -150,7 +150,7 @@ public class Pool {
          *
          * @param enabled The enabled flag.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setEnabled(final Boolean enabled) {
             this.enabled = enabled;
@@ -162,7 +162,7 @@ public class Pool {
          *
          * @param name The name.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -174,7 +174,7 @@ public class Pool {
          *
          * @param priority The priority.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setPriority(final int priority) {
             this.priority = priority;

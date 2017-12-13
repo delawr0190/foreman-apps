@@ -15,16 +15,11 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.math.BigDecimal;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -43,15 +38,14 @@ public class CgMiner
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMiner.class);
 
-    /** The socket operation timeout. */
-    private static final int TIMEOUT_IN_MILLIS =
-            (int) TimeUnit.SECONDS.toMillis(5);
-
     /** The API IP. */
     private final String apiIp;
 
     /** The API port. */
     private final int apiPort;
+
+    /** The {@link ConnectionFactory} for creating connections to the API. */
+    private final ConnectionFactory connectionFactory;
 
     /** The miner name. */
     private final String name;
@@ -59,14 +53,17 @@ public class CgMiner
     /**
      * Constructor.
      *
-     * @param name    The miner name.
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
+     * @param name              The miner name.
+     * @param apiIp             The API IP.
+     * @param apiPort           The API port.
+     * @param connectionFactory The {@link ConnectionFactory} for creating
+     *                          connections to the API.
      */
     public CgMiner(
             final String name,
             final String apiIp,
-            final int apiPort) {
+            final int apiPort,
+            final ConnectionFactory connectionFactory) {
         Validate.notEmpty(
                 name,
                 "name cannot be empty");
@@ -76,9 +73,13 @@ public class CgMiner
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, apiPort,
                 "apiPort must be positive");
+        Validate.notNull(
+                connectionFactory,
+                "connectionFactory cannot be null");
         this.name = name;
         this.apiIp = apiIp;
         this.apiPort = apiPort;
+        this.connectionFactory = connectionFactory;
     }
 
     @Override
@@ -141,113 +142,16 @@ public class CgMiner
     }
 
     /**
-     * Connects to the IP and port provided and sends the {@link CgMinerRequest}
-     * as bytes to the interface.
-     *
-     * <p>This function also waits and reads the entire response until the
-     * socket is closed.</p>
-     *
-     * <p>Note: if an exception occurs throughout this function, a {@link
-     * CgMinerResponse} will be returned with a {@link CgMinerStatusCode#FATAL}
-     * set and the reason will reside in the {@link CgMinerStatusSection#description}.</p>
-     *
-     * @param request The request to send.
-     * @param ip      The IP.
-     * @param port    The port.
-     *
-     * @return The {@link CgMinerResponse}.
-     */
-    private static CgMinerResponse query(
-            final CgMinerRequest request,
-            final String ip,
-            final int port) {
-        CgMinerResponse response = null;
-
-        final Socket socket = new Socket();
-        try {
-            socket.connect(new InetSocketAddress(ip, port), TIMEOUT_IN_MILLIS);
-
-            try (final InputStreamReader inputStreamReader =
-                         new InputStreamReader(socket.getInputStream());
-                 final BufferedReader bufferedReader =
-                         new BufferedReader(inputStreamReader);
-                 final OutputStreamWriter outputStream =
-                         new OutputStreamWriter(
-                                 socket.getOutputStream(), "UTF-8")) {
-
-                final ObjectMapper objectMapper =
-                        new ObjectMapper();
-
-                final String message =
-                        objectMapper.writeValueAsString(request);
-                LOG.debug("Sending message ({}) to {}:{}",
-                        message,
-                        ip,
-                        port);
-
-                outputStream.write(message, 0, message.length());
-                outputStream.flush();
-
-                final char[] buffer = new char[2048];
-
-                final StringBuilder stringBuilder = new StringBuilder();
-
-                int read;
-                while ((read =
-                        bufferedReader.read(buffer, 0, buffer.length)) > 0) {
-                    stringBuilder.append(buffer, 0, read);
-                }
-
-                response =
-                        objectMapper.readValue(
-                                stringBuilder.toString().trim(),
-                                CgMinerResponse.class);
-
-                LOG.debug("Read response: {}", response);
-            } catch (final IOException ioe) {
-                LOG.warn("Exception occurred while querying {}:{}",
-                        ip,
-                        port,
-                        ioe);
-            }
-        } catch (final IOException ioe) {
-            LOG.warn("Exception occurred while connecting to {}:{}",
-                    ip,
-                    port,
-                    ioe);
-        } finally {
-            if (response == null) {
-                final CgMinerStatusSection statusSection =
-                        new CgMinerStatusSection.Builder()
-                                .setStatusCode(
-                                        CgMinerStatusCode.FATAL)
-                                .setDescription(
-                                        "Failed to connect")
-                                .build();
-                response =
-                        new CgMinerResponse.Builder()
-                                .setStatusSection(statusSection)
-                                .build();
-            }
-        }
-
-        return response;
-    }
-
-    /**
      * Queries for and adds ASIC metrics to the provided builder.
      *
      * @param builder The builder to update.
      */
     private void addAsicStats(
             final MinerStats.Builder builder) {
-        final CgMinerResponse response =
-                query(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.DEVS)
-                                .build(),
-                        this.apiIp,
-                        this.apiPort);
+        final CgMinerResponse response = query(
+                new CgMinerRequest.Builder()
+                        .setCommand(CgMinerCommand.DEVS)
+                        .build());
 
         if (response.hasValues()) {
             final List<Map<String, String>> values = response.getValues();
@@ -275,13 +179,10 @@ public class CgMiner
      */
     private void addPoolStats(
             final MinerStats.Builder builder) {
-        final CgMinerResponse response =
-                query(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        this.apiIp,
-                        this.apiPort);
+        final CgMinerResponse response = query(
+                new CgMinerRequest.Builder()
+                        .setCommand(CgMinerCommand.POOLS)
+                        .build());
 
         if (response.hasValues()) {
             final List<Map<String, String>> values = response.getValues();
@@ -289,5 +190,74 @@ public class CgMiner
         } else {
             LOG.debug("No pools found");
         }
+    }
+
+    /**
+     * Connects to the IP and port provided and sends the {@link CgMinerRequest}
+     * as bytes to the interface.
+     *
+     * <p>This function also waits and reads the entire response until the
+     * socket is closed.</p>
+     *
+     * <p>Note: if an exception occurs throughout this function, a {@link
+     * CgMinerResponse} will be returned with a {@link CgMinerStatusCode#FATAL}
+     * set and the reason will reside in the {@link CgMinerStatusSection#description}.</p>
+     *
+     * @param request The request to send.
+     *
+     * @return The {@link CgMinerResponse}.
+     */
+    private CgMinerResponse query(
+            final CgMinerRequest request) {
+        CgMinerResponse response = null;
+        try {
+            final ObjectMapper objectMapper = new ObjectMapper();
+
+            final String message =
+                    objectMapper.writeValueAsString(request);
+            LOG.debug("Sending message ({}) to {}:{}",
+                    message,
+                    this.apiIp,
+                    this.apiPort);
+
+            final Connection connection =
+                    this.connectionFactory.create(
+                            this.apiIp,
+                            this.apiPort);
+
+            final Optional<String> responseJson =
+                    connection.query(message);
+            if (responseJson.isPresent()) {
+                response =
+                        objectMapper.readValue(
+                                responseJson.get(),
+                                CgMinerResponse.class);
+
+                LOG.debug("Read response: {}", response);
+            } else {
+                LOG.warn("No response received from cgminer");
+            }
+        } catch (final IOException ioe) {
+            LOG.warn("Exception occurred while querying {}:{}",
+                    this.apiIp,
+                    this.apiPort,
+                    ioe);
+        } finally {
+            if (response == null) {
+                final CgMinerStatusSection statusSection =
+                        new CgMinerStatusSection.Builder()
+                                .setStatusCode(
+                                        CgMinerStatusCode.FATAL)
+                                .setDescription(
+                                        "Failed to connect")
+                                .build();
+                response =
+                        new CgMinerResponse.Builder()
+                                .setStatusSection(statusSection)
+                                .build();
+            }
+        }
+
+        return response;
     }
 }

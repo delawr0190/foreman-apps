@@ -125,7 +125,7 @@ public class Metadata {
          *
          * @param apiVersion The version.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setApiVersion(final ApiVersion apiVersion) {
             this.apiVersion = apiVersion;
@@ -137,7 +137,7 @@ public class Metadata {
          *
          * @param timestamp The timestamp.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setTimestamp(final ZonedDateTime timestamp) {
             this.timestamp = timestamp;

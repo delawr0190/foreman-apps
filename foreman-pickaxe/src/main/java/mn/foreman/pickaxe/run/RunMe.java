@@ -1,6 +1,7 @@
 package mn.foreman.pickaxe.run;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.cgminer.connection.NettyConnectionFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.pickaxe.configuration.CgMinerConfig;
@@ -91,7 +92,8 @@ public class RunMe {
         return new CgMiner(
                 config.getName(),
                 config.getApiIp(),
-                config.getApiPort());
+                config.getApiPort(),
+                new NettyConnectionFactory());
     }
 
     /**

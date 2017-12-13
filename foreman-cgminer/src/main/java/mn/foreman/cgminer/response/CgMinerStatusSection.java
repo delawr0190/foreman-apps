@@ -151,7 +151,7 @@ public class CgMinerStatusSection {
          *
          * @param code The code.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setCode(final int code) {
             this.code = code;
@@ -163,7 +163,7 @@ public class CgMinerStatusSection {
          *
          * @param description The description.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setDescription(final String description) {
             this.description = description;
@@ -175,7 +175,7 @@ public class CgMinerStatusSection {
          *
          * @param message The message.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setMessage(final String message) {
             this.message = message;
@@ -187,7 +187,7 @@ public class CgMinerStatusSection {
          *
          * @param code The code.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setStatusCode(final CgMinerStatusCode code) {
             this.statusCode = code;
@@ -199,7 +199,7 @@ public class CgMinerStatusSection {
          *
          * @param when When.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setWhen(final long when) {
             this.when = when;

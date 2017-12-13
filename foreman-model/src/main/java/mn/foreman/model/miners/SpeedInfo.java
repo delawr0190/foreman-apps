@@ -119,7 +119,7 @@ public class SpeedInfo {
          *
          * @param avgHashRate The average hash rate.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setAvgHashRate(final String avgHashRate) {
             this.avgHashRate = avgHashRate;
@@ -131,7 +131,7 @@ public class SpeedInfo {
          *
          * @param hashRate The hash rate.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setHashRate(final String hashRate) {
             this.hashRate = hashRate;

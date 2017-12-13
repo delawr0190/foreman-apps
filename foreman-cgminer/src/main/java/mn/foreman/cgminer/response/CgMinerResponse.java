@@ -158,7 +158,7 @@ public class CgMinerResponse {
          *
          * @param id The ID.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setId(final long id) {
             this.id = id;
@@ -170,7 +170,7 @@ public class CgMinerResponse {
          *
          * @param statusSection The section.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setStatusSection(
                 final CgMinerStatusSection statusSection) {

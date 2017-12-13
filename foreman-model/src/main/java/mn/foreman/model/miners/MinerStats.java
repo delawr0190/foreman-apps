@@ -248,7 +248,7 @@ public class MinerStats {
          *
          * @param asic The {@link Asic}.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder addAsic(final Asic asic) {
             this.asics.add(asic);
@@ -260,7 +260,7 @@ public class MinerStats {
          *
          * @param pool The {@link Pool}.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder addPool(final Pool pool) {
             this.pools.add(pool);
@@ -289,7 +289,7 @@ public class MinerStats {
          *
          * @param apiIp The API IP.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setApiIp(final String apiIp) {
             this.apiIp = apiIp;
@@ -301,7 +301,7 @@ public class MinerStats {
          *
          * @param apiPort The API port.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setApiPort(final int apiPort) {
             this.apiPort = apiPort;
@@ -313,7 +313,7 @@ public class MinerStats {
          *
          * @param name The name.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setName(final String name) {
             this.name = name;
@@ -325,7 +325,7 @@ public class MinerStats {
          *
          * @param speedInfo The {@link SpeedInfo}.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setSpeedInfo(final SpeedInfo speedInfo) {
             this.speedInfo = speedInfo;
@@ -337,7 +337,7 @@ public class MinerStats {
          *
          * @param temperature The temperature.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setTemperature(final BigDecimal temperature) {
             this.temperature = temperature;

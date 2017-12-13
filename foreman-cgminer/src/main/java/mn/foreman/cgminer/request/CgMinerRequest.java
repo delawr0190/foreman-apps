@@ -115,7 +115,7 @@ public class CgMinerRequest {
          *
          * @param parameter The parameter.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder addParameter(final String parameter) {
             this.parameters.add(parameter);
@@ -134,7 +134,7 @@ public class CgMinerRequest {
          *
          * @param command The command.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder setCommand(final CgMinerCommand command) {
             this.command = command;

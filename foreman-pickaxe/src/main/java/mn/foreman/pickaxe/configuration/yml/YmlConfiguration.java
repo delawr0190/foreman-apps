@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+/** A YML-based {@link Configuration} parser. */
 public class YmlConfiguration
         implements Configuration {
 

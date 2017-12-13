@@ -4,6 +4,10 @@ import mn.foreman.model.MetricsReport;
 
 import java.util.List;
 
+/**
+ * A {@link MetricsProcessingStrategy} provides mechanisms for processing {@link
+ * MetricsReport metrics} that were retrieved from miners.
+ */
 public interface MetricsProcessingStrategy {
 
     /**
