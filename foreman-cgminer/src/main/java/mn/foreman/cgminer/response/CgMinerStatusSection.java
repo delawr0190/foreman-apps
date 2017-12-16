@@ -3,6 +3,8 @@ package mn.foreman.cgminer.response;
 import mn.foreman.model.AbstractBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 /**
  * A POJO representation of the status section, as defined in the API-README:
@@ -72,6 +74,38 @@ public class CgMinerStatusSection {
         this.description = description;
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        final boolean isEqual;
+        if (other == null) {
+            isEqual = false;
+        } else if (getClass() != other.getClass()) {
+            isEqual = false;
+        } else {
+            final CgMinerStatusSection statusSection =
+                    (CgMinerStatusSection) other;
+            isEqual =
+                    new EqualsBuilder()
+                            .append(
+                                    this.statusCode,
+                                    statusSection.statusCode)
+                            .append(
+                                    this.when,
+                                    statusSection.when)
+                            .append(
+                                    this.code,
+                                    statusSection.code)
+                            .append(
+                                    this.message,
+                                    statusSection.message)
+                            .append(
+                                    this.description,
+                                    statusSection.description)
+                            .isEquals();
+        }
+        return isEqual;
+    }
+
     /**
      * Returns the code.
      *
@@ -115,6 +149,29 @@ public class CgMinerStatusSection {
      */
     public long getWhen() {
         return this.when;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(this.statusCode)
+                .append(this.when)
+                .append(this.code)
+                .append(this.message)
+                .append(this.description)
+                .hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ statusCode=%s, when=%d, code=%d, message=%s, desc=%s ]",
+                getClass().getSimpleName(),
+                this.statusCode,
+                this.when,
+                this.code,
+                this.message,
+                this.description);
     }
 
     /** A builder for creating {@link CgMinerStatusSection}. */

@@ -1,0 +1,83 @@
+{
+  "metadata": {
+    "timestamp": "2017-12-16T15:51:54.076-0500",
+    "apiVersion": "1.0.0"
+  },
+  "miners": [
+    {
+      "name": "cgminer 1",
+      "apiIp": "127.0.0.1",
+      "apiPort": 42069,
+      "temperature": -1,
+      "speedInfo": {
+        "hashRate": "undefined",
+        "avgHashRate": "undefined"
+      },
+      "pools": [
+        {
+          "name": "nicehash",
+          "enabled": true,
+          "priority": 1
+        },
+        {
+          "name": "slushpool",
+          "enabled": true,
+          "priority": 2
+        },
+        {
+          "name": "antpool",
+          "enabled": true,
+          "priority": 3
+        }
+      ],
+      "asics": [
+        {
+          "name": "1",
+          "temperature": 63.24
+        },
+        {
+          "name": "2",
+          "temperature": 64.24
+        },
+        {
+          "name": "3",
+          "temperature": 65.24
+        },
+        {
+          "name": "4",
+          "temperature": 66.24
+        }
+      ]
+    },
+    {
+      "name": "cgminer 2",
+      "apiIp": "127.0.0.1",
+      "apiPort": 42070,
+      "temperature": -1,
+      "speedInfo": {
+        "hashRate": "undefined",
+        "avgHashRate": "undefined"
+      },
+      "pools": [
+        {
+          "name": "antpool",
+          "enabled": true,
+          "priority": 1
+        },
+        {
+          "name": "antpool",
+          "enabled": true,
+          "priority": 2
+        },
+        {
+          "name": "antpool",
+          "enabled": true,
+          "priority": 3
+        }
+      ],
+      "asics": [
+
+      ]
+    }
+  ]
+}

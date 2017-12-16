@@ -1,0 +1,29 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1378733100,
+      "Code": 11,
+      "Msg": "Pools",
+      "Description": "cgminer 3.3.4"
+    }
+  ],
+  "POOLS": [
+    {
+      "POOL": "nicehash",
+      "Priority": 1,
+      "Status": "Alive"
+    },
+    {
+      "POOL": "slushpool",
+      "Priority": 2,
+      "Status": "Alive"
+    },
+    {
+      "POOL": "antpool",
+      "Priority": 3,
+      "Status": "Alive"
+    }
+  ],
+  "id": 1
+}

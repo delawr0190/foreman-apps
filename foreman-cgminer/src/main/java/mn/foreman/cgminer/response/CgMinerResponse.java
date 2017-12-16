@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -64,6 +66,31 @@ public class CgMinerResponse {
         this.id = id;
     }
 
+    @Override
+    public boolean equals(final Object other) {
+        final boolean isEqual;
+        if (other == null) {
+            isEqual = false;
+        } else if (getClass() != other.getClass()) {
+            isEqual = false;
+        } else {
+            final CgMinerResponse response = (CgMinerResponse) other;
+            isEqual =
+                    new EqualsBuilder()
+                            .append(
+                                    this.statusSection,
+                                    response.statusSection)
+                            .append(
+                                    this.values,
+                                    response.values)
+                            .append(
+                                    this.id,
+                                    response.id)
+                            .isEquals();
+        }
+        return isEqual;
+    }
+
     /**
      * Returns the ID.
      *
@@ -106,6 +133,15 @@ public class CgMinerResponse {
                 (!this.values.isEmpty()));
     }
 
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder()
+                .append(this.statusSection)
+                .append(this.values)
+                .append(this.id)
+                .hashCode();
+    }
+
     /**
      * Checks to see if the message was successful.
      *
@@ -114,6 +150,16 @@ public class CgMinerResponse {
     public boolean isSuccess() {
         return this.statusSection.getStatusCode()
                 .equals(CgMinerStatusCode.SUCCESS);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ status=%s, values=%s, id=%d ]",
+                getClass().getSimpleName(),
+                this.statusSection,
+                this.values,
+                this.id);
     }
 
     /** A builder for creating new {@link CgMinerResponse responses}. */
@@ -138,7 +184,7 @@ public class CgMinerResponse {
          *
          * @param values The values.
          *
-         * @return The {@link Builder} instance.
+         * @return The builder instance.
          */
         public Builder addValues(final Map<String, String> values) {
             this.values.add(values);

@@ -1,0 +1,30 @@
+{
+  "STATUS": [
+    {
+      "STATUS": "S",
+      "When": 1378733100,
+      "Code": 11,
+      "Msg": "Devs",
+      "Description": "cgminer 3.3.4"
+    }
+  ],
+  "DEVS": [
+    {
+      "ASC": 1,
+      "Temperature": 63.24
+    },
+    {
+      "ASC": 2,
+      "Temperature": 64.24
+    },
+    {
+      "ASC": 3,
+      "Temperature": 65.24
+    },
+    {
+      "ASC": 4,
+      "Temperature": 66.24
+    }
+  ],
+  "id": 1
+}

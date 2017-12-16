@@ -10,6 +10,7 @@ import mn.foreman.model.miners.Asic;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -214,6 +215,8 @@ public class CgMiner
         CgMinerResponse response = null;
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.enable(
+                    DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
 
             final String message =
                     objectMapper.writeValueAsString(request);

@@ -7,6 +7,8 @@ import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.codec.json.JsonObjectDecoder;
+import io.netty.handler.codec.string.StringDecoder;
+import io.netty.handler.codec.string.StringEncoder;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -83,15 +85,15 @@ public class NettyConnection
                     @Override
                     protected void initChannel(final SocketChannel channel) {
                         channel.pipeline()
+                                .addLast(new StringEncoder())
                                 .addLast(new JsonObjectDecoder())
+                                .addLast(new StringDecoder())
                                 .addLast(new ChannelInboundHandlerAdapter() {
 
                                     @Override
                                     public void channelRead(
                                             final ChannelHandlerContext context,
-                                            final Object message)
-                                            throws Exception {
-                                        super.channelRead(context, message);
+                                            final Object message) {
                                         response.set((String) message);
                                     }
 
@@ -111,7 +113,7 @@ public class NettyConnection
                     bootstrap.connect(this.ip, this.port).sync().channel();
 
             // Send the request
-            channel.writeAndFlush(request);
+            channel.writeAndFlush(request).sync();
 
             // Wait until the connection is closed (according to the cgminer
             // API-README, the connection will be closed immediately).
