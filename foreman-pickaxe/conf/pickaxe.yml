@@ -1,0 +1,12 @@
+apiKey: "<YOUR_API_KEY>"
+foremanApiUrl: "http://api.foreman.mn/"
+pollFrequencyInSeconds: 60
+
+cgminers:
+  - name:    "cgminer 1"
+    apiIp:   "127.0.0.1"
+    apiPort: 42069
+
+  - name:    "cgminer 2"
+    apiIp:   "128.0.0.1"
+    apiPort: 42070

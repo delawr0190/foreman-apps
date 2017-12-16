@@ -1,0 +1,36 @@
+<configuration scan="true" scanPeriod="30 seconds">
+
+    <property name="LOG_FILE" value="pickaxe.log"/>
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <appender name="FILE"
+              class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_LOCATION}/${LOG_FILE}</file>
+        <append>true</append>
+        <prudent>true</prudent>
+        <rollingPolicy
+                class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>
+                ${LOG_LOCATION}/${LOG_FILE}.%d{yyyy-MM-dd}.log
+            </fileNamePattern>
+            <!-- Keep 7 days' worth of history -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                [%.6thread] %d{HH:mm:ss.SSS} [%-5level] %logger - %msg%n
+            </pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="FILE-ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <root level="debug">
+        <appender-ref ref="FILE-ASYNC"/>
+    </root>
+</configuration>
