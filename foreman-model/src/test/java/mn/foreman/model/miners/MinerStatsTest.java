@@ -26,8 +26,8 @@ public class MinerStatsTest {
         final int apiPort = 42069;
         final BigDecimal temperature = new BigDecimal(69);
 
-        final String hashRate = "13.5 TH/s";
-        final String avgHashRate = "12.9 TH/s";
+        final BigDecimal hashRate = new BigDecimal(13500000.00);
+        final BigDecimal avgHashRate = new BigDecimal(12900000.00);
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
                         .setHashRate(hashRate)

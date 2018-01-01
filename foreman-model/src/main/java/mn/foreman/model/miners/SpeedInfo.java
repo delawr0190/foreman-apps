@@ -7,23 +7,25 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.math.BigDecimal;
+
 /**
  * The following POJO represents a JSON object with the following format:
  *
  * <pre>
  *   {
- *     "hashRate": "13.5 TH/s",
- *     "avgHashRate": "13.5 TH/s"
+ *     "hashRate": 135000000000.00,
+ *     "avgHashRate": 135000000000.00,
  *   }
  * </pre>
  */
 public class SpeedInfo {
 
     /** The average hash rate. */
-    private final String avgHashRate;
+    private final BigDecimal avgHashRate;
 
     /** The current hash rate. */
-    private final String hashRate;
+    private final BigDecimal hashRate;
 
     /**
      * Constructor.
@@ -32,12 +34,12 @@ public class SpeedInfo {
      * @param avgHashRate The average hash rate.
      */
     private SpeedInfo(
-            @JsonProperty("hashRate") final String hashRate,
-            @JsonProperty("avgHashRate") final String avgHashRate) {
-        Validate.notEmpty(
+            @JsonProperty("hashRate") final BigDecimal hashRate,
+            @JsonProperty("avgHashRate") final BigDecimal avgHashRate) {
+        Validate.notNull(
                 hashRate,
                 "hashRate cannot be empty");
-        Validate.notEmpty(
+        Validate.notNull(
                 avgHashRate,
                 "avgHashRate cannot be empty");
         this.hashRate = hashRate;
@@ -67,7 +69,7 @@ public class SpeedInfo {
      *
      * @return The average hash rate.
      */
-    public String getAvgHashRate() {
+    public BigDecimal getAvgHashRate() {
         return this.avgHashRate;
     }
 
@@ -76,7 +78,7 @@ public class SpeedInfo {
      *
      * @return The current hash rate.
      */
-    public String getHashRate() {
+    public BigDecimal getHashRate() {
         return this.hashRate;
     }
 
@@ -102,10 +104,10 @@ public class SpeedInfo {
             extends AbstractBuilder<SpeedInfo> {
 
         /** The average hash rate. */
-        private String avgHashRate = UNDEFINED_STRING;
+        private BigDecimal avgHashRate = UNDEFINED_DECIMAL;
 
         /** The hash rate. */
-        private String hashRate = UNDEFINED_STRING;
+        private BigDecimal hashRate = UNDEFINED_DECIMAL;
 
         @Override
         public SpeedInfo build() {
@@ -121,7 +123,7 @@ public class SpeedInfo {
          *
          * @return The builder instance.
          */
-        public Builder setAvgHashRate(final String avgHashRate) {
+        public Builder setAvgHashRate(final BigDecimal avgHashRate) {
             this.avgHashRate = avgHashRate;
             return this;
         }
@@ -133,7 +135,7 @@ public class SpeedInfo {
          *
          * @return The builder instance.
          */
-        public Builder setHashRate(final String hashRate) {
+        public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
             return this;
         }

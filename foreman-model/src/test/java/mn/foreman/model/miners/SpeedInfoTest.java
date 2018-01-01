@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
@@ -17,8 +18,8 @@ public class SpeedInfoTest {
     @Test
     public void testSerialization()
             throws IOException {
-        final String hashRate = "13.5 TH/s";
-        final String avgHashRate = "12.99 TH/s";
+        final BigDecimal hashRate = new BigDecimal(13500000.00);
+        final BigDecimal avgHashRate = new BigDecimal(13500000.00);
 
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()

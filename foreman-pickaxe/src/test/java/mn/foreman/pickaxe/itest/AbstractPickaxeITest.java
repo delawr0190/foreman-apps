@@ -141,7 +141,7 @@ public abstract class AbstractPickaxeITest {
         final ResourceConfig resourceConfig = new ResourceConfig();
         final Resource.Builder resourceBuilder =
                 Resource.builder("api");
-        resourceBuilder.addMethod("POST")
+        resourceBuilder.addMethod("PUT")
                 .handledBy(myHandler);
         resourceConfig.registerResources(resourceBuilder.build());
 

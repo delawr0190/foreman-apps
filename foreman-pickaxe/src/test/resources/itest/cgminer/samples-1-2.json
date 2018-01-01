@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "timestamp": "2017-12-16T15:51:54.076-0500",
+    "timestamp": "2017-12-15T15:51:54.076-0500",
     "apiVersion": "1.0.0"
   },
   "miners": [
@@ -10,8 +10,8 @@
       "apiPort": 42069,
       "temperature": -1,
       "speedInfo": {
-        "hashRate": "undefined",
-        "avgHashRate": "undefined"
+        "hashRate": -1,
+        "avgHashRate": -1
       },
       "pools": [
         {
@@ -55,8 +55,8 @@
       "apiPort": 42070,
       "temperature": -1,
       "speedInfo": {
-        "hashRate": "undefined",
-        "avgHashRate": "undefined"
+        "hashRate": -1,
+        "avgHashRate": -1
       },
       "pools": [
         {
@@ -76,7 +76,6 @@
         }
       ],
       "asics": [
-
       ]
     }
   ]

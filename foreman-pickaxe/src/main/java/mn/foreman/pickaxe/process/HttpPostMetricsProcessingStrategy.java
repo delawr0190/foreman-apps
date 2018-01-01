@@ -4,6 +4,7 @@ import mn.foreman.model.MetricsReport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.List;
 
 /**
@@ -67,9 +69,13 @@ public class HttpPostMetricsProcessingStrategy
                     (HttpURLConnection) url.openConnection();
 
             connection.setDoOutput(true);
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("Content-Type", "application/json");
-            connection.setRequestProperty("x-api-key", this.apiKey);
+            connection.setRequestMethod("PUT");
+            connection.setRequestProperty(
+                    "Content-Type",
+                    "application/json");
+            connection.setRequestProperty(
+                    "Authorization",
+                    "Token " + this.apiKey);
 
             final OutputStreamWriter outputStreamWriter =
                     new OutputStreamWriter(connection.getOutputStream());
@@ -79,7 +85,13 @@ public class HttpPostMetricsProcessingStrategy
 
             final int code = connection.getResponseCode();
             if (code != HttpURLConnection.HTTP_CREATED) {
-                LOG.warn("Received a bad response: code({})", code);
+                LOG.warn("Received a bad response: " +
+                                "code({}), message({}), response({})",
+                        code,
+                        connection.getResponseMessage(),
+                        IOUtils.toString(
+                                connection.getErrorStream(),
+                                Charset.defaultCharset()));
             }
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred while uploading metrics", ioe);
