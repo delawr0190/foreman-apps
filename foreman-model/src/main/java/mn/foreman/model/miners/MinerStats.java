@@ -19,10 +19,6 @@ import java.util.List;
  *     "name": "miner #1",
  *     "apiIp": "192.168.1.1",
  *     "apiPort": 42069,
- *     "temperature": 69,
- *     "speedInfo": {
- *       ...
- *     },
  *     "pools": [
  *       ...
  *     ],

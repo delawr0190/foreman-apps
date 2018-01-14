@@ -29,10 +29,13 @@ import java.util.concurrent.Executor;
  *
  * <p>This test acts under the following assumptions:</p>
  *
- * <ol> <li>pickaxe is installed and running locally.</li> <li>pickaxe is
- * configured to query 2 cgminers (one listening on 127.0.0.1:42069, and the
- * other listening on 127.0.0.1:42070).</li> <li>pickaxe has been configured
- * with an API URL of http://127.0.0.1:8080/api.</li> </ol>
+ * <ol>
+ *   <li>pickaxe is installed and running locally.</li>
+ *   <li>pickaxe is configured to query 2 cgminers (one listening on
+ *   127.0.0.1:42069, and the other listening on 127.0.0.1:42070).</li>
+ *   <li>pickaxe has been configured with an API URL of
+ *   http://127.0.0.1:8080/api.</li>
+ * </ol>
  */
 @Ignore
 @RunWith(Parameterized.class)
