@@ -25,7 +25,7 @@ public class AsicTest {
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
                         .setAvgHashRate(new BigDecimal(1))
-                        .setAvgHashRate5s(new BigDecimal(2))
+                        .setAvgHashRateFiveSecs(new BigDecimal(2))
                         .build();
         final FanInfo fanInfo =
                 new FanInfo.Builder()

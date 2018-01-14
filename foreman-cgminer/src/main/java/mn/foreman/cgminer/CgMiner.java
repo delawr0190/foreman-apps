@@ -139,7 +139,7 @@ public class CgMiner
                 .setSpeedInfo(
                         new SpeedInfo.Builder()
                                 .setAvgHashRate(avgHashRate)
-                                .setAvgHashRate5s(avgHashRate5s)
+                                .setAvgHashRateFiveSecs(avgHashRate5s)
                                 .build());
 
         // Fangs

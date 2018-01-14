@@ -15,7 +15,7 @@ import java.math.BigDecimal;
  * <pre>
  *   {
  *     "avgHashRate": 13674000000000.52,
- *     "avgHashRate5s": 13800000000000.49,
+ *     "avgHashRateFiveSecs": 13800000000000.49,
  *   }
  * </pre>
  */
@@ -25,25 +25,25 @@ public class SpeedInfo {
     private final BigDecimal avgHashRate;
 
     /** The 5 second average hash rate. */
-    private final BigDecimal avgHashRate5s;
+    private final BigDecimal avgHashRateFiveSecs;
 
     /**
      * Constructor.
      *
-     * @param avgHashRate   The average hash rate.
-     * @param avgHashRate5s The 5 second average hash rate.
+     * @param avgHashRate         The average hash rate.
+     * @param avgHashRateFiveSecs The 5 second average hash rate.
      */
     private SpeedInfo(
             @JsonProperty("avgHashRate") final BigDecimal avgHashRate,
-            @JsonProperty("avgHashRate5s") final BigDecimal avgHashRate5s) {
+            @JsonProperty("avgHashRateFiveSecs") final BigDecimal avgHashRateFiveSecs) {
         Validate.notNull(
                 avgHashRate,
                 "avgHashRate cannot be empty");
         Validate.notNull(
-                avgHashRate5s,
-                "avgHashRate5s cannot be empty");
+                avgHashRateFiveSecs,
+                "avgHashRateFiveSecs cannot be empty");
         this.avgHashRate = avgHashRate;
-        this.avgHashRate5s = avgHashRate5s;
+        this.avgHashRateFiveSecs = avgHashRateFiveSecs;
     }
 
     @Override
@@ -57,8 +57,10 @@ public class SpeedInfo {
             final SpeedInfo speedInfo = (SpeedInfo) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.avgHashRate, speedInfo.avgHashRate)
-                            .append(this.avgHashRate5s, speedInfo.avgHashRate5s)
+                            .append(this.avgHashRate,
+                                    speedInfo.avgHashRate)
+                            .append(this.avgHashRateFiveSecs,
+                                    speedInfo.avgHashRateFiveSecs)
                             .isEquals();
         }
         return isEqual;
@@ -78,25 +80,25 @@ public class SpeedInfo {
      *
      * @return The 5 second average hash rate.
      */
-    public BigDecimal getAvgHashRate5s() {
-        return this.avgHashRate5s;
+    public BigDecimal getAvgHashRateFiveSecs() {
+        return this.avgHashRateFiveSecs;
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.avgHashRate)
-                .append(this.avgHashRate5s)
+                .append(this.avgHashRateFiveSecs)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ avgHashRate=%s, avgHashRate5s=%s ]",
+                "%s [ avgHashRate=%s, avgHashRateFiveSecs=%s ]",
                 getClass().getSimpleName(),
                 this.avgHashRate,
-                this.avgHashRate5s);
+                this.avgHashRateFiveSecs);
     }
 
     /** A builder for creating {@link SpeedInfo speed infos}. */
@@ -107,13 +109,13 @@ public class SpeedInfo {
         private BigDecimal avgHashRate = UNDEFINED_DECIMAL;
 
         /** The 5 second average hash rate. */
-        private BigDecimal avgHashRate5s = UNDEFINED_DECIMAL;
+        private BigDecimal avgHashRateFiveSecs = UNDEFINED_DECIMAL;
 
         @Override
         public SpeedInfo build() {
             return new SpeedInfo(
                     this.avgHashRate,
-                    this.avgHashRate5s);
+                    this.avgHashRateFiveSecs);
         }
 
         /**
@@ -131,12 +133,13 @@ public class SpeedInfo {
         /**
          * Sets the 5 second average hash rate.
          *
-         * @param avgHashRate5s The 5 second average hash rate.
+         * @param avgHashRateFiveSecs The 5 second average hash rate.
          *
          * @return The builder instance.
          */
-        public Builder setAvgHashRate5s(final BigDecimal avgHashRate5s) {
-            this.avgHashRate5s = avgHashRate5s;
+        public Builder setAvgHashRateFiveSecs(
+                final BigDecimal avgHashRateFiveSecs) {
+            this.avgHashRateFiveSecs = avgHashRateFiveSecs;
             return this;
         }
     }

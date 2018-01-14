@@ -25,7 +25,7 @@ public class SpeedInfoTest {
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
                         .setAvgHashRate(avgHashRate)
-                        .setAvgHashRate5s(avgHashRate5s)
+                        .setAvgHashRateFiveSecs(avgHashRate5s)
                         .build();
 
         final ObjectMapper objectMapper =
@@ -47,6 +47,6 @@ public class SpeedInfoTest {
                 newSpeedInfo.getAvgHashRate());
         assertEquals(
                 avgHashRate5s,
-                newSpeedInfo.getAvgHashRate5s());
+                newSpeedInfo.getAvgHashRateFiveSecs());
     }
 }

@@ -42,7 +42,7 @@
           "name": "Antminer S9",
           "speedInfo": {
             "avgHashRate": 13621880000000.00,
-            "avgHashRate5s": 13674520000000.00
+            "avgHashRateFiveSecs": 13674520000000.00
           },
           "fans": {
             "count": 2,
@@ -101,7 +101,7 @@
           "name": "Antminer S9",
           "speedInfo": {
             "avgHashRate": 13621880000000.00,
-            "avgHashRate5s": 13674520000000.00
+            "avgHashRateFiveSecs": 13674520000000.00
           },
           "fans": {
             "count": 2,
