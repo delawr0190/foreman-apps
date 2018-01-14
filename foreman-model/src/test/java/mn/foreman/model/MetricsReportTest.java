@@ -2,10 +2,7 @@ package mn.foreman.model;
 
 import mn.foreman.model.metadata.ApiVersion;
 import mn.foreman.model.metadata.Metadata;
-import mn.foreman.model.miners.Asic;
-import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.Pool;
-import mn.foreman.model.miners.SpeedInfo;
+import mn.foreman.model.miners.*;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -31,44 +28,46 @@ public class MetricsReportTest {
     @SuppressWarnings("ConstantConditions")
     public void testSerialization()
             throws IOException {
-        final String name = "name";
-        final String apiIp = "127.0.0.1";
-        final int apiPort = 42069;
-        final BigDecimal temperature = new BigDecimal(69);
-
-        final BigDecimal hashRate = new BigDecimal(13500000.00);
-        final BigDecimal avgHashRate = new BigDecimal(13500000.00);
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
-                        .setHashRate(hashRate)
-                        .setAvgHashRate(avgHashRate)
+                        .setAvgHashRate(new BigDecimal(1))
+                        .setAvgHashRate5s(new BigDecimal(2))
                         .build();
 
-        final String poolName = "poolName";
-        final Boolean enabled = true;
-        final int priority = 420;
+        final FanInfo fanInfo =
+                new FanInfo.Builder()
+                        .setCount(2)
+                        .addSpeed(420)
+                        .addSpeed(421)
+                        .build();
+
         final Pool pool =
                 new Pool.Builder()
-                        .setName(poolName)
-                        .setEnabled(enabled)
-                        .setPriority(priority)
+                        .setName("poolName")
+                        .setStatus(
+                                false,
+                                true)
+                        .setPriority(420)
+                        .setCounts(
+                                1,
+                                2,
+                                3)
                         .build();
 
-        final String asicName = "ASIC 0";
-        final BigDecimal asicTemperature = new BigDecimal(420);
         final Asic asic =
                 new Asic.Builder()
-                        .setName(asicName)
-                        .setTemperature(asicTemperature)
+                        .setName("asicName")
+                        .setSpeedInfo(speedInfo)
+                        .setFanInfo(fanInfo)
+                        .addTemp(32)
+                        .hasErrors(true)
                         .build();
 
         final MinerStats minerStats =
                 new MinerStats.Builder()
-                        .setName(name)
-                        .setApiIp(apiIp)
-                        .setApiPort(apiPort)
-                        .setSpeedInfo(speedInfo)
-                        .setTemperature(temperature)
+                        .setName("name")
+                        .setApiIp("127.0.0.1")
+                        .setApiPort(42069)
                         .addPool(pool)
                         .addAsic(asic)
                         .build();

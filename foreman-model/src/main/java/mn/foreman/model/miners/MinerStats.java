@@ -7,7 +7,6 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -50,29 +49,19 @@ public class MinerStats {
     /** All of the pools. */
     private final List<Pool> pools;
 
-    /** The speed-related information. */
-    private final SpeedInfo speedInfo;
-
-    /** The temperature (could be average). */
-    private final BigDecimal temperature;
-
     /**
      * Constructor.
      *
-     * @param name        The miner name.
-     * @param apiIp       The API IP address.
-     * @param apiPort     The API port.
-     * @param temperature The temperature.
-     * @param speedInfo   The speed-related information.
-     * @param pools       The pools.
-     * @param asics       The ASICs.
+     * @param name    The miner name.
+     * @param apiIp   The API IP address.
+     * @param apiPort The API port.
+     * @param pools   The pools.
+     * @param asics   The ASICs.
      */
     private MinerStats(
             @JsonProperty("name") final String name,
             @JsonProperty("apiIp") final String apiIp,
             @JsonProperty("apiPort") final int apiPort,
-            @JsonProperty("temperature") final BigDecimal temperature,
-            @JsonProperty("speedInfo") final SpeedInfo speedInfo,
             @JsonProperty("pools") final List<Pool> pools,
             @JsonProperty("asics") final List<Asic> asics) {
         Validate.notEmpty(
@@ -84,17 +73,9 @@ public class MinerStats {
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, apiPort,
                 "apiPort cannot be empty");
-        Validate.notNull(
-                temperature,
-                "temperature cannot be null");
-        Validate.notNull(
-                speedInfo,
-                "speedInfo cannot be null");
         this.name = name;
         this.apiIp = apiIp;
         this.apiPort = apiPort;
-        this.temperature = temperature;
-        this.speedInfo = speedInfo;
         this.pools = new ArrayList<>(pools);
         this.asics = new ArrayList<>(asics);
     }
@@ -113,8 +94,6 @@ public class MinerStats {
                             .append(this.name, miner.name)
                             .append(this.apiIp, miner.apiIp)
                             .append(this.apiPort, miner.apiPort)
-                            .append(this.temperature, miner.temperature)
-                            .append(this.speedInfo, miner.speedInfo)
                             .append(this.pools, miner.pools)
                             .append(this.asics, miner.asics)
                             .isEquals();
@@ -167,32 +146,12 @@ public class MinerStats {
         return this.pools;
     }
 
-    /**
-     * Returns the speed-related information.
-     *
-     * @return The speed-related information.
-     */
-    public SpeedInfo getSpeedInfo() {
-        return this.speedInfo;
-    }
-
-    /**
-     * Returns the temperature.
-     *
-     * @return The temperature.
-     */
-    public BigDecimal getTemperature() {
-        return this.temperature;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.name)
                 .append(this.apiIp)
                 .append(this.apiPort)
-                .append(this.temperature)
-                .append(this.speedInfo)
                 .append(this.pools)
                 .append(this.asics)
                 .build();
@@ -204,16 +163,12 @@ public class MinerStats {
                 "%s [ name=%s, " +
                         "apiIp=%s, " +
                         "apiPort=%d, " +
-                        "temperature=%s, " +
-                        "speedInfo=%s, " +
                         "pools=%s, " +
                         "asics=%s ]",
                 getClass().getSimpleName(),
                 this.name,
                 this.apiIp,
                 this.apiPort,
-                this.temperature,
-                this.speedInfo,
                 this.pools,
                 this.asics);
     }
@@ -236,12 +191,6 @@ public class MinerStats {
 
         /** The miner name. */
         private String name;
-
-        /** The speed-related information. */
-        private SpeedInfo speedInfo = new SpeedInfo.Builder().build();
-
-        /** The temperature (could be average). */
-        private BigDecimal temperature = UNDEFINED_DECIMAL;
 
         /**
          * Adds the provided {@link Asic}.
@@ -278,8 +227,6 @@ public class MinerStats {
                     this.name,
                     this.apiIp,
                     this.apiPort,
-                    this.temperature,
-                    this.speedInfo,
                     this.pools,
                     this.asics);
         }
@@ -317,30 +264,6 @@ public class MinerStats {
          */
         public Builder setName(final String name) {
             this.name = name;
-            return this;
-        }
-
-        /**
-         * Sets the {@link SpeedInfo}.
-         *
-         * @param speedInfo The {@link SpeedInfo}.
-         *
-         * @return The builder instance.
-         */
-        public Builder setSpeedInfo(final SpeedInfo speedInfo) {
-            this.speedInfo = speedInfo;
-            return this;
-        }
-
-        /**
-         * Sets the temperature.
-         *
-         * @param temperature The temperature.
-         *
-         * @return The builder instance.
-         */
-        public Builder setTemperature(final BigDecimal temperature) {
-            this.temperature = temperature;
             return this;
         }
     }

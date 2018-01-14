@@ -24,32 +24,40 @@ public class MinerStatsTest {
         final String name = "name";
         final String apiIp = "127.0.0.1";
         final int apiPort = 42069;
-        final BigDecimal temperature = new BigDecimal(69);
 
-        final BigDecimal hashRate = new BigDecimal(13500000.00);
-        final BigDecimal avgHashRate = new BigDecimal(12900000.00);
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
-                        .setHashRate(hashRate)
-                        .setAvgHashRate(avgHashRate)
+                        .setAvgHashRate(new BigDecimal(1))
+                        .setAvgHashRate5s(new BigDecimal(2))
                         .build();
 
-        final String poolName = "poolName";
-        final Boolean enabled = true;
-        final int priority = 420;
+        final FanInfo fanInfo =
+                new FanInfo.Builder()
+                        .setCount(2)
+                        .addSpeed(420)
+                        .addSpeed(421)
+                        .build();
+
         final Pool pool =
                 new Pool.Builder()
-                        .setName(poolName)
-                        .setEnabled(enabled)
-                        .setPriority(priority)
+                        .setName("poolName")
+                        .setStatus(
+                                false,
+                                true)
+                        .setPriority(420)
+                        .setCounts(
+                                1,
+                                2,
+                                3)
                         .build();
 
-        final String asicName = "ASIC 0";
-        final BigDecimal asicTemperature = new BigDecimal(420);
         final Asic asic =
                 new Asic.Builder()
-                        .setName(asicName)
-                        .setTemperature(asicTemperature)
+                        .setName("asicName")
+                        .setSpeedInfo(speedInfo)
+                        .setFanInfo(fanInfo)
+                        .addTemp(32)
+                        .hasErrors(true)
                         .build();
 
         final MinerStats stats =
@@ -57,8 +65,6 @@ public class MinerStatsTest {
                         .setName(name)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
-                        .setSpeedInfo(speedInfo)
-                        .setTemperature(temperature)
                         .addPool(pool)
                         .addAsic(asic)
                         .build();
@@ -86,12 +92,6 @@ public class MinerStatsTest {
         assertEquals(
                 apiPort,
                 newMinerStats.getApiPort());
-        assertEquals(
-                temperature,
-                newMinerStats.getTemperature());
-        assertEquals(
-                speedInfo,
-                newMinerStats.getSpeedInfo());
 
         final List<Pool> pools = newMinerStats.getPools();
         assertEquals(

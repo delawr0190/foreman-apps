@@ -9,11 +9,17 @@ import java.math.BigDecimal;
  */
 public abstract class AbstractBuilder<T> {
 
+    /** A default value for an undefined boolean. */
+    protected static final boolean UNDEFINED_BOOL = false;
+
     /** A default value for an undefined decimal. */
     protected static final BigDecimal UNDEFINED_DECIMAL = new BigDecimal(-1);
 
     /** A default value for an undefined int. */
     protected static final int UNDEFINED_INT = -1;
+
+    /** A default value for an undefined long. */
+    protected static final long UNDEFINED_LONG = -1L;
 
     /** A default value for an undefined {@link String}. */
     protected static final String UNDEFINED_STRING = "undefined";

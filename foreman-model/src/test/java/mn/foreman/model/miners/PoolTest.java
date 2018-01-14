@@ -20,14 +20,24 @@ public class PoolTest {
     public void testSerialization()
             throws IOException {
         final String name = "name";
-        final int priority = 69;
         final Boolean enabled = true;
+        final Boolean status = false;
+        final int priority = 69;
+        final long accepted = 420;
+        final long rejected = 421;
+        final long stale = 422;
 
         final Pool pool =
                 new Pool.Builder()
                         .setName(name)
+                        .setStatus(
+                                enabled,
+                                status)
                         .setPriority(priority)
-                        .setEnabled(enabled)
+                        .setCounts(
+                                accepted,
+                                rejected,
+                                stale)
                         .build();
 
         final ObjectMapper objectMapper =
@@ -48,10 +58,22 @@ public class PoolTest {
                 name,
                 newPool.getName());
         assertEquals(
+                enabled,
+                newPool.getEnabled());
+        assertEquals(
+                status,
+                newPool.getStatus());
+        assertEquals(
                 priority,
                 newPool.getPriority());
         assertEquals(
-                enabled,
-                newPool.getEnabled());
+                accepted,
+                newPool.getAccepted());
+        assertEquals(
+                rejected,
+                newPool.getRejected());
+        assertEquals(
+                stale,
+                newPool.getStale());
     }
 }

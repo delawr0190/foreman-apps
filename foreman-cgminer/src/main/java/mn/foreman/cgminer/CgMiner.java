@@ -2,13 +2,12 @@ package mn.foreman.cgminer;
 
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.cgminer.response.CgMinerPoolStatus;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.cgminer.response.CgMinerStatusCode;
 import mn.foreman.cgminer.response.CgMinerStatusSection;
 import mn.foreman.model.Miner;
-import mn.foreman.model.miners.Asic;
-import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.Pool;
+import mn.foreman.model.miners.*;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,10 +17,10 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * A {@link CgMiner} represents a cgminer controlled crypto farm.
@@ -29,8 +28,14 @@ import java.util.stream.Collectors;
  * <p>This class relies on the cgminer-api being enabled and configured to allow
  * the server that this application is running on to access it.</p>
  *
- * <p>As of right now, only the {@link CgMinerCommand#DEVS} and {@link
- * CgMinerCommand#POOLS} stats are polled.</p>
+ * <p>As of right now, only {@link CgMinerCommand#VERSION}, {@link
+ * CgMinerCommand#STATS} and {@link CgMinerCommand#POOLS} are polled.
+ * Originally, it was intended that either the 'devs' or 'ascs' commands be used
+ * to obtain ASIC metrics.  That wasn't possible in the November build of
+ * bmminer for an Antminer S9, so 'stats' was preferred instead.</p>
+ *
+ * <p>The objective is to never require users to re-configure their miners just
+ * for monitoring purposes.  Make use of what we have by default.</p>
  */
 public class CgMiner
         implements Miner {
@@ -95,8 +100,8 @@ public class CgMiner
                         .setApiIp(this.apiIp)
                         .setApiPort(this.apiPort)
                         .setName(this.name);
-        addAsicStats(builder);
         addPoolStats(builder);
+        addAsicStats(builder);
 
         final MinerStats minerStats =
                 builder.build();
@@ -111,17 +116,62 @@ public class CgMiner
      * metrics, to a {@link Asic} and adds it to the provided builder.
      *
      * @param builder The builder to update.
-     * @param values  The pool values.
+     * @param type    The type.
+     * @param values  The asic values.
      */
     private static void addAsicStats(
             final MinerStats.Builder builder,
+            final String type,
             final Map<String, String> values) {
-        builder.addAsic(
+
+        final Asic.Builder asicBuilder =
                 new Asic.Builder()
-                        .setName(values.get("ASC"))
-                        .setTemperature(
-                                new BigDecimal(values.get("Temperature")))
-                        .build());
+                        .setName(type);
+
+        // Speed
+        final BigDecimal avgHashRate =
+                new BigDecimal(values.get("GHS av"))
+                        .multiply(new BigDecimal(Math.pow(1000, 3)));
+        final BigDecimal avgHashRate5s =
+                new BigDecimal(values.get("GHS 5s"))
+                        .multiply(new BigDecimal(Math.pow(1000, 3)));
+        asicBuilder
+                .setSpeedInfo(
+                        new SpeedInfo.Builder()
+                                .setAvgHashRate(avgHashRate)
+                                .setAvgHashRate5s(avgHashRate5s)
+                                .build());
+
+        // Fangs
+        final FanInfo.Builder fanBuilder =
+                new FanInfo.Builder()
+                        .setCount(values.get("fan_num"));
+        for (int i = 1; i <= 8; i++) {
+            fanBuilder.addSpeed(values.get("fan" + i));
+        }
+        asicBuilder.setFanInfo(fanBuilder.build());
+
+        // Temps
+        final List<String> tempPrefixes =
+                Arrays.asList(
+                        "temp",
+                        "temp2_",
+                        "temp3_");
+        for (final String prefix : tempPrefixes) {
+            for (int i = 1; i <= 16; i++) {
+                asicBuilder.addTemp(values.get(prefix + i));
+            }
+        }
+
+        // Errors
+        boolean hasErrors = false;
+        for (int i = 1; i <= 16; i++) {
+            hasErrors =
+                    (hasErrors || values.get("chain_acs" + i).contains("x"));
+        }
+        asicBuilder.hasErrors(hasErrors);
+
+        builder.addAsic(asicBuilder.build());
     }
 
     /**
@@ -134,42 +184,55 @@ public class CgMiner
     private static void addPoolStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
+        final CgMinerPoolStatus status =
+                CgMinerPoolStatus.forValue(values.get("Status"));
         builder.addPool(
                 new Pool.Builder()
-                        .setName(values.get("POOL"))
-                        .setPriority(Integer.parseInt(values.get("Priority")))
-                        .setEnabled("Alive".equals(values.get("Status")))
+                        .setName(values.get("URL"))
+                        .setPriority(values.get("Priority"))
+                        .setStatus(
+                                status.isEnabled(),
+                                status.isUp())
+                        .setCounts(
+                                values.get("Accepted"),
+                                values.get("Rejected"),
+                                values.get("Stale"))
                         .build());
     }
 
     /**
      * Queries for and adds ASIC metrics to the provided builder.
      *
+     * <p>Unfortunately, this code was implemented to the November build of
+     * bmminer for an Antminer S9, which didn't support the 'devs' command.
+     * So...ASIC metrics will be extracted from 'stats' instead.</p>
+     *
      * @param builder The builder to update.
      */
     private void addAsicStats(
             final MinerStats.Builder builder) {
-        final CgMinerResponse response = query(
+        final CgMinerResponse versionResponse = query(
                 new CgMinerRequest.Builder()
-                        .setCommand(CgMinerCommand.DEVS)
+                        .setCommand(CgMinerCommand.VERSION)
+                        .build());
+        final CgMinerResponse statsResponse = query(
+                new CgMinerRequest.Builder()
+                        .setCommand(CgMinerCommand.STATS)
                         .build());
 
-        if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
+        final String type;
+        if (versionResponse.hasValues()) {
+            final Map<String, String> versionValues =
+                    versionResponse.getValues().get(0);
+            type = versionValues.get("Type");
+        } else {
+            type = "cgminer_" + this.apiIp + ":" + this.apiPort;
+        }
 
-            // Could contain GPU and PGA metrics.  Ignore all of those for now.
-            // We only care about ASICs at this point in time.
-            final Map<Boolean, List<Map<String, String>>> splitValues =
-                    values.stream().collect(
-                            Collectors.groupingBy(
-                                    value -> value.containsKey("ASC")));
-            final List<Map<String, String>> asicValues = splitValues.get(true);
-            if ((asicValues != null) && (!asicValues.isEmpty())) {
-                asicValues.forEach(
-                        value -> addAsicStats(builder, value));
-            } else {
-                LOG.debug("No ASICs found");
-            }
+        if (statsResponse.hasValues()) {
+            final List<Map<String, String>> values = statsResponse.getValues();
+            values.forEach(
+                    value -> addAsicStats(builder, type, value));
         } else {
             LOG.debug("No ACICs founds");
         }
@@ -233,9 +296,24 @@ public class CgMiner
             final Optional<String> responseJson =
                     connection.query(message);
             if (responseJson.isPresent()) {
+                String responseString = responseJson.get();
+
+                // Some forks of cgminer return invalid JSON, so prune the
+                // invalid object out
+                final int errorObjectEnd = responseString.indexOf("}{");
+                if (errorObjectEnd >= 0) {
+                    final int errorObjectStart =
+                            responseString.lastIndexOf("{", errorObjectEnd);
+                    responseString =
+                            responseString.substring(0, errorObjectStart) +
+                                    responseString.substring(
+                                            errorObjectEnd + 1,
+                                            responseString.length());
+                }
+
                 response =
                         objectMapper.readValue(
-                                responseJson.get(),
+                                responseString,
                                 CgMinerResponse.class);
 
                 LOG.debug("Read response: {}", response);

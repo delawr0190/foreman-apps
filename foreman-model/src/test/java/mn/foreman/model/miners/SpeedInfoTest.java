@@ -8,6 +8,7 @@ import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
+/** Unit tests for {@link SpeedInfo}. */
 public class SpeedInfoTest {
 
     /**
@@ -18,13 +19,13 @@ public class SpeedInfoTest {
     @Test
     public void testSerialization()
             throws IOException {
-        final BigDecimal hashRate = new BigDecimal(13500000.00);
         final BigDecimal avgHashRate = new BigDecimal(13500000.00);
+        final BigDecimal avgHashRate5s = new BigDecimal(13500000.00);
 
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
-                        .setHashRate(hashRate)
                         .setAvgHashRate(avgHashRate)
+                        .setAvgHashRate5s(avgHashRate5s)
                         .build();
 
         final ObjectMapper objectMapper =
@@ -42,10 +43,10 @@ public class SpeedInfoTest {
                 speedInfo,
                 newSpeedInfo);
         assertEquals(
-                hashRate,
-                newSpeedInfo.getHashRate());
-        assertEquals(
                 avgHashRate,
                 newSpeedInfo.getAvgHashRate());
+        assertEquals(
+                avgHashRate5s,
+                newSpeedInfo.getAvgHashRate5s());
     }
 }

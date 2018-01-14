@@ -23,25 +23,29 @@ public enum CgMinerCommand {
      * <pre>
      * CgMinerRequest   Reply Section  Details
      * -------          -------------  -------
-     * devs             DEVS           Each available PGA and ASC with their
-     *                                 details
-     *                                 e.g. ASC=0,Accepted=NN,MHSav=NNN,...,
-     *                                 Intensity=D|
-     *                                 Last Share Time=NNN,
-     *                                     <- standand long time in sec (or 0
-     *                                        if none) of last accepted share
-     *                                 Last Share Pool=N,
-     *                                     <- pool number (or -1 if none)
-     *                                 Last Valid Work=NNN,
-     *                                     <- standand long time in sec of last
-     *                                        work returned that wasn't an HW:
-     *                                 Will not report PGAs if PGA mining is
-     *                                 disabled
-     *                                 Will not report ASCs if ASC mining is
-     *                                 disabled
+     * stats            STATS          Each device or pool that has 1 or more
+     *                                 getworks with a list of stats regarding
+     *                                 getwork times The values returned by
+     *                                 stats may change in future versions thus
+     *                                 would not normally be displayed
+     *                                 Device drivers are also able to add
+     *                                 stats to the end of the details returned
      * </pre>
      */
-    DEVS("devs");
+    STATS("stats"),
+
+    /**
+     * The following description was retrieved from the <a href="https://github
+     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
+     *
+     * <pre>
+     * CgMinerRequest   Reply Section  Details
+     * -------          -------------  -------
+     * version          VERSION        CGMiner=cgminer, version
+     *                                 API=API| version
+     * </pre>
+     */
+    VERSION("version");
 
     /** The command. */
     private final String command;
