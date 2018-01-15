@@ -303,7 +303,9 @@ public class Pool {
          * @return The builder instance.
          */
         public Builder setName(final String name) {
-            this.name = name;
+            if ((name != null) && (!name.isEmpty())) {
+                this.name = name;
+            }
             return this;
         }
 
