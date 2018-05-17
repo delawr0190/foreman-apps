@@ -123,7 +123,10 @@ public class FanInfo {
          * @return The builder instance.
          */
         public Builder addSpeed(final String speed) {
-            return addSpeed(Integer.parseInt(speed));
+            if ((speed != null) && !speed.isEmpty()) {
+                return addSpeed(Integer.parseInt(speed));
+            }
+            return this;
         }
 
         /**

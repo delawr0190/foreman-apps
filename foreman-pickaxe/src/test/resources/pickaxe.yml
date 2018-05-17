@@ -2,11 +2,13 @@ apiKey: "nicebro"
 foremanApiUrl: "http://localhost:80"
 pollFrequencyInSeconds: 60
 
-cgminers:
-  - name:    "cgminer 1"
+antminers:
+  - name:    "miner 1"
+    type:    "antminer_l3"
     apiIp:   "127.0.0.1"
     apiPort: 42069
 
-  - name:    "cgminer 2"
+  - name:    "miner 2"
+    type:    "antminer_b3"
     apiIp:   "128.0.0.1"
     apiPort: 42070

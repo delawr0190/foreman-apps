@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.configuration.yml;
 
-import mn.foreman.pickaxe.configuration.CgMinerConfig;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.configuration.ConfigurationFactory;
 
@@ -8,6 +7,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
 
@@ -34,34 +34,40 @@ public class YmlConfigurationFactoryTest {
                 60,
                 configuration.getPollFrequencyInSeconds());
 
-        final List<CgMinerConfig> cgminerConfigs =
-                configuration.getCgminerConfigs();
+        final List<Map<String, String>> antConfigs =
+                configuration.getAntminerConfigs();
         assertEquals(
                 2,
-                cgminerConfigs.size());
+                antConfigs.size());
 
-        final CgMinerConfig cgMinerConfig1 =
-                cgminerConfigs.get(0);
+        final Map<String, String> antConfig1 =
+                antConfigs.get(0);
         assertEquals(
-                "cgminer 1",
-                cgMinerConfig1.getName());
+                "miner 1",
+                antConfig1.get("name"));
+        assertEquals(
+                "antminer_l3",
+                antConfig1.get("type"));
         assertEquals(
                 "127.0.0.1",
-                cgMinerConfig1.getApiIp());
+                antConfig1.get("apiIp"));
         assertEquals(
-                42069,
-                cgMinerConfig1.getApiPort());
+                "42069",
+                antConfig1.get("apiPort"));
 
-        final CgMinerConfig cgMinerConfig2 =
-                cgminerConfigs.get(1);
+        final Map<String, String> antConfig2 =
+                antConfigs.get(1);
         assertEquals(
-                "cgminer 2",
-                cgMinerConfig2.getName());
+                "miner 2",
+                antConfig2.get("name"));
+        assertEquals(
+                "antminer_b3",
+                antConfig2.get("type"));
         assertEquals(
                 "128.0.0.1",
-                cgMinerConfig2.getApiIp());
+                antConfig2.get("apiIp"));
         assertEquals(
-                42070,
-                cgMinerConfig2.getApiPort());
+                "42070",
+                antConfig2.get("apiPort"));
     }
 }

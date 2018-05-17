@@ -43,6 +43,7 @@
     </properties>
 
     <modules>
+        <module>foreman-antminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
@@ -51,6 +52,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- Our libraries -->
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-antminer</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-cgminer</artifactId>

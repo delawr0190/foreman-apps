@@ -1,13 +1,14 @@
 package mn.foreman.cgminer;
 
+import mn.foreman.cgminer.connection.NettyConnectionFactory;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
-import mn.foreman.cgminer.response.CgMinerPoolStatus;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.cgminer.response.CgMinerStatusCode;
 import mn.foreman.cgminer.response.CgMinerStatusSection;
+import mn.foreman.model.AbstractBuilder;
 import mn.foreman.model.Miner;
-import mn.foreman.model.miners.*;
+import mn.foreman.model.miners.MinerStats;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,26 +17,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A {@link CgMiner} represents a cgminer controlled crypto farm.
+ * A {@link CgMiner} represents a remote cgminer instance.
  *
  * <p>This class relies on the cgminer-api being enabled and configured to allow
  * the server that this application is running on to access it.</p>
  *
  * <p>As of right now, only {@link CgMinerCommand#VERSION}, {@link
- * CgMinerCommand#STATS} and {@link CgMinerCommand#POOLS} are polled.
- * Originally, it was intended that either the 'devs' or 'ascs' commands be used
- * to obtain ASIC metrics.  That wasn't possible in the November build of
- * bmminer for an Antminer S9, so 'stats' was preferred instead.</p>
- *
- * <p>The objective is to never require users to re-configure their miners just
- * for monitoring purposes.  Make use of what we have by default.</p>
+ * CgMinerCommand#STATS} and {@link CgMinerCommand#POOLS} are polled.  These
+ * commands proved to be the most common across all cgminer forks without
+ * requiring users to enable additional remote commands (the objective is to
+ * never require users to re-configure their miners just for monitoring
+ * purposes.  Make use of what we have by default).</p>
  */
 public class CgMiner
         implements Miner {
@@ -57,35 +55,34 @@ public class CgMiner
     private final String name;
 
     /**
+     * A {@link Map} of every {@link CgMinerRequest} to send and the {@link
+     * ResponseStrategy} to use for each.
+     */
+    private final Map<CgMinerRequest, ResponseStrategy> requests;
+
+    /**
      * Constructor.
      *
-     * @param name              The miner name.
-     * @param apiIp             The API IP.
-     * @param apiPort           The API port.
-     * @param connectionFactory The {@link ConnectionFactory} for creating
-     *                          connections to the API.
+     * @param builder The builder.
      */
-    public CgMiner(
-            final String name,
-            final String apiIp,
-            final int apiPort,
-            final ConnectionFactory connectionFactory) {
+    public CgMiner(final Builder builder) {
         Validate.notEmpty(
-                name,
+                builder.name,
                 "name cannot be empty");
         Validate.notEmpty(
-                apiIp,
+                builder.apiIp,
                 "apiIp cannot be empty");
-        Validate.inclusiveBetween(
-                0, Integer.MAX_VALUE, apiPort,
-                "apiPort must be positive");
+        Validate.notEmpty(
+                builder.apiPort,
+                "apiPort cannot be empty");
         Validate.notNull(
-                connectionFactory,
+                builder.connectionFactory,
                 "connectionFactory cannot be null");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
-        this.connectionFactory = connectionFactory;
+        this.name = builder.name;
+        this.apiIp = builder.apiIp;
+        this.apiPort = Integer.parseInt(builder.apiPort);
+        this.connectionFactory = builder.connectionFactory;
+        this.requests = new HashMap<>(builder.requests);
     }
 
     @Override
@@ -100,8 +97,17 @@ public class CgMiner
                         .setApiIp(this.apiIp)
                         .setApiPort(this.apiPort)
                         .setName(this.name);
-        addPoolStats(builder);
-        addAsicStats(builder);
+
+        for (final Map.Entry<CgMinerRequest, ResponseStrategy> entry :
+                this.requests.entrySet()) {
+            final CgMinerRequest request = entry.getKey();
+            final CgMinerResponse response = query(request);
+
+            final ResponseStrategy strategy = entry.getValue();
+            strategy.processResponse(
+                    builder,
+                    response);
+        }
 
         final MinerStats minerStats =
                 builder.build();
@@ -109,153 +115,6 @@ public class CgMiner
         LOG.debug("Obtained stats: {}", minerStats);
 
         return minerStats;
-    }
-
-    /**
-     * Utility method to convert the provided values, which contain per-ASIC
-     * metrics, to a {@link Asic} and adds it to the provided builder.
-     *
-     * @param builder The builder to update.
-     * @param type    The type.
-     * @param values  The asic values.
-     */
-    private static void addAsicStats(
-            final MinerStats.Builder builder,
-            final String type,
-            final Map<String, String> values) {
-
-        final Asic.Builder asicBuilder =
-                new Asic.Builder()
-                        .setName(type);
-
-        // Speed
-        final BigDecimal avgHashRate =
-                new BigDecimal(values.get("GHS av"))
-                        .multiply(new BigDecimal(Math.pow(1000, 3)));
-        final BigDecimal avgHashRate5s =
-                new BigDecimal(values.get("GHS 5s"))
-                        .multiply(new BigDecimal(Math.pow(1000, 3)));
-        asicBuilder
-                .setSpeedInfo(
-                        new SpeedInfo.Builder()
-                                .setAvgHashRate(avgHashRate)
-                                .setAvgHashRateFiveSecs(avgHashRate5s)
-                                .build());
-
-        // Fangs
-        final FanInfo.Builder fanBuilder =
-                new FanInfo.Builder()
-                        .setCount(values.get("fan_num"));
-        for (int i = 1; i <= 8; i++) {
-            fanBuilder.addSpeed(values.get("fan" + i));
-        }
-        asicBuilder.setFanInfo(fanBuilder.build());
-
-        // Temps
-        final List<String> tempPrefixes =
-                Arrays.asList(
-                        "temp",
-                        "temp2_",
-                        "temp3_");
-        for (final String prefix : tempPrefixes) {
-            for (int i = 1; i <= 16; i++) {
-                asicBuilder.addTemp(values.get(prefix + i));
-            }
-        }
-
-        // Errors
-        boolean hasErrors = false;
-        for (int i = 1; i <= 16; i++) {
-            hasErrors =
-                    (hasErrors || values.get("chain_acs" + i).contains("x"));
-        }
-        asicBuilder.hasErrors(hasErrors);
-
-        builder.addAsic(asicBuilder.build());
-    }
-
-    /**
-     * Utility method to convert the provided values, which contain per-pool
-     * metrics, to a {@link Pool} and adds it to the provided builder.
-     *
-     * @param builder The builder to update.
-     * @param values  The pool values.
-     */
-    private static void addPoolStats(
-            final MinerStats.Builder builder,
-            final Map<String, String> values) {
-        final CgMinerPoolStatus status =
-                CgMinerPoolStatus.forValue(values.get("Status"));
-        builder.addPool(
-                new Pool.Builder()
-                        .setName(values.get("URL"))
-                        .setPriority(values.get("Priority"))
-                        .setStatus(
-                                status.isEnabled(),
-                                status.isUp())
-                        .setCounts(
-                                values.get("Accepted"),
-                                values.get("Rejected"),
-                                values.get("Stale"))
-                        .build());
-    }
-
-    /**
-     * Queries for and adds ASIC metrics to the provided builder.
-     *
-     * <p>Unfortunately, this code was implemented to the November build of
-     * bmminer for an Antminer S9, which didn't support the 'devs' command.
-     * So...ASIC metrics will be extracted from 'stats' instead.</p>
-     *
-     * @param builder The builder to update.
-     */
-    private void addAsicStats(
-            final MinerStats.Builder builder) {
-        final CgMinerResponse versionResponse = query(
-                new CgMinerRequest.Builder()
-                        .setCommand(CgMinerCommand.VERSION)
-                        .build());
-        final CgMinerResponse statsResponse = query(
-                new CgMinerRequest.Builder()
-                        .setCommand(CgMinerCommand.STATS)
-                        .build());
-
-        final String type;
-        if (versionResponse.hasValues()) {
-            final Map<String, String> versionValues =
-                    versionResponse.getValues().get(0);
-            type = versionValues.get("Type");
-        } else {
-            type = "cgminer_" + this.apiIp + ":" + this.apiPort;
-        }
-
-        if (statsResponse.hasValues()) {
-            final List<Map<String, String>> values = statsResponse.getValues();
-            values.forEach(
-                    value -> addAsicStats(builder, type, value));
-        } else {
-            LOG.debug("No ACICs founds");
-        }
-    }
-
-    /**
-     * Queries for and adds pool metrics to the provided builder.
-     *
-     * @param builder The builder to update.
-     */
-    private void addPoolStats(
-            final MinerStats.Builder builder) {
-        final CgMinerResponse response = query(
-                new CgMinerRequest.Builder()
-                        .setCommand(CgMinerCommand.POOLS)
-                        .build());
-
-        if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
-            values.forEach(value -> addPoolStats(builder, value));
-        } else {
-            LOG.debug("No pools found");
-        }
     }
 
     /**
@@ -342,5 +201,99 @@ public class CgMiner
         }
 
         return response;
+    }
+
+    /** A builder for creating new {@link CgMiner CgMiners}. */
+    public static class Builder
+            extends AbstractBuilder<CgMiner> {
+
+        /** The API IP. */
+        private String apiIp;
+
+        /** The API port. */
+        private String apiPort;
+
+        /** The {@link ConnectionFactory}. */
+        private ConnectionFactory connectionFactory =
+                new NettyConnectionFactory();
+
+        /** The name. */
+        private String name;
+
+        /**
+         * A {@link java.util.Map} of each {@link CgMinerRequest} to the {@link
+         * ResponseStrategy} to use for processing the response.
+         */
+        private Map<CgMinerRequest, ResponseStrategy> requests =
+                new ConcurrentHashMap<>();
+
+        /**
+         * Adds the strategy to use for the provided request to be performed.
+         *
+         * @param request  The request.
+         * @param strategy The strategy.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRequest(
+                final CgMinerRequest request,
+                final ResponseStrategy strategy) {
+            this.requests.put(request, strategy);
+            return this;
+        }
+
+        @Override
+        public CgMiner build() {
+            return null;
+        }
+
+        /**
+         * Sets the API IP.
+         *
+         * @param apiIp The API IP.
+         *
+         * @return This builder instance.
+         */
+        public Builder setApiIp(final String apiIp) {
+            this.apiIp = apiIp;
+            return this;
+        }
+
+        /**
+         * Sets the API port.
+         *
+         * @param apiPort The API port.
+         *
+         * @return This builder instance.
+         */
+        public Builder setApiPort(final String apiPort) {
+            this.apiPort = apiPort;
+            return this;
+        }
+
+        /**
+         * Sets the {@link ConnectionFactory}.
+         *
+         * @param connectionFactory The {@link ConnectionFactory}.
+         *
+         * @return This builder instance.
+         */
+        public Builder setConnectionFactory(
+                final ConnectionFactory connectionFactory) {
+            this.connectionFactory = connectionFactory;
+            return this;
+        }
+
+        /**
+         * Sets the name.
+         *
+         * @param name The name.
+         *
+         * @return This builder instance.
+         */
+        public Builder setName(final String name) {
+            this.name = name;
+            return this;
+        }
     }
 }

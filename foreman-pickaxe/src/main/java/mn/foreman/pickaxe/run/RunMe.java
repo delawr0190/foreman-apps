@@ -1,10 +1,9 @@
 package mn.foreman.pickaxe.run;
 
-import mn.foreman.cgminer.CgMiner;
-import mn.foreman.cgminer.connection.NettyConnectionFactory;
+import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
-import mn.foreman.pickaxe.configuration.CgMinerConfig;
+import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
@@ -13,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -52,8 +52,9 @@ public class RunMe {
                         this.configuration.getForemanApiUrl(),
                         this.configuration.getApiKey());
         final List<Miner> minerList =
-                createCgminers(
-                        this.configuration.getCgminerConfigs());
+                createMiners(
+                        this.configuration.getAntminerConfigs(),
+                        new AntminerFactory());
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();
@@ -81,33 +82,19 @@ public class RunMe {
     }
 
     /**
-     * Creates a new {@link Miner} from the provided config.
-     *
-     * @param config The config.
-     *
-     * @return The new {@link Miner}.
-     */
-    private static Miner createCgminer(
-            final CgMinerConfig config) {
-        return new CgMiner(
-                config.getName(),
-                config.getApiIp(),
-                config.getApiPort(),
-                new NettyConnectionFactory());
-    }
-
-    /**
      * Creates new {@link Miner miners} from the provided configs.
      *
      * @param configs The configs.
+     * @param factory The factory for creating {@link Miner miners}.
      *
      * @return The new {@link Miner miners}.
      */
-    private static List<Miner> createCgminers(
-            final List<CgMinerConfig> configs) {
+    private static List<Miner> createMiners(
+            final List<Map<String, String>> configs,
+            final MinerFactory factory) {
         return configs
                 .stream()
-                .map(RunMe::createCgminer)
+                .map(factory::create)
                 .collect(Collectors.toList());
     }
 }

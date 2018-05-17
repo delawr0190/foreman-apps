@@ -219,7 +219,10 @@ public class Asic {
          * @return The builder instance.
          */
         public Builder addTemp(final String temp) {
-            return addTemp(Integer.parseInt(temp));
+            if ((temp != null) && !temp.isEmpty()) {
+                return addTemp(Integer.parseInt(temp));
+            }
+            return this;
         }
 
         /**
