@@ -11,6 +11,10 @@ import mn.foreman.model.MinerFactory;
 
 import java.util.Map;
 
+/**
+ * A {@link MinerFactory} implementation that parses a configuration and creates
+ * a {@link Miner} that will query an Antminer.
+ */
 public class AntminerFactory
         implements MinerFactory {
 
