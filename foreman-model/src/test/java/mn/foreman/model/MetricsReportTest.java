@@ -2,7 +2,14 @@ package mn.foreman.model;
 
 import mn.foreman.model.metadata.ApiVersion;
 import mn.foreman.model.metadata.Metadata;
-import mn.foreman.model.miners.*;
+import mn.foreman.model.miners.FanInfo;
+import mn.foreman.model.miners.MinerStats;
+import mn.foreman.model.miners.Pool;
+import mn.foreman.model.miners.SpeedInfo;
+import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.model.miners.rig.FreqInfo;
+import mn.foreman.model.miners.rig.Gpu;
+import mn.foreman.model.miners.rig.Rig;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -28,7 +35,7 @@ public class MetricsReportTest {
     @SuppressWarnings("ConstantConditions")
     public void testSerialization()
             throws IOException {
-        final SpeedInfo speedInfo =
+        final SpeedInfo asicSpeedInfo =
                 new SpeedInfo.Builder()
                         .setAvgHashRate(new BigDecimal(1))
                         .setAvgHashRateFiveSecs(new BigDecimal(2))
@@ -52,15 +59,61 @@ public class MetricsReportTest {
                                 1,
                                 2,
                                 3)
+                        .setDifficulty("1234.0000")
                         .build();
 
         final Asic asic =
                 new Asic.Builder()
                         .setName("asicName")
-                        .setSpeedInfo(speedInfo)
+                        .setSpeedInfo(asicSpeedInfo)
                         .setFanInfo(fanInfo)
                         .addTemp(32)
                         .hasErrors(true)
+                        .build();
+
+        final SpeedInfo rigSpeedInfo =
+                new SpeedInfo.Builder()
+                        .setAvgHashRate(new BigDecimal("5678.0000"))
+                        .build();
+
+        final Rig rig =
+                new Rig.Builder()
+                        .setName("rigName")
+                        .setSpeedInfo(rigSpeedInfo)
+                        .addGpu(
+                                new Gpu.Builder()
+                                        .setName("gpu0")
+                                        .setIndex("0")
+                                        .setBus("1")
+                                        .setFans(
+                                                new FanInfo.Builder()
+                                                        .setCount(1)
+                                                        .addSpeed(1000)
+                                                        .build())
+                                        .setFreqInfo(
+                                                new FreqInfo.Builder()
+                                                        .setFreq("420")
+                                                        .setMemFreq("69")
+                                                        .build())
+                                        .setTemp("42069")
+                                        .build())
+                        .addGpu(
+                                new Gpu.Builder()
+                                        .setName("gpu1")
+                                        .setIndex("1")
+                                        .setBus("2")
+                                        .setFans(
+                                                new FanInfo.Builder()
+                                                        .setCount(1)
+                                                        .addSpeed(2000)
+                                                        .build())
+                                        .setFreqInfo(
+                                                new FreqInfo.Builder()
+                                                        .setFreq("69")
+                                                        .setMemFreq("420")
+                                                        .build())
+                                        .setTemp("69420")
+                                        .build())
                         .build();
 
         final MinerStats minerStats =

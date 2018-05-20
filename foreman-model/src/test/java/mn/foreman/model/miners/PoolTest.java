@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import static org.junit.Assert.assertEquals;
 
@@ -26,6 +27,7 @@ public class PoolTest {
         final long accepted = 420;
         final long rejected = 421;
         final long stale = 422;
+        final String difficulty = "1234.0000";
 
         final Pool pool =
                 new Pool.Builder()
@@ -38,6 +40,7 @@ public class PoolTest {
                                 accepted,
                                 rejected,
                                 stale)
+                        .setDifficulty(difficulty)
                         .build();
 
         final ObjectMapper objectMapper =
@@ -75,5 +78,8 @@ public class PoolTest {
         assertEquals(
                 stale,
                 newPool.getStale());
+        assertEquals(
+                new BigDecimal(difficulty),
+                newPool.getDifficulty());
     }
 }

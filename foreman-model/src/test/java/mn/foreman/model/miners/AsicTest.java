@@ -1,5 +1,7 @@
 package mn.foreman.model.miners;
 
+import mn.foreman.model.miners.asic.Asic;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 

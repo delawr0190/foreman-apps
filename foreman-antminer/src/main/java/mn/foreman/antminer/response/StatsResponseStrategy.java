@@ -3,7 +3,7 @@ package mn.foreman.antminer.response;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
-import mn.foreman.model.miners.Asic;
+import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.SpeedInfo;

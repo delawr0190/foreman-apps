@@ -63,9 +63,10 @@ public enum CgMinerCommand {
      * @param numParameters     The number of parameters.
      * @param parameterRequired Whether the parameters are required.
      */
-    CgMinerCommand(final String command,
-                   final int numParameters,
-                   final boolean parameterRequired) {
+    CgMinerCommand(
+            final String command,
+            final int numParameters,
+            final boolean parameterRequired) {
         this.command = command;
         this.numParameters = numParameters;
         this.parameterRequired = parameterRequired;

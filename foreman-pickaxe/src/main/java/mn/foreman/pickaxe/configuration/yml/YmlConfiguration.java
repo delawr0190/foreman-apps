@@ -20,6 +20,9 @@ public class YmlConfiguration
     /** The user's API key. */
     private final String apiKey;
 
+    /** The ccminer configurations. */
+    private final List<Map<String, String>> ccminerConfigs;
+
     /** The FOREMAN API URL. */
     private final String foremanApiUrl;
 
@@ -40,6 +43,7 @@ public class YmlConfiguration
             @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("apiKey") final String apiKey,
             @JsonProperty("antminers") final List<Map<String, String>> antConfigs,
+            @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
         Validate.notEmpty(
                 foremanApiUrl,
@@ -50,12 +54,16 @@ public class YmlConfiguration
         Validate.notNull(
                 antConfigs,
                 "antConfigs cannot be null");
+        Validate.notNull(
+                ccminerConfigs,
+                "ccminerConfigs cannot be null");
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, pollFrequencyInSeconds,
                 "pollFrequencyInSeconds must be positive");
         this.foremanApiUrl = foremanApiUrl;
         this.apiKey = apiKey;
         this.antConfigs = new ArrayList<>(antConfigs);
+        this.ccminerConfigs = new ArrayList<>(ccminerConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
 
@@ -67,6 +75,11 @@ public class YmlConfiguration
     @Override
     public String getApiKey() {
         return this.apiKey;
+    }
+
+    @Override
+    public List<Map<String, String>> getCcminerConfigs() {
+        return Collections.unmodifiableList(this.ccminerConfigs);
     }
 
     @Override

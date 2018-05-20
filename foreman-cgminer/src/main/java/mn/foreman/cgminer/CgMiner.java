@@ -1,11 +1,14 @@
 package mn.foreman.cgminer;
 
-import mn.foreman.cgminer.connection.NettyConnectionFactory;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.cgminer.response.CgMinerStatusCode;
 import mn.foreman.cgminer.response.CgMinerStatusSection;
+import mn.foreman.io.ApiRequest;
+import mn.foreman.io.ApiRequestImpl;
+import mn.foreman.io.Connection;
+import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.AbstractBuilder;
 import mn.foreman.model.Miner;
 import mn.foreman.model.miners.MinerStats;
@@ -19,8 +22,8 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link CgMiner} represents a remote cgminer instance.
@@ -48,9 +51,6 @@ public class CgMiner
     /** The API port. */
     private final int apiPort;
 
-    /** The {@link ConnectionFactory} for creating connections to the API. */
-    private final ConnectionFactory connectionFactory;
-
     /** The miner name. */
     private final String name;
 
@@ -75,13 +75,9 @@ public class CgMiner
         Validate.notEmpty(
                 builder.apiPort,
                 "apiPort cannot be empty");
-        Validate.notNull(
-                builder.connectionFactory,
-                "connectionFactory cannot be null");
         this.name = builder.name;
         this.apiIp = builder.apiIp;
         this.apiPort = Integer.parseInt(builder.apiPort);
-        this.connectionFactory = builder.connectionFactory;
         this.requests = new HashMap<>(builder.requests);
     }
 
@@ -147,15 +143,21 @@ public class CgMiner
                     this.apiIp,
                     this.apiPort);
 
-            final Connection connection =
-                    this.connectionFactory.create(
+            final ApiRequest apiRequest =
+                    new ApiRequestImpl(
                             this.apiIp,
-                            this.apiPort);
+                            this.apiPort,
+                            message);
 
-            final Optional<String> responseJson =
-                    connection.query(message);
-            if (responseJson.isPresent()) {
-                String responseString = responseJson.get();
+            final Connection connection =
+                    ConnectionFactory.createJsonConnection(
+                            apiRequest);
+            connection.query();
+
+            if (apiRequest.waitForCompletion(
+                    10,
+                    TimeUnit.SECONDS)) {
+                String responseString = apiRequest.getResponse();
 
                 // Some forks of cgminer return invalid JSON, so prune the
                 // invalid object out
@@ -213,10 +215,6 @@ public class CgMiner
         /** The API port. */
         private String apiPort;
 
-        /** The {@link ConnectionFactory}. */
-        private ConnectionFactory connectionFactory =
-                new NettyConnectionFactory();
-
         /** The name. */
         private String name;
 
@@ -268,19 +266,6 @@ public class CgMiner
          */
         public Builder setApiPort(final String apiPort) {
             this.apiPort = apiPort;
-            return this;
-        }
-
-        /**
-         * Sets the {@link ConnectionFactory}.
-         *
-         * @param connectionFactory The {@link ConnectionFactory}.
-         *
-         * @return This builder instance.
-         */
-        public Builder setConnectionFactory(
-                final ConnectionFactory connectionFactory) {
-            this.connectionFactory = connectionFactory;
             return this;
         }
 

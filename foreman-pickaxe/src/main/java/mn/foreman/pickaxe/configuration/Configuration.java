@@ -24,6 +24,13 @@ public interface Configuration {
     String getApiKey();
 
     /**
+     * Returns the ccminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getCcminerConfigs();
+
+    /**
      * Returns the FOREMAN API URL.
      *
      * @return The FOREMAN API URL.

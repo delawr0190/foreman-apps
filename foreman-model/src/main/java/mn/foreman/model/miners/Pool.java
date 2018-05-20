@@ -7,6 +7,8 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.math.BigDecimal;
+
 /**
  * The following POJO represents a JSON object with the following format:
  *
@@ -18,7 +20,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  *     "priority": 0,
  *     "accepted": 1421,
  *     "rejected": 10,
- *     "stale": 0
+ *     "stale": 0,
+ *     "difficulty": 0
  *   }
  * </pre>
  */
@@ -26,6 +29,9 @@ public class Pool {
 
     /** The accepted count. */
     private final long accepted;
+
+    /** The difficulty. */
+    private final BigDecimal difficulty;
 
     /** Whether or not the pool is enabled. */
     private final Boolean enabled;
@@ -48,13 +54,14 @@ public class Pool {
     /**
      * Constructor.
      *
-     * @param name     The pool name.
-     * @param enabled  Whether or not the pool is enabled.
-     * @param status   Whether or not the pool is up.
-     * @param priority The pool priority.
-     * @param accepted The accepted count.
-     * @param rejected The rejected count.
-     * @param stale    The stale count.
+     * @param name       The pool name.
+     * @param enabled    Whether or not the pool is enabled.
+     * @param status     Whether or not the pool is up.
+     * @param priority   The pool priority.
+     * @param accepted   The accepted count.
+     * @param rejected   The rejected count.
+     * @param stale      The stale count.
+     * @param difficulty The difficulty.
      */
     private Pool(
             @JsonProperty("name") final String name,
@@ -63,7 +70,8 @@ public class Pool {
             @JsonProperty("priority") final int priority,
             @JsonProperty("accepted") final long accepted,
             @JsonProperty("rejected") final long rejected,
-            @JsonProperty("stale") final long stale) {
+            @JsonProperty("stale") final long stale,
+            @JsonProperty("difficulty") final BigDecimal difficulty) {
         Validate.notEmpty(
                 name,
                 "name cannot be empty");
@@ -85,6 +93,9 @@ public class Pool {
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, stale,
                 "stale must be positive");
+        Validate.notNull(
+                difficulty,
+                "Difficulty cannot be null");
         this.name = name;
         this.enabled = enabled;
         this.status = status;
@@ -92,6 +103,7 @@ public class Pool {
         this.accepted = accepted;
         this.rejected = rejected;
         this.stale = stale;
+        this.difficulty = difficulty;
     }
 
     @Override
@@ -112,6 +124,7 @@ public class Pool {
                             .append(this.accepted, pool.accepted)
                             .append(this.rejected, pool.rejected)
                             .append(this.stale, pool.stale)
+                            .append(this.difficulty, pool.difficulty)
                             .isEquals();
         }
         return isEqual;
@@ -124,6 +137,15 @@ public class Pool {
      */
     public long getAccepted() {
         return this.accepted;
+    }
+
+    /**
+     * Returns the difficulty.
+     *
+     * @return The difficulty.
+     */
+    public BigDecimal getDifficulty() {
+        return this.difficulty;
     }
 
     /**
@@ -190,6 +212,7 @@ public class Pool {
                 .append(this.accepted)
                 .append(this.rejected)
                 .append(this.stale)
+                .append(this.difficulty)
                 .hashCode();
     }
 
@@ -203,7 +226,8 @@ public class Pool {
                         "priority=%d, " +
                         "accepted=%d, " +
                         "rejected=%d, " +
-                        "stale=%d" +
+                        "stale=%d, " +
+                        "difficulty=%s" +
                         "]",
                 getClass().getSimpleName(),
                 this.name,
@@ -212,7 +236,8 @@ public class Pool {
                 this.priority,
                 this.accepted,
                 this.rejected,
-                this.stale);
+                this.stale,
+                this.difficulty);
     }
 
     /** A builder for creating {@link Pool pools}. */
@@ -221,6 +246,9 @@ public class Pool {
 
         /** The accepted count. */
         private long accepted = UNDEFINED_LONG;
+
+        /** The difficulty. */
+        private BigDecimal difficulty;
 
         /** Whether or not the pool is enabled. */
         private Boolean enabled = UNDEFINED_BOOL;
@@ -254,7 +282,8 @@ public class Pool {
                     this.priority,
                     this.accepted,
                     this.rejected,
-                    this.stale);
+                    this.stale,
+                    this.difficulty);
         }
 
         /**
@@ -292,6 +321,20 @@ public class Pool {
             this.accepted = accepted;
             this.rejected = rejected;
             this.stale = stale;
+            return this;
+        }
+
+        /**
+         * Sets the difficulty.
+         *
+         * @param difficulty The difficulty.
+         *
+         * @return This build instance.
+         */
+        public Builder setDifficulty(final String difficulty) {
+            if (difficulty != null && !difficulty.isEmpty()) {
+                this.difficulty = new BigDecimal(difficulty);
+            }
             return this;
         }
 

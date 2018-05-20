@@ -12,3 +12,8 @@ antminers:
     type:    "antminer_b3"
     apiIp:   "128.0.0.1"
     apiPort: 42070
+
+ccminers:
+  - name:    "miner 3"
+    apiIp:   "129.0.0.1"
+    apiPort: 42071

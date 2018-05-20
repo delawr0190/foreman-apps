@@ -1,6 +1,8 @@
-package mn.foreman.model.miners;
+package mn.foreman.model.miners.asic;
 
 import mn.foreman.model.AbstractBuilder;
+import mn.foreman.model.miners.FanInfo;
+import mn.foreman.model.miners.SpeedInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
@@ -52,6 +54,7 @@ public class Asic {
     /** The ASIC name. */
     private final String name;
 
+    /** The hash rate. */
     private final SpeedInfo speedInfo;
 
     /** The temp sensor readings. */

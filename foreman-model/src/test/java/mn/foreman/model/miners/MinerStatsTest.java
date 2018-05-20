@@ -1,5 +1,7 @@
 package mn.foreman.model.miners;
 
+import mn.foreman.model.miners.asic.Asic;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 
@@ -24,6 +26,7 @@ public class MinerStatsTest {
         final String name = "name";
         final String apiIp = "127.0.0.1";
         final int apiPort = 42069;
+        final String difficulty = "1234.0000";
 
         final SpeedInfo speedInfo =
                 new SpeedInfo.Builder()
@@ -49,6 +52,7 @@ public class MinerStatsTest {
                                 1,
                                 2,
                                 3)
+                        .setDifficulty(difficulty)
                         .build();
 
         final Asic asic =

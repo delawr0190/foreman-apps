@@ -1,6 +1,7 @@
 package mn.foreman.pickaxe.run;
 
 import mn.foreman.antminer.AntminerFactory;
+import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -11,6 +12,7 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -51,10 +53,15 @@ public class RunMe {
                 new HttpPostMetricsProcessingStrategy(
                         this.configuration.getForemanApiUrl(),
                         this.configuration.getApiKey());
-        final List<Miner> minerList =
+        final List<Miner> minerList = new LinkedList<>();
+        minerList.addAll(
                 createMiners(
                         this.configuration.getAntminerConfigs(),
-                        new AntminerFactory());
+                        new AntminerFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getCcminerConfigs(),
+                        new CcminerFactory()));
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();

@@ -1,6 +1,8 @@
 package mn.foreman.model.miners;
 
 import mn.foreman.model.AbstractBuilder;
+import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.model.miners.rig.Rig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
@@ -8,6 +10,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -23,6 +26,9 @@ import java.util.List;
  *       ...
  *     ],
  *     "asics": [
+ *       ...
+ *     ],
+ *     "rigs": [
  *       ...
  *     ]
  *   }
@@ -45,6 +51,9 @@ public class MinerStats {
     /** All of the pools. */
     private final List<Pool> pools;
 
+    /** All of the rigs. */
+    private final List<Rig> rigs;
+
     /**
      * Constructor.
      *
@@ -59,7 +68,8 @@ public class MinerStats {
             @JsonProperty("apiIp") final String apiIp,
             @JsonProperty("apiPort") final int apiPort,
             @JsonProperty("pools") final List<Pool> pools,
-            @JsonProperty("asics") final List<Asic> asics) {
+            @JsonProperty("asics") final List<Asic> asics,
+            @JsonProperty("rigs") final List<Rig> rigs) {
         Validate.notEmpty(
                 name,
                 "name cannot be empty");
@@ -74,6 +84,7 @@ public class MinerStats {
         this.apiPort = apiPort;
         this.pools = new ArrayList<>(pools);
         this.asics = new ArrayList<>(asics);
+        this.rigs = new ArrayList<>(rigs);
     }
 
     @Override
@@ -92,6 +103,7 @@ public class MinerStats {
                             .append(this.apiPort, miner.apiPort)
                             .append(this.pools, miner.pools)
                             .append(this.asics, miner.asics)
+                            .append(this.rigs, miner.rigs)
                             .isEquals();
         }
         return isEqual;
@@ -121,7 +133,7 @@ public class MinerStats {
      * @return The ASICs.
      */
     public List<Asic> getAsics() {
-        return this.asics;
+        return Collections.unmodifiableList(this.asics);
     }
 
     /**
@@ -142,6 +154,15 @@ public class MinerStats {
         return this.pools;
     }
 
+    /**
+     * Returns the rigs.
+     *
+     * @return The rigs.
+     */
+    public List<Rig> getRigs() {
+        return Collections.unmodifiableList(this.rigs);
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
@@ -150,6 +171,7 @@ public class MinerStats {
                 .append(this.apiPort)
                 .append(this.pools)
                 .append(this.asics)
+                .append(this.rigs)
                 .build();
     }
 
@@ -160,13 +182,16 @@ public class MinerStats {
                         "apiIp=%s, " +
                         "apiPort=%d, " +
                         "pools=%s, " +
-                        "asics=%s ]",
+                        "asics=%s, " +
+                        "rigs=%s" +
+                        " ]",
                 getClass().getSimpleName(),
                 this.name,
                 this.apiIp,
                 this.apiPort,
                 this.pools,
-                this.asics);
+                this.asics,
+                this.rigs);
     }
 
     /** A builder for creating {@link MinerStats stats}. */
@@ -178,6 +203,9 @@ public class MinerStats {
 
         /** All of the pools. */
         private final List<Pool> pools = new LinkedList<>();
+
+        /** All of the rigs. */
+        private final List<Rig> rigs = new LinkedList<>();
 
         /** The API IP address. */
         private String apiIp;
@@ -213,6 +241,18 @@ public class MinerStats {
         }
 
         /**
+         * Adds the provided {@link Rig}.
+         *
+         * @param rig The {@link Rig}.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRig(final Rig rig) {
+            this.rigs.add(rig);
+            return this;
+        }
+
+        /**
          * Creates the new {@link MinerStats}.
          *
          * @return The new {@link MinerStats}.
@@ -224,7 +264,8 @@ public class MinerStats {
                     this.apiIp,
                     this.apiPort,
                     this.pools,
-                    this.asics);
+                    this.asics,
+                    this.rigs);
         }
 
         /**
