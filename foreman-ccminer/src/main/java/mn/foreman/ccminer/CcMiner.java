@@ -34,9 +34,11 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>This class currently queries for:</p>
  *
- * <ul> <li>{@link CcMinerCommand#SUMMARY summary|}</li> <li>{@link
- * CcMinerCommand#POOL pool|}</li> <li>{@link CcMinerCommand#HWINFO
- * hwinfo|}</li> </ul>
+ * <ul>
+ *     <li>{@link CcMinerCommand#SUMMARY summary|}</li>
+ *     <li>{@link CcMinerCommand#POOL pool|}</li>
+ *     <li>{@link CcMinerCommand#HWINFO hwinfo|}</li>
+ * </ul>
  */
 public class CcMiner
         implements Miner {

@@ -7,7 +7,7 @@ import mn.foreman.model.miners.MinerStats;
  * A {@link ResponseStrategy} provides a mechanism for performing a
  * fork-specific interpretation of a {@link CgMinerResponse}.
  *
- * <p>This class was needed to do no standard API format existing for each
+ * <p>This class was needed due to no standard API format existing for each
  * cgminer fork.  While the commands have mostly remained the same, they return
  * different fields.</p>
  */
