@@ -3,6 +3,7 @@ package mn.foreman.model.miners;
 import mn.foreman.model.AbstractBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -31,6 +32,7 @@ public class Pool {
     private final long accepted;
 
     /** The difficulty. */
+    @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal difficulty;
 
     /** Whether or not the pool is enabled. */

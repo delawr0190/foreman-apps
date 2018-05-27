@@ -1,8 +1,10 @@
 package mn.foreman.model.miners.rig;
 
 import mn.foreman.model.AbstractBuilder;
+import mn.foreman.model.miners.BigDecimalSerializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -19,6 +21,7 @@ public class Rig {
     private final List<Gpu> gpus;
 
     /** The hash rate. */
+    @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal hashRate;
 
     /** The name. */

@@ -51,19 +51,19 @@ public class YmlConfiguration
         Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
-        Validate.notNull(
-                antConfigs,
-                "antConfigs cannot be null");
-        Validate.notNull(
-                ccminerConfigs,
-                "ccminerConfigs cannot be null");
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, pollFrequencyInSeconds,
                 "pollFrequencyInSeconds must be positive");
         this.foremanApiUrl = foremanApiUrl;
         this.apiKey = apiKey;
-        this.antConfigs = new ArrayList<>(antConfigs);
-        this.ccminerConfigs = new ArrayList<>(ccminerConfigs);
+        this.antConfigs =
+                (antConfigs != null
+                        ? new ArrayList<>(antConfigs)
+                        : Collections.emptyList());
+        this.ccminerConfigs =
+                (ccminerConfigs != null
+                        ? new ArrayList<>(ccminerConfigs)
+                        : Collections.emptyList());
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
 

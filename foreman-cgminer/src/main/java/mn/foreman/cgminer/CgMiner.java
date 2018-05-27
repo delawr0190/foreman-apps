@@ -242,7 +242,7 @@ public class CgMiner
 
         @Override
         public CgMiner build() {
-            return null;
+            return new CgMiner(this);
         }
 
         /**

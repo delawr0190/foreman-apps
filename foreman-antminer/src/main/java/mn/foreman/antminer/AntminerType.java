@@ -20,7 +20,7 @@ public enum AntminerType
     ANTMINER_B3(
             "antminer_b3",
             // Need to convert Hs to GHs
-            new BigDecimal(0.000001)),
+            new BigDecimal(0.000000001)),
 
     /** An Antminer S9. */
     ANTMINER_S9(

@@ -57,7 +57,7 @@ public class Main {
             final RunMe runMe = new RunMe(configuration);
             runMe.run();
         } catch (final IOException ioe) {
-            LOG.error("Missing config file!");
+            LOG.error("Missing config file!", ioe);
         }
     }
 }
