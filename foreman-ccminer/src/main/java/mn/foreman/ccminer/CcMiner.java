@@ -8,7 +8,6 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
-import mn.foreman.model.miners.SpeedInfo;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
@@ -211,10 +210,7 @@ public class CcMiner
                                     .multiply(new BigDecimal(1000));
                     rigBuilder
                             .setName(values.get("NAME"))
-                            .setSpeedInfo(
-                                    new SpeedInfo.Builder()
-                                            .setAvgHashRate(hashRate)
-                                            .build());
+                            .setHashRate(hashRate);
                 });
     }
 

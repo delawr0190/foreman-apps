@@ -1,13 +1,13 @@
 package mn.foreman.model.miners.rig;
 
 import mn.foreman.model.AbstractBuilder;
-import mn.foreman.model.miners.SpeedInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -18,22 +18,22 @@ public class Rig {
     /** The GPUs. */
     private final List<Gpu> gpus;
 
+    /** The hash rate. */
+    private final BigDecimal hashRate;
+
     /** The name. */
     private final String name;
-
-    /** The speed information. */
-    private final SpeedInfo speedInfo;
 
     /**
      * Constructor.
      *
-     * @param name      The name.
-     * @param speedInfo The speed information.
-     * @param gpus      The GPUs.
+     * @param name     The name.
+     * @param hashRate The hash rate.
+     * @param gpus     The GPUs.
      */
     private Rig(
             @JsonProperty("name") final String name,
-            @JsonProperty("speedInfo") final SpeedInfo speedInfo,
+            @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("gpus") final List<Gpu> gpus) {
         Validate.notNull(
                 name,
@@ -42,13 +42,13 @@ public class Rig {
                 name,
                 "Name cannot be empty");
         Validate.notNull(
-                speedInfo,
+                hashRate,
                 "Speed cannot be null");
         Validate.notNull(
                 gpus,
                 "GPUs cannot be null");
         this.name = name;
-        this.speedInfo = speedInfo;
+        this.hashRate = hashRate;
         this.gpus = new ArrayList<>(gpus);
     }
 
@@ -64,7 +64,7 @@ public class Rig {
             isEqual =
                     new EqualsBuilder()
                             .append(this.name, rig.name)
-                            .append(this.speedInfo, rig.speedInfo)
+                            .append(this.hashRate, rig.hashRate)
                             .append(this.gpus, rig.gpus)
                             .isEquals();
         }
@@ -81,6 +81,15 @@ public class Rig {
     }
 
     /**
+     * Returns the hash rate.
+     *
+     * @return The hash rate.
+     */
+    public BigDecimal getHashRate() {
+        return this.hashRate;
+    }
+
+    /**
      * Returns the name.
      *
      * @return The name.
@@ -89,20 +98,11 @@ public class Rig {
         return this.name;
     }
 
-    /**
-     * Returns the speed info.
-     *
-     * @return The speed info.
-     */
-    public SpeedInfo getSpeedInfo() {
-        return this.speedInfo;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.name)
-                .append(this.speedInfo)
+                .append(this.hashRate)
                 .append(this.gpus)
                 .hashCode();
     }
@@ -112,12 +112,12 @@ public class Rig {
         return String.format(
                 "%s [ " +
                         "name=%s, " +
-                        "speedInfo=%s, " +
+                        "hashRate=%s, " +
                         "gpus=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.name,
-                this.speedInfo,
+                this.hashRate,
                 this.gpus);
     }
 
@@ -128,11 +128,11 @@ public class Rig {
         /** The {@link Gpu GPUs}. */
         private final List<Gpu> gpus = new LinkedList<>();
 
+        /** The speed info. */
+        private BigDecimal hashRate;
+
         /** The name. */
         private String name;
-
-        /** The speed info. */
-        private SpeedInfo speedInfo;
 
         /**
          * Adds the {@link Gpu}.
@@ -150,8 +150,20 @@ public class Rig {
         public Rig build() {
             return new Rig(
                     this.name,
-                    this.speedInfo,
+                    this.hashRate,
                     this.gpus);
+        }
+
+        /**
+         * Sets the hash rate.
+         *
+         * @param hashRate The hash rate.
+         *
+         * @return This builder instance.
+         */
+        public Builder setHashRate(final BigDecimal hashRate) {
+            this.hashRate = hashRate;
+            return this;
         }
 
         /**
@@ -163,18 +175,6 @@ public class Rig {
          */
         public Builder setName(final String name) {
             this.name = name;
-            return this;
-        }
-
-        /**
-         * Sets the speed info.
-         *
-         * @param speedInfo The speed info.
-         *
-         * @return This builder instance.
-         */
-        public Builder setSpeedInfo(final SpeedInfo speedInfo) {
-            this.speedInfo = speedInfo;
             return this;
         }
     }

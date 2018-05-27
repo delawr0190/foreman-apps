@@ -60,6 +60,8 @@ public class PoolsResponseStrategy
                                 values.get("Accepted"),
                                 values.get("Rejected"),
                                 values.get("Stale"))
+                        .setDifficulty(
+                                values.get("Last Share Difficulty"))
                         .build());
     }
 }

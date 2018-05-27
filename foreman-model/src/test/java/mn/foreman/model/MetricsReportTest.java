@@ -71,15 +71,10 @@ public class MetricsReportTest {
                         .hasErrors(true)
                         .build();
 
-        final SpeedInfo rigSpeedInfo =
-                new SpeedInfo.Builder()
-                        .setAvgHashRate(new BigDecimal("5678.0000"))
-                        .build();
-
         final Rig rig =
                 new Rig.Builder()
                         .setName("rigName")
-                        .setSpeedInfo(rigSpeedInfo)
+                        .setHashRate(new BigDecimal("5678.0000"))
                         .addGpu(
                                 new Gpu.Builder()
                                         .setName("gpu0")
@@ -123,6 +118,7 @@ public class MetricsReportTest {
                         .setApiPort(42069)
                         .addPool(pool)
                         .addAsic(asic)
+                        .addRig(rig)
                         .build();
 
         final ZonedDateTime timestamp =
