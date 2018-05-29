@@ -47,7 +47,7 @@ public class CcMiner
             LoggerFactory.getLogger(CcMiner.class);
 
     /** The separator between regions. */
-    private static final String REGION_SEPARATOR = "|";
+    private static final String REGION_SEPARATOR = "\\|";
 
     /** The separator between key -> value pairs. */
     private static final String VALUE_SEPARATOR = ";";
@@ -119,9 +119,10 @@ public class CcMiner
      * @return The key -> value pairs.
      */
     private static Map<String, String> split(final String value) {
+        LOG.debug("Splitting {}", value);
         return Splitter.on(VALUE_SEPARATOR)
                 .withKeyValueSeparator("=")
-                .split(value.replace(REGION_SEPARATOR, ""));
+                .split(value.replace("|", ""));
     }
 
     /**
@@ -165,6 +166,7 @@ public class CcMiner
                                 .stream(hwInfo.split(REGION_SEPARATOR))
                                 .filter((info) -> info.contains("GPU"))
                                 .map(CcMiner::split)
+                                .filter((info) -> info.containsKey("GPU"))
                                 .forEach((info) ->
                                         addGpu(
                                                 info,
@@ -238,6 +240,7 @@ public class CcMiner
                 10,
                 TimeUnit.SECONDS)) {
             response = request.getResponse();
+            LOG.debug("Received response: {}", response);
         }
 
         return Optional.ofNullable(response);
