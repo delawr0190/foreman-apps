@@ -47,21 +47,23 @@ public class PoolsResponseStrategy
     private static void addPoolStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        final CgMinerPoolStatus status =
-                CgMinerPoolStatus.forValue(values.get("Status"));
-        builder.addPool(
-                new Pool.Builder()
-                        .setName(values.get("URL"))
-                        .setPriority(values.get("Priority"))
-                        .setStatus(
-                                status.isEnabled(),
-                                status.isUp())
-                        .setCounts(
-                                values.get("Accepted"),
-                                values.get("Rejected"),
-                                values.get("Stale"))
-                        .setDifficulty(
-                                values.get("Last Share Difficulty"))
-                        .build());
+        if (!values.get("URL").isEmpty()) {
+            final CgMinerPoolStatus status =
+                    CgMinerPoolStatus.forValue(values.get("Status"));
+            builder.addPool(
+                    new Pool.Builder()
+                            .setName(values.get("URL"))
+                            .setPriority(values.get("Priority"))
+                            .setStatus(
+                                    status.isEnabled(),
+                                    status.isUp())
+                            .setCounts(
+                                    values.get("Accepted"),
+                                    values.get("Rejected"),
+                                    values.get("Stale"))
+                            .setDifficulty(
+                                    values.get("Last Share Difficulty"))
+                            .build());
+        }
     }
 }
