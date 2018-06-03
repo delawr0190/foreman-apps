@@ -1,14 +1,16 @@
 package mn.foreman.model.miners.asic;
 
 import mn.foreman.model.AbstractBuilder;
+import mn.foreman.model.miners.BigDecimalSerializer;
 import mn.foreman.model.miners.FanInfo;
-import mn.foreman.model.miners.SpeedInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -20,10 +22,7 @@ import java.util.List;
  * <pre>
  *   {
  *     "name": "Antminer S9",
- *     "speedInfo": {
- *       "avgHashRate": 13674000000000.52,
- *       "avgHashRate5s": 13674000000000.52
- *     },
+ *     "hashRate": 13674000000000.52,
  *     "fans": {
  *       "num": 2,
  *       "speeds": [
@@ -51,11 +50,12 @@ public class Asic {
     /** Whether or not errors were reported. */
     private final Boolean hasErrors;
 
+    /** The hash rate. */
+    @JsonSerialize(using = BigDecimalSerializer.class)
+    private final BigDecimal hashRate;
+
     /** The ASIC name. */
     private final String name;
-
-    /** The hash rate. */
-    private final SpeedInfo speedInfo;
 
     /** The temp sensor readings. */
     private final List<Integer> temps;
@@ -64,14 +64,14 @@ public class Asic {
      * Constructor.
      *
      * @param name      The name.
-     * @param speedInfo The speed information.
+     * @param hashRate  The hash rate.
      * @param fans      The fan information.
      * @param temps     The temperatures.
      * @param hasErrors Whether or not errors were observed.
      */
     private Asic(
             @JsonProperty("name") final String name,
-            @JsonProperty("speedInfo") final SpeedInfo speedInfo,
+            @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("hasErrors") final Boolean hasErrors) {
@@ -79,8 +79,8 @@ public class Asic {
                 name,
                 "name cannot be empty");
         Validate.notNull(
-                speedInfo,
-                "speedInfo cannot be null");
+                hashRate,
+                "hashRate cannot be null");
         Validate.notNull(
                 fans,
                 "fans cannot be null");
@@ -94,7 +94,7 @@ public class Asic {
                 hasErrors,
                 "hasErrors cannot be null");
         this.name = name;
-        this.speedInfo = speedInfo;
+        this.hashRate = hashRate;
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
         this.hasErrors = hasErrors;
@@ -112,7 +112,7 @@ public class Asic {
             isEqual =
                     new EqualsBuilder()
                             .append(this.name, asic.name)
-                            .append(this.speedInfo, asic.speedInfo)
+                            .append(this.hashRate, asic.hashRate)
                             .append(this.fans, asic.fans)
                             .append(this.temps, asic.temps)
                             .append(this.hasErrors, asic.hasErrors)
@@ -140,21 +140,21 @@ public class Asic {
     }
 
     /**
+     * Returns the hash rate.
+     *
+     * @return The hash rate.
+     */
+    public BigDecimal getHashRate() {
+        return this.hashRate;
+    }
+
+    /**
      * Returns the name.
      *
      * @return The name.
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * Returns the {@link SpeedInfo}.
-     *
-     * @return The {@link SpeedInfo}.
-     */
-    public SpeedInfo getSpeedInfo() {
-        return this.speedInfo;
     }
 
     /**
@@ -170,7 +170,7 @@ public class Asic {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.name)
-                .append(this.speedInfo)
+                .append(this.hashRate)
                 .append(this.fans)
                 .append(this.temps)
                 .append(this.hasErrors)
@@ -182,14 +182,14 @@ public class Asic {
         return String.format(
                 "%s [ " +
                         "name=%s, " +
-                        "speedInfo=%s, " +
+                        "hashRate=%s, " +
                         "fans=%s, " +
                         "temps=%s, " +
                         "hasErrors=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.name,
-                this.speedInfo,
+                this.hashRate,
                 this.fans,
                 this.temps,
                 this.hasErrors);
@@ -208,11 +208,11 @@ public class Asic {
         /** Whether or not errors were observed. */
         private Boolean hasErrors = UNDEFINED_BOOL;
 
+        /** The hash rate. */
+        private BigDecimal hashRate;
+
         /** The name. */
         private String name = UNDEFINED_STRING;
-
-        /** The {@link SpeedInfo}. */
-        private SpeedInfo speedInfo;
 
         /**
          * Adds a new temperature reading.
@@ -249,7 +249,7 @@ public class Asic {
         public Asic build() {
             return new Asic(
                     this.name,
-                    this.speedInfo,
+                    this.hashRate,
                     this.fanInfo,
                     this.temps,
                     this.hasErrors);
@@ -280,6 +280,18 @@ public class Asic {
         }
 
         /**
+         * Sets the hash rate.
+         *
+         * @param hashRate The hash rate.
+         *
+         * @return The builder instance.
+         */
+        public Builder setHashRate(final BigDecimal hashRate) {
+            this.hashRate = hashRate;
+            return this;
+        }
+
+        /**
          * Sets the name.
          *
          * @param name The name.
@@ -288,18 +300,6 @@ public class Asic {
          */
         public Builder setName(final String name) {
             this.name = name;
-            return this;
-        }
-
-        /**
-         * Sets the speed information.
-         *
-         * @param speedInfo The speed info.
-         *
-         * @return The builder instance.
-         */
-        public Builder setSpeedInfo(final SpeedInfo speedInfo) {
-            this.speedInfo = speedInfo;
             return this;
         }
     }

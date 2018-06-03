@@ -28,12 +28,6 @@ public class MinerStatsTest {
         final int apiPort = 42069;
         final String difficulty = "1234.0000";
 
-        final SpeedInfo speedInfo =
-                new SpeedInfo.Builder()
-                        .setAvgHashRate(new BigDecimal(1))
-                        .setAvgHashRateFiveSecs(new BigDecimal(2))
-                        .build();
-
         final FanInfo fanInfo =
                 new FanInfo.Builder()
                         .setCount(2)
@@ -58,7 +52,7 @@ public class MinerStatsTest {
         final Asic asic =
                 new Asic.Builder()
                         .setName("asicName")
-                        .setSpeedInfo(speedInfo)
+                        .setHashRate(new BigDecimal(1234))
                         .setFanInfo(fanInfo)
                         .addTemp(32)
                         .hasErrors(true)

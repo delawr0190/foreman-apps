@@ -3,10 +3,9 @@ package mn.foreman.antminer.response;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
-import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.SpeedInfo;
+import mn.foreman.model.miners.asic.Asic;
 
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -70,23 +69,14 @@ public class StatsResponseStrategy
             final MinerStats.Builder builder,
             final String type,
             final Map<String, String> values) {
-        final Asic.Builder asicBuilder =
-                new Asic.Builder()
-                        .setName(type);
-
-        // Speed
-        final BigDecimal avgHashRate =
-                new BigDecimal(values.get("GHS av"))
-                        .multiply(new BigDecimal(Math.pow(1000, 3)));
-        final BigDecimal avgHashRate5s =
+        final BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
                         .multiply(new BigDecimal(Math.pow(1000, 3)));
-        asicBuilder
-                .setSpeedInfo(
-                        new SpeedInfo.Builder()
-                                .setAvgHashRate(avgHashRate)
-                                .setAvgHashRateFiveSecs(avgHashRate5s)
-                                .build());
+
+        final Asic.Builder asicBuilder =
+                new Asic.Builder()
+                        .setName(type)
+                        .setHashRate(hashRate);
 
         // Fangs
         final FanInfo.Builder fanBuilder =

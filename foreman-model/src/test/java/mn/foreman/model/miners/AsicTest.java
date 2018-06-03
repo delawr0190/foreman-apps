@@ -7,7 +7,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
@@ -24,11 +23,7 @@ public class AsicTest {
     public void testSerialization()
             throws IOException {
         final String name = "name";
-        final SpeedInfo speedInfo =
-                new SpeedInfo.Builder()
-                        .setAvgHashRate(new BigDecimal(1))
-                        .setAvgHashRateFiveSecs(new BigDecimal(2))
-                        .build();
+        final BigDecimal hashRate = new BigDecimal(1);
         final FanInfo fanInfo =
                 new FanInfo.Builder()
                         .setCount(2)
@@ -41,7 +36,7 @@ public class AsicTest {
         final Asic asic =
                 new Asic.Builder()
                         .setName(name)
-                        .setSpeedInfo(speedInfo)
+                        .setHashRate(hashRate)
                         .setFanInfo(fanInfo)
                         .addTemp(temp)
                         .hasErrors(hasErrors)
@@ -61,20 +56,5 @@ public class AsicTest {
         assertEquals(
                 asic,
                 newAsic);
-        assertEquals(
-                name,
-                newAsic.getName());
-        assertEquals(
-                speedInfo,
-                newAsic.getSpeedInfo());
-        assertEquals(
-                fanInfo,
-                newAsic.getFans());
-        assertEquals(
-                Collections.singletonList(temp),
-                newAsic.getTemps());
-        assertEquals(
-                hasErrors,
-                newAsic.getHasErrors());
     }
 }

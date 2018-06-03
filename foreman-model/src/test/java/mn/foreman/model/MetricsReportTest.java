@@ -5,7 +5,6 @@ import mn.foreman.model.metadata.Metadata;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
-import mn.foreman.model.miners.SpeedInfo;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
@@ -35,12 +34,6 @@ public class MetricsReportTest {
     @SuppressWarnings("ConstantConditions")
     public void testSerialization()
             throws IOException {
-        final SpeedInfo asicSpeedInfo =
-                new SpeedInfo.Builder()
-                        .setAvgHashRate(new BigDecimal(1))
-                        .setAvgHashRateFiveSecs(new BigDecimal(2))
-                        .build();
-
         final FanInfo fanInfo =
                 new FanInfo.Builder()
                         .setCount(2)
@@ -65,7 +58,7 @@ public class MetricsReportTest {
         final Asic asic =
                 new Asic.Builder()
                         .setName("asicName")
-                        .setSpeedInfo(asicSpeedInfo)
+                        .setHashRate(new BigDecimal(1))
                         .setFanInfo(fanInfo)
                         .addTemp(32)
                         .hasErrors(true)
