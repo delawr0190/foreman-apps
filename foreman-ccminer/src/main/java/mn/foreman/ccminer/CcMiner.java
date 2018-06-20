@@ -110,6 +110,16 @@ public class CcMiner
         return builder.build();
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
+                getClass().getSimpleName(),
+                this.name,
+                this.apiIp,
+                this.apiPort);
+    }
+
     /**
      * Utility method to split up the provided {@link String}, delineated by
      * {@link #VALUE_SEPARATOR}, into key -> value pairs.

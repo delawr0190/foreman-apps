@@ -71,10 +71,16 @@ public class RunMe {
             while (true) {
                 final MetricsReport.Builder metricsReportBuilder =
                         new MetricsReport.Builder();
-                minerList
-                        .stream()
-                        .map(Miner::getStats)
-                        .forEach(metricsReportBuilder::addMinerStats);
+                for (final Miner miner : minerList) {
+                    try {
+                        metricsReportBuilder.addMinerStats(
+                                miner.getStats());
+                    } catch (final Exception e) {
+                        LOG.warn("Failed to obtain metrics for {}",
+                                miner,
+                                e);
+                    }
+                }
 
                 final MetricsReport metricsReport = metricsReportBuilder.build();
                 LOG.debug("Generated report: {}", metricsReport);

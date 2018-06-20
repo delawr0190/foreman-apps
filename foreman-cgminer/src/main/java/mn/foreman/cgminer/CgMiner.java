@@ -113,6 +113,16 @@ public class CgMiner
         return minerStats;
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
+                getClass().getSimpleName(),
+                this.name,
+                this.apiIp,
+                this.apiPort);
+    }
+
     /**
      * Connects to the IP and port provided and sends the {@link CgMinerRequest}
      * as bytes to the interface.
