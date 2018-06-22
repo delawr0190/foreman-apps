@@ -10,6 +10,10 @@ import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.Arrays;
 
+/**
+ * A {@link ConnectionFactory} provides a factory to creating {@link Connection
+ * connections} to remote miner APIs.
+ */
 public class ConnectionFactory {
 
     /** A default thread pool. */
@@ -25,6 +29,14 @@ public class ConnectionFactory {
         // Do nothing
     }
 
+    /**
+     * Creates a {@link Connection} to a miner that accepts RPC calls that are
+     * delimiter based.
+     *
+     * @param request The request.
+     *
+     * @return The new {@link Connection}.
+     */
     public static Connection createDelimiterConnection(
             final ApiRequest request) {
         final StringBuilder stringBuilder = new StringBuilder();
@@ -61,6 +73,14 @@ public class ConnectionFactory {
                 DEFAULT_GROUP);
     }
 
+    /**
+     * Creates a {@link Connection} to a miner that accepts RPC calls that are
+     * JSON based.
+     *
+     * @param request The request.
+     *
+     * @return The new {@link Connection}.
+     */
     public static Connection createJsonConnection(
             final ApiRequest request) {
         return new SimpleApiConnection(
