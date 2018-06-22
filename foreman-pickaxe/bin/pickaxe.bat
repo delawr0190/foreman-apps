@@ -13,8 +13,8 @@ if defined JAVA_HOME (
 )
 
 if not exist %JAVA% (
-	echo Failed to find java - set JAVA_HOME or add java to the PATH 1>&2
-	exit /b 1
+    echo Failed to find java - set JAVA_HOME or add java to the PATH 1>&2
+    exit /b 1
 )
 
 rem # Set JVM options
@@ -24,7 +24,7 @@ set "JVM_OPTS=!options! %JVM_OPTS%"
 
 rem # Set JVM classpath
 for %%i in ("%PICKAXE_HOME%\lib\*.jar") do (
-	call :concat "%%i"
+    call :concat "%%i"
 )
 
 rem # Set JVM parameters
@@ -40,9 +40,9 @@ goto end
 
 :concat
 if not defined CLASSPATH (
-  set CLASSPATH="%~1"
+    set CLASSPATH="%~1"
 ) else (
-  set CLASSPATH=%CLASSPATH%;"%~1"
+    set CLASSPATH=%CLASSPATH%;"%~1"
 )
 goto :eof
 

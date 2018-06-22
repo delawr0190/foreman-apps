@@ -1,13 +1,13 @@
 <configuration scan="true" scanPeriod="30 seconds">
-	<statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
 	
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOG_LOCATION}/pickaxe.log</file>
+        <file>${LOG_LOCATION}/pickaxe.log</file>
         <append>true</append>
         <prudent>true</prudent>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>${LOG_LOCATION}/pickaxe-%d{yyyy-MM-dd}.log</fileNamePattern>
-            <!-- Keep 7 days' worth of history -->
             <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>
