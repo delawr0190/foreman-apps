@@ -24,6 +24,13 @@ public interface Configuration {
     String getApiKey();
 
     /**
+     * Returns the bminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getBminerConfigs();
+
+    /**
      * Returns the ccminer configurations.
      *
      * @return The configurations.

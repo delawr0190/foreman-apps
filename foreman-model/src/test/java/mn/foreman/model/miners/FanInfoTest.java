@@ -28,6 +28,7 @@ public class FanInfoTest {
                         .setCount(count)
                         .addSpeed(speeds.get(0))
                         .addSpeed(speeds.get(1))
+                        .setSpeedUnits("RPM")
                         .build();
 
         final ObjectMapper objectMapper =

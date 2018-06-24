@@ -29,6 +29,7 @@ public class AsicTest {
                         .setCount(2)
                         .addSpeed(42)
                         .addSpeed(43)
+                        .setSpeedUnits("RPM")
                         .build();
         final int temp = 32;
         final Boolean hasErrors = true;

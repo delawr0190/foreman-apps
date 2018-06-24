@@ -47,12 +47,13 @@ public class PoolsResponseStrategy
     private static void addPoolStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        if (!values.get("URL").isEmpty()) {
+        final String url = values.get("URL");
+        if (!url.isEmpty()) {
             final CgMinerPoolStatus status =
                     CgMinerPoolStatus.forValue(values.get("Status"));
             builder.addPool(
                     new Pool.Builder()
-                            .setName(values.get("URL"))
+                            .setName(url.split("://")[1])
                             .setPriority(values.get("Priority"))
                             .setStatus(
                                     status.isEnabled(),

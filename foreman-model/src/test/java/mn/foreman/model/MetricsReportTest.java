@@ -39,6 +39,7 @@ public class MetricsReportTest {
                         .setCount(2)
                         .addSpeed(420)
                         .addSpeed(421)
+                        .setSpeedUnits("RPM")
                         .build();
 
         final Pool pool =
@@ -77,6 +78,7 @@ public class MetricsReportTest {
                                                 new FanInfo.Builder()
                                                         .setCount(1)
                                                         .addSpeed(1000)
+                                                        .setSpeedUnits("RPM")
                                                         .build())
                                         .setFreqInfo(
                                                 new FreqInfo.Builder()
@@ -94,6 +96,7 @@ public class MetricsReportTest {
                                                 new FanInfo.Builder()
                                                         .setCount(1)
                                                         .addSpeed(2000)
+                                                        .setSpeedUnits("RPM")
                                                         .build())
                                         .setFreqInfo(
                                                 new FreqInfo.Builder()

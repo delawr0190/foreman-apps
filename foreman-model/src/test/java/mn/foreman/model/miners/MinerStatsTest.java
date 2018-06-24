@@ -33,6 +33,7 @@ public class MinerStatsTest {
                         .setCount(2)
                         .addSpeed(420)
                         .addSpeed(421)
+                        .setSpeedUnits("RPM")
                         .build();
 
         final Pool pool =

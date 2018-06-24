@@ -44,6 +44,7 @@
 
     <modules>
         <module>foreman-antminer</module>
+        <module>foreman-bminer</module>
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-io</module>
@@ -57,6 +58,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-antminer</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-bminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

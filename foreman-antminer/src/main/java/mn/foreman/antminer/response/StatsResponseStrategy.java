@@ -81,7 +81,8 @@ public class StatsResponseStrategy
         // Fangs
         final FanInfo.Builder fanBuilder =
                 new FanInfo.Builder()
-                        .setCount(values.get("fan_num"));
+                        .setCount(values.get("fan_num"))
+                        .setSpeedUnits("RPM");
         for (int i = 1; i <= 8; i++) {
             fanBuilder.addSpeed(values.get("fan" + i));
         }

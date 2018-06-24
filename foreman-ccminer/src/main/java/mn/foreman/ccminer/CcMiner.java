@@ -153,7 +153,8 @@ public class CcMiner
                         .setFans(
                                 new FanInfo.Builder()
                                         .setCount(1)
-                                        .addSpeed(values.get("RPM"))
+                                        .addSpeed(values.get("FAN"))
+                                        .setSpeedUnits("%")
                                         .build())
                         .setFreqInfo(
                                 new FreqInfo.Builder()
@@ -194,7 +195,7 @@ public class CcMiner
                     final Map<String, String> values = split(pool);
                     builder.addPool(
                             new Pool.Builder()
-                                    .setName(values.get("URL"))
+                                    .setName(values.get("URL").split("://")[1])
                                     .setPriority(1)
                                     .setStatus(
                                             true,

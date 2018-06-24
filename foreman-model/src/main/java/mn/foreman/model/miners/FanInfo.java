@@ -30,26 +30,35 @@ public class FanInfo {
     /** The number of fans. */
     private final int count;
 
+    /** The fan speed units. */
+    private final String speedUnits;
+
     /** The fan speeds. */
     private final List<Integer> speeds;
 
     /**
      * Constructor.
      *
-     * @param count  The number of fans.
-     * @param speeds The fan speeds.
+     * @param count      The number of fans.
+     * @param speeds     The fan speeds.
+     * @param speedUnits The fan speed units.
      */
     private FanInfo(
             @JsonProperty("count") final int count,
-            @JsonProperty("speeds") final List<Integer> speeds) {
+            @JsonProperty("speeds") final List<Integer> speeds,
+            @JsonProperty("speedUnits") final String speedUnits) {
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, count,
                 "count must be positive");
         Validate.notNull(
                 speeds,
                 "speeds cannot be null");
+        Validate.notEmpty(
+                speedUnits,
+                "speedUnits cannot be empty");
         this.count = count;
         this.speeds = new ArrayList<>(speeds);
+        this.speedUnits = speedUnits;
     }
 
     @Override
@@ -77,6 +86,15 @@ public class FanInfo {
      */
     public int getCount() {
         return this.count;
+    }
+
+    /**
+     * Returns the speed units.
+     *
+     * @return The speed units.
+     */
+    public String getSpeedUnits() {
+        return this.speedUnits;
     }
 
     /**
@@ -115,6 +133,9 @@ public class FanInfo {
         /** The number of fans. */
         private int count = UNDEFINED_INT;
 
+        /** The speed units. */
+        private String speedUnits;
+
         /**
          * Adds a speed.
          *
@@ -150,7 +171,8 @@ public class FanInfo {
         public FanInfo build() {
             return new FanInfo(
                     this.count,
-                    this.speeds);
+                    this.speeds,
+                    this.speedUnits);
         }
 
         /**
@@ -173,6 +195,18 @@ public class FanInfo {
          */
         public Builder setCount(final int count) {
             this.count = count;
+            return this;
+        }
+
+        /**
+         * Sets the speed units.
+         *
+         * @param speedUnits The speed units.
+         *
+         * @return This builder instance.
+         */
+        public Builder setSpeedUnits(final String speedUnits) {
+            this.speedUnits = speedUnits;
             return this;
         }
     }

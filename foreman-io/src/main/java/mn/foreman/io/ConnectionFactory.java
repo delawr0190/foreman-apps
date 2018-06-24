@@ -115,4 +115,22 @@ public class ConnectionFactory {
                         }),
                 DEFAULT_GROUP);
     }
+
+    /**
+     * Creates a {@link Connection} to a miner that has a REST interface.
+     *
+     * @param request The request.
+     *
+     * @return The new {@link Connection}.
+     */
+    public static Connection createRestConnection(
+            final ApiRequest request) {
+        return new RestConnection(
+                String.format(
+                        "http://%s:%d%s",
+                        request.getIp(),
+                        request.getPort(),
+                        request.getRequest()),
+                request);
+    }
 }
