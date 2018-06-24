@@ -34,7 +34,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * <h1>Overview</h1>
  *
- * A {@link Bminer} represents a remove bminer instance.
+ * A {@link Bminer} represents a remote bminer instance.
  *
  * <p>This class relies on the bminer-api being enabled and configured to allow
  * the server that this application is running on to access it.  If this
@@ -60,11 +60,6 @@ import java.util.concurrent.TimeUnit;
  * artificial name is generated that matches the format: "GPU &lt;id&gt;"</p>
  *
  * <h2>Pools</h2>
- *
- * <h3>Difficulty</h3>
- *
- * <p>difficulty is not exposed via the API.  Therefore, it can't be
- * reported.</p>
  *
  * <h3>Failover pools</h3>
  *
