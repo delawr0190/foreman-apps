@@ -26,7 +26,6 @@ public class MinerStatsTest {
         final String name = "name";
         final String apiIp = "127.0.0.1";
         final int apiPort = 42069;
-        final String difficulty = "1234.0000";
 
         final FanInfo fanInfo =
                 new FanInfo.Builder()
@@ -47,7 +46,6 @@ public class MinerStatsTest {
                                 1,
                                 2,
                                 3)
-                        .setDifficulty(difficulty)
                         .build();
 
         final Asic asic =

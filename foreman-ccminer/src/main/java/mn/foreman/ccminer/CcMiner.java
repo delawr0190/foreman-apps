@@ -204,7 +204,6 @@ public class CcMiner
                                             values.get("ACC"),
                                             values.get("REJ"),
                                             values.get("STALE"))
-                                    .setDifficulty(values.get("DIFF"))
                                     .build());
                 });
     }

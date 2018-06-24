@@ -53,7 +53,6 @@ public class MetricsReportTest {
                                 1,
                                 2,
                                 3)
-                        .setDifficulty("1234.0000")
                         .build();
 
         final Asic asic =

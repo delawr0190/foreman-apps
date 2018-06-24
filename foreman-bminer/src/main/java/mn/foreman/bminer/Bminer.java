@@ -213,9 +213,7 @@ public class Bminer
                                 stratum.acceptedShares,
                                 stratum.rejectedShares,
                                 0)
-                        .setPriority(0)
-                        // bminer doesn't expose difficulty
-                        .setDifficulty("0");
+                        .setPriority(0);
 
         final Optional<Failover> failoverOptional =
                 stratum.failovers
