@@ -2,7 +2,30 @@ apiKey: "<YOUR_API_KEY>"
 foremanApiUrl: "http://127.0.0.1:8080/api"
 pollFrequencyInSeconds: 60
 
+antminers:
+# Example:
+#  - name:    "Antminer S9"
+#    type:    "antminer_s9"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4028
+#
+# Supported types:
+#
+#  "antminer_s9"
+#  "antminer_l3"
+#  "antminer_b3"
+
+bminers:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 1880
+
 cgminers:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068
   - name:    "cgminer 1"
     apiIp:   "127.0.0.1"
     apiPort: 42069
