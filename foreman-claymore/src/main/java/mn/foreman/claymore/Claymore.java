@@ -301,7 +301,7 @@ public class Claymore
                 "2.0",
                 "miner_getstat1",
                 this.apiPassword != null
-                        ? "\"apiPassword\":\"" + this.apiPassword + "\""
+                        ? ",\"apiPassword\":\"" + this.apiPassword + "\""
                         : "");
     }
 
