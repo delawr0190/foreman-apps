@@ -115,10 +115,34 @@ public class FreqInfo {
          *
          * @return This builder instance.
          */
+        public Builder setFreq(final int freq) {
+            this.freq = freq;
+            return this;
+        }
+
+        /**
+         * Sets the core frequency.
+         *
+         * @param freq The core frequency.
+         *
+         * @return This builder instance.
+         */
         public Builder setFreq(final String freq) {
             if (freq != null && !freq.isEmpty()) {
-                this.freq = Integer.parseInt(freq);
+                setFreq(Integer.parseInt(freq));
             }
+            return this;
+        }
+
+        /**
+         * Sets the memory frequency.
+         *
+         * @param memFreq The memory frequency.
+         *
+         * @return This builder instance.
+         */
+        public Builder setMemFreq(final int memFreq) {
+            this.memFreq = memFreq;
             return this;
         }
 
@@ -131,7 +155,7 @@ public class FreqInfo {
          */
         public Builder setMemFreq(final String memFreq) {
             if (memFreq != null && !memFreq.isEmpty()) {
-                this.memFreq = Integer.parseInt(memFreq);
+                setMemFreq(Integer.parseInt(memFreq));
             }
             return this;
         }

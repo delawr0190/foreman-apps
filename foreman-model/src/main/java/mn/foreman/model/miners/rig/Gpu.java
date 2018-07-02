@@ -223,9 +223,21 @@ public class Gpu {
          *
          * @return This builder instance.
          */
+        public Builder setBus(final int bus) {
+            this.bus = bus;
+            return this;
+        }
+
+        /**
+         * Sets the bus.
+         *
+         * @param bus The bus.
+         *
+         * @return This builder instance.
+         */
         public Builder setBus(final String bus) {
             if (bus != null && !bus.isEmpty()) {
-                this.bus = Integer.parseInt(bus);
+                setBus(Integer.parseInt(bus));
             }
             return this;
         }
@@ -261,9 +273,21 @@ public class Gpu {
          *
          * @return This builder instance.
          */
+        public Builder setIndex(final int index) {
+            this.index = index;
+            return this;
+        }
+
+        /**
+         * Sets the index.
+         *
+         * @param index The index.
+         *
+         * @return This builder instance.
+         */
         public Builder setIndex(final String index) {
             if (index != null && !index.isEmpty()) {
-                this.index = Integer.parseInt(index);
+                setIndex(Integer.parseInt(index));
             }
             return this;
         }
@@ -287,9 +311,21 @@ public class Gpu {
          *
          * @return This builder instance.
          */
+        public Builder setTemp(final int temp) {
+            this.temp = temp;
+            return this;
+        }
+
+        /**
+         * Sets the temp.
+         *
+         * @param temp The temp.
+         *
+         * @return This builder instance.
+         */
         public Builder setTemp(final String temp) {
             if (temp != null && !temp.isEmpty()) {
-                this.temp = (int) Double.parseDouble(temp);
+                setTemp((int) Double.parseDouble(temp));
             }
             return this;
         }
