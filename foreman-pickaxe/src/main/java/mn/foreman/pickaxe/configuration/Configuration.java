@@ -38,6 +38,13 @@ public interface Configuration {
     List<Map<String, String>> getCcminerConfigs();
 
     /**
+     * Returns the claymore configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getClaymoreConfigs();
+
+    /**
      * Returns the FOREMAN API URL.
      *
      * @return The FOREMAN API URL.

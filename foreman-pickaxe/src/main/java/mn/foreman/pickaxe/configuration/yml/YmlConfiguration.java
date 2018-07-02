@@ -26,6 +26,9 @@ public class YmlConfiguration
     /** The ccminer configurations. */
     private final List<Map<String, String>> ccminerConfigs;
 
+    /** The claymore configs. */
+    private final List<Map<String, String>> claymoreConfigs;
+
     /** The FOREMAN API URL. */
     private final String foremanApiUrl;
 
@@ -42,6 +45,7 @@ public class YmlConfiguration
      * @param antConfigs             The antminer configs.
      * @param bminerConfigs          The bminer configs.
      * @param ccminerConfigs         The ccminer configs.
+     * @param claymoreConfigs        The claymore configs.
      * @param pollFrequencyInSeconds How frequently to poll, in seconds.
      */
     private YmlConfiguration(
@@ -50,6 +54,7 @@ public class YmlConfiguration
             @JsonProperty("antminers") final List<Map<String, String>> antConfigs,
             @JsonProperty("bminers") final List<Map<String, String>> bminerConfigs,
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
+            @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
         Validate.notEmpty(
                 foremanApiUrl,
@@ -65,6 +70,7 @@ public class YmlConfiguration
         this.antConfigs = toConfigs(antConfigs);
         this.bminerConfigs = toConfigs(bminerConfigs);
         this.ccminerConfigs = toConfigs(ccminerConfigs);
+        this.claymoreConfigs = toConfigs(claymoreConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
 
@@ -86,6 +92,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getCcminerConfigs() {
         return Collections.unmodifiableList(this.ccminerConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getClaymoreConfigs() {
+        return Collections.unmodifiableList(this.claymoreConfigs);
     }
 
     @Override

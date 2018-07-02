@@ -33,3 +33,16 @@ cgminers:
   - name:    "cgminer 2"
     apiIp:   "127.0.0.1"
     apiPort: 42070
+
+claymores:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068
+#
+# If you've configured claymore to use an API password,
+# you may provide that as an additional parameter:
+#
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068

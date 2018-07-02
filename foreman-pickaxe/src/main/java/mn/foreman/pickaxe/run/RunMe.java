@@ -3,6 +3,7 @@ package mn.foreman.pickaxe.run;
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.ccminer.CcminerFactory;
+import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -19,13 +20,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-/**
- * {@link RunMe} provides the application context for PICKAXE.
- *
- * <p>This approach was selected to keep application complexity down instead of
- * leveraging some big ol' dependency injection framework.  After all, it's a
- * small Java application!</p>
- */
+/** {@link RunMe} provides the application context for PICKAXE. */
 public class RunMe {
 
     /** The logger for this class. */
@@ -67,6 +62,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getCcminerConfigs(),
                         new CcminerFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getClaymoreConfigs(),
+                        new ClaymoreFactory()));
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();
