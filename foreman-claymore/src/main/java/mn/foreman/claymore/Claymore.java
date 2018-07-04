@@ -300,7 +300,7 @@ public class Claymore
                 0,
                 "2.0",
                 "miner_getstat1",
-                this.apiPassword != null
+                (this.apiPassword != null && !this.apiPassword.isEmpty())
                         ? ",\"apiPassword\":\"" + this.apiPassword + "\""
                         : "");
     }

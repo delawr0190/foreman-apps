@@ -190,7 +190,7 @@ public class Bminer
      * @return The URL.
      */
     private static String toPool(final String name) {
-        return name.split("@")[1];
+        return name.split("@")[1].replace("/", "");
     }
 
     /**

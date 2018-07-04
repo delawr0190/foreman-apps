@@ -26,9 +26,7 @@
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
         <guava.version>23.5-jre</guava.version>
-        <grizzly.version>2.4.2</grizzly.version>
         <jackson.version>2.9.3</jackson.version>
-        <jersey.version>2.26</jersey.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
@@ -52,6 +50,7 @@
         <module>foreman-io</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
+        <module>foreman-util</module>
     </modules>
 
     <dependencyManagement>
@@ -96,6 +95,17 @@
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-model</artifactId>
                 <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-util</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-util</artifactId>
+                <version>${foreman.version}</version>
+                <classifier>tests</classifier>
             </dependency>
 
             <!-- Netty -->
@@ -174,30 +184,6 @@
                 <version>${junit.version}</version>
                 <scope>test</scope>
             </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-server</artifactId>
-                <version>${jersey.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.containers</groupId>
-                <artifactId>jersey-container-grizzly2-http</artifactId>
-                <version>${jersey.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.jersey.inject</groupId>
-                <artifactId>jersey-hk2</artifactId>
-                <version>${jersey.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.grizzly</groupId>
-                <artifactId>grizzly-http-server</artifactId>
-                <version>${grizzly.version}</version>
-                <scope>test</scope>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -227,6 +213,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
                     <version>${maven-jar-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>test-jar</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>

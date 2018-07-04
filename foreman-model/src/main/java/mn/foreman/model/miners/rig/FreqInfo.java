@@ -3,7 +3,6 @@ package mn.foreman.model.miners.rig;
 import mn.foreman.model.AbstractBuilder;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -25,12 +24,6 @@ public class FreqInfo {
     private FreqInfo(
             @JsonProperty("freq") final int freq,
             @JsonProperty("memFreq") final int memFreq) {
-        Validate.isTrue(
-                freq > 0,
-                "Freq must be > 0");
-        Validate.isTrue(
-                memFreq > 0,
-                "Mem freq must be > 0");
         this.freq = freq;
         this.memFreq = memFreq;
     }
