@@ -97,8 +97,8 @@ public class Algorithms
         public double currentJobDifficulty;
 
         /** Whether using GETs. */
-        @JsonProperty("get_job")
-        public boolean getJob;
+        @JsonProperty("got_job")
+        public boolean gotJob;
 
         /** The algorithm name. */
         @JsonProperty("name")
