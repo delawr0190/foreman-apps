@@ -46,6 +46,7 @@
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-claymore</module>
+        <module>foreman-ewbf</module>
         <module>foreman-excavator</module>
         <module>foreman-io</module>
         <module>foreman-model</module>
