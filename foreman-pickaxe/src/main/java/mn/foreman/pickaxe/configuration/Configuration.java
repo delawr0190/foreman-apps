@@ -52,6 +52,13 @@ public interface Configuration {
     String getForemanApiUrl();
 
     /**
+     * Returns the phoenix configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getPhoenixConfigs();
+
+    /**
      * Returns the poll frequency in seconds.
      *
      * @return The poll frequency in seconds.

@@ -46,6 +46,7 @@
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-claymore</module>
+        <module>foreman-dstm</module>
         <module>foreman-ewbf</module>
         <module>foreman-excavator</module>
         <module>foreman-io</module>
@@ -91,6 +92,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-io</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-miner</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

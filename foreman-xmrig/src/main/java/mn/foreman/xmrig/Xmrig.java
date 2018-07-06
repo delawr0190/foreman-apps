@@ -87,7 +87,7 @@ public class Xmrig
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    public Xmrig(
+    Xmrig(
             final String name,
             final String apiIp,
             final int apiPort) {

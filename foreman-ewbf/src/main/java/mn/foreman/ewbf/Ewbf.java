@@ -79,7 +79,7 @@ public class Ewbf
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    public Ewbf(
+    Ewbf(
             final String name,
             final String apiIp,
             final int apiPort) {

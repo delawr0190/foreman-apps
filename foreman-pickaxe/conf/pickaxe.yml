@@ -46,3 +46,16 @@ claymores:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 4068
+
+phoenix:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068
+#
+# If you've configured phoenix to use an API password,
+# you may provide that as an additional parameter:
+#
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068

@@ -66,6 +66,11 @@ public class RunMe {
                 createMiners(
                         this.configuration.getClaymoreConfigs(),
                         new ClaymoreFactory()));
+        // PhoenixMiner uses the same API as Claymore
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getPhoenixConfigs(),
+                        new ClaymoreFactory()));
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();

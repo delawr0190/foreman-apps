@@ -32,6 +32,9 @@ public class YmlConfiguration
     /** The FOREMAN API URL. */
     private final String foremanApiUrl;
 
+    /** The phoenix configs. */
+    private final List<Map<String, String>> phoenixConfigs;
+
     /** How frequently to poll, in seconds. */
     private final int pollFrequencyInSeconds;
 
@@ -55,6 +58,7 @@ public class YmlConfiguration
             @JsonProperty("bminers") final List<Map<String, String>> bminerConfigs,
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
+            @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
         Validate.notEmpty(
                 foremanApiUrl,
@@ -71,6 +75,7 @@ public class YmlConfiguration
         this.bminerConfigs = toConfigs(bminerConfigs);
         this.ccminerConfigs = toConfigs(ccminerConfigs);
         this.claymoreConfigs = toConfigs(claymoreConfigs);
+        this.phoenixConfigs = toConfigs(phoenixConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
 
@@ -102,6 +107,11 @@ public class YmlConfiguration
     @Override
     public String getForemanApiUrl() {
         return this.foremanApiUrl;
+    }
+
+    @Override
+    public List<Map<String, String>> getPhoenixConfigs() {
+        return Collections.unmodifiableList(this.phoenixConfigs);
     }
 
     @Override
