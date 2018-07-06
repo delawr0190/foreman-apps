@@ -52,6 +52,7 @@
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
         <module>foreman-util</module>
+        <module>foreman-xmrig</module>
     </modules>
 
     <dependencyManagement>

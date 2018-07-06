@@ -64,9 +64,6 @@ public class Gpu {
         Validate.notEmpty(
                 name,
                 "Name cannot be empty");
-        Validate.isTrue(
-                temp > 0,
-                "Temp must be > 0");
         this.bus = bus;
         this.fans = fans;
         this.freqInfo = freqInfo;
