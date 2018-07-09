@@ -37,7 +37,7 @@ public class MinerException extends Exception {
      *
      * @param cause The cause.
      */
-    public MinerException(Throwable cause) {
+    public MinerException(final Throwable cause) {
         super(cause);
     }
 }

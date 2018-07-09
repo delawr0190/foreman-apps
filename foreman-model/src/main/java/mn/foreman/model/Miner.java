@@ -16,5 +16,6 @@ public interface Miner {
      *
      * @throws MinerException on failure to get stats.
      */
-    MinerStats getStats() throws MinerException;
+    MinerStats getStats()
+            throws MinerException;
 }

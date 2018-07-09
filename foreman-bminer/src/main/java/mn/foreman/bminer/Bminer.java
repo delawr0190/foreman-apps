@@ -336,7 +336,8 @@ public class Bminer
      */
     private <T> T query(
             final String uri,
-            final Class<T> clazz) throws MinerException {
+            final Class<T> clazz)
+            throws MinerException {
         T response;
 
         final ApiRequest request =
