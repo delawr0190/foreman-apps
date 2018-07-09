@@ -11,6 +11,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -117,7 +118,8 @@ public class Bminer
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -245,44 +247,52 @@ public class Bminer
      * Queries the devices and updates the {@link Rig.Builder}.
      *
      * @param rigBuilder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getDevices(final Rig.Builder rigBuilder) {
-        query(toUri("device"), Devices.class)
-                .ifPresent((devices) -> {
-                    final Map<String, Device> deviceMap = devices.devices;
-                    if (deviceMap != null) {
-                        for (final Map.Entry<String, Device> entry :
-                                deviceMap.entrySet()) {
-                            rigBuilder.addGpu(
-                                    toGpu(
-                                            entry.getKey(),
-                                            entry.getValue()));
-                        }
-                    }
-                });
+    private void getDevices(final Rig.Builder rigBuilder)
+            throws MinerException {
+        final Devices devices =
+                query(
+                        toUri("device"),
+                        Devices.class);
+        final Map<String, Device> deviceMap = devices.devices;
+        if (deviceMap != null) {
+            for (final Map.Entry<String, Device> entry :
+                    deviceMap.entrySet()) {
+                rigBuilder.addGpu(
+                        toGpu(
+                                entry.getKey(),
+                                entry.getValue()));
+            }
+        }
     }
 
     /**
      * Queries the solvers and updates the {@link Rig.Builder}.
      *
      * @param rigBuilder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getSolvers(final Rig.Builder rigBuilder) {
+    private void getSolvers(final Rig.Builder rigBuilder)
+            throws MinerException {
         final List<Double> hashRates = new LinkedList<>();
-        query(toUri("solver"), mn.foreman.bminer.json.solver.Devices.class)
-                .ifPresent(devices -> {
-                    final Map<String, Solvers> solversMap = devices.devices;
-                    if (solversMap != null) {
-                        solversMap
-                                .values()
-                                .stream()
-                                .map(solvers -> solvers.solvers)
-                                .flatMap(List::stream)
-                                .forEach(solver ->
-                                        hashRates.add(
-                                                solver.speedInfo.hashRate));
-                    }
-                });
+        final mn.foreman.bminer.json.solver.Devices devices =
+                query(
+                        toUri("solver"),
+                        mn.foreman.bminer.json.solver.Devices.class);
+        final Map<String, Solvers> solversMap = devices.devices;
+        if (solversMap != null) {
+            solversMap
+                    .values()
+                    .stream()
+                    .map(solvers -> solvers.solvers)
+                    .flatMap(List::stream)
+                    .forEach(solver ->
+                            hashRates.add(
+                                    solver.speedInfo.hashRate));
+        }
 
         rigBuilder.setHashRate(
                 new BigDecimal(
@@ -296,17 +306,21 @@ public class Bminer
      * Queries the stratums and updates the {@link MinerStats.Builder}.
      *
      * @param statsBuilder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getStratums(final MinerStats.Builder statsBuilder) {
-        query(toUri("stratum"), Stratums.class)
-                .ifPresent((stratums) -> {
-                    final Map<String, Stratum> stratumMap = stratums.stratums;
-                    if (stratumMap != null) {
-                        for (final Stratum stratum : stratumMap.values()) {
-                            statsBuilder.addPool(toPool(stratum));
-                        }
-                    }
-                });
+    private void getStratums(final MinerStats.Builder statsBuilder)
+            throws MinerException {
+        final Stratums stratums =
+                query(
+                        toUri("stratum"),
+                        Stratums.class);
+        final Map<String, Stratum> stratumMap = stratums.stratums;
+        if (stratumMap != null) {
+            for (final Stratum stratum : stratumMap.values()) {
+                statsBuilder.addPool(toPool(stratum));
+            }
+        }
     }
 
     /**
@@ -317,11 +331,13 @@ public class Bminer
      * @param <T>   The type.
      *
      * @return The response.
+     *
+     * @throws MinerException on failure to query.
      */
-    private <T> Optional<T> query(
+    private <T> T query(
             final String uri,
-            final Class<T> clazz) {
-        T response = null;
+            final Class<T> clazz) throws MinerException {
+        T response;
 
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -346,10 +362,12 @@ public class Bminer
                                 request.getResponse(),
                                 clazz);
             } catch (final IOException ioe) {
-                LOG.warn("Exception occurred while querying", ioe);
+                throw new MinerException(ioe);
             }
+        } else {
+            throw new MinerException("Failed to obtain a response");
         }
 
-        return Optional.ofNullable(response);
+        return response;
     }
 }

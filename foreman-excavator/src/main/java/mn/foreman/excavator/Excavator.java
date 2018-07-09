@@ -10,6 +10,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -25,7 +26,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -89,7 +89,8 @@ public class Excavator
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -195,27 +196,23 @@ public class Excavator
      * @param builder The builder to update.
      *
      * @return The current hash rate.
+     *
+     * @throws MinerException on failure to query.
      */
-    private BigDecimal addPools(final MinerStats.Builder builder) {
-        BigDecimal hashRate = BigDecimal.ZERO;
-        final Optional<Subscribe> subscribeOptional =
+    private BigDecimal addPools(final MinerStats.Builder builder)
+            throws MinerException {
+        final Subscribe subscribe =
                 query(
                         SubscribeMethod.INFO,
                         Subscribe.class);
-        final Optional<Algorithms> algorithmsOptional =
+        final Algorithms algorithms =
                 query(
                         AlgorithmMethod.LIST,
                         Algorithms.class);
-        if (subscribeOptional.isPresent() && algorithmsOptional.isPresent()) {
-            hashRate =
-                    addPools(
-                            builder,
-                            subscribeOptional.get(),
-                            algorithmsOptional.get());
-        } else {
-            LOG.warn("Failed to obtain both 'subscribe' and 'algorithms'");
-        }
-        return hashRate;
+        return addPools(
+                builder,
+                subscribe,
+                algorithms);
     }
 
     /**
@@ -224,35 +221,42 @@ public class Excavator
      *
      * @param builder  The builder to update.
      * @param hashRate The hash rate.
+     *
+     * @throws MinerException on failure to query.
      */
     private void addRig(
             final MinerStats.Builder builder,
-            final BigDecimal hashRate) {
-        query(DevicesMethod.GET, Devices.class)
-                .ifPresent((devices) -> {
-                    final Rig.Builder rigBuilder =
-                            new Rig.Builder()
-                                    .setName("excavator")
-                                    .setHashRate(hashRate);
-                    devices.devices.forEach(
-                            (device) ->
-                                    addGpu(
-                                            rigBuilder,
-                                            device));
-                    builder.addRig(rigBuilder.build());
-                });
+            final BigDecimal hashRate)
+            throws MinerException {
+        final Devices devices =
+                query(
+                        DevicesMethod.GET,
+                        Devices.class);
+        final Rig.Builder rigBuilder =
+                new Rig.Builder()
+                        .setName("excavator")
+                        .setHashRate(hashRate);
+        devices.devices.forEach(
+                (device) ->
+                        addGpu(
+                                rigBuilder,
+                                device));
+        builder.addRig(rigBuilder.build());
     }
 
     /**
      * Queries the API.
      *
      * @return The response.
+     *
+     * @throws MinerException on failure to query.
      */
-    private <T extends Response> Optional<T> query(
+    private <T extends Response> T query(
             final Method method,
             final Class<T> responseClass,
-            final String... params) {
-        T response = null;
+            final String... params)
+            throws MinerException {
+        T response;
 
         try {
             final ObjectMapper objectMapper =
@@ -288,12 +292,15 @@ public class Excavator
                         objectMapper.readValue(
                                 request.getResponse(),
                                 responseClass);
+            } else {
+                throw new MinerException("Failed to obtain a response");
             }
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred while querying",
                     ioe);
+            throw new MinerException(ioe);
         }
 
-        return Optional.ofNullable(response);
+        return response;
     }
 }

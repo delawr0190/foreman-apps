@@ -6,6 +6,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -23,7 +24,6 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -108,7 +108,8 @@ public class Claymore
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -246,47 +247,49 @@ public class Claymore
      * response.
      *
      * @param builder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getStats(final MinerStats.Builder builder) {
-        query().ifPresent((response) -> {
-            final List<String> results = response.result;
-            final String minerVersion = results.get(0);
+    private void getStats(final MinerStats.Builder builder)
+            throws MinerException {
+        final Response response = query();
+        final List<String> results = response.result;
+        final String minerVersion = results.get(0);
 
-            final String[] ethRateAndShares = results.get(2).split(";");
-            final String ethHashRate = ethRateAndShares[0];
-            final String ethTotalShares = ethRateAndShares[1];
-            final String ethRejectedShares = ethRateAndShares[2];
+        final String[] ethRateAndShares = results.get(2).split(";");
+        final String ethHashRate = ethRateAndShares[0];
+        final String ethTotalShares = ethRateAndShares[1];
+        final String ethRejectedShares = ethRateAndShares[2];
 
-            final String[] dcrRateAndShares = results.get(4).split(";");
-            final String dcrHashRate = dcrRateAndShares[0];
-            final String dcrTotalShares = dcrRateAndShares[1];
-            final String dcrRejectedShares = dcrRateAndShares[2];
+        final String[] dcrRateAndShares = results.get(4).split(";");
+        final String dcrHashRate = dcrRateAndShares[0];
+        final String dcrTotalShares = dcrRateAndShares[1];
+        final String dcrRejectedShares = dcrRateAndShares[2];
 
-            final List<String> temps = new LinkedList<>();
-            final List<String> fans = new LinkedList<>();
-            final String[] tempsAndFans = results.get(6).split(";");
-            for (int i = 0; i < tempsAndFans.length / 2; i += 2) {
-                temps.add(tempsAndFans[i]);
-                fans.add(tempsAndFans[i + 1]);
-            }
+        final List<String> temps = new LinkedList<>();
+        final List<String> fans = new LinkedList<>();
+        final String[] tempsAndFans = results.get(6).split(";");
+        for (int i = 0; i < tempsAndFans.length / 2; i += 2) {
+            temps.add(tempsAndFans[i]);
+            fans.add(tempsAndFans[i + 1]);
+        }
 
-            final String[] pools = results.get(7).split(";");
-            final String[] shares = results.get(8).split(";");
+        final String[] pools = results.get(7).split(";");
+        final String[] shares = results.get(8).split(";");
 
-            addPools(
-                    pools,
-                    new String[]{ethTotalShares, dcrTotalShares},
-                    new String[]{ethRejectedShares, dcrRejectedShares},
-                    new String[]{shares[1], shares[3]},
-                    builder);
-            addRig(
-                    minerVersion,
-                    ethHashRate,
-                    dcrHashRate,
-                    temps,
-                    fans,
-                    builder);
-        });
+        addPools(
+                pools,
+                new String[]{ethTotalShares, dcrTotalShares},
+                new String[]{ethRejectedShares, dcrRejectedShares},
+                new String[]{shares[1], shares[3]},
+                builder);
+        addRig(
+                minerVersion,
+                ethHashRate,
+                dcrHashRate,
+                temps,
+                fans,
+                builder);
     }
 
     /**
@@ -309,9 +312,12 @@ public class Claymore
      * Queries the API.
      *
      * @return The response.
+     *
+     * @throws MinerException on failure to query.
      */
-    private Optional<Response> query() {
-        Response response = null;
+    private Response query()
+            throws MinerException {
+        Response response;
 
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -330,12 +336,15 @@ public class Claymore
                 response =
                         toResponse(
                                 request.getResponse());
-            } catch (IOException ioe) {
+            } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while querying", ioe);
+                throw new MinerException(ioe);
             }
+        } else {
+            throw new MinerException("Failed to obtain a response");
         }
 
-        return Optional.ofNullable(response);
+        return response;
     }
 
     /**

@@ -5,6 +5,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +35,9 @@ import java.util.concurrent.TimeUnit;
  *
  * <p>This class currently queries:</p>
  *
- * <ul> <li>http://{@link #apiIp}:{@link #apiPort}/</li> </ul>
+ * <ul>
+ *     <li>http://{@link #apiIp}:{@link #apiPort}/</li>
+ * </ul>
  *
  * <h1>Limitations</h1>
  *
@@ -106,7 +108,8 @@ public class Xmrig
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -118,15 +121,13 @@ public class Xmrig
                         .setApiPort(this.apiPort)
                         .setName(this.name);
 
-        final Optional<Response> responseOptional = query();
-        responseOptional.ifPresent((response) -> {
-            addPool(
-                    response,
-                    statsBuilder);
-            addRig(
-                    response,
-                    statsBuilder);
-        });
+        final Response response = query();
+        addPool(
+                response,
+                statsBuilder);
+        addRig(
+                response,
+                statsBuilder);
 
         return statsBuilder.build();
     }
@@ -282,9 +283,12 @@ public class Xmrig
      * Queries the API.
      *
      * @return The response.
+     *
+     * @throws MinerException on failure to query.
      */
-    private Optional<Response> query() {
-        Response response = null;
+    private Response query()
+            throws MinerException {
+        Response response;
 
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -309,9 +313,12 @@ public class Xmrig
                                 Response.class);
             } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while querying", ioe);
+                throw new MinerException(ioe);
             }
+        } else {
+            throw new MinerException("Failed to obtain a response");
         }
 
-        return Optional.ofNullable(response);
+        return response;
     }
 }

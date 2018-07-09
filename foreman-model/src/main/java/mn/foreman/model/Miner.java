@@ -1,5 +1,6 @@
 package mn.foreman.model;
 
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 /**
@@ -12,6 +13,8 @@ public interface Miner {
      * Obtains a {@link MinerStats}.
      *
      * @return The {@link MinerStats}.
+     *
+     * @throws MinerException on failure to get stats.
      */
-    MinerStats getStats();
+    MinerStats getStats() throws MinerException;
 }

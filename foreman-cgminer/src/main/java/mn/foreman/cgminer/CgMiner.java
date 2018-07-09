@@ -11,6 +11,7 @@ import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.AbstractBuilder;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -82,7 +83,8 @@ public class CgMiner
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -137,10 +139,13 @@ public class CgMiner
      * @param request The request to send.
      *
      * @return The {@link CgMinerResponse}.
+     *
+     * @throws MinerException on failure to query.
      */
     private CgMinerResponse query(
-            final CgMinerRequest request) {
-        CgMinerResponse response = null;
+            final CgMinerRequest request)
+            throws MinerException {
+        CgMinerResponse response;
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.enable(
@@ -190,26 +195,14 @@ public class CgMiner
                 LOG.debug("Read response: {}", response);
             } else {
                 LOG.warn("No response received from cgminer");
+                throw new MinerException("Failed to obtain a response");
             }
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred while querying {}:{}",
                     this.apiIp,
                     this.apiPort,
                     ioe);
-        } finally {
-            if (response == null) {
-                final CgMinerStatusSection statusSection =
-                        new CgMinerStatusSection.Builder()
-                                .setStatusCode(
-                                        CgMinerStatusCode.FATAL)
-                                .setDescription(
-                                        "Failed to connect")
-                                .build();
-                response =
-                        new CgMinerResponse.Builder()
-                                .setStatusSection(statusSection)
-                                .build();
-            }
+            throw new MinerException(ioe);
         }
 
         return response;

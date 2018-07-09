@@ -5,6 +5,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -20,7 +21,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -87,7 +87,8 @@ public class CcMiner
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -169,61 +170,65 @@ public class CcMiner
      * Rig}, adding them to the provided builder.
      *
      * @param builder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getHwInfo(final Rig.Builder builder) {
-        query(CcMinerCommand.HWINFO)
-                .ifPresent((hwInfo) ->
-                        Arrays
-                                .stream(hwInfo.split(REGION_SEPARATOR))
-                                .filter((info) -> info.contains("GPU"))
-                                .map(CcMiner::split)
-                                .filter((info) -> info.containsKey("GPU"))
-                                .forEach((info) ->
-                                        addGpu(
-                                                info,
-                                                builder)));
+    private void getHwInfo(final Rig.Builder builder)
+            throws MinerException {
+        final String hwInfo = query(CcMinerCommand.HWINFO);
+        Arrays
+                .stream(hwInfo.split(REGION_SEPARATOR))
+                .filter((info) -> info.contains("GPU"))
+                .map(CcMiner::split)
+                .filter((info) -> info.containsKey("GPU"))
+                .forEach((info) ->
+                        addGpu(
+                                info,
+                                builder));
     }
 
     /**
      * Queries for pool info and adds them to the provided builder.
      *
      * @param builder The builder.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getPools(final MinerStats.Builder builder) {
-        query(CcMinerCommand.POOL)
-                .ifPresent((pool) -> {
-                    final Map<String, String> values = split(pool);
-                    builder.addPool(
-                            new Pool.Builder()
-                                    .setName(values.get("URL").split("://")[1])
-                                    .setPriority(1)
-                                    .setStatus(
-                                            true,
-                                            Integer.parseInt(values.get("UPTIME")) > 0)
-                                    .setCounts(
-                                            values.get("ACC"),
-                                            values.get("REJ"),
-                                            values.get("STALE"))
-                                    .build());
-                });
+    private void getPools(final MinerStats.Builder builder)
+            throws MinerException {
+        final String pool = query(CcMinerCommand.POOL);
+        final Map<String, String> values = split(pool);
+        builder.addPool(
+                new Pool.Builder()
+                        .setName(values.get("URL").split("://")[1])
+                        .setPriority(1)
+                        .setStatus(
+                                true,
+                                Integer.parseInt(values.get("UPTIME")) > 0)
+                        .setCounts(
+                                values.get("ACC"),
+                                values.get("REJ"),
+                                values.get("STALE"))
+                        .build());
     }
 
     /**
      * Queries for summary info and adds it to the provided builder.
      *
      * @param rigBuilder The builder.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void getSummary(final Rig.Builder rigBuilder) {
-        query(CcMinerCommand.SUMMARY)
-                .ifPresent((summary) -> {
-                    final Map<String, String> values = split(summary);
-                    final BigDecimal hashRate =
-                            new BigDecimal(values.get("KHS"))
-                                    .multiply(new BigDecimal(1000));
-                    rigBuilder
-                            .setName(values.get("NAME"))
-                            .setHashRate(hashRate);
-                });
+    private void getSummary(final Rig.Builder rigBuilder)
+            throws MinerException {
+        final String summary = query(CcMinerCommand.SUMMARY);
+        final Map<String, String> values = split(summary);
+        final BigDecimal hashRate =
+                new BigDecimal(values.get("KHS"))
+                        .multiply(new BigDecimal(1000));
+        rigBuilder
+                .setName(values.get("NAME"))
+                .setHashRate(hashRate);
     }
 
     /**
@@ -232,9 +237,12 @@ public class CcMiner
      * @param command The command to run.
      *
      * @return The result, if one exists.
+     *
+     * @throws MinerException on failure to query.
      */
-    private Optional<String> query(final CcMinerCommand command) {
-        String response = null;
+    private String query(final CcMinerCommand command)
+            throws MinerException {
+        String response;
 
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -251,8 +259,10 @@ public class CcMiner
                 TimeUnit.SECONDS)) {
             response = request.getResponse();
             LOG.debug("Received response: {}", response);
+        } else {
+            throw new MinerException("Failed to obtain a response");
         }
 
-        return Optional.ofNullable(response);
+        return response;
     }
 }

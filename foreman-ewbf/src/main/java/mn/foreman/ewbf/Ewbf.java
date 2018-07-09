@@ -6,6 +6,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -21,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -98,7 +98,8 @@ public class Ewbf
     }
 
     @Override
-    public MinerStats getStats() {
+    public MinerStats getStats()
+            throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
                 this.name,
                 this.apiIp,
@@ -182,52 +183,57 @@ public class Ewbf
      * builder} with the rig.
      *
      * @param statsBuilder The builder to update.
+     *
+     * @throws MinerException on failure to query.
      */
-    private void addStats(final MinerStats.Builder statsBuilder) {
-        query().ifPresent((stats) -> {
-            final long acceptedShares =
-                    sumResultAttribute(
-                            stats.results,
-                            (result) -> (long) result.acceptedShares);
-            final long rejectedShares =
-                    sumResultAttribute(
-                            stats.results,
-                            (result) -> (long) result.rejectedShares);
-            final long hashRate =
-                    sumResultAttribute(
-                            stats.results,
-                            (result) -> (long) result.speedSps);
-            statsBuilder
-                    .addPool(
-                            new Pool.Builder()
-                                    .setName(stats.currentServer)
-                                    .setPriority(0)
-                                    .setStatus(
-                                            true,
-                                            stats.serverStatus == 2)
-                                    .setCounts(
-                                            acceptedShares,
-                                            rejectedShares,
-                                            0L)
-                                    .build());
-            final Rig.Builder rigBuilder =
-                    new Rig.Builder()
-                            .setName("ewbf")
-                            .setHashRate(new BigDecimal(hashRate));
-            stats.results.forEach(
-                    (result) ->
-                            addGpu(result, rigBuilder));
-            statsBuilder.addRig(rigBuilder.build());
-        });
+    private void addStats(final MinerStats.Builder statsBuilder)
+            throws MinerException {
+        final Stat stats = query();
+        final long acceptedShares =
+                sumResultAttribute(
+                        stats.results,
+                        (result) -> (long) result.acceptedShares);
+        final long rejectedShares =
+                sumResultAttribute(
+                        stats.results,
+                        (result) -> (long) result.rejectedShares);
+        final long hashRate =
+                sumResultAttribute(
+                        stats.results,
+                        (result) -> (long) result.speedSps);
+        statsBuilder
+                .addPool(
+                        new Pool.Builder()
+                                .setName(stats.currentServer)
+                                .setPriority(0)
+                                .setStatus(
+                                        true,
+                                        stats.serverStatus == 2)
+                                .setCounts(
+                                        acceptedShares,
+                                        rejectedShares,
+                                        0L)
+                                .build());
+        final Rig.Builder rigBuilder =
+                new Rig.Builder()
+                        .setName("ewbf")
+                        .setHashRate(new BigDecimal(hashRate));
+        stats.results.forEach(
+                (result) ->
+                        addGpu(result, rigBuilder));
+        statsBuilder.addRig(rigBuilder.build());
     }
 
     /**
      * Queries the EWBF API.
      *
      * @return The {@link Stat}, if one exists.
+     *
+     * @throws MinerException on failure to query.
      */
-    private Optional<Stat> query() {
-        Stat stat = null;
+    private Stat query()
+            throws MinerException {
+        Stat stat;
 
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -252,9 +258,12 @@ public class Ewbf
                                 Stat.class);
             } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while querying", ioe);
+                throw new MinerException(ioe);
             }
+        } else {
+            throw new MinerException("Failed to obtain a response");
         }
 
-        return Optional.ofNullable(stat);
+        return stat;
     }
 }
