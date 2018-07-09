@@ -1,5 +1,5 @@
-apiKey: "<YOUR_API_KEY>"
-foremanApiUrl: "http://127.0.0.1:8080/api"
+apiKey: "<your_api_key>"
+foremanApiUrl: "https://dashboard.foreman.mn/api/metrics/<your_client_id>"
 pollFrequencyInSeconds: 60
 
 antminers:
@@ -21,41 +21,60 @@ bminers:
 #    apiIp:   "192.168.3.196"
 #    apiPort: 1880
 
-cgminers:
+ccminers:
 # Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 4068
-  - name:    "cgminer 1"
-    apiIp:   "127.0.0.1"
-    apiPort: 42069
-
-  - name:    "cgminer 2"
-    apiIp:   "127.0.0.1"
-    apiPort: 42070
 
 claymores:
 # Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
-#    apiPort: 4068
+#    apiPort: 3333
 #
 # If you've configured claymore to use an API password,
 # you may provide that as an additional parameter:
 #
+#  - name:        "GPU Rig 1"
+#    apiIp:       "192.168.3.196"
+#    apiPort:     3333
+#    apiPassword: "password"
+
+dstms:
+# Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
-#    apiPort: 4068
+#    apiPort: 2222
+
+ewbfs:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 42000
+
+excavators:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 3456
 
 phoenix:
 # Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
-#    apiPort: 4068
+#    apiPort: 3333
 #
 # If you've configured phoenix to use an API password,
 # you may provide that as an additional parameter:
 #
+#  - name:        "GPU Rig 1"
+#    apiIp:       "192.168.3.196"
+#    apiPort:     3333
+#    apiPassword: "password"
+
+xmrigs:
+# Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
-#    apiPort: 4068
+#    apiPort: 44444

@@ -4,12 +4,16 @@ import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
+import mn.foreman.dstm.DstmFactory;
+import mn.foreman.ewbf.EwbfFactory;
+import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
+import mn.foreman.xmrig.XmrigFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,11 +70,27 @@ public class RunMe {
                 createMiners(
                         this.configuration.getClaymoreConfigs(),
                         new ClaymoreFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getDstmConfigs(),
+                        new DstmFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getEwbfConfigs(),
+                        new EwbfFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getExcavatorConfigs(),
+                        new ExcavatorFactory()));
         // PhoenixMiner uses the same API as Claymore
         minerList.addAll(
                 createMiners(
                         this.configuration.getPhoenixConfigs(),
                         new ClaymoreFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getXmrigConfigs(),
+                        new XmrigFactory()));
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();

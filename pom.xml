@@ -86,6 +86,21 @@
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
+                <artifactId>foreman-dstm</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-ewbf</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-excavator</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
                 <artifactId>foreman-excavator</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
@@ -114,6 +129,11 @@
                 <artifactId>foreman-util</artifactId>
                 <version>${foreman.version}</version>
                 <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-xmrig</artifactId>
+                <version>${foreman.version}</version>
             </dependency>
 
             <!-- Netty -->

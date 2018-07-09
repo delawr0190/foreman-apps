@@ -45,6 +45,27 @@ public interface Configuration {
     List<Map<String, String>> getClaymoreConfigs();
 
     /**
+     * Returns the dstm configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getDstmConfigs();
+
+    /**
+     * Returns the ewbf configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getEwbfConfigs();
+
+    /**
+     * Returns the excavator configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getExcavatorConfigs();
+
+    /**
      * Returns the FOREMAN API URL.
      *
      * @return The FOREMAN API URL.
@@ -64,4 +85,11 @@ public interface Configuration {
      * @return The poll frequency in seconds.
      */
     int getPollFrequencyInSeconds();
+
+    /**
+     * Returns the xmrig configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getXmrigConfigs();
 }

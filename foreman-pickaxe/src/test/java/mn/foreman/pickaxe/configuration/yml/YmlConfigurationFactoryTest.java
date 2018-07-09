@@ -3,13 +3,16 @@ package mn.foreman.pickaxe.configuration.yml;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.configuration.ConfigurationFactory;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 import static junit.framework.TestCase.assertEquals;
+import static junit.framework.TestCase.assertTrue;
 
 /** Unit tests for the {@link YmlConfiguration}. */
 public class YmlConfigurationFactoryTest {
@@ -34,40 +37,125 @@ public class YmlConfigurationFactoryTest {
                 60,
                 configuration.getPollFrequencyInSeconds());
 
+        int minerIndex = 1;
+
         final List<Map<String, String>> antConfigs =
                 configuration.getAntminerConfigs();
         assertEquals(
                 2,
                 antConfigs.size());
+        validate(
+                minerIndex++,
+                antConfigs.get(0),
+                ImmutableMap.of(
+                        "type",
+                        "antminer_l3"));
+        validate(
+                minerIndex++,
+                antConfigs.get(1),
+                ImmutableMap.of(
+                        "type",
+                        "antminer_b3"));
 
-        final Map<String, String> antConfig1 =
-                antConfigs.get(0);
-        assertEquals(
-                "miner 1",
-                antConfig1.get("name"));
-        assertEquals(
-                "antminer_l3",
-                antConfig1.get("type"));
-        assertEquals(
-                "127.0.0.1",
-                antConfig1.get("apiIp"));
-        assertEquals(
-                "42069",
-                antConfig1.get("apiPort"));
+        validateGeneric(
+                minerIndex++,
+                configuration.getBminerConfigs());
 
-        final Map<String, String> antConfig2 =
-                antConfigs.get(1);
+        validateGeneric(
+                minerIndex++,
+                configuration.getCcminerConfigs());
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getClaymoreConfigs(),
+                ImmutableMap.of(
+                        "apiPassword",
+                        "password"));
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getDstmConfigs());
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getEwbfConfigs());
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getExcavatorConfigs());
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getPhoenixConfigs(),
+                ImmutableMap.of(
+                        "apiPassword",
+                        "password"));
+
+        validateGeneric(
+                minerIndex,
+                configuration.getXmrigConfigs());
+    }
+
+    /**
+     * Validates that the provided configuration map contains the expected
+     * values.
+     *
+     * @param index      The miner index.
+     * @param config     The configuration.
+     * @param additional Anything additional that's expected to be in the
+     *                   config.
+     */
+    private static void validate(
+            final int index,
+            final Map<String, String> config,
+            final Map<String, String> additional) {
         assertEquals(
-                "miner 2",
-                antConfig2.get("name"));
+                "miner " + index,
+                config.get("name"));
         assertEquals(
-                "antminer_b3",
-                antConfig2.get("type"));
+                "0.0.0." + index,
+                config.get("apiIp"));
         assertEquals(
-                "128.0.0.1",
-                antConfig2.get("apiIp"));
+                Integer.toString(index),
+                config.get("apiPort"));
+        assertTrue(
+                config.entrySet().containsAll(additional.entrySet()));
+    }
+
+    /**
+     * Validates that the provided configurations contain the expected values.
+     *
+     * @param index      The miner index.
+     * @param configs    The configurations.
+     * @param additional Anything additional that's expected to be in the
+     *                   config.
+     */
+    private static void validateGeneric(
+            final int index,
+            final List<Map<String, String>> configs,
+            final Map<String, String> additional) {
         assertEquals(
-                "42070",
-                antConfig2.get("apiPort"));
+                1,
+                configs.size());
+        final Map<String, String> config = configs.get(0);
+        validate(
+                index,
+                config,
+                additional);
+    }
+
+    /**
+     * Validates that the provided configurations contain the expected values.
+     *
+     * @param index   The miner index.
+     * @param configs The configurations.
+     */
+    private static void validateGeneric(
+            final int index,
+            final List<Map<String, String>> configs) {
+        validateGeneric(
+                index,
+                configs,
+                Collections.emptyMap());
     }
 }

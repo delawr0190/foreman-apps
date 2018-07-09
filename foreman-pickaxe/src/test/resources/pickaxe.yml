@@ -5,15 +5,52 @@ pollFrequencyInSeconds: 60
 antminers:
   - name:    "miner 1"
     type:    "antminer_l3"
-    apiIp:   "127.0.0.1"
-    apiPort: 42069
+    apiIp:   "0.0.0.1"
+    apiPort: 1
 
   - name:    "miner 2"
     type:    "antminer_b3"
-    apiIp:   "128.0.0.1"
-    apiPort: 42070
+    apiIp:   "0.0.0.2"
+    apiPort: 2
+
+bminers:
+  - name:    "miner 3"
+    apiIp:   "0.0.0.3"
+    apiPort: 3
 
 ccminers:
-  - name:    "miner 3"
-    apiIp:   "129.0.0.1"
-    apiPort: 42071
+  - name:    "miner 4"
+    apiIp:   "0.0.0.4"
+    apiPort: 4
+
+claymores:
+  - name:        "miner 5"
+    apiIp:       "0.0.0.5"
+    apiPort:     5
+    apiPassword: "password"
+
+dstms:
+  - name:    "miner 6"
+    apiIp:   "0.0.0.6"
+    apiPort: 6
+
+ewbfs:
+  - name:    "miner 7"
+    apiIp:   "0.0.0.7"
+    apiPort: 7
+
+excavators:
+  - name:    "miner 8"
+    apiIp:   "0.0.0.8"
+    apiPort: 8
+
+phoenix:
+  - name:        "miner 9"
+    apiIp:       "0.0.0.9"
+    apiPort:     9
+    apiPassword: "password"
+
+xmrigs:
+  - name:    "miner 10"
+    apiIp:   "0.0.0.10"
+    apiPort: 10
