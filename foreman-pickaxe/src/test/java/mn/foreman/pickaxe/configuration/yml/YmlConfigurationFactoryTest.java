@@ -92,8 +92,11 @@ public class YmlConfigurationFactoryTest {
                         "password"));
 
         validateGeneric(
-                minerIndex,
+                minerIndex++,
                 configuration.getXmrigConfigs());
+        validateGeneric(
+                minerIndex,
+                configuration.getZenemyConfigs());
     }
 
     /**

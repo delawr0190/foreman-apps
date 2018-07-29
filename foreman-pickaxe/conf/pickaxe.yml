@@ -78,3 +78,9 @@ xmrigs:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 44444
+
+zenemys:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068

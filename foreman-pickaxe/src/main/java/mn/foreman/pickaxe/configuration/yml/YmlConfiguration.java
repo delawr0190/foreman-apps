@@ -50,6 +50,9 @@ public class YmlConfiguration
     /** The xmrig configs. */
     private final List<Map<String, String>> xmrigConfigs;
 
+    /** The zenemy configurations. */
+    private final List<Map<String, String>> zenemyConfigs;
+
     /**
      * Constructor.
      *
@@ -80,6 +83,7 @@ public class YmlConfiguration
             @JsonProperty("excavators") final List<Map<String, String>> excavatorConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
+            @JsonProperty("zenemys") final List<Map<String, String>> zenemyConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
         Validate.notEmpty(
                 foremanApiUrl,
@@ -101,6 +105,7 @@ public class YmlConfiguration
         this.excavatorConfigs = toConfigs(excavatorConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
+        this.zenemyConfigs = toConfigs(zenemyConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
 
@@ -162,6 +167,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getXmrigConfigs() {
         return Collections.unmodifiableList(this.xmrigConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getZenemyConfigs() {
+        return Collections.unmodifiableList(this.zenemyConfigs);
     }
 
     /**

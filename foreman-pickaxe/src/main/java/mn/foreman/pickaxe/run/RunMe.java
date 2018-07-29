@@ -91,6 +91,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getXmrigConfigs(),
                         new XmrigFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getZenemyConfigs(),
+                        new CcminerFactory()));
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();

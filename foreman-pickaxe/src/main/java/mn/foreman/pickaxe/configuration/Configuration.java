@@ -92,4 +92,11 @@ public interface Configuration {
      * @return The configurations.
      */
     List<Map<String, String>> getXmrigConfigs();
+
+    /**
+     * Returns the zenemy configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getZenemyConfigs();
 }

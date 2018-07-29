@@ -54,3 +54,8 @@ xmrigs:
   - name:    "miner 10"
     apiIp:   "0.0.0.10"
     apiPort: 10
+
+zenemys:
+  - name:    "miner 11"
+    apiIp:   "0.0.0.11"
+    apiPort: 11
