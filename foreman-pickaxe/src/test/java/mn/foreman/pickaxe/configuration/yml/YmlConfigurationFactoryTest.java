@@ -78,6 +78,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getEthminerConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getEwbfConfigs());
 
         validateGeneric(

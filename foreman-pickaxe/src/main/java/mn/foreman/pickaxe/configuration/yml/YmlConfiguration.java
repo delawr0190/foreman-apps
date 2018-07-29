@@ -32,6 +32,9 @@ public class YmlConfiguration
     /** The dstm configurations. */
     private final List<Map<String, String>> dstmConfigs;
 
+    /** The ethminer configurations. */
+    private final List<Map<String, String>> ethminerConfigs;
+
     /** The ewbf configs. */
     private final List<Map<String, String>> ewbfConfigs;
 
@@ -65,6 +68,7 @@ public class YmlConfiguration
      * @param ccminerConfigs         The ccminer configs.
      * @param claymoreConfigs        The claymore configs.
      * @param dstmConfigs            The dstm configs.
+     * @param ethminerConfigs        The ethminer configs.
      * @param ewbfConfigs            The ewbf configs.
      * @param excavatorConfigs       The excavator configs.
      * @param phoenixConfigs         The phoenix configs.
@@ -79,6 +83,7 @@ public class YmlConfiguration
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
             @JsonProperty("dstms") final List<Map<String, String>> dstmConfigs,
+            @JsonProperty("ethminers") final List<Map<String, String>> ethminerConfigs,
             @JsonProperty("ewbfs") final List<Map<String, String>> ewbfConfigs,
             @JsonProperty("excavators") final List<Map<String, String>> excavatorConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
@@ -101,6 +106,7 @@ public class YmlConfiguration
         this.ccminerConfigs = toConfigs(ccminerConfigs);
         this.claymoreConfigs = toConfigs(claymoreConfigs);
         this.dstmConfigs = toConfigs(dstmConfigs);
+        this.ethminerConfigs = toConfigs(ethminerConfigs);
         this.ewbfConfigs = toConfigs(ewbfConfigs);
         this.excavatorConfigs = toConfigs(excavatorConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
@@ -137,6 +143,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getDstmConfigs() {
         return Collections.unmodifiableList(this.dstmConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getEthminerConfigs() {
+        return Collections.unmodifiableList(this.ethminerConfigs);
     }
 
     @Override

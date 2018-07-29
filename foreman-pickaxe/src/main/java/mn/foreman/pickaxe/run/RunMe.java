@@ -5,6 +5,7 @@ import mn.foreman.bminer.BminerFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.dstm.DstmFactory;
+import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.model.MetricsReport;
@@ -74,6 +75,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getDstmConfigs(),
                         new DstmFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getEthminerConfigs(),
+                        new EthminerFactory()));
         minerList.addAll(
                 createMiners(
                         this.configuration.getEwbfConfigs(),

@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 
 /** Unit tests for {@link Response}. */
 public class ResponseTest {
@@ -35,7 +34,6 @@ public class ResponseTest {
                         .readValue(
                                 message,
                                 Response.class);
-        assertNull(response.error);
         assertEquals(
                 0,
                 response.id);

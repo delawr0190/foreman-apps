@@ -104,6 +104,7 @@ public class ConnectionFactory {
                                     final ChannelHandlerContext context,
                                     final Object msg) {
                                 request.setResponse((String) msg);
+                                context.close();
                             }
 
                             @Override

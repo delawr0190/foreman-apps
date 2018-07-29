@@ -52,6 +52,13 @@ public interface Configuration {
     List<Map<String, String>> getDstmConfigs();
 
     /**
+     * Returns the ethminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getEthminerConfigs();
+
+    /**
      * Returns the ewbf configurations.
      *
      * @return The configurations.

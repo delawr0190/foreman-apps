@@ -47,6 +47,20 @@ dstms:
 #    apiIp:   "192.168.3.196"
 #    apiPort: 2222
 
+ethminers:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 3333
+#
+# If you've configured ethminer to use an API password,
+# you may provide that as an additional parameter:
+#
+#  - name:        "GPU Rig 1"
+#    apiIp:       "192.168.3.196"
+#    apiPort:     3333
+#    apiPassword: "password"
+
 ewbfs:
 # Example:
 #  - name:    "GPU Rig 1"

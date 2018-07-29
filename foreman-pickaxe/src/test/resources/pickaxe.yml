@@ -34,28 +34,34 @@ dstms:
     apiIp:   "0.0.0.6"
     apiPort: 6
 
-ewbfs:
-  - name:    "miner 7"
-    apiIp:   "0.0.0.7"
-    apiPort: 7
+ethminers:
+  - name:        "miner 7"
+    apiIp:       "0.0.0.7"
+    apiPort:     7
+    apiPassword: "password"
 
-excavators:
+ewbfs:
   - name:    "miner 8"
     apiIp:   "0.0.0.8"
     apiPort: 8
 
+excavators:
+  - name:    "miner 9"
+    apiIp:   "0.0.0.9"
+    apiPort: 9
+
 phoenix:
-  - name:        "miner 9"
-    apiIp:       "0.0.0.9"
-    apiPort:     9
+  - name:        "miner 10"
+    apiIp:       "0.0.0.10"
+    apiPort:     10
     apiPassword: "password"
 
 xmrigs:
-  - name:    "miner 10"
-    apiIp:   "0.0.0.10"
-    apiPort: 10
-
-zenemys:
   - name:    "miner 11"
     apiIp:   "0.0.0.11"
     apiPort: 11
+
+zenemys:
+  - name:    "miner 12"
+    apiIp:   "0.0.0.12"
+    apiPort: 12
