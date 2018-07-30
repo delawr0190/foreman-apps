@@ -97,7 +97,12 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getSrbminerConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getXmrigConfigs());
+
         validateGeneric(
                 minerIndex,
                 configuration.getZenemyConfigs());

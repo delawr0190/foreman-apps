@@ -56,12 +56,17 @@ phoenix:
     apiPort:     10
     apiPassword: "password"
 
-xmrigs:
-  - name:    "miner 11"
-    apiIp:   "0.0.0.11"
-    apiPort: 11
+srbminers:
+  - name:        "miner 11"
+    apiIp:       "0.0.0.11"
+    apiPort:     11
 
-zenemys:
+xmrigs:
   - name:    "miner 12"
     apiIp:   "0.0.0.12"
     apiPort: 12
+
+zenemys:
+  - name:    "miner 13"
+    apiIp:   "0.0.0.13"
+    apiPort: 13

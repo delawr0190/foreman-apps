@@ -87,6 +87,12 @@ phoenix:
 #    apiPort:     3333
 #    apiPassword: "password"
 
+srbminers:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 21555
+
 xmrigs:
 # Example:
 #  - name:    "GPU Rig 1"

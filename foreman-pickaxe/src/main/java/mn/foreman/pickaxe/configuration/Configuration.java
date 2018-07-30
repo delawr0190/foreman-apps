@@ -94,6 +94,13 @@ public interface Configuration {
     int getPollFrequencyInSeconds();
 
     /**
+     * Returns the srbminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getSrbminerConfigs();
+
+    /**
      * Returns the xmrig configurations.
      *
      * @return The configurations.

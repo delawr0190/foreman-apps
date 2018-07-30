@@ -50,6 +50,9 @@ public class YmlConfiguration
     /** How frequently to poll, in seconds. */
     private final int pollFrequencyInSeconds;
 
+    /** The srbminer configurations. */
+    private final List<Map<String, String>> srbminerConfigs;
+
     /** The xmrig configs. */
     private final List<Map<String, String>> xmrigConfigs;
 
@@ -72,6 +75,7 @@ public class YmlConfiguration
      * @param ewbfConfigs            The ewbf configs.
      * @param excavatorConfigs       The excavator configs.
      * @param phoenixConfigs         The phoenix configs.
+     * @param srbminerConfigs        The srbminer configs.
      * @param xmrigConfigs           The xmrig configs.
      * @param pollFrequencyInSeconds How frequently to poll, in seconds.
      */
@@ -87,6 +91,7 @@ public class YmlConfiguration
             @JsonProperty("ewbfs") final List<Map<String, String>> ewbfConfigs,
             @JsonProperty("excavators") final List<Map<String, String>> excavatorConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
+            @JsonProperty("srbminers") final List<Map<String, String>> srbminerConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
             @JsonProperty("zenemys") final List<Map<String, String>> zenemyConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
@@ -110,6 +115,7 @@ public class YmlConfiguration
         this.ewbfConfigs = toConfigs(ewbfConfigs);
         this.excavatorConfigs = toConfigs(excavatorConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
+        this.srbminerConfigs = toConfigs(srbminerConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
         this.zenemyConfigs = toConfigs(zenemyConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
@@ -173,6 +179,11 @@ public class YmlConfiguration
     @Override
     public int getPollFrequencyInSeconds() {
         return this.pollFrequencyInSeconds;
+    }
+
+    @Override
+    public List<Map<String, String>> getSrbminerConfigs() {
+        return Collections.unmodifiableList(this.srbminerConfigs);
     }
 
     @Override
