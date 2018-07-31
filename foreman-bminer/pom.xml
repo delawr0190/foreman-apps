@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-bminer</artifactId>
-    <version>1.4.0</version>
+    <version>1.5.0-SNAPSHOT</version>
     <name>foreman: foreman-bminer</name>
 
     <packaging>jar</packaging>
