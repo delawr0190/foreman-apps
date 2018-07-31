@@ -1,5 +1,6 @@
 package mn.foreman.excavator.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -78,6 +79,7 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Devices
         implements Response {
 
@@ -94,6 +96,7 @@ public class Devices
     public int id;
 
     /** Provides a model representation of the {@link Device} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Device {
 
         /** The {@link Details}. */
@@ -184,6 +187,7 @@ public class Devices
          * Provides a model representation of the {@link Devices'} details
          * object.
          */
+        @JsonIgnoreProperties(ignoreUnknown = true)
         public static class Details {
 
             /** The bus ID. */

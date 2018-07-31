@@ -164,12 +164,10 @@ public class Excavator
             final MinerStats.Builder builder,
             final Subscribe subscribe,
             final Algorithms algorithms) {
-        int totalShares = 0;
         int totalAccepted = 0;
         int totalRejected = 0;
         BigDecimal hashRate = BigDecimal.ZERO;
         for (final Algorithms.Algorithm algorithm : algorithms.algorithms) {
-            totalShares += algorithm.sentShares;
             totalAccepted += algorithm.acceptedShares;
             totalRejected += algorithm.rejectedShares;
             hashRate = hashRate.add(algorithm.speed);
@@ -184,7 +182,7 @@ public class Excavator
                         .setCounts(
                                 totalAccepted,
                                 totalRejected,
-                                totalShares - totalAccepted - totalRejected)
+                                0)
                         .build());
         return hashRate;
     }
@@ -278,7 +276,7 @@ public class Excavator
                     new ApiRequestImpl(
                             this.apiIp,
                             this.apiPort,
-                            requestJson);
+                            requestJson + "\n");
 
             final Connection connection =
                     ConnectionFactory.createJsonConnection(

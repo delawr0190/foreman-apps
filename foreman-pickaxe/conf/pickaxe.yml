@@ -72,6 +72,8 @@ excavators:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 3456
+#
+# Excavator must be ran with "-p <port>" and "-i <ip_address>" arguments.
 
 phoenix:
 # Example:

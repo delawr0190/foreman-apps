@@ -91,7 +91,7 @@ public class SimpleApiConnection
                 .group(this.eventLoopGroup)
                 .channel(NioSocketChannel.class)
                 .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
-                        (int) TimeUnit.SECONDS.toMillis(1))
+                        (int) TimeUnit.SECONDS.toMillis(5))
                 .handler(new ChannelInitializer<SocketChannel>() {
 
                     @Override

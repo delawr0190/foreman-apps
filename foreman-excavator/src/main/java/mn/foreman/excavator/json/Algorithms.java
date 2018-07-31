@@ -1,5 +1,6 @@
 package mn.foreman.excavator.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -62,6 +63,7 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Algorithms
         implements Response {
 
@@ -78,6 +80,7 @@ public class Algorithms
     public int id;
 
     /** Provides a model representation of the {@link Algorithm} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Algorithm {
 
         /** The number of accepted shares. */
@@ -111,10 +114,6 @@ public class Algorithms
         /** The number of rejected shares. */
         @JsonProperty("rejected_shares")
         public int rejectedShares;
-
-        /** The total number of shares sent. */
-        @JsonProperty("sent_shares")
-        public int sentShares;
 
         /** The speed. */
         @JsonProperty("speed")

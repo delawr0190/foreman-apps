@@ -28,11 +28,11 @@ for %%i in ("%PICKAXE_HOME%\lib\*.jar") do (
 )
 
 rem # Set JVM parameters
-set JVM_PARAMS=-Dlogback.configurationFile=%PICKAXE_HOME%\etc\logback.xml
-set JVM_PARAMS=%JVM_PARAMS% -DLOG_LOCATION=%PICKAXE_HOME%\logs
+set JVM_PARAMS=-Dlogback.configurationFile="%PICKAXE_HOME%\etc\logback.xml"
+set JVM_PARAMS=%JVM_PARAMS% -DLOG_LOCATION="%PICKAXE_HOME%\logs"
 
 rem # Set command line arguments
-set JVM_COMMAND_LINE=-c %PICKAXE_HOME%\conf\pickaxe.yml
+set JVM_COMMAND_LINE=-c "%PICKAXE_HOME%\conf\pickaxe.yml"
 
 echo Starting pickaxe...
 %JAVA% %JVM_OPTS% %JVM_PARAMS% -cp %CLASSPATH% mn.foreman.pickaxe.Main %JVM_COMMAND_LINE%
