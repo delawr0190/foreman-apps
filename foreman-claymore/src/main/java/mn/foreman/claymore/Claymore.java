@@ -153,9 +153,13 @@ public class Claymore
             final String[] invalidShares,
             final MinerStats.Builder builder) {
         for (int i = 0; i < pools.length; i++) {
+            String poolName = pools[i];
+            if (poolName.contains("//")) {
+                poolName = poolName.split("//")[1];
+            }
             builder.addPool(
                     new Pool.Builder()
-                            .setName(pools[i])
+                            .setName(poolName)
                             .setStatus(true, true)
                             .setPriority(0)
                             .setCounts(
@@ -224,8 +228,9 @@ public class Claymore
     private static BigDecimal toHashRate(
             final String ethRate,
             final String dcrRate) {
-        return new BigDecimal(ethRate)
-                .add(new BigDecimal(dcrRate));
+        // Hash rate is in KHs
+        return new BigDecimal(ethRate).multiply(new BigDecimal(1000))
+                .add(new BigDecimal(dcrRate).multiply(new BigDecimal(1000)));
     }
 
     /**
@@ -269,7 +274,7 @@ public class Claymore
         final List<String> temps = new LinkedList<>();
         final List<String> fans = new LinkedList<>();
         final String[] tempsAndFans = results.get(6).split(";");
-        for (int i = 0; i < tempsAndFans.length / 2; i += 2) {
+        for (int i = 0; i < tempsAndFans.length; i += 2) {
             temps.add(tempsAndFans[i]);
             fans.add(tempsAndFans[i + 1]);
         }
@@ -281,7 +286,7 @@ public class Claymore
                 pools,
                 new String[]{ethTotalShares, dcrTotalShares},
                 new String[]{ethRejectedShares, dcrRejectedShares},
-                new String[]{shares[1], shares[3]},
+                new String[]{shares[0], shares[2]},
                 builder);
         addRig(
                 minerVersion,
@@ -299,7 +304,7 @@ public class Claymore
      */
     private String makeCommand() {
         return String.format(
-                "{\"id\":%d,\"jsonrpc\":\"%s\",\"method\":\"%s\"%s}",
+                "{\"id\":%d,\"jsonrpc\":\"%s\",\"method\":\"%s\"%s}\n",
                 0,
                 "2.0",
                 "miner_getstat1",

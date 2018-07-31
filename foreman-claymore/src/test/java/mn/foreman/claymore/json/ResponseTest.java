@@ -34,9 +34,6 @@ public class ResponseTest {
                         .readValue(
                                 message,
                                 Response.class);
-        assertEquals(
-                0,
-                response.id);
 
         final List<String> results = response.result;
         assertEquals(

@@ -14,12 +14,16 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link Claymore} against a fake API. */
-public class ClaymoreITest
+/**
+ * Runs an integration tests using {@link Claymore} against a fake API.
+ *
+ * Phoenix returns a response very similar to {@link Claymore}.
+ */
+public class PhoenixITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public ClaymoreITest() {
+    public PhoenixITest() {
         super(
                 new Claymore(
                         "claymore",
@@ -31,32 +35,32 @@ public class ClaymoreITest
                         ImmutableMap.of(
                                 "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
                                 new RpcHandler(
-                                        "{\"id\": 0, \"error\": null, \"result\": [\"11.8 - ETH\", \"0\", \"235321;2;0\", \"29482;29474;29427;29477;29523;29523;29533;28878\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"60;60;56;56;57;57;57;57;58;58;59;58;57;57;58;58\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"]}"))),
+                                        "{\"id\":0,\"jsonrpc\":\"2.0\",\"result\":[\"PM 3.0c - ETH\", \"0\", \"237936;1;0\", \"29792;29791;29689;29787;29793;29794;29793;29494\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"50;49;46;47;47;48;47;47;48;48;48;48;47;47;48;48\", \"ssl://eu1.ethermine.org:5555\", \"0;0;0;0\"]}\n"))),
                 new MinerStats.Builder()
                         .setName("claymore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
                         .addPool(
                                 new Pool.Builder()
-                                        .setName("eth-eu1.nanopool.org:9999")
+                                        .setName("eu1.ethermine.org:5555")
                                         .setStatus(true, true)
                                         .setPriority(0)
-                                        .setCounts(2, 0, 0)
+                                        .setCounts(1, 0, 0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("claymore_11.8 - ETH")
-                                        .setHashRate(new BigDecimal("235321000"))
+                                        .setName("claymore_PM 3.0c - ETH")
+                                        .setHashRate(new BigDecimal("237936000"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
-                                                        .setTemp(60)
+                                                        .setTemp(50)
                                                         .setIndex(0)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(60)
+                                                                        .addSpeed(49)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -68,13 +72,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 1")
-                                                        .setTemp(56)
+                                                        .setTemp(46)
                                                         .setIndex(1)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(56)
+                                                                        .addSpeed(47)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -86,13 +90,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 2")
-                                                        .setTemp(57)
+                                                        .setTemp(47)
                                                         .setIndex(2)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(57)
+                                                                        .addSpeed(48)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -104,13 +108,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 3")
-                                                        .setTemp(57)
+                                                        .setTemp(47)
                                                         .setIndex(3)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(57)
+                                                                        .addSpeed(47)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -122,13 +126,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 4")
-                                                        .setTemp(58)
+                                                        .setTemp(48)
                                                         .setIndex(4)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(58)
+                                                                        .addSpeed(48)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -140,13 +144,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 5")
-                                                        .setTemp(59)
+                                                        .setTemp(48)
                                                         .setIndex(5)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(58)
+                                                                        .addSpeed(48)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -158,13 +162,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 6")
-                                                        .setTemp(57)
+                                                        .setTemp(47)
                                                         .setIndex(6)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(57)
+                                                                        .addSpeed(47)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -176,13 +180,13 @@ public class ClaymoreITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 7")
-                                                        .setTemp(58)
+                                                        .setTemp(48)
                                                         .setIndex(7)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(58)
+                                                                        .addSpeed(48)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(

@@ -69,7 +69,6 @@ public class FakeRpcMinerServer
                         }
                         socket.close();
                     } catch (final IOException ioe) {
-                        LOG.warn("Exception occurred", ioe);
                         break;
                     }
                 }

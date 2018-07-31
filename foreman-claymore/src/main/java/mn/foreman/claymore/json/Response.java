@@ -1,5 +1,6 @@
 package mn.foreman.claymore.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -37,15 +38,8 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
-
-    /** The error. */
-    @JsonProperty("error")
-    public String error;
-
-    /** The id. */
-    @JsonProperty("id")
-    public int id;
 
     /** The result. */
     @JsonProperty("result")
