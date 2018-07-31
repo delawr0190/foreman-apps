@@ -74,6 +74,10 @@ public class RunMe {
                         new ClaymoreFactory()));
         minerList.addAll(
                 createMiners(
+                        this.configuration.getCryptoDredgeConfigs(),
+                        new CcminerFactory()));
+        minerList.addAll(
+                createMiners(
                         this.configuration.getDstmConfigs(),
                         new DstmFactory()));
         minerList.addAll(

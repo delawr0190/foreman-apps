@@ -45,6 +45,13 @@ public interface Configuration {
     List<Map<String, String>> getClaymoreConfigs();
 
     /**
+     * Returns the cryptodredge configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getCryptoDredgeConfigs();
+
+    /**
      * Returns the dstm configurations.
      *
      * @return The configurations.

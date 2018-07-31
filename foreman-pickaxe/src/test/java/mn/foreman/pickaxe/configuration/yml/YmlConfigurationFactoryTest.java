@@ -74,6 +74,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getCryptoDredgeConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getDstmConfigs());
 
         validateGeneric(

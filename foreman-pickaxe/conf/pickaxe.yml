@@ -41,6 +41,12 @@ claymores:
 #    apiPort:     3333
 #    apiPassword: "password"
 
+cryptodredges:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4068
+
 dstms:
 # Example:
 #  - name:    "GPU Rig 1"

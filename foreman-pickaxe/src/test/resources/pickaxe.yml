@@ -29,44 +29,49 @@ claymores:
     apiPort:     5
     apiPassword: "password"
 
-dstms:
+cryptodredges:
   - name:    "miner 6"
     apiIp:   "0.0.0.6"
     apiPort: 6
 
+dstms:
+  - name:    "miner 7"
+    apiIp:   "0.0.0.7"
+    apiPort: 7
+
 ethminers:
-  - name:        "miner 7"
-    apiIp:       "0.0.0.7"
-    apiPort:     7
+  - name:        "miner 8"
+    apiIp:       "0.0.0.8"
+    apiPort:     8
     apiPassword: "password"
 
 ewbfs:
-  - name:    "miner 8"
-    apiIp:   "0.0.0.8"
-    apiPort: 8
-
-excavators:
   - name:    "miner 9"
     apiIp:   "0.0.0.9"
     apiPort: 9
 
-phoenix:
-  - name:        "miner 10"
-    apiIp:       "0.0.0.10"
-    apiPort:     10
-    apiPassword: "password"
+excavators:
+  - name:    "miner 10"
+    apiIp:   "0.0.0.10"
+    apiPort: 10
 
-srbminers:
+phoenix:
   - name:        "miner 11"
     apiIp:       "0.0.0.11"
     apiPort:     11
+    apiPassword: "password"
 
-xmrigs:
+srbminers:
   - name:    "miner 12"
     apiIp:   "0.0.0.12"
     apiPort: 12
 
-zenemys:
+xmrigs:
   - name:    "miner 13"
     apiIp:   "0.0.0.13"
     apiPort: 13
+
+zenemys:
+  - name:    "miner 14"
+    apiIp:   "0.0.0.14"
+    apiPort: 14

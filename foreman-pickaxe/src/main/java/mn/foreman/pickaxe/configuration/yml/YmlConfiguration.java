@@ -29,6 +29,9 @@ public class YmlConfiguration
     /** The claymore configs. */
     private final List<Map<String, String>> claymoreConfigs;
 
+    /** The cryptodredge configurations. */
+    private final List<Map<String, String>> cryptoDredgeConfigs;
+
     /** The dstm configurations. */
     private final List<Map<String, String>> dstmConfigs;
 
@@ -86,6 +89,7 @@ public class YmlConfiguration
             @JsonProperty("bminers") final List<Map<String, String>> bminerConfigs,
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
+            @JsonProperty("cryptodredges") final List<Map<String, String>> cryptoDredgeConfigs,
             @JsonProperty("dstms") final List<Map<String, String>> dstmConfigs,
             @JsonProperty("ethminers") final List<Map<String, String>> ethminerConfigs,
             @JsonProperty("ewbfs") final List<Map<String, String>> ewbfConfigs,
@@ -110,6 +114,7 @@ public class YmlConfiguration
         this.bminerConfigs = toConfigs(bminerConfigs);
         this.ccminerConfigs = toConfigs(ccminerConfigs);
         this.claymoreConfigs = toConfigs(claymoreConfigs);
+        this.cryptoDredgeConfigs = toConfigs(cryptoDredgeConfigs);
         this.dstmConfigs = toConfigs(dstmConfigs);
         this.ethminerConfigs = toConfigs(ethminerConfigs);
         this.ewbfConfigs = toConfigs(ewbfConfigs);
@@ -144,6 +149,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getClaymoreConfigs() {
         return Collections.unmodifiableList(this.claymoreConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getCryptoDredgeConfigs() {
+        return Collections.unmodifiableList(this.cryptoDredgeConfigs);
     }
 
     @Override
