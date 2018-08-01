@@ -63,6 +63,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getCastxmrConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getCcminerConfigs());
 
         validateGeneric(
@@ -102,6 +106,10 @@ public class YmlConfigurationFactoryTest {
         validateGeneric(
                 minerIndex++,
                 configuration.getSrbminerConfigs());
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getTrexConfigs());
 
         validateGeneric(
                 minerIndex++,

@@ -2,6 +2,7 @@ package mn.foreman.pickaxe.run;
 
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.bminer.BminerFactory;
+import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.dstm.DstmFactory;
@@ -65,6 +66,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getBminerConfigs(),
                         new BminerFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getCastxmrConfigs(),
+                        new CastxmrFactory()));
         minerList.addAll(
                 createMiners(
                         this.configuration.getCcminerConfigs(),

@@ -21,6 +21,12 @@ bminers:
 #    apiIp:   "192.168.3.196"
 #    apiPort: 1880
 
+castxmr:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 7777
+
 ccminers:
 # Example:
 #  - name:    "GPU Rig 1"

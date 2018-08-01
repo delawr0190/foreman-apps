@@ -27,6 +27,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-castxmr</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-ccminer</artifactId>
         </dependency>
         <dependency>

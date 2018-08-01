@@ -23,6 +23,9 @@ public class YmlConfiguration
     /** The bminer configurations. */
     private final List<Map<String, String>> bminerConfigs;
 
+    /** The castxmr configurations. */
+    private final List<Map<String, String>> castxmrConfigs;
+
     /** The ccminer configurations. */
     private final List<Map<String, String>> ccminerConfigs;
 
@@ -74,6 +77,7 @@ public class YmlConfiguration
      * @param apiKey                 The API key.
      * @param antConfigs             The antminer configs.
      * @param bminerConfigs          The bminer configs.
+     * @param castxmrConfigs         The castxmr configs.
      * @param ccminerConfigs         The ccminer configs.
      * @param claymoreConfigs        The claymore configs.
      * @param dstmConfigs            The dstm configs.
@@ -91,6 +95,7 @@ public class YmlConfiguration
             @JsonProperty("apiKey") final String apiKey,
             @JsonProperty("antminers") final List<Map<String, String>> antConfigs,
             @JsonProperty("bminers") final List<Map<String, String>> bminerConfigs,
+            @JsonProperty("castxmr") final List<Map<String, String>> castxmrConfigs,
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
             @JsonProperty("cryptodredges") final List<Map<String, String>> cryptoDredgeConfigs,
@@ -117,6 +122,7 @@ public class YmlConfiguration
         this.apiKey = apiKey;
         this.antConfigs = toConfigs(antConfigs);
         this.bminerConfigs = toConfigs(bminerConfigs);
+        this.castxmrConfigs = toConfigs(castxmrConfigs);
         this.ccminerConfigs = toConfigs(ccminerConfigs);
         this.claymoreConfigs = toConfigs(claymoreConfigs);
         this.cryptoDredgeConfigs = toConfigs(cryptoDredgeConfigs);
@@ -145,6 +151,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getBminerConfigs() {
         return Collections.unmodifiableList(this.bminerConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getCastxmrConfigs() {
+        return Collections.unmodifiableList(this.castxmrConfigs);
     }
 
     @Override

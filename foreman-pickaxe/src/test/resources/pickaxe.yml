@@ -18,60 +18,70 @@ bminers:
     apiIp:   "0.0.0.3"
     apiPort: 3
 
-ccminers:
+castxmr:
   - name:    "miner 4"
     apiIp:   "0.0.0.4"
     apiPort: 4
 
+ccminers:
+  - name:    "miner 5"
+    apiIp:   "0.0.0.5"
+    apiPort: 5
+
 claymores:
-  - name:        "miner 5"
-    apiIp:       "0.0.0.5"
-    apiPort:     5
+  - name:        "miner 6"
+    apiIp:       "0.0.0.6"
+    apiPort:     6
     apiPassword: "password"
 
 cryptodredges:
-  - name:    "miner 6"
-    apiIp:   "0.0.0.6"
-    apiPort: 6
-
-dstms:
   - name:    "miner 7"
     apiIp:   "0.0.0.7"
     apiPort: 7
 
+dstms:
+  - name:    "miner 8"
+    apiIp:   "0.0.0.8"
+    apiPort: 8
+
 ethminers:
-  - name:        "miner 8"
-    apiIp:       "0.0.0.8"
-    apiPort:     8
+  - name:        "miner 9"
+    apiIp:       "0.0.0.9"
+    apiPort:     9
     apiPassword: "password"
 
 ewbfs:
-  - name:    "miner 9"
-    apiIp:   "0.0.0.9"
-    apiPort: 9
-
-excavators:
   - name:    "miner 10"
     apiIp:   "0.0.0.10"
     apiPort: 10
 
+excavators:
+  - name:    "miner 11"
+    apiIp:   "0.0.0.11"
+    apiPort: 11
+
 phoenix:
-  - name:        "miner 11"
-    apiIp:       "0.0.0.11"
-    apiPort:     11
+  - name:        "miner 12"
+    apiIp:       "0.0.0.12"
+    apiPort:     12
     apiPassword: "password"
 
 srbminers:
-  - name:    "miner 12"
-    apiIp:   "0.0.0.12"
-    apiPort: 12
-
-xmrigs:
   - name:    "miner 13"
     apiIp:   "0.0.0.13"
     apiPort: 13
 
-zenemys:
+trex:
   - name:    "miner 14"
     apiIp:   "0.0.0.14"
     apiPort: 14
+
+xmrigs:
+  - name:    "miner 15"
+    apiIp:   "0.0.0.15"
+    apiPort: 15
+
+zenemys:
+  - name:    "miner 16"
+    apiIp:   "0.0.0.16"
+    apiPort: 16

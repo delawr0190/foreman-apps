@@ -43,6 +43,7 @@
     <modules>
         <module>foreman-antminer</module>
         <module>foreman-bminer</module>
+        <module>foreman-castxmr</module>
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-claymore</module>
@@ -70,6 +71,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-bminer</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-castxmr</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

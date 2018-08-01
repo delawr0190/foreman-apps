@@ -31,6 +31,13 @@ public interface Configuration {
     List<Map<String, String>> getBminerConfigs();
 
     /**
+     * Returns the castxmr configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getCastxmrConfigs();
+
+    /**
      * Returns the ccminer configurations.
      *
      * @return The configurations.
