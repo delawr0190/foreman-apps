@@ -56,6 +56,9 @@ public class YmlConfiguration
     /** The srbminer configurations. */
     private final List<Map<String, String>> srbminerConfigs;
 
+    /** The trex configurations. */
+    private final List<Map<String, String>> trexConfigs;
+
     /** The xmrig configs. */
     private final List<Map<String, String>> xmrigConfigs;
 
@@ -79,6 +82,7 @@ public class YmlConfiguration
      * @param excavatorConfigs       The excavator configs.
      * @param phoenixConfigs         The phoenix configs.
      * @param srbminerConfigs        The srbminer configs.
+     * @param trexConfigs            The trex configs.
      * @param xmrigConfigs           The xmrig configs.
      * @param pollFrequencyInSeconds How frequently to poll, in seconds.
      */
@@ -96,6 +100,7 @@ public class YmlConfiguration
             @JsonProperty("excavators") final List<Map<String, String>> excavatorConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
             @JsonProperty("srbminers") final List<Map<String, String>> srbminerConfigs,
+            @JsonProperty("trex") final List<Map<String, String>> trexConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
             @JsonProperty("zenemys") final List<Map<String, String>> zenemyConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
@@ -121,6 +126,7 @@ public class YmlConfiguration
         this.excavatorConfigs = toConfigs(excavatorConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
         this.srbminerConfigs = toConfigs(srbminerConfigs);
+        this.trexConfigs = toConfigs(trexConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
         this.zenemyConfigs = toConfigs(zenemyConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
@@ -194,6 +200,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getSrbminerConfigs() {
         return Collections.unmodifiableList(this.srbminerConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getTrexConfigs() {
+        return Collections.unmodifiableList(this.trexConfigs);
     }
 
     @Override

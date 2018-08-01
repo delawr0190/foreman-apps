@@ -108,6 +108,13 @@ public interface Configuration {
     List<Map<String, String>> getSrbminerConfigs();
 
     /**
+     * Returns the trex configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getTrexConfigs();
+
+    /**
      * Returns the xmrig configurations.
      *
      * @return The configurations.

@@ -15,6 +15,7 @@ import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.srbminer.SrbminerFactory;
+import mn.foreman.trex.TrexFactory;
 import mn.foreman.xmrig.XmrigFactory;
 
 import org.slf4j.Logger;
@@ -101,6 +102,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getSrbminerConfigs(),
                         new SrbminerFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getTrexConfigs(),
+                        new TrexFactory()));
         minerList.addAll(
                 createMiners(
                         this.configuration.getXmrigConfigs(),

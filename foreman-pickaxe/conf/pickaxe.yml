@@ -101,6 +101,14 @@ srbminers:
 #    apiIp:   "192.168.3.196"
 #    apiPort: 21555
 
+trex:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4067
+#
+# T-rex must be ran with the HTTP API enabled (api-bind-http).
+
 xmrigs:
 # Example:
 #  - name:    "GPU Rig 1"

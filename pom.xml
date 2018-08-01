@@ -54,6 +54,7 @@
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
         <module>foreman-srbminer</module>
+        <module>foreman-trex</module>
         <module>foreman-util</module>
         <module>foreman-xmrig</module>
     </modules>
@@ -124,6 +125,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-srbminer</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-trex</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

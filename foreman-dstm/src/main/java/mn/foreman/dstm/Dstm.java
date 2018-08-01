@@ -225,7 +225,7 @@ public class Dstm
      */
     private String makeCommand() {
         return String.format(
-                "{\"id\":%d,\"method\":\"%s\"}",
+                "{\"id\":%d,\"method\":\"%s\"}\n",
                 1,
                 "getstat");
     }
