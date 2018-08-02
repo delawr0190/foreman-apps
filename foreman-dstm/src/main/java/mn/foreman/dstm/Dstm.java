@@ -140,7 +140,7 @@ public class Dstm
                 .addGpu(
                         new Gpu.Builder()
                                 .setName(result.gpuName)
-                                .setIndex(result.gpuPciDeviceId)
+                                .setIndex(result.gpuId)
                                 .setBus(result.gpuPciBusId)
                                 .setTemp(result.temperature)
                                 .setFreqInfo(
@@ -180,7 +180,7 @@ public class Dstm
         statsBuilder
                 .addPool(
                         new Pool.Builder()
-                                .setName(response.server)
+                                .setName(response.server + ":" + response.port)
                                 .setPriority(0)
                                 .setStatus(
                                         true,
