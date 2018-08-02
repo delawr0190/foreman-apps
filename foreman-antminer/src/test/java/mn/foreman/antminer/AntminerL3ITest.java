@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class AntminerITest
+public class AntminerL3ITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public AntminerITest() {
+    public AntminerL3ITest() {
         super(
                 new AntminerFactory()
                         .create(

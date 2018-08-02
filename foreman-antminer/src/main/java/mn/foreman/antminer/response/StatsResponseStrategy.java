@@ -50,8 +50,15 @@ public class StatsResponseStrategy
             final CgMinerResponse response) {
         if (response.hasValues()) {
             final List<Map<String, String>> values = response.getValues();
-            values.forEach(
-                    value -> addAsicStats(builder, this.type, value));
+            values
+                    .stream()
+                    .filter((map) -> map.containsKey("GHS 5s"))
+                    .forEach(
+                            value ->
+                                    addAsicStats(
+                                            builder,
+                                            this.type,
+                                            value));
         } else {
             LOG.debug("No ACICs founds");
         }
@@ -93,9 +100,10 @@ public class StatsResponseStrategy
                 Arrays.asList(
                         "temp",
                         "temp2_",
-                        "temp3_");
+                        "temp3_",
+                        "temp4_");
         for (final String prefix : tempPrefixes) {
-            for (int i = 1; i <= 16; i++) {
+            for (int i = 1; i <= 32; i++) {
                 asicBuilder.addTemp(values.get(prefix + i));
             }
         }

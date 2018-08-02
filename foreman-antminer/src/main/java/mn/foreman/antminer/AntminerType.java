@@ -10,6 +10,16 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum AntminerType
         implements MinerType {
 
+    ANTMINER_D3(
+            "antminer_d3",
+            // Need to convert MHs to GHs
+            new BigDecimal(0.001)),
+
+    ANTMINER_E3(
+            "antminer_e3",
+            // Need to convert MHs to GHs
+            new BigDecimal(0.001)),
+
     /** An Antminer L3. */
     ANTMINER_L3(
             "antminer_l3",
