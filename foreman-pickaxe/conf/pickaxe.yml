@@ -11,9 +11,11 @@ antminers:
 #
 # Supported types:
 #
-#  "antminer_s9"
-#  "antminer_l3"
 #  "antminer_b3"
+#  "antminer_e3"
+#  "antminer_d3"
+#  "antminer_l3"
+#  "antminer_s9"
 
 bminers:
 # Example:
