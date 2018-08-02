@@ -16,11 +16,13 @@ public enum AntminerType
             // Need to convert Hs to GHs
             new BigDecimal(0.000000001)),
 
+    /** An Antminer D3. */
     ANTMINER_D3(
             "antminer_d3",
             // Need to convert MHs to GHs
             new BigDecimal(0.001)),
 
+    /** An Antminer E3. */
     ANTMINER_E3(
             "antminer_e3",
             // Need to convert MHs to GHs
