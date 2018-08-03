@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-ethminer</artifactId>
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.0</version>
     <name>foreman: foreman-ethminer</name>
 
     <packaging>jar</packaging>
