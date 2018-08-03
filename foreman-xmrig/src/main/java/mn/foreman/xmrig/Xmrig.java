@@ -12,6 +12,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 import mn.foreman.xmrig.json.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -244,7 +245,9 @@ public class Xmrig
         statsBuilder
                 .addPool(
                         new Pool.Builder()
-                                .setName(connection.pool)
+                                .setName(
+                                        PoolUtils.sanitizeUrl(
+                                                connection.pool))
                                 .setStatus(true, connection.uptime > 0)
                                 .setPriority(0)
                                 .setCounts(

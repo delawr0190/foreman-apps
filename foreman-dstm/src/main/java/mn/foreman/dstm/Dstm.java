@@ -13,6 +13,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -180,7 +181,9 @@ public class Dstm
         statsBuilder
                 .addPool(
                         new Pool.Builder()
-                                .setName(response.server + ":" + response.port)
+                                .setName(
+                                        PoolUtils.sanitizeUrl(
+                                                response.server + ":" + response.port))
                                 .setPriority(0)
                                 .setStatus(
                                         true,

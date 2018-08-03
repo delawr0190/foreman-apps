@@ -6,6 +6,7 @@ import mn.foreman.cgminer.response.CgMinerPoolStatus;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
+import mn.foreman.util.PoolUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +54,7 @@ public class PoolsResponseStrategy
                     CgMinerPoolStatus.forValue(values.get("Status"));
             builder.addPool(
                     new Pool.Builder()
-                            .setName(url.split("://")[1])
+                            .setName(PoolUtils.sanitizeUrl(url))
                             .setPriority(values.get("Priority"))
                             .setStatus(
                                     status.isEnabled(),

@@ -13,6 +13,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -138,7 +139,9 @@ public class Ethminer
         builder
                 .addPool(
                         new Pool.Builder()
-                                .setName(result.poolAddress)
+                                .setName(
+                                        PoolUtils.sanitizeUrl(
+                                                result.poolAddress))
                                 .setStatus(
                                         true,
                                         (Integer.parseInt(result.runtime) > 0))

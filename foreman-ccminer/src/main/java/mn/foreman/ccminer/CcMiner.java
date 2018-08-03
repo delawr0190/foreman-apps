@@ -12,6 +12,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.Validate;
@@ -200,7 +201,7 @@ public class CcMiner
         final Map<String, String> values = split(pool);
         builder.addPool(
                 new Pool.Builder()
-                        .setName(values.get("URL").split("://")[1])
+                        .setName(PoolUtils.sanitizeUrl(values.get("URL")))
                         .setPriority(1)
                         .setStatus(
                                 true,

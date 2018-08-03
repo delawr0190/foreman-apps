@@ -17,6 +17,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -174,7 +175,7 @@ public class Excavator
         }
         builder.addPool(
                 new Pool.Builder()
-                        .setName(subscribe.address)
+                        .setName(PoolUtils.sanitizeUrl(subscribe.address))
                         .setPriority(0)
                         .setStatus(
                                 true,

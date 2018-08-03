@@ -43,7 +43,7 @@ public class SrbminerITest
                                                 "    \"hashrate_total_30min\": 0,\n" +
                                                 "    \"hashrate_total_max\": 0,\n" +
                                                 "    \"pool\": {\n" +
-                                                "        \"pool\": \"xmr-eu1.nanopool.org:14444\",\n" +
+                                                "        \"pool\": \"stratum+tcp://xmr-eu1.nanopool.org:14444\",\n" +
                                                 "        \"difficulty\": 120001,\n" +
                                                 "        \"time_connected\": \"2018-07-29 22:12:41\",\n" +
                                                 "        \"uptime\": 10,\n" +

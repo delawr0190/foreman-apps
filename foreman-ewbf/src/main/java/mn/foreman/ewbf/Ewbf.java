@@ -13,6 +13,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -204,7 +205,9 @@ public class Ewbf
         statsBuilder
                 .addPool(
                         new Pool.Builder()
-                                .setName(stats.currentServer)
+                                .setName(
+                                        PoolUtils.sanitizeUrl(
+                                                stats.currentServer))
                                 .setPriority(0)
                                 .setStatus(
                                         true,

@@ -18,6 +18,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -185,17 +186,6 @@ public class Bminer
     }
 
     /**
-     * Converts the pool name to the pool URL.
-     *
-     * @param name The name.
-     *
-     * @return The URL.
-     */
-    private static String toPool(final String name) {
-        return name.split("@")[1].replace("/", "");
-    }
-
-    /**
      * Converts the provided {@link Stratum} to a {@link Pool}.
      *
      * @param stratum The {@link Stratum}.
@@ -225,7 +215,7 @@ public class Bminer
                 .setStatus(
                         true,
                         failover.active)
-                .setName(toPool(failover.name))
+                .setName(PoolUtils.sanitizeUrl(failover.name))
                 .build();
     }
 

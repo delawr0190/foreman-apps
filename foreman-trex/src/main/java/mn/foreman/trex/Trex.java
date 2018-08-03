@@ -13,6 +13,7 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.trex.json.Summary;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -137,7 +138,9 @@ public class Trex
         final Summary summary = query();
         builder.addPool(
                 new Pool.Builder()
-                        .setName(summary.activePool.url.split("//")[1])
+                        .setName(
+                                PoolUtils.sanitizeUrl(
+                                        summary.activePool.url))
                         .setStatus(
                                 true,
                                 summary.uptime > 0)

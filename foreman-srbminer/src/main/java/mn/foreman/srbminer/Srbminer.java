@@ -13,6 +13,7 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.srbminer.json.Response;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.Validate;
@@ -122,7 +123,7 @@ public class Srbminer
             final Response.Shares shares) {
         builder.addPool(
                 new Pool.Builder()
-                        .setName(pool.pool)
+                        .setName(PoolUtils.sanitizeUrl(pool.pool))
                         .setPriority(0)
                         .setStatus(
                                 true,

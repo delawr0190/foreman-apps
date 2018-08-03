@@ -13,6 +13,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,13 +154,9 @@ public class Claymore
             final String[] invalidShares,
             final MinerStats.Builder builder) {
         for (int i = 0; i < pools.length; i++) {
-            String poolName = pools[i];
-            if (poolName.contains("//")) {
-                poolName = poolName.split("//")[1];
-            }
             builder.addPool(
                     new Pool.Builder()
-                            .setName(poolName)
+                            .setName(PoolUtils.sanitizeUrl(pools[i]))
                             .setStatus(true, true)
                             .setPriority(0)
                             .setCounts(
