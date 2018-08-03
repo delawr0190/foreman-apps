@@ -94,6 +94,13 @@ public interface Configuration {
     String getForemanApiUrl();
 
     /**
+     * Returns the jceminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getJceminerConfigs();
+
+    /**
      * Returns the phoenix configurations.
      *
      * @return The configurations.

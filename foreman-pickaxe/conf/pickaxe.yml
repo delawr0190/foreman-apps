@@ -89,6 +89,14 @@ excavators:
 #
 # Excavator must be ran with "-p <port>" and "-i <ip_address>" arguments.
 
+jceminer:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 3434
+#
+# jceminer must be ran with the "--mport <port>" argument.
+
 phoenix:
 # Example:
 #  - name:    "GPU Rig 1"

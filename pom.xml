@@ -52,6 +52,7 @@
         <module>foreman-ewbf</module>
         <module>foreman-excavator</module>
         <module>foreman-io</module>
+        <module>foreman-jceminer</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
         <module>foreman-srbminer</module>
@@ -116,6 +117,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-io</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-jceminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

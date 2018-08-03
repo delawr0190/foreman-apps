@@ -50,6 +50,9 @@ public class YmlConfiguration
     /** The FOREMAN API URL. */
     private final String foremanApiUrl;
 
+    /** The jceminer configurations. */
+    private final List<Map<String, String>> jceminerConfigs;
+
     /** The phoenix configs. */
     private final List<Map<String, String>> phoenixConfigs;
 
@@ -84,6 +87,7 @@ public class YmlConfiguration
      * @param ethminerConfigs        The ethminer configs.
      * @param ewbfConfigs            The ewbf configs.
      * @param excavatorConfigs       The excavator configs.
+     * @param jceminerConfigs        The jceminer configs.
      * @param phoenixConfigs         The phoenix configs.
      * @param srbminerConfigs        The srbminer configs.
      * @param trexConfigs            The trex configs.
@@ -103,6 +107,7 @@ public class YmlConfiguration
             @JsonProperty("ethminers") final List<Map<String, String>> ethminerConfigs,
             @JsonProperty("ewbfs") final List<Map<String, String>> ewbfConfigs,
             @JsonProperty("excavators") final List<Map<String, String>> excavatorConfigs,
+            @JsonProperty("jceminer") final List<Map<String, String>> jceminerConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
             @JsonProperty("srbminers") final List<Map<String, String>> srbminerConfigs,
             @JsonProperty("trex") final List<Map<String, String>> trexConfigs,
@@ -130,6 +135,7 @@ public class YmlConfiguration
         this.ethminerConfigs = toConfigs(ethminerConfigs);
         this.ewbfConfigs = toConfigs(ewbfConfigs);
         this.excavatorConfigs = toConfigs(excavatorConfigs);
+        this.jceminerConfigs = toConfigs(jceminerConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
         this.srbminerConfigs = toConfigs(srbminerConfigs);
         this.trexConfigs = toConfigs(trexConfigs);
@@ -196,6 +202,11 @@ public class YmlConfiguration
     @Override
     public String getForemanApiUrl() {
         return this.foremanApiUrl;
+    }
+
+    @Override
+    public List<Map<String, String>> getJceminerConfigs() {
+        return Collections.unmodifiableList(this.jceminerConfigs);
     }
 
     @Override

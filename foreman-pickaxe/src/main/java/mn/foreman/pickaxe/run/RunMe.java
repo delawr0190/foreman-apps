@@ -9,6 +9,7 @@ import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
+import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -98,6 +99,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getExcavatorConfigs(),
                         new ExcavatorFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getJceminerConfigs(),
+                        new JceminerFactory()));
         // PhoenixMiner uses the same API as Claymore
         minerList.addAll(
                 createMiners(

@@ -60,28 +60,33 @@ excavators:
     apiIp:   "0.0.0.11"
     apiPort: 11
 
+jceminer:
+  - name:    "miner 12"
+    apiIp:   "0.0.0.12"
+    apiPort: 12
+
 phoenix:
-  - name:        "miner 12"
-    apiIp:       "0.0.0.12"
-    apiPort:     12
+  - name:        "miner 13"
+    apiIp:       "0.0.0.13"
+    apiPort:     13
     apiPassword: "password"
 
 srbminers:
-  - name:    "miner 13"
-    apiIp:   "0.0.0.13"
-    apiPort: 13
-
-trex:
   - name:    "miner 14"
     apiIp:   "0.0.0.14"
     apiPort: 14
 
-xmrigs:
+trex:
   - name:    "miner 15"
     apiIp:   "0.0.0.15"
     apiPort: 15
 
-zenemys:
+xmrigs:
   - name:    "miner 16"
     apiIp:   "0.0.0.16"
     apiPort: 16
+
+zenemys:
+  - name:    "miner 17"
+    apiIp:   "0.0.0.17"
+    apiPort: 17
