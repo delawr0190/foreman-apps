@@ -149,7 +149,7 @@ public class Srbminer
             final List<Response.Device> devices) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName(name)
+                        .setName("srbminer_" + name)
                         .setHashRate(hashRate);
         for (final Response.Device device : devices) {
             rigBuilder.addGpu(

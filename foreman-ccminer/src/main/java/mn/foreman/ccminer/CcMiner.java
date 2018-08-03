@@ -227,7 +227,7 @@ public class CcMiner
                 new BigDecimal(values.get("KHS"))
                         .multiply(new BigDecimal(1000));
         rigBuilder
-                .setName(values.get("NAME"))
+                .setName("ccminer_" + values.get("NAME"))
                 .setHashRate(hashRate);
     }
 

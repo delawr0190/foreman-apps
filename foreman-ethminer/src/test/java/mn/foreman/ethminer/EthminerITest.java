@@ -44,7 +44,7 @@ public class EthminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("ethminer-0.16.0.dev0+commit.41639944")
+                                        .setName("ethminer_ethminer-0.16.0.dev0+commit.41639944")
                                         .setHashRate(new BigDecimal("73056881"))
                                         .addGpu(
                                                 new Gpu.Builder()

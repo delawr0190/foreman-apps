@@ -100,7 +100,7 @@ public class SrbminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("SRBMiner-Rig")
+                                        .setName("srbminer_SRBMiner-Rig")
                                         .setHashRate(new BigDecimal("1234.5678"))
                                         .addGpu(
                                                 new Gpu.Builder()

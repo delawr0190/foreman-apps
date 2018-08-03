@@ -164,7 +164,7 @@ public class Ethminer
             throws MinerException {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName(result.version)
+                        .setName("ethminer_" + result.version)
                         .setHashRate(new BigDecimal(result.ethHashRate));
         final List<Integer> temperatures = result.temperatures;
         final List<Integer> fans = result.fanPercentages;

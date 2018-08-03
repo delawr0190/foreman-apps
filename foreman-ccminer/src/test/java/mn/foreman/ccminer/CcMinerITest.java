@@ -50,7 +50,7 @@ public class CcMinerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("nevermore")
+                                        .setName("ccminer_nevermore")
                                         .setHashRate(new BigDecimal("1230.00"))
                                         .addGpu(
                                                 new Gpu.Builder()

@@ -115,7 +115,7 @@ public class TrexITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("t-rex")
+                                        .setName("trex_t-rex")
                                         .setHashRate(new BigDecimal(24300920))
                                         .addGpu(
                                                 new Gpu.Builder()

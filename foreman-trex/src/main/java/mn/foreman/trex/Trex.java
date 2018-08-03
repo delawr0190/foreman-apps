@@ -150,7 +150,7 @@ public class Trex
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName(summary.name)
+                        .setName("trex_" + summary.name)
                         .setHashRate(summary.hashRate);
         for (int i = 0; i < summary.gpuTotal; i++) {
             rigBuilder.addGpu(
