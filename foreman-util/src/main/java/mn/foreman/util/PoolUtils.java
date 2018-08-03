@@ -4,6 +4,15 @@ package mn.foreman.util;
 public class PoolUtils {
 
     /**
+     * Constructor.
+     *
+     * Note: intentionally hidden.
+     */
+    private PoolUtils() {
+        // Do nothing
+    }
+
+    /**
      * Sanitizes a URL by extracting the host and post.
      *
      * @param url The URL.
