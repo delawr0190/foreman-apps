@@ -1,10 +1,7 @@
 package mn.foreman.ccminer;
 
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -15,14 +12,10 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
 import com.google.common.base.Splitter;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link CcMiner} represents a remove ccminer instance.
@@ -35,32 +28,19 @@ import java.util.concurrent.TimeUnit;
  * <p>This class currently queries for:</p>
  *
  * <ul>
- *     <li>{@link CcMinerCommand#SUMMARY summary|}</li>
- *     <li>{@link CcMinerCommand#POOL pool|}</li>
- *     <li>{@link CcMinerCommand#HWINFO hwinfo|}</li>
+ *     <li>summary|</li>
+ *     <li>pool|</li>
+ *     <li>hwinfo|</li>
  * </ul>
  */
 public class CcMiner
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(CcMiner.class);
+        extends AbstractMiner {
 
     /** The separator between regions. */
     private static final String REGION_SEPARATOR = "\\|";
 
     /** The separator between key -> value pairs. */
     private static final String VALUE_SEPARATOR = ";";
-
-    /** The API IP. */
-    private final String apiIp;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
 
     /**
      * Constructor.
@@ -73,53 +53,23 @@ public class CcMiner
             final String name,
             final String apiIp,
             final int apiPort) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder builder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
         final Rig.Builder rigBuilder =
                 new Rig.Builder();
+
         getSummary(rigBuilder);
         getHwInfo(rigBuilder);
-        getPools(builder);
+        getPools(statsBuilder);
 
-        builder.addRig(rigBuilder.build());
-
-        return builder.build();
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort);
+        statsBuilder.addRig(rigBuilder.build());
     }
 
     /**
@@ -131,7 +81,6 @@ public class CcMiner
      * @return The key -> value pairs.
      */
     private static Map<String, String> split(final String value) {
-        LOG.debug("Splitting {}", value);
         return Splitter.on(VALUE_SEPARATOR)
                 .withKeyValueSeparator("=")
                 .split(value.replace("|", ""));
@@ -176,7 +125,11 @@ public class CcMiner
      */
     private void getHwInfo(final Rig.Builder builder)
             throws MinerException {
-        final String hwInfo = query(CcMinerCommand.HWINFO);
+        final String hwInfo =
+                Query.delimiterQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "hwinfo|");
         Arrays
                 .stream(hwInfo.split(REGION_SEPARATOR))
                 .filter((info) -> info.contains("GPU"))
@@ -197,7 +150,11 @@ public class CcMiner
      */
     private void getPools(final MinerStats.Builder builder)
             throws MinerException {
-        final String pool = query(CcMinerCommand.POOL);
+        final String pool =
+                Query.delimiterQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "pool|");
         final Map<String, String> values = split(pool);
         builder.addPool(
                 new Pool.Builder()
@@ -222,7 +179,11 @@ public class CcMiner
      */
     private void getSummary(final Rig.Builder rigBuilder)
             throws MinerException {
-        final String summary = query(CcMinerCommand.SUMMARY);
+        final String summary =
+                Query.delimiterQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "summary|");
         final Map<String, String> values = split(summary);
         final BigDecimal hashRate =
                 new BigDecimal(values.get("KHS"))
@@ -230,40 +191,5 @@ public class CcMiner
         rigBuilder
                 .setName("ccminer_" + values.get("NAME"))
                 .setHashRate(hashRate);
-    }
-
-    /**
-     * Queries ccminer and returns the result.
-     *
-     * @param command The command to run.
-     *
-     * @return The result, if one exists.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private String query(final CcMinerCommand command)
-            throws MinerException {
-        String response;
-
-        final ApiRequest request =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        command.getCommand() + "|");
-        final Connection connection =
-                ConnectionFactory.createDelimiterConnection(
-                        request);
-        connection.query();
-
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            response = request.getResponse();
-            LOG.debug("Received response: {}", response);
-        } else {
-            throw new MinerException("Failed to obtain a response");
-        }
-
-        return response;
     }
 }

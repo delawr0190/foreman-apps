@@ -1,15 +1,15 @@
 package mn.foreman.excavator;
 
-import mn.foreman.excavator.json.*;
+import mn.foreman.excavator.json.Algorithms;
+import mn.foreman.excavator.json.Devices;
+import mn.foreman.excavator.json.Request;
+import mn.foreman.excavator.json.Subscribe;
 import mn.foreman.excavator.method.AlgorithmMethod;
 import mn.foreman.excavator.method.DevicesMethod;
 import mn.foreman.excavator.method.Method;
 import mn.foreman.excavator.method.SubscribeMethod;
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -19,15 +19,11 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -49,20 +45,7 @@ import java.util.concurrent.TimeUnit;
  * </ul>
  */
 public class Excavator
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Excavator.class);
-
-    /** The API IP. */
-    private final String apiIp;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
+        extends AbstractMiner {
 
     /**
      * Constructor.
@@ -75,49 +58,35 @@ public class Excavator
             final String name,
             final String apiIp,
             final int apiPort) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder statsBuilder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
-        addRig(
-                statsBuilder,
-                addPools(statsBuilder));
-
-        return statsBuilder.build();
+        try {
+            addRig(
+                    statsBuilder,
+                    addPools(statsBuilder));
+        } catch (final JsonProcessingException e) {
+            throw new MinerException(e);
+        }
     }
 
-    @Override
-    public String toString() {
-        return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort);
+    private static String makeCommand(
+            final Method method,
+            final String... params)
+            throws JsonProcessingException {
+        final ObjectMapper objectMapper =
+                new ObjectMapper();
+        return objectMapper.writeValueAsString(
+                new Request(
+                        1,
+                        method.toMethod(),
+                        Arrays.asList(params))) + "\n";
     }
 
     /**
@@ -196,17 +165,22 @@ public class Excavator
      *
      * @return The current hash rate.
      *
-     * @throws MinerException on failure to query.
+     * @throws MinerException          on failure to query.
+     * @throws JsonProcessingException on failure to serialize.
      */
     private BigDecimal addPools(final MinerStats.Builder builder)
-            throws MinerException {
+            throws MinerException, JsonProcessingException {
         final Subscribe subscribe =
-                query(
-                        SubscribeMethod.INFO,
+                Query.jsonQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        makeCommand(SubscribeMethod.INFO),
                         Subscribe.class);
         final Algorithms algorithms =
-                query(
-                        AlgorithmMethod.LIST,
+                Query.jsonQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        makeCommand(AlgorithmMethod.LIST),
                         Algorithms.class);
         return addPools(
                 builder,
@@ -221,15 +195,18 @@ public class Excavator
      * @param builder  The builder to update.
      * @param hashRate The hash rate.
      *
-     * @throws MinerException on failure to query.
+     * @throws MinerException          on failure to query.
+     * @throws JsonProcessingException on failure to serialize.
      */
     private void addRig(
             final MinerStats.Builder builder,
             final BigDecimal hashRate)
-            throws MinerException {
+            throws MinerException, JsonProcessingException {
         final Devices devices =
-                query(
-                        DevicesMethod.GET,
+                Query.jsonQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        makeCommand(DevicesMethod.GET),
                         Devices.class);
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
@@ -241,65 +218,5 @@ public class Excavator
                                 rigBuilder,
                                 device));
         builder.addRig(rigBuilder.build());
-    }
-
-    /**
-     * Queries the API.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private <T extends Response> T query(
-            final Method method,
-            final Class<T> responseClass,
-            final String... params)
-            throws MinerException {
-        T response;
-
-        try {
-            final ObjectMapper objectMapper =
-                    new ObjectMapper();
-
-            final String requestJson =
-                    objectMapper
-                            .writeValueAsString(
-                                    new Request(
-                                            1,
-                                            method.toMethod(),
-                                            Arrays.asList(params)));
-            LOG.debug("Sending request ({}) to {}:{}",
-                    requestJson,
-                    this.apiIp,
-                    this.apiPort);
-
-            final ApiRequest request =
-                    new ApiRequestImpl(
-                            this.apiIp,
-                            this.apiPort,
-                            requestJson + "\n");
-
-            final Connection connection =
-                    ConnectionFactory.createJsonConnection(
-                            request);
-            connection.query();
-
-            if (request.waitForCompletion(
-                    10,
-                    TimeUnit.SECONDS)) {
-                response =
-                        objectMapper.readValue(
-                                request.getResponse(),
-                                responseClass);
-            } else {
-                throw new MinerException("Failed to obtain a response");
-            }
-        } catch (final IOException ioe) {
-            LOG.warn("Exception occurred while querying",
-                    ioe);
-            throw new MinerException(ioe);
-        }
-
-        return response;
     }
 }

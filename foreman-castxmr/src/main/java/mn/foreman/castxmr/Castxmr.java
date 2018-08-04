@@ -1,11 +1,8 @@
 package mn.foreman.castxmr;
 
 import mn.foreman.castxmr.json.Response;
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -14,14 +11,6 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -46,20 +35,7 @@ import java.util.concurrent.TimeUnit;
  * <p>Frequency info isn't exposed via the API.</p>
  */
 public class Castxmr
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Castxmr.class);
-
-    /** The API IP. */
-    private final String apiIp;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
+        extends AbstractMiner {
 
     /**
      * Constructor.
@@ -72,49 +48,22 @@ public class Castxmr
             final String name,
             final String apiIp,
             final int apiPort) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder statsBuilder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
         addResponse(
                 statsBuilder,
-                query());
-
-        return statsBuilder.build();
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort);
+                Query.restQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "/",
+                        Response.class));
     }
 
     /**
@@ -179,48 +128,5 @@ public class Castxmr
                                 rigBuilder,
                                 device));
         builder.addRig(rigBuilder.build());
-    }
-
-    /**
-     * Queries the REST interface.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private Response query()
-            throws MinerException {
-        Response response;
-
-        final ApiRequest request =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        "/");
-
-        final Connection connection =
-                ConnectionFactory.createRestConnection(
-                        request);
-        connection.query();
-
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            // Got a response
-            final ObjectMapper objectMapper =
-                    new ObjectMapper();
-            try {
-                response =
-                        objectMapper.readValue(
-                                request.getResponse(),
-                                Response.class);
-            } catch (final IOException ioe) {
-                throw new MinerException(ioe);
-            }
-        } else {
-            throw new MinerException("Failed to obtain a response");
-        }
-
-        return response;
     }
 }

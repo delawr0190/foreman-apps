@@ -1,11 +1,8 @@
 package mn.foreman.claymore;
 
 import mn.foreman.claymore.json.Response;
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -15,17 +12,9 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -62,23 +51,10 @@ import java.util.concurrent.TimeUnit;
  * problem.</p>
  */
 public class Claymore
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Claymore.class);
-
-    /** The API IP. */
-    private final String apiIp;
+        extends AbstractMiner {
 
     /** The API password. */
     private final String apiPassword;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
 
     /**
      * Constructor.
@@ -93,48 +69,65 @@ public class Claymore
             final String apiIp,
             final int apiPort,
             final String apiPassword) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
         this.apiPassword = apiPassword;
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
+        final Response response =
+                Query.jsonQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        makeCommand(),
+                        Response.class);
+        final List<String> results = response.result;
+        final String minerVersion = results.get(0);
 
-        final MinerStats.Builder statsBuilder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
+        final String[] ethRateAndShares = results.get(2).split(";");
+        final String ethHashRate = ethRateAndShares[0];
+        final String ethTotalShares = ethRateAndShares[1];
+        final String ethRejectedShares = ethRateAndShares[2];
 
-        getStats(statsBuilder);
+        final String[] dcrRateAndShares = results.get(4).split(";");
+        final String dcrHashRate = dcrRateAndShares[0];
+        final String dcrTotalShares = dcrRateAndShares[1];
+        final String dcrRejectedShares = dcrRateAndShares[2];
 
-        return statsBuilder.build();
+        final List<String> temps = new LinkedList<>();
+        final List<String> fans = new LinkedList<>();
+        final String[] tempsAndFans = results.get(6).split(";");
+        for (int i = 0; i < tempsAndFans.length; i += 2) {
+            temps.add(tempsAndFans[i]);
+            fans.add(tempsAndFans[i + 1]);
+        }
+
+        final String[] pools = results.get(7).split(";");
+        final String[] shares = results.get(8).split(";");
+
+        addPools(
+                pools,
+                new String[]{ethTotalShares, dcrTotalShares},
+                new String[]{ethRejectedShares, dcrRejectedShares},
+                new String[]{shares[0], shares[2]},
+                statsBuilder);
+        addRig(
+                minerVersion,
+                ethHashRate,
+                dcrHashRate,
+                temps,
+                fans,
+                statsBuilder);
     }
 
     @Override
-    public String toString() {
+    protected String addToString() {
         return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d, apiPassword=%s ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort,
+                ", apiPassword=%s",
                 this.apiPassword);
     }
 
@@ -245,56 +238,6 @@ public class Claymore
     }
 
     /**
-     * Queries the API and updates the provided builder with the parsed
-     * response.
-     *
-     * @param builder The builder to update.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private void getStats(final MinerStats.Builder builder)
-            throws MinerException {
-        final Response response = query();
-        final List<String> results = response.result;
-        final String minerVersion = results.get(0);
-
-        final String[] ethRateAndShares = results.get(2).split(";");
-        final String ethHashRate = ethRateAndShares[0];
-        final String ethTotalShares = ethRateAndShares[1];
-        final String ethRejectedShares = ethRateAndShares[2];
-
-        final String[] dcrRateAndShares = results.get(4).split(";");
-        final String dcrHashRate = dcrRateAndShares[0];
-        final String dcrTotalShares = dcrRateAndShares[1];
-        final String dcrRejectedShares = dcrRateAndShares[2];
-
-        final List<String> temps = new LinkedList<>();
-        final List<String> fans = new LinkedList<>();
-        final String[] tempsAndFans = results.get(6).split(";");
-        for (int i = 0; i < tempsAndFans.length; i += 2) {
-            temps.add(tempsAndFans[i]);
-            fans.add(tempsAndFans[i + 1]);
-        }
-
-        final String[] pools = results.get(7).split(";");
-        final String[] shares = results.get(8).split(";");
-
-        addPools(
-                pools,
-                new String[]{ethTotalShares, dcrTotalShares},
-                new String[]{ethRejectedShares, dcrRejectedShares},
-                new String[]{shares[0], shares[2]},
-                builder);
-        addRig(
-                minerVersion,
-                ethHashRate,
-                dcrHashRate,
-                temps,
-                fans,
-                builder);
-    }
-
-    /**
      * Generates a JSON RPC command.
      *
      * @return The command.
@@ -308,63 +251,5 @@ public class Claymore
                 (this.apiPassword != null && !this.apiPassword.isEmpty())
                         ? ",\"apiPassword\":\"" + this.apiPassword + "\""
                         : "");
-    }
-
-    /**
-     * Queries the API.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private Response query()
-            throws MinerException {
-        Response response;
-
-        final ApiRequest request =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        makeCommand());
-        final Connection connection =
-                ConnectionFactory.createJsonConnection(
-                        request);
-        connection.query();
-
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            try {
-                response =
-                        toResponse(
-                                request.getResponse());
-            } catch (final IOException ioe) {
-                LOG.warn("Exception occurred while querying", ioe);
-                throw new MinerException(ioe);
-            }
-        } else {
-            throw new MinerException("Failed to obtain a response");
-        }
-
-        return response;
-    }
-
-    /**
-     * Parses the response into a {@link Response}.
-     *
-     * @param response The response to parse.
-     *
-     * @return The {@link Response}.
-     *
-     * @throws IOException on failure to parse.
-     */
-    private Response toResponse(final String response)
-            throws IOException {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.enable(
-                DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
-        return objectMapper.readValue(
-                response,
-                Response.class);
     }
 }

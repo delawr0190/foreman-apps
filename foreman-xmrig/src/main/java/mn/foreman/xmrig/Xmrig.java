@@ -1,10 +1,7 @@
 package mn.foreman.xmrig;
 
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -15,14 +12,7 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 import mn.foreman.xmrig.json.Response;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -68,20 +58,7 @@ import java.util.concurrent.TimeUnit;
  * shares.</p>
  */
 public class Xmrig
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Xmrig.class);
-
-    /** The API IP. */
-    private final String apiIp;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
+        extends AbstractMiner {
 
     /**
      * Constructor.
@@ -94,43 +71,27 @@ public class Xmrig
             final String name,
             final String apiIp,
             final int apiPort) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder statsBuilder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
-        final Response response = query();
+        final Response response =
+                Query.restQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "/",
+                        Response.class);
         addPool(
                 response,
                 statsBuilder);
         addRig(
                 response,
                 statsBuilder);
-
-        return statsBuilder.build();
     }
 
     /**
@@ -280,48 +241,5 @@ public class Xmrig
                     rigBuilder);
         }
         statsBuilder.addRig(rigBuilder.build());
-    }
-
-    /**
-     * Queries the API.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private Response query()
-            throws MinerException {
-        Response response;
-
-        final ApiRequest request =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        "/");
-
-        final Connection connection =
-                ConnectionFactory.createRestConnection(
-                        request);
-        connection.query();
-
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            final ObjectMapper objectMapper =
-                    new ObjectMapper();
-            try {
-                response =
-                        objectMapper.readValue(
-                                request.getResponse(),
-                                Response.class);
-            } catch (final IOException ioe) {
-                LOG.warn("Exception occurred while querying", ioe);
-                throw new MinerException(ioe);
-            }
-        } else {
-            throw new MinerException("Failed to obtain a response");
-        }
-
-        return response;
     }
 }

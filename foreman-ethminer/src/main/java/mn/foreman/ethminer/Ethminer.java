@@ -1,11 +1,8 @@
 package mn.foreman.ethminer;
 
 import mn.foreman.ethminer.json.Response;
-import mn.foreman.io.ApiRequest;
-import mn.foreman.io.ApiRequestImpl;
-import mn.foreman.io.Connection;
-import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.Miner;
+import mn.foreman.io.Query;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -15,15 +12,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -51,23 +41,10 @@ import java.util.concurrent.TimeUnit;
  * are reported to Foreman are 0.</p>
  */
 public class Ethminer
-        implements Miner {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(Ethminer.class);
-
-    /** The API IP. */
-    private final String apiIp;
+        extends AbstractMiner {
 
     /** The API password. */
     private final String apiPassword;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
 
     /**
      * Constructor.
@@ -82,48 +59,35 @@ public class Ethminer
             final String apiIp,
             final int apiPort,
             final String apiPassword) {
-        Validate.notEmpty(
+        super(
                 name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
-                "apiIp cannot be empty");
-        Validate.isTrue(
-                apiPort > 0,
-                "apiPort must be > 0");
-        this.name = name;
-        this.apiIp = apiIp;
-        this.apiPort = apiPort;
+                apiPort);
         this.apiPassword = apiPassword;
     }
 
     @Override
-    public MinerStats getStats()
+    public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder statsBuilder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
-        getStats(statsBuilder);
-
-        return statsBuilder.build();
+        final Response response =
+                Query.jsonQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        makeCommand(),
+                        Response.class);
+        final Response.Result result = response.result;
+        addPool(
+                statsBuilder,
+                result);
+        addRig(
+                statsBuilder,
+                result);
     }
 
     @Override
-    public String toString() {
+    public String addToString() {
         return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d, apiPassword=%s ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort,
+                ", apiPassword=%s",
                 this.apiPassword);
     }
 
@@ -202,26 +166,6 @@ public class Ethminer
     }
 
     /**
-     * Queries the API and updates the provided builder with the parsed
-     * response.
-     *
-     * @param builder The builder to update.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private void getStats(final MinerStats.Builder builder)
-            throws MinerException {
-        final Response response = query();
-        final Response.Result result = response.result;
-        addPool(
-                builder,
-                result);
-        addRig(
-                builder,
-                result);
-    }
-
-    /**
      * Generates a JSON RPC command.
      *
      * @return The command.
@@ -239,45 +183,5 @@ public class Ethminer
                 (this.apiPassword != null && !this.apiPassword.isEmpty())
                         ? password
                         : "");
-    }
-
-    /**
-     * Queries the API.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private Response query()
-            throws MinerException {
-        Response response;
-
-        final ApiRequest request =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        makeCommand());
-        final Connection connection =
-                ConnectionFactory.createJsonConnection(
-                        request);
-        connection.query();
-
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            try {
-                response =
-                        new ObjectMapper().readValue(
-                                request.getResponse(),
-                                Response.class);
-            } catch (final IOException ioe) {
-                LOG.warn("Exception occurred while querying", ioe);
-                throw new MinerException(ioe);
-            }
-        } else {
-            throw new MinerException("Failed to obtain a response");
-        }
-
-        return response;
     }
 }
