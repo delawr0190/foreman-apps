@@ -104,6 +104,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getLolminerConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getPhoenixConfigs(),
                 ImmutableMap.of(
                         "apiPassword",

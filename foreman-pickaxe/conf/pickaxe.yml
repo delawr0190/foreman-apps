@@ -107,6 +107,12 @@ jceminer:
 #
 # jceminer must be ran with the "--mport <port>" argument.
 
+lolminer:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 8080
+
 phoenix:
 # Example:
 #  - name:    "GPU Rig 1"

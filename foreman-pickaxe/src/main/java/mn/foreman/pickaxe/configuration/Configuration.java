@@ -101,6 +101,13 @@ public interface Configuration {
     List<Map<String, String>> getJceminerConfigs();
 
     /**
+     * Returns the lolminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getLolminerConfigs();
+
+    /**
      * Returns the phoenix configurations.
      *
      * @return The configurations.

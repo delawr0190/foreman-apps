@@ -50,9 +50,6 @@ public class ApiRequestImpl
         Validate.notNull(
                 request,
                 "Request cannot be null");
-        Validate.notEmpty(
-                request,
-                "Request cannot be empty");
         this.ip = ip;
         this.port = port;
         this.request = request;

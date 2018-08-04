@@ -57,14 +57,19 @@ public class FakeRpcMinerServer
             THREAD_POOL.execute(() -> {
                 while (true) {
                     try (final Socket socket = this.serverSocket.accept()) {
-                        String request = "";
-                        final InputStream inputStream =
-                                socket.getInputStream();
-                        while (true) {
-                            request += (char) inputStream.read();
-                            if (this.handlers.containsKey(request)) {
-                                this.handlers.get(request).process(socket);
-                                break;
+                        // If there's a no-request handler, dump
+                        if (this.handlers.containsKey("")) {
+                            this.handlers.get("").process(socket);
+                        } else {
+                            String request = "";
+                            final InputStream inputStream =
+                                    socket.getInputStream();
+                            while (true) {
+                                request += (char) inputStream.read();
+                                if (this.handlers.containsKey(request)) {
+                                    this.handlers.get(request).process(socket);
+                                    break;
+                                }
                             }
                         }
                         socket.close();

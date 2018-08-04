@@ -66,28 +66,33 @@ jceminer:
     apiIp:   "0.0.0.12"
     apiPort: 12
 
+lolminer:
+  - name:    "miner 13"
+    apiIp:   "0.0.0.13"
+    apiPort: 13
+
 phoenix:
-  - name:        "miner 13"
-    apiIp:       "0.0.0.13"
-    apiPort:     13
+  - name:        "miner 14"
+    apiIp:       "0.0.0.14"
+    apiPort:     14
     apiPassword: "password"
 
 srbminers:
-  - name:    "miner 14"
-    apiIp:   "0.0.0.14"
-    apiPort: 14
-
-trex:
   - name:    "miner 15"
     apiIp:   "0.0.0.15"
     apiPort: 15
 
-xmrigs:
+trex:
   - name:    "miner 16"
     apiIp:   "0.0.0.16"
     apiPort: 16
 
-zenemys:
+xmrigs:
   - name:    "miner 17"
     apiIp:   "0.0.0.17"
     apiPort: 17
+
+zenemys:
+  - name:    "miner 18"
+    apiIp:   "0.0.0.18"
+    apiPort: 18

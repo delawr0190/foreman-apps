@@ -68,9 +68,6 @@ public class SimpleApiConnection
         Validate.notNull(
                 request,
                 "Request cannot be null");
-        Validate.notEmpty(
-                request,
-                "Request cannot be empty");
         Validate.notNull(
                 handlers,
                 "Channel handlers cannot be null");
@@ -109,7 +106,9 @@ public class SimpleApiConnection
                             this.port).sync().channel();
 
             // Send the request
-            channel.writeAndFlush(this.request).sync();
+            if (!this.request.isEmpty()) {
+                channel.writeAndFlush(this.request).sync();
+            }
 
             // Wait until the connection is closed - should be closed immediately
             channel.closeFuture().sync();
