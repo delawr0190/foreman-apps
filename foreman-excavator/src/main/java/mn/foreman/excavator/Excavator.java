@@ -76,6 +76,16 @@ public class Excavator
         }
     }
 
+    /**
+     * Creates a JSON command from the provided parameters.
+     *
+     * @param method The method.
+     * @param params The parameters.
+     *
+     * @return The JSON request.
+     *
+     * @throws JsonProcessingException on failure to serialize.
+     */
     private static String makeCommand(
             final Method method,
             final String... params)

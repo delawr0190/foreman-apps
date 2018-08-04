@@ -28,7 +28,7 @@ public class ExcavatorITest
                 new FakeRpcMinerServer(
                         3456,
                         ImmutableMap.of(
-                                "{\"id\":1,\"method\":\"subscribe.info\",\"params\":[]}",
+                                "{\"id\":1,\"method\":\"subscribe.info\",\"params\":[]}\n",
                                 new RpcHandler(
                                         "{  \n" +
                                                 "  \"id\":1,\n" +
@@ -37,7 +37,7 @@ public class ExcavatorITest
                                                 "  \"connected\":true,\n" +
                                                 "  \"server_status\":\"Subscribed\"\n" +
                                                 "}\n"),
-                                "{\"id\":1,\"method\":\"devices.get\",\"params\":[]}",
+                                "{\"id\":1,\"method\":\"devices.get\",\"params\":[]}\n",
                                 new RpcHandler(
                                         "{\n" +
                                                 "   \"devices\":[\n" +
@@ -101,7 +101,7 @@ public class ExcavatorITest
                                                 "   \"id\":1,\n" +
                                                 "   \"error\":null\n" +
                                                 "}"),
-                                "{\"id\":1,\"method\":\"algorithm.list\",\"params\":[]}",
+                                "{\"id\":1,\"method\":\"algorithm.list\",\"params\":[]}\n",
                                 new RpcHandler(
                                         "{\n" +
                                                 "   \"algorithms\": [\n" +

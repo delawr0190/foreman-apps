@@ -29,7 +29,7 @@ public class EthminerITest
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(
-                                "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstathr\"}",
+                                "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstathr\"}\n",
                                 new RpcHandler("{\"id\":1,\"jsonrpc\":\"2.0\",\"result\":{\"ethhashrate\":73056881,\"ethhashrates\":[14681287,14506510,14681287,14506510,0,14681287],\"ethinvalid\":0,\"ethpoolsw\":0,\"ethrejected\":0,\"ethshares\":64,\"fanpercentages\":[90,90,90,90,100,90],\"pooladdrs\":\"eu1.ethermine.org:4444\",\"powerusages\":[0.0,0.0,0.0,0.0,0.0,0.0],\"runtime\":\"59\",\"temperatures\":[53,50,56,58,68,60],\"ispaused\":[false,false,false,true,false],\"version\": \"ethminer-0.16.0.dev0+commit.41639944\"}}"))),
                 new MinerStats.Builder()
                         .setName("ethminer")
