@@ -87,14 +87,6 @@ public class Devices
     @JsonProperty("devices")
     public List<Device> devices;
 
-    /** The error. */
-    @JsonProperty("error")
-    public String error;
-
-    /** The ID. */
-    @JsonProperty("id")
-    public int id;
-
     /** Provides a model representation of the {@link Device} object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Device {
@@ -106,10 +98,6 @@ public class Devices
         /** The device ID. */
         @JsonProperty("device_id")
         public int deviceId;
-
-        /** The GPGPU type. */
-        @JsonProperty("gpgpu_type")
-        public int gpGpuType;
 
         /** The GPU core clock. */
         @JsonProperty("gpu_clock_core_max")
@@ -123,50 +111,6 @@ public class Devices
         @JsonProperty("gpu_fan_speed")
         public int gpuFanSpeed;
 
-        /** The GPU fan speed (rpm). */
-        @JsonProperty("gpu_fan_speed_rpm")
-        public int gpuFanSpeedRpm;
-
-        /** The GPU load. */
-        @JsonProperty("gpu_load")
-        public int gpuLoad;
-
-        /** The GPU memory ctrl. */
-        @JsonProperty("gpu_load_memctrl")
-        public int gpuLoadMemCtrl;
-
-        /** The GPU memory (free). */
-        @JsonProperty("gpu_memory_free")
-        public long gpuMemoryFree;
-
-        /** The GPU memory (used). */
-        @JsonProperty("gpu_memory_used")
-        public long gpuMemoryUsed;
-
-        /** The GPU power limit (current). */
-        @JsonProperty("gpu_power_limit_current")
-        public double gpuPowerLimitCurrent;
-
-        /** The GPU power limit (max). */
-        @JsonProperty("gpu_power_limit_max")
-        public double gpuPowerLimitMax;
-
-        /** The GPU power limit (min). */
-        @JsonProperty("gpu_power_limit_min")
-        public double gpuPowerLimitMin;
-
-        /** The GPU power mode. */
-        @JsonProperty("gpu_power_mode")
-        public double gpuPowerMode;
-
-        /** The GPU power usage. */
-        @JsonProperty("gpu_power_usage")
-        public double gpuPowerUsage;
-
-        /** The current TDP. */
-        @JsonProperty("gpu_tdp_current")
-        public double gpuTdpCurrent;
-
         /** The GPU temp. */
         @JsonProperty("gpu_temp")
         public int gpuTemp;
@@ -174,14 +118,6 @@ public class Devices
         /** The name. */
         @JsonProperty("name")
         public String name;
-
-        /** The sub-vendor. */
-        @JsonProperty("subvendor")
-        public String subvendor;
-
-        /** The UUID. */
-        @JsonProperty("uuid")
-        public String uuid;
 
         /**
          * Provides a model representation of the {@link Devices'} details
@@ -193,18 +129,6 @@ public class Devices
             /** The bus ID. */
             @JsonProperty("bus_id")
             public int busId;
-
-            /** The cuda ID. */
-            @JsonProperty("cuda_id")
-            public int cudaId;
-
-            /** The sm major. */
-            @JsonProperty("sm_major")
-            public int smMajor;
-
-            /** The sm minor. */
-            @JsonProperty("sm_minor")
-            public int smMinor;
         }
     }
 }

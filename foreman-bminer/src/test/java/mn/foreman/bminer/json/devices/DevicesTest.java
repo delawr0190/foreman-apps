@@ -76,20 +76,8 @@ public class DevicesTest {
                     startingTemp + i,
                     device0.temperature);
             assertEquals(
-                    startingPower + i,
-                    device0.power);
-            assertEquals(
                     startingFanSpeed + i,
                     device0.fanSpeed);
-            assertEquals(
-                    startingGlobalMemoryUsed + i,
-                    device0.globalMemoryUsed);
-            assertEquals(
-                    startingUtilGpu + i,
-                    device0.utilization.gpu);
-            assertEquals(
-                    startingUtilMemory + i,
-                    device0.utilization.memory);
             assertEquals(
                     startingClocksCore + i,
                     device0.clocks.core);

@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.stratum;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -42,6 +43,7 @@ import java.util.Map;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stratums {
 
     /** The stratums. */

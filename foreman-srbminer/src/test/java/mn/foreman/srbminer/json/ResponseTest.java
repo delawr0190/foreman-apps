@@ -68,32 +68,8 @@ public class ResponseTest {
                 "SRBMiner-Rig",
                 response.rigName);
         assertEquals(
-                "normalv7",
-                response.cryptonightType);
-        assertEquals(
-                10,
-                response.miningTime);
-        assertEquals(
-                1,
-                response.totalDevices);
-        assertEquals(
-                2,
-                response.totalThreads);
-        assertEquals(
                 new BigDecimal("12345678"),
                 response.hashRate);
-        assertEquals(
-                BigDecimal.ZERO,
-                response.hashRate1Min);
-        assertEquals(
-                BigDecimal.ZERO,
-                response.hashRate5Min);
-        assertEquals(
-                BigDecimal.ZERO,
-                response.hashRate30Min);
-        assertEquals(
-                BigDecimal.ZERO,
-                response.hashRateMax);
 
         final Response.Pool pool = response.pool;
         assertNotNull(pool);
@@ -101,26 +77,11 @@ public class ResponseTest {
                 "xmr-eu1.nanopool.org:14444",
                 pool.pool);
         assertEquals(
-                120001,
-                pool.difficulty);
-        assertEquals(
-                "2018-07-29 22:12:41",
-                pool.timeConnected);
-        assertEquals(
                 10,
                 pool.uptime);
-        assertEquals(
-                0,
-                pool.latency);
-        assertEquals(
-                5,
-                pool.lastJobReceived);
 
         final Response.Shares shares = response.shares;
         assertNotNull(shares);
-        assertEquals(
-                0,
-                shares.total);
         assertEquals(
                 0,
                 shares.accepted);
@@ -130,9 +91,6 @@ public class ResponseTest {
         assertEquals(
                 0,
                 shares.rejected);
-        assertEquals(
-                0,
-                shares.avgFindTime);
 
         final List<Response.Device> devices = response.devices;
         assertEquals(
@@ -140,9 +98,6 @@ public class ResponseTest {
                 devices.size());
 
         final Response.Device device = devices.get(0);
-        assertEquals(
-                "GPU0",
-                device.device);
         assertEquals(
                 0,
                 device.deviceId);
@@ -152,12 +107,6 @@ public class ResponseTest {
         assertEquals(
                 2,
                 device.busId);
-        assertEquals(
-                1,
-                device.kernelId);
-        assertEquals(
-                0,
-                device.hashRate);
         assertEquals(
                 1187,
                 device.coreClock);

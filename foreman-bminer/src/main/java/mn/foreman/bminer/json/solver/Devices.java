@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.solver;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Map;
@@ -34,6 +35,7 @@ import java.util.Map;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Devices {
 
     /** The devices. */

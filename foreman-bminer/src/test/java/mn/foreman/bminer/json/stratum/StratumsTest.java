@@ -9,8 +9,14 @@ import java.util.Map;
 
 import static junit.framework.TestCase.*;
 
+/** Unit tests for {@link Stratum}. */
 public class StratumsTest {
 
+    /**
+     * Tests deserialization.
+     *
+     * @throws IOException on failure to parse.
+     */
     @Test
     public void testDeserialization() throws IOException {
         final String response = "{\n" +
@@ -64,12 +70,6 @@ public class StratumsTest {
         assertEquals(
                 0,
                 stratum1.rejectedShares);
-        assertEquals(
-                0.02,
-                stratum1.acceptedShareRate);
-        assertEquals(
-                0.0,
-                stratum1.rejectedShareRate);
         final List<Failover> failovers1 = stratum1.failovers;
         assertNotNull(failovers1);
         assertEquals(
@@ -88,12 +88,6 @@ public class StratumsTest {
         assertEquals(
                 0,
                 stratum2.rejectedShares);
-        assertEquals(
-                0.01,
-                stratum2.acceptedShareRate);
-        assertEquals(
-                0.0,
-                stratum2.rejectedShareRate);
         final List<Failover> failovers2 = stratum2.failovers;
         assertNotNull(failovers2);
         assertEquals(

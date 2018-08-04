@@ -1,5 +1,6 @@
 package mn.foreman.ewbf.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -139,23 +140,12 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stat {
-
-    /** The number of available servers. */
-    @JsonProperty("available_servers")
-    public int availableServers;
 
     /** The current server. */
     @JsonProperty("current_server")
     public String currentServer;
-
-    /** The error. */
-    @JsonProperty("error")
-    public String error;
-
-    /** The method. */
-    @JsonProperty("method")
-    public String method;
 
     /** The results. */
     @JsonProperty("result")
@@ -165,11 +155,8 @@ public class Stat {
     @JsonProperty("server_status")
     public int serverStatus;
 
-    /** The start time. */
-    @JsonProperty("start_time")
-    public long startTime;
-
     /** Provides a model representation of the {@link Result} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Result {
 
         /** The accepted shares. */
@@ -180,21 +167,9 @@ public class Stat {
         @JsonProperty("busid")
         public String busId;
 
-        /** The CUDA ID. */
-        @JsonProperty("cudaid")
-        public int cudaId;
-
         /** The GPU ID. */
         @JsonProperty("gpuid")
         public int gpuId;
-
-        /** The power usage. */
-        @JsonProperty("gpu_power_usage")
-        public int gpuPowerUsage;
-
-        /** The GPU status. */
-        @JsonProperty("gpu_status")
-        public int gpuStatus;
 
         /** The name. */
         @JsonProperty("name")
@@ -204,17 +179,9 @@ public class Stat {
         @JsonProperty("rejected_shares")
         public int rejectedShares;
 
-        /** The solver. */
-        @JsonProperty("solver")
-        public int solver;
-
         /** The speed sps. */
         @JsonProperty("speed_sps")
         public int speedSps;
-
-        /** The start time. */
-        @JsonProperty("start_time")
-        public long startTime;
 
         @JsonProperty("temperature")
         public int temperature;

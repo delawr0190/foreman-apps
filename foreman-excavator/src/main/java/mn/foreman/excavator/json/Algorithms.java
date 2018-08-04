@@ -71,14 +71,6 @@ public class Algorithms
     @JsonProperty("algorithms")
     public List<Algorithm> algorithms;
 
-    /** The error. */
-    @JsonProperty("error")
-    public String error;
-
-    /** The ID. */
-    @JsonProperty("id")
-    public int id;
-
     /** Provides a model representation of the {@link Algorithm} object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Algorithm {
@@ -87,30 +79,6 @@ public class Algorithms
         @JsonProperty("accepted_shares")
         public int acceptedShares;
 
-        /** The algorithm ID. */
-        @JsonProperty("algorithm_id")
-        public int algorithmId;
-
-        /** Whether or not benchmarked. */
-        @JsonProperty("benchmark")
-        public boolean benchmark;
-
-        /** The current job difficulty. */
-        @JsonProperty("current_job_difficulty")
-        public double currentJobDifficulty;
-
-        /** Whether using GETs. */
-        @JsonProperty("got_job")
-        public boolean gotJob;
-
-        /** The algorithm name. */
-        @JsonProperty("name")
-        public String name;
-
-        /** The number received jobs. */
-        @JsonProperty("received_jobs")
-        public int receivedJobs;
-
         /** The number of rejected shares. */
         @JsonProperty("rejected_shares")
         public int rejectedShares;
@@ -118,9 +86,5 @@ public class Algorithms
         /** The speed. */
         @JsonProperty("speed")
         public BigDecimal speed;
-
-        /** The uptime. */
-        @JsonProperty("uptime")
-        public double uptime;
     }
 }

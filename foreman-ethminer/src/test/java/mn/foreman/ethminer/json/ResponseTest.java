@@ -76,32 +76,14 @@ public class ResponseTest {
                         .readValue(
                                 json,
                                 Response.class);
-        assertEquals(
-                1,
-                response.id);
-        assertEquals(
-                "2.0",
-                response.jsonRpc);
         final Response.Result result = response.result;
         assertNotNull(result);
         assertEquals(
                 73056881,
                 result.ethHashRate);
         assertEquals(
-                Arrays.asList(
-                        14681287,
-                        14506510,
-                        14681287,
-                        14506510,
-                        0,
-                        14681287),
-                result.ethHashRates);
-        assertEquals(
                 0,
                 result.ethInvalid);
-        assertEquals(
-                0,
-                result.ethPoolSwitches);
         assertEquals(
                 0,
                 result.ethRejected);
@@ -121,15 +103,6 @@ public class ResponseTest {
                 "eu1.ethermine.org:4444",
                 result.poolAddress);
         assertEquals(
-                Arrays.asList(
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0,
-                        0.0),
-                result.powerUsages);
-        assertEquals(
                 "59",
                 result.runtime);
         assertEquals(
@@ -141,15 +114,6 @@ public class ResponseTest {
                         68,
                         60),
                 result.temperatures);
-        assertEquals(
-                Arrays.asList(
-                        false,
-                        false,
-                        false,
-                        false,
-                        true,
-                        false),
-                result.isPaused);
         assertEquals(
                 "ethminer-0.16.0.dev0+commit.41639944",
                 result.version);

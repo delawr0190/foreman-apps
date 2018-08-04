@@ -33,16 +33,4 @@ public class Subscribe
     /** Whether or not connected. */
     @JsonProperty("connected")
     public boolean connected;
-
-    /** The ID. */
-    @JsonProperty("id")
-    public int id;
-
-    /** The login. */
-    @JsonProperty("login")
-    public String login;
-
-    /** The server status. */
-    @JsonProperty("server_status")
-    public String serverStatus;
 }

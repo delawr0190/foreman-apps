@@ -107,16 +107,10 @@ public class DevicesTest {
 
             final Solver solver1 = solverList.get(0);
             assertEquals(
-                    (i > 0 ? startingAlgorithm1 + i : startingAlgorithm1),
-                    solver1.algorithm);
-            assertEquals(
                     startingRate1 + i,
                     solver1.speedInfo.hashRate);
 
             final Solver solver2 = solverList.get(1);
-            assertEquals(
-                    (i > 0 ? startingAlgorithm2 + i : startingAlgorithm2),
-                    solver2.algorithm);
             assertEquals(
                     startingRate2 + i,
                     solver2.speedInfo.hashRate);

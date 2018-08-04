@@ -1,6 +1,6 @@
 package mn.foreman.xmrig.json;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -179,25 +179,13 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
-
-    /** The algorithm. */
-    @JsonProperty("algo")
-    public String algo;
 
     /** The connection. */
     @JsonProperty("connection")
     public Connection connection;
-
-    /** The cpu. */
-    @JsonProperty("cpu")
-    public Cpu cpu;
-
-    /** The donation percentage. */
-    @JsonProperty("donate_level")
-    @JsonAlias("donate")
-    public double donateLevel;
 
     /** The hash rate. */
     @JsonProperty("hashrate")
@@ -207,48 +195,13 @@ public class Response {
     @JsonProperty("health")
     public List<Health> health;
 
-    /** Whether or not huge pages are supported. */
-    @JsonProperty("hugepages")
-    public Boolean hugePages;
-
-    /** The ID. */
-    @JsonProperty("id")
-    public String id;
-
-    /** The kind. */
-    @JsonProperty("kind")
-    public String kind;
-
     /** The results. */
     @JsonProperty("results")
     public Results results;
 
-    /** The UA. */
-    @JsonProperty("ua")
-    public String ua;
-
-    /** The version. */
-    @JsonProperty("version")
-    public String version;
-
-    /** The worker ID. */
-    @JsonProperty("worker_id")
-    public String workerId;
-
     /** Provides a model representation of the {@link Connection} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Connection {
-
-        /** The error log. */
-        @JsonProperty("error_log")
-        public List<String> errorLog;
-
-        /** The failures. */
-        @JsonProperty("failures")
-        public int failures;
-
-        /** The ping. */
-        @JsonProperty("ping")
-        public int ping;
 
         /** The pool. */
         @JsonProperty("pool")
@@ -259,32 +212,9 @@ public class Response {
         public long uptime;
     }
 
-    /** Provides a model representation of the {@link Cpu} object. */
-    public static class Cpu {
-
-        /** Whether or not AES is supported. */
-        @JsonProperty("aes")
-        public Boolean aes;
-
-        /** The brand. */
-        @JsonProperty("brand")
-        public String brand;
-
-        /** The sockets. */
-        @JsonProperty("sockets")
-        public int sockets;
-
-        /** Whether or not x64 is supported. */
-        @JsonProperty("x64")
-        public Boolean x64;
-    }
-
     /** Provides a model representation of the {@link HashRate} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class HashRate {
-
-        /** The highest rate. */
-        @JsonProperty("highest")
-        public BigDecimal highest;
 
         /** The thread rates. */
         @JsonProperty("threads")
@@ -296,6 +226,7 @@ public class Response {
     }
 
     /** Provides a model representation of the {@link Health} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Health {
 
         /** The clock. */
@@ -314,37 +245,14 @@ public class Response {
         @JsonProperty("name")
         public String name;
 
-        /** The power. */
-        @JsonProperty("power")
-        public int power;
-
         /** The temp. */
         @JsonProperty("temp")
         public int temp;
     }
 
     /** Provides a model representation of the {@link Results} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Results {
-
-        /** The average time. */
-        @JsonProperty("avg_time")
-        public int avgTime;
-
-        /** The best shares. */
-        @JsonProperty("best")
-        public List<Long> best;
-
-        /** The current difficulty. */
-        @JsonProperty("diff_current")
-        public int diffCurrent;
-
-        /** The error log. */
-        @JsonProperty("error_log")
-        public List<String> errorLog;
-
-        /** The total hashes. */
-        @JsonProperty("hashes_total")
-        public long hashesTotal;
 
         /** The total number of good shares. */
         @JsonProperty("shares_good")

@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.solver;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -20,11 +21,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Solver {
-
-    /** The algorithm. */
-    @JsonProperty("algorithm")
-    public String algorithm;
 
     /** The speed info. */
     @JsonProperty("speed_info")

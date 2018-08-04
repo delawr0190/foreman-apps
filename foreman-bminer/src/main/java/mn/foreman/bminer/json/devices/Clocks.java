@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.devices;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -19,6 +20,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Clocks {
 
     /** The core clock. */

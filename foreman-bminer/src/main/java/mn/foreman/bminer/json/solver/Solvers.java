@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.solver;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
  * ]
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Solvers {
 
     /** The solvers. */

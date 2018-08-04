@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.stratum;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -28,11 +29,8 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Stratum {
-
-    /** The accepted share rate. */
-    @JsonProperty("accepted_share_rate")
-    public double acceptedShareRate;
 
     /** The accepted shares. */
     @JsonProperty("accepted_shares")
@@ -41,10 +39,6 @@ public class Stratum {
     /** The failure URIs. */
     @JsonProperty("failover_uris")
     public List<Failover> failovers;
-
-    /** The rejected share rate. */
-    @JsonProperty("rejected_share_rate")
-    public double rejectedShareRate;
 
     /** The rejected shares. */
     @JsonProperty("rejected_shares")

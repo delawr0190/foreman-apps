@@ -1,5 +1,6 @@
 package mn.foreman.dstm.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
@@ -46,19 +47,12 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
 
     /** The connection time. */
     @JsonProperty("contime")
     public long connectionTime;
-
-    /** The error. */
-    @JsonProperty("error")
-    public String error;
-
-    /** The ID. */
-    @JsonProperty("id")
-    public int id;
 
     /** The port. */
     @JsonProperty("port")
@@ -72,19 +66,8 @@ public class Response {
     @JsonProperty("server")
     public String server;
 
-    /** The uptime. */
-    @JsonProperty("uptime")
-    public long uptime;
-
-    /** The user. */
-    @JsonProperty("user")
-    public String user;
-
-    /** The version. */
-    @JsonProperty("version")
-    public String version;
-
     /** Provides a model representation of the {@link Result} object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Result {
 
         /** The accepted shares. */
@@ -107,26 +90,6 @@ public class Response {
         @JsonProperty("gpu_pci_bus_id")
         public int gpuPciBusId;
 
-        /** The GPU PCI device ID. */
-        @JsonProperty("gpu_pci_device_id")
-        public int gpuPciDeviceId;
-
-        /** The GPU UUID. */
-        @JsonProperty("gpu_uuid")
-        public String gpuUuid;
-
-        /** The latency. */
-        @JsonProperty("latency")
-        public int latency;
-
-        /** The power usage. */
-        @JsonProperty("power_usage")
-        public double powerUsage;
-
-        /** The average power usage. */
-        @JsonProperty("avg_power_usage")
-        public double powerUsageAverage;
-
         /** The rejected shares. */
         @JsonProperty("rejected_shares")
         public int rejectedShares;
@@ -134,18 +97,6 @@ public class Response {
         /** The solution rate. */
         @JsonProperty("sol_ps")
         public double solutionRate;
-
-        /** The solution rate (avg). */
-        @JsonProperty("avg_sol_ps")
-        public double solutionRateAverage;
-
-        /** The solutions per watt. */
-        @JsonProperty("sol_pw")
-        public double solutionsPerWatt;
-
-        /** The solutions per watt (avg). */
-        @JsonProperty("avg_sol_pw")
-        public double solutionsPerWattAverage;
 
         /** The temperature. */
         @JsonProperty("temperature")

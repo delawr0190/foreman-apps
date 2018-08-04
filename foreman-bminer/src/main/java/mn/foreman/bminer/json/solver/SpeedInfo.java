@@ -1,6 +1,7 @@
 package mn.foreman.bminer.json.solver;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -30,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * <p>Both the solution rate and the hash rate are placed into {@link
  * #hashRate}.</p>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class SpeedInfo {
 
     /** The hash rate (for equihash, this is the solution rate). */

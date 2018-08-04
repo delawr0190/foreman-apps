@@ -1,5 +1,6 @@
 package mn.foreman.srbminer.json;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.math.BigDecimal;
@@ -58,11 +59,8 @@ import java.util.List;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
-
-    /** The cryptonight type. */
-    @JsonProperty("cryptonight_type")
-    public String cryptonightType;
 
     /** The devices. */
     @JsonProperty("devices")
@@ -71,26 +69,6 @@ public class Response {
     /** The current hash rate. */
     @JsonProperty("hashrate_total_now")
     public BigDecimal hashRate;
-
-    /** The 1 min hash rate. */
-    @JsonProperty("hashrate_total_1min")
-    public BigDecimal hashRate1Min;
-
-    /** The 30 min hash rate. */
-    @JsonProperty("hashrate_total_30min")
-    public BigDecimal hashRate30Min;
-
-    /** The 5 min hash rate. */
-    @JsonProperty("hashrate_total_5min")
-    public BigDecimal hashRate5Min;
-
-    /** The max hash rate. */
-    @JsonProperty("hashrate_total_max")
-    public BigDecimal hashRateMax;
-
-    /** The mining time. */
-    @JsonProperty("mining_time")
-    public int miningTime;
 
     /** The pool. */
     @JsonProperty("pool")
@@ -104,15 +82,8 @@ public class Response {
     @JsonProperty("shares")
     public Shares shares;
 
-    /** The total devices. */
-    @JsonProperty("total_devices")
-    public int totalDevices;
-
-    /** The total threads. */
-    @JsonProperty("total_threads")
-    public int totalThreads;
-
     /** A model object of the JSON device object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Device {
 
         /** The bus id. */
@@ -123,10 +94,6 @@ public class Response {
         @JsonProperty("core_clock")
         public int coreClock;
 
-        /** The device. */
-        @JsonProperty("device")
-        public String device;
-
         /** The device id. */
         @JsonProperty("device_id")
         public int deviceId;
@@ -134,14 +101,6 @@ public class Response {
         /** The fan speed (RPMs). */
         @JsonProperty("fan_speed_rpm")
         public int fanSpeedRpm;
-
-        /** The hash rate. */
-        @JsonProperty("hashrate")
-        public long hashRate;
-
-        /** The kernel id. */
-        @JsonProperty("kernel_id")
-        public int kernelId;
 
         /** The memory clock. */
         @JsonProperty("memory_clock")
@@ -157,27 +116,12 @@ public class Response {
     }
 
     /** A model object of the JSON pool object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Pool {
-
-        /** The difficulty. */
-        @JsonProperty("difficulty")
-        public long difficulty;
-
-        /** The last job received. */
-        @JsonProperty("last_job_received")
-        public int lastJobReceived;
-
-        /** The latency. */
-        @JsonProperty("latency")
-        public int latency;
 
         /** The pool. */
         @JsonProperty("pool")
         public String pool;
-
-        /** The time connected. */
-        @JsonProperty("time_connected")
-        public String timeConnected;
 
         /** The uptime. */
         @JsonProperty("uptime")
@@ -185,6 +129,7 @@ public class Response {
     }
 
     /** A model object representation of the shares JSON object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Shares {
 
         /** The total accepted. */
@@ -195,16 +140,8 @@ public class Response {
         @JsonProperty("accepted_stale")
         public int acceptedStale;
 
-        /** The average share find time. */
-        @JsonProperty("avg_find_time")
-        public int avgFindTime;
-
         /** The total rejected. */
         @JsonProperty("rejected")
         public int rejected;
-
-        /** The total shares. */
-        @JsonProperty("total")
-        public int total;
     }
 }

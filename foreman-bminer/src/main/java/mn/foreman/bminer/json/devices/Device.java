@@ -1,5 +1,6 @@
 package mn.foreman.bminer.json.devices;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * }
  * </pre>
  */
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Device {
 
     /** The clocks. */
@@ -38,19 +40,7 @@ public class Device {
     @JsonProperty("fan_speed")
     public int fanSpeed;
 
-    /** The global memory used. */
-    @JsonProperty("global_memory_used")
-    public int globalMemoryUsed;
-
-    /** The power. */
-    @JsonProperty("power")
-    public int power;
-
     /** The temperature. */
     @JsonProperty("temperature")
     public int temperature;
-
-    /** The utilization. */
-    @JsonProperty("utilization")
-    public Utilization utilization;
 }
