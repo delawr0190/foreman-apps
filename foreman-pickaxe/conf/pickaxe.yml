@@ -38,13 +38,23 @@ ccminers:
 claymores:
 # Example:
 #  - name:    "GPU Rig 1"
+#    type:    "eth"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 3333
+#
+# Depending on the claymore fork that you're running, you'll have to provide
+# the type.  We currently support claymore-eth, claymore-xmr, and claymore-zec.
+# The types that you can provide are:
+#
+#  "eth"
+#  "xmr"
+#  "zec"
 #
 # If you've configured claymore to use an API password,
 # you may provide that as an additional parameter:
 #
 #  - name:        "GPU Rig 1"
+#    type:        "eth"
 #    apiIp:       "192.168.3.196"
 #    apiPort:     3333
 #    apiPassword: "password"

@@ -56,24 +56,30 @@ public class Claymore
     /** The API password. */
     private final String apiPassword;
 
+    /** The claymore type. */
+    private final ClaymoreType claymoreType;
+
     /**
      * Constructor.
      *
-     * @param name        The name.
-     * @param apiIp       The API IP.
-     * @param apiPort     The API port.
-     * @param apiPassword The API password.
+     * @param name         The name.
+     * @param apiIp        The API IP.
+     * @param apiPort      The API port.
+     * @param apiPassword  The API password.
+     * @param claymoreType The claymore type.
      */
     Claymore(
             final String name,
             final String apiIp,
             final int apiPort,
-            final String apiPassword) {
+            final String apiPassword,
+            final ClaymoreType claymoreType) {
         super(
                 name,
                 apiIp,
                 apiPort);
         this.apiPassword = apiPassword;
+        this.claymoreType = claymoreType;
     }
 
     @Override
@@ -121,14 +127,16 @@ public class Claymore
                 dcrHashRate,
                 temps,
                 fans,
+                this.claymoreType,
                 statsBuilder);
     }
 
     @Override
     protected String addToString() {
         return String.format(
-                ", apiPassword=%s",
-                this.apiPassword);
+                ", apiPassword=%s, type=%s",
+                this.apiPassword,
+                this.claymoreType);
     }
 
     /**
@@ -163,12 +171,13 @@ public class Claymore
     /**
      * Adds a {@link Rig} using the provided parameters.
      *
-     * @param version     The miner version.
-     * @param ethHashRate The ETH hash rate.
-     * @param dcrHashRate The DCR hash rate.
-     * @param temps       The temperatures.
-     * @param fans        The fans.
-     * @param builder     The builder to update.
+     * @param version      The miner version.
+     * @param ethHashRate  The ETH hash rate.
+     * @param dcrHashRate  The DCR hash rate.
+     * @param temps        The temperatures.
+     * @param fans         The fans.
+     * @param claymoreType The claymore type.
+     * @param builder      The builder to update.
      */
     private static void addRig(
             final String version,
@@ -176,11 +185,16 @@ public class Claymore
             final String dcrHashRate,
             final List<String> temps,
             final List<String> fans,
+            final ClaymoreType claymoreType,
             final MinerStats.Builder builder) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
                         .setName("claymore_" + version)
-                        .setHashRate(toHashRate(ethHashRate, dcrHashRate));
+                        .setHashRate(
+                                toHashRate(
+                                        ethHashRate,
+                                        dcrHashRate,
+                                        claymoreType));
         for (int i = 0; i < temps.size(); i++) {
             rigBuilder
                     .addGpu(
@@ -210,17 +224,18 @@ public class Claymore
     /**
      * Combines the two hash rates into a {@link BigDecimal}.
      *
-     * @param ethRate The ETH rate.
-     * @param dcrRate The DCR rate.
+     * @param ethRate      The ETH rate.
+     * @param dcrRate      The DCR rate.
+     * @param claymoreType The claymore type.
      *
      * @return The hash rate.
      */
     private static BigDecimal toHashRate(
             final String ethRate,
-            final String dcrRate) {
-        // Hash rate is in KHs
-        return new BigDecimal(ethRate).multiply(new BigDecimal(1000))
-                .add(new BigDecimal(dcrRate).multiply(new BigDecimal(1000)));
+            final String dcrRate,
+            final ClaymoreType claymoreType) {
+        return new BigDecimal(ethRate).multiply(claymoreType.getMultiplier())
+                .add(new BigDecimal(dcrRate).multiply(claymoreType.getMultiplier()));
     }
 
     /**

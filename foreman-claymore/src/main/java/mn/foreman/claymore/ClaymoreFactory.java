@@ -18,6 +18,10 @@ public class ClaymoreFactory
                 config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")),
-                config.get("apiPassword"));
+                config.get("apiPassword"),
+                ClaymoreType.valueOf(
+                        config.getOrDefault(
+                                "type",
+                                ClaymoreType.ETH.name()).toUpperCase()));
     }
 }

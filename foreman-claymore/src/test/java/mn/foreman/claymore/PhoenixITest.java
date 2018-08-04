@@ -29,7 +29,8 @@ public class PhoenixITest
                         "claymore",
                         "127.0.0.1",
                         3333,
-                        null),
+                        null,
+                        ClaymoreType.ETH),
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(

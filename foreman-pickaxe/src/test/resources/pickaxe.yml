@@ -30,6 +30,7 @@ ccminers:
 
 claymores:
   - name:        "miner 6"
+    type:        "zec"
     apiIp:       "0.0.0.6"
     apiPort:     6
     apiPassword: "password"

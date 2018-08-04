@@ -73,6 +73,8 @@ public class YmlConfigurationFactoryTest {
                 minerIndex++,
                 configuration.getClaymoreConfigs(),
                 ImmutableMap.of(
+                        "type",
+                        "zec",
                         "apiPassword",
                         "password"));
 
