@@ -15,6 +15,9 @@ import mn.foreman.lolminer.LolminerFactory;
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.model.error.MinerException;
+import mn.foreman.pickaxe.cache.MinerCache;
+import mn.foreman.pickaxe.cache.MinerCacheImpl;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
@@ -26,9 +29,10 @@ import mn.foreman.xmrig.XmrigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -39,8 +43,18 @@ public class RunMe {
     private final static Logger LOG =
             LoggerFactory.getLogger(RunMe.class);
 
+    /** A cache of all of the active miners. */
+    private final MinerCache activeCache = new MinerCacheImpl();
+
+    /** A cache of all of the blacklisted miners. */
+    private final MinerCache blacklistCache = new MinerCacheImpl();
+
     /** The {@link Configuration}. */
     private final Configuration configuration;
+
+    /** The thread pool for running tasks. */
+    private final ScheduledExecutorService threadPool =
+            Executors.newScheduledThreadPool(1);
 
     /**
      * Constructor.
@@ -61,101 +75,84 @@ public class RunMe {
                 new HttpPostMetricsProcessingStrategy(
                         this.configuration.getForemanApiUrl(),
                         this.configuration.getApiKey());
-        final List<Miner> minerList = new LinkedList<>();
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getAntminerConfigs(),
-                        new AntminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getBaikalConfigs(),
-                        new BaikalFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getBminerConfigs(),
-                        new BminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getCastxmrConfigs(),
-                        new CastxmrFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getCcminerConfigs(),
-                        new CcminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getClaymoreConfigs(),
-                        new ClaymoreFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getCryptoDredgeConfigs(),
-                        new CcminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getDstmConfigs(),
-                        new DstmFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getEthminerConfigs(),
-                        new EthminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getEwbfConfigs(),
-                        new EwbfFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getExcavatorConfigs(),
-                        new ExcavatorFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getJceminerConfigs(),
-                        new JceminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getLolminerConfigs(),
-                        new LolminerFactory()));
-        // PhoenixMiner uses the same API as Claymore
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getPhoenixConfigs(),
-                        new ClaymoreFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getSgminerConfigs(),
-                        new SgminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getSrbminerConfigs(),
-                        new SrbminerFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getTrexConfigs(),
-                        new TrexFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getXmrigConfigs(),
-                        new XmrigFactory()));
-        minerList.addAll(
-                createMiners(
-                        this.configuration.getZenemyConfigs(),
-                        new CcminerFactory()));
+        createMiners(
+                this.configuration.getAntminerConfigs(),
+                new AntminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getBaikalConfigs(),
+                new BaikalFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getBminerConfigs(),
+                new BminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getCastxmrConfigs(),
+                new CastxmrFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getCcminerConfigs(),
+                new CcminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getClaymoreConfigs(),
+                new ClaymoreFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getCryptoDredgeConfigs(),
+                new CcminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getDstmConfigs(),
+                new DstmFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getEthminerConfigs(),
+                new EthminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getEwbfConfigs(),
+                new EwbfFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getExcavatorConfigs(),
+                new ExcavatorFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getJceminerConfigs(),
+                new JceminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getLolminerConfigs(),
+                new LolminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getPhoenixConfigs(),
+                new ClaymoreFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getSgminerConfigs(),
+                new SgminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getSrbminerConfigs(),
+                new SrbminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getTrexConfigs(),
+                new TrexFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getXmrigConfigs(),
+                new XmrigFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getZenemyConfigs(),
+                new CcminerFactory()).forEach(this.activeCache::add);
 
         final int sleepInSeconds =
                 this.configuration.getPollFrequencyInSeconds();
+
+        startBlacklistValidation();
 
         try {
             //noinspection InfiniteLoopStatement
             while (true) {
                 final MetricsReport.Builder metricsReportBuilder =
                         new MetricsReport.Builder();
-                for (final Miner miner : minerList) {
+                for (final Miner miner : this.activeCache.getMiners()) {
                     try {
                         metricsReportBuilder.addMinerStats(
                                 miner.getStats());
                     } catch (final Exception e) {
-                        LOG.warn("Failed to obtain metrics for {}",
+                        LOG.warn("Failed to obtain metrics for {} - temporarily blacklisting",
                                 miner,
                                 e);
+                        this.activeCache.remove(miner);
+                        this.blacklistCache.add(miner);
                     }
                 }
 
@@ -186,5 +183,32 @@ public class RunMe {
                 .stream()
                 .map(factory::create)
                 .collect(Collectors.toList());
+    }
+
+    /** Starts {@link #blacklistCache} evaluation. */
+    private void startBlacklistValidation() {
+        this.threadPool.scheduleAtFixedRate(
+                () -> {
+                    final List<Miner> toValidate = this.blacklistCache.getMiners();
+
+                    LOG.debug("Evaluating {} miners for blacklist eviction",
+                            toValidate.size());
+
+                    for (final Miner miner : toValidate) {
+                        try {
+                            miner.getStats();
+
+                            LOG.debug("{} is reachable - restoring", miner);
+
+                            this.blacklistCache.remove(miner);
+                            this.activeCache.add(miner);
+                        } catch (final MinerException me) {
+                            LOG.warn("Couldn't reach miner - keeping it blacklisted");
+                        }
+                    }
+                },
+                60,
+                60,
+                TimeUnit.SECONDS);
     }
 }
