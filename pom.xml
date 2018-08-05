@@ -42,6 +42,7 @@
 
     <modules>
         <module>foreman-antminer</module>
+        <module>foreman-baikal</module>
         <module>foreman-bminer</module>
         <module>foreman-castxmr</module>
         <module>foreman-ccminer</module>
@@ -56,6 +57,7 @@
         <module>foreman-lolminer</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
+        <module>foreman-sgminer</module>
         <module>foreman-srbminer</module>
         <module>foreman-trex</module>
         <module>foreman-util</module>
@@ -68,6 +70,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-antminer</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-baikal</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>
@@ -138,6 +145,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-model</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-sgminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

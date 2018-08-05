@@ -13,86 +13,96 @@ antminers:
     apiIp:   "0.0.0.2"
     apiPort: 2
 
-bminers:
+baikal:
   - name:    "miner 3"
     apiIp:   "0.0.0.3"
     apiPort: 3
 
-castxmr:
+bminers:
   - name:    "miner 4"
     apiIp:   "0.0.0.4"
     apiPort: 4
 
-ccminers:
+castxmr:
   - name:    "miner 5"
     apiIp:   "0.0.0.5"
     apiPort: 5
 
+ccminers:
+  - name:    "miner 6"
+    apiIp:   "0.0.0.6"
+    apiPort: 6
+
 claymores:
-  - name:        "miner 6"
+  - name:        "miner 7"
     type:        "zec"
-    apiIp:       "0.0.0.6"
-    apiPort:     6
+    apiIp:       "0.0.0.7"
+    apiPort:     7
     apiPassword: "password"
 
 cryptodredges:
-  - name:    "miner 7"
-    apiIp:   "0.0.0.7"
-    apiPort: 7
-
-dstms:
   - name:    "miner 8"
     apiIp:   "0.0.0.8"
     apiPort: 8
 
+dstms:
+  - name:    "miner 9"
+    apiIp:   "0.0.0.9"
+    apiPort: 9
+
 ethminers:
-  - name:        "miner 9"
-    apiIp:       "0.0.0.9"
-    apiPort:     9
+  - name:        "miner 10"
+    apiIp:       "0.0.0.10"
+    apiPort:     10
     apiPassword: "password"
 
 ewbfs:
-  - name:    "miner 10"
-    apiIp:   "0.0.0.10"
-    apiPort: 10
-
-excavators:
   - name:    "miner 11"
     apiIp:   "0.0.0.11"
     apiPort: 11
 
-jceminer:
+excavators:
   - name:    "miner 12"
     apiIp:   "0.0.0.12"
     apiPort: 12
 
-lolminer:
+jceminer:
   - name:    "miner 13"
     apiIp:   "0.0.0.13"
     apiPort: 13
 
+lolminer:
+  - name:    "miner 14"
+    apiIp:   "0.0.0.14"
+    apiPort: 14
+
 phoenix:
-  - name:        "miner 14"
-    apiIp:       "0.0.0.14"
-    apiPort:     14
+  - name:        "miner 15"
+    apiIp:       "0.0.0.15"
+    apiPort:     15
     apiPassword: "password"
 
-srbminers:
-  - name:    "miner 15"
-    apiIp:   "0.0.0.15"
-    apiPort: 15
-
-trex:
+sgminer:
   - name:    "miner 16"
     apiIp:   "0.0.0.16"
     apiPort: 16
 
-xmrigs:
+srbminers:
   - name:    "miner 17"
     apiIp:   "0.0.0.17"
     apiPort: 17
 
-zenemys:
+trex:
   - name:    "miner 18"
     apiIp:   "0.0.0.18"
     apiPort: 18
+
+xmrigs:
+  - name:    "miner 19"
+    apiIp:   "0.0.0.19"
+    apiPort: 19
+
+zenemys:
+  - name:    "miner 20"
+    apiIp:   "0.0.0.20"
+    apiPort: 20

@@ -10,13 +10,12 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.AbstractBuilder;
-import mn.foreman.model.Miner;
+import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,20 +39,11 @@ import java.util.concurrent.TimeUnit;
  * purposes.  Make use of what we have by default).</p>
  */
 public class CgMiner
-        implements Miner {
+        extends AbstractMiner {
 
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMiner.class);
-
-    /** The API IP. */
-    private final String apiIp;
-
-    /** The API port. */
-    private final int apiPort;
-
-    /** The miner name. */
-    private final String name;
 
     /**
      * A {@link Map} of every {@link CgMinerRequest} to send and the {@link
@@ -66,36 +56,18 @@ public class CgMiner
      *
      * @param builder The builder.
      */
-    public CgMiner(final Builder builder) {
-        Validate.notEmpty(
+    CgMiner(final Builder builder) {
+        super(
                 builder.name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 builder.apiIp,
-                "apiIp cannot be empty");
-        Validate.notEmpty(
-                builder.apiPort,
-                "apiPort cannot be empty");
-        this.name = builder.name;
-        this.apiIp = builder.apiIp;
-        this.apiPort = Integer.parseInt(builder.apiPort);
+                Integer.parseInt(builder.apiPort));
         this.requests = new HashMap<>(builder.requests);
     }
 
     @Override
-    public MinerStats getStats()
+    protected void addStats(
+            final MinerStats.Builder statsBuilder)
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
-                this.apiIp,
-                this.apiPort);
-
-        final MinerStats.Builder builder =
-                new MinerStats.Builder()
-                        .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
-
         for (final Map.Entry<CgMinerRequest, ResponseStrategy> entry :
                 this.requests.entrySet()) {
             final CgMinerRequest request = entry.getKey();
@@ -103,26 +75,9 @@ public class CgMiner
 
             final ResponseStrategy strategy = entry.getValue();
             strategy.processResponse(
-                    builder,
+                    statsBuilder,
                     response);
         }
-
-        final MinerStats minerStats =
-                builder.build();
-
-        LOG.debug("Obtained stats: {}", minerStats);
-
-        return minerStats;
-    }
-
-    @Override
-    public String toString() {
-        return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d ]",
-                getClass().getSimpleName(),
-                this.name,
-                this.apiIp,
-                this.apiPort);
     }
 
     /**
@@ -222,7 +177,7 @@ public class CgMiner
         private String name;
 
         /**
-         * A {@link java.util.Map} of each {@link CgMinerRequest} to the {@link
+         * A {@link Map} of each {@link CgMinerRequest} to the {@link
          * ResponseStrategy} to use for processing the response.
          */
         private Map<CgMinerRequest, ResponseStrategy> requests =

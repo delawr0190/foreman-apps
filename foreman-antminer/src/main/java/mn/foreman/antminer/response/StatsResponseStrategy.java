@@ -1,5 +1,6 @@
 package mn.foreman.antminer.response;
 
+import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;

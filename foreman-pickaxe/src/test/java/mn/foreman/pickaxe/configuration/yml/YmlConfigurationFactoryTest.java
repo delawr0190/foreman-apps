@@ -59,6 +59,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getBaikalConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getBminerConfigs());
 
         validateGeneric(
@@ -112,6 +116,10 @@ public class YmlConfigurationFactoryTest {
                 ImmutableMap.of(
                         "apiPassword",
                         "password"));
+
+        validateGeneric(
+                minerIndex++,
+                configuration.getSgminerConfigs());
 
         validateGeneric(
                 minerIndex++,

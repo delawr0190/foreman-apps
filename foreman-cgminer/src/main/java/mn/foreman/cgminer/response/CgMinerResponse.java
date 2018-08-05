@@ -35,7 +35,7 @@ public class CgMinerResponse {
     private CgMinerStatusSection statusSection;
 
     /** The returned values. */
-    @JsonAlias({"VERSION", "STATS", "POOLS"})
+    @JsonAlias({"VERSION", "STATS", "POOLS", "DEVS"})
     private List<Map<String, String>> values;
 
     /**

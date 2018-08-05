@@ -1,7 +1,6 @@
-package mn.foreman.antminer;
+package mn.foreman.baikal;
 
-import mn.foreman.antminer.response.RateMultiplyingDecorator;
-import mn.foreman.antminer.response.StatsResponseStrategy;
+import mn.foreman.baikal.response.DevsResponseStrategy;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
@@ -13,15 +12,13 @@ import java.util.Map;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
- * a {@link Miner} that will query an Antminer.
+ * a {@link Miner} that will query a Baikal.
  */
-public class AntminerFactory
+public class BaikalFactory
         implements MinerFactory {
 
     @Override
     public Miner create(final Map<String, String> config) {
-        final AntminerType type =
-                AntminerType.forLabel(config.get("type"));
         return new CgMiner.Builder()
                 .setName(config.get("name"))
                 .setApiIp(config.get("apiIp"))
@@ -33,12 +30,9 @@ public class AntminerFactory
                         new PoolsResponseStrategy())
                 .addRequest(
                         new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.STATS)
+                                .setCommand(CgMinerCommand.DEVS)
                                 .build(),
-                        new RateMultiplyingDecorator(
-                                type.getMultiplier(),
-                                new StatsResponseStrategy(
-                                        type.getLabel())))
+                        new DevsResponseStrategy())
                 .build();
     }
 }

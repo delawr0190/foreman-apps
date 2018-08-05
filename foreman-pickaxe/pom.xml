@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-baikal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-bminer</artifactId>
         </dependency>
         <dependency>
@@ -68,6 +72,10 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-sgminer</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>

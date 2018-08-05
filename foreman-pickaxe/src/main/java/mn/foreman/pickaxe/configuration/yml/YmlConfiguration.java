@@ -20,6 +20,9 @@ public class YmlConfiguration
     /** The user's API key. */
     private final String apiKey;
 
+    /** The baikal configurations. */
+    private final List<Map<String, String>> baikalConfigs;
+
     /** The bminer configurations. */
     private final List<Map<String, String>> bminerConfigs;
 
@@ -62,6 +65,9 @@ public class YmlConfiguration
     /** How frequently to poll, in seconds. */
     private final int pollFrequencyInSeconds;
 
+    /** The sgminer configurations. */
+    private final List<Map<String, String>> sgminerConfigs;
+
     /** The srbminer configurations. */
     private final List<Map<String, String>> srbminerConfigs;
 
@@ -82,6 +88,7 @@ public class YmlConfiguration
      * @param foremanApiUrl          The FOREMAN API URL.
      * @param apiKey                 The API key.
      * @param antConfigs             The antminer configs.
+     * @param baikalConfigs          The baikal configs.
      * @param bminerConfigs          The bminer configs.
      * @param castxmrConfigs         The castxmr configs.
      * @param ccminerConfigs         The ccminer configs.
@@ -93,6 +100,7 @@ public class YmlConfiguration
      * @param jceminerConfigs        The jceminer configs.
      * @param lolminerConfigs        The lolminer configs.
      * @param phoenixConfigs         The phoenix configs.
+     * @param sgminerConfigs         The sgminer configs.
      * @param srbminerConfigs        The srbminer configs.
      * @param trexConfigs            The trex configs.
      * @param xmrigConfigs           The xmrig configs.
@@ -102,6 +110,7 @@ public class YmlConfiguration
             @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("apiKey") final String apiKey,
             @JsonProperty("antminers") final List<Map<String, String>> antConfigs,
+            @JsonProperty("baikal") final List<Map<String, String>> baikalConfigs,
             @JsonProperty("bminers") final List<Map<String, String>> bminerConfigs,
             @JsonProperty("castxmr") final List<Map<String, String>> castxmrConfigs,
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
@@ -114,6 +123,7 @@ public class YmlConfiguration
             @JsonProperty("jceminer") final List<Map<String, String>> jceminerConfigs,
             @JsonProperty("lolminer") final List<Map<String, String>> lolminerConfigs,
             @JsonProperty("phoenix") final List<Map<String, String>> phoenixConfigs,
+            @JsonProperty("sgminer") final List<Map<String, String>> sgminerConfigs,
             @JsonProperty("srbminers") final List<Map<String, String>> srbminerConfigs,
             @JsonProperty("trex") final List<Map<String, String>> trexConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
@@ -131,6 +141,7 @@ public class YmlConfiguration
         this.foremanApiUrl = foremanApiUrl;
         this.apiKey = apiKey;
         this.antConfigs = toConfigs(antConfigs);
+        this.baikalConfigs = toConfigs(baikalConfigs);
         this.bminerConfigs = toConfigs(bminerConfigs);
         this.castxmrConfigs = toConfigs(castxmrConfigs);
         this.ccminerConfigs = toConfigs(ccminerConfigs);
@@ -143,6 +154,7 @@ public class YmlConfiguration
         this.jceminerConfigs = toConfigs(jceminerConfigs);
         this.lolminerConfigs = toConfigs(lolminerConfigs);
         this.phoenixConfigs = toConfigs(phoenixConfigs);
+        this.sgminerConfigs = toConfigs(sgminerConfigs);
         this.srbminerConfigs = toConfigs(srbminerConfigs);
         this.trexConfigs = toConfigs(trexConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
@@ -158,6 +170,11 @@ public class YmlConfiguration
     @Override
     public String getApiKey() {
         return this.apiKey;
+    }
+
+    @Override
+    public List<Map<String, String>> getBaikalConfigs() {
+        return Collections.unmodifiableList(this.baikalConfigs);
     }
 
     @Override
@@ -228,6 +245,11 @@ public class YmlConfiguration
     @Override
     public int getPollFrequencyInSeconds() {
         return this.pollFrequencyInSeconds;
+    }
+
+    @Override
+    public List<Map<String, String>> getSgminerConfigs() {
+        return Collections.unmodifiableList(this.sgminerConfigs);
     }
 
     @Override

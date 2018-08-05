@@ -1,6 +1,5 @@
-package mn.foreman.antminer.response;
+package mn.foreman.cgminer;
 
-import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerPoolStatus;
 import mn.foreman.cgminer.response.CgMinerResponse;
@@ -17,7 +16,7 @@ import java.util.Map;
 /**
  * A {@link PoolsResponseStrategy} provides a {@link ResponseStrategy}
  * implementation that's capable of parsing a {@link CgMinerCommand#POOLS}
- * response from an antminer.
+ * response from a cgminer.
  */
 public class PoolsResponseStrategy
         implements ResponseStrategy {

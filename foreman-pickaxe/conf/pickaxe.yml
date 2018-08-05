@@ -17,6 +17,12 @@ antminers:
 #  "antminer_l3"
 #  "antminer_s9"
 
+baikal:
+# Example:
+#  - name:    "Baikal X10"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4028
+
 bminers:
 # Example:
 #  - name:    "GPU Rig 1"
@@ -126,6 +132,14 @@ phoenix:
 #    apiIp:       "192.168.3.196"
 #    apiPort:     3333
 #    apiPassword: "password"
+
+sgminer:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 4028
+#
+# sgminer must be ran with --api-listen --api-network
 
 srbminers:
 # Example:

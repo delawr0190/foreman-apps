@@ -3,48 +3,16 @@ package mn.foreman.cgminer.request;
 /** A {@link CgMinerCommand} represents an acceptable command for cgminer. */
 public enum CgMinerCommand {
 
-    /**
-     * The following description was retrieved from the <a href="https://github
-     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
-     *
-     * <pre>
-     * CgMinerRequest   Reply Section  Details
-     * -------          -------------  -------
-     * pools            POOLS          The status of each pool e.g.
-     *                                 Pool=0,URL=http://pool.com:6311,Status=Alive,...|
-     * </pre>
-     */
+    /** The cgminer "pools" command. */
     POOLS("pools"),
 
-    /**
-     * The following description was retrieved from the <a href="https://github
-     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
-     *
-     * <pre>
-     * CgMinerRequest   Reply Section  Details
-     * -------          -------------  -------
-     * stats            STATS          Each device or pool that has 1 or more
-     *                                 getworks with a list of stats regarding
-     *                                 getwork times The values returned by
-     *                                 stats may change in future versions thus
-     *                                 would not normally be displayed
-     *                                 Device drivers are also able to add
-     *                                 stats to the end of the details returned
-     * </pre>
-     */
+    /** The cgminer "stats" command. */
     STATS("stats"),
 
-    /**
-     * The following description was retrieved from the <a href="https://github
-     * .com/ckolivas/cgminer/blob/master/API-README">API-README</a>.
-     *
-     * <pre>
-     * CgMinerRequest   Reply Section  Details
-     * -------          -------------  -------
-     * version          VERSION        CGMiner=cgminer, version
-     *                                 API=API| version
-     * </pre>
-     */
+    /** The cgminer "devs" command. */
+    DEVS("devs"),
+
+    /** The cgminer "version" command. */
     VERSION("version");
 
     /** The command. */

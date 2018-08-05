@@ -24,6 +24,13 @@ public interface Configuration {
     String getApiKey();
 
     /**
+     * Returns the baikal configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getBaikalConfigs();
+
+    /**
      * Returns the bminer configurations.
      *
      * @return The configurations.
@@ -120,6 +127,13 @@ public interface Configuration {
      * @return The poll frequency in seconds.
      */
     int getPollFrequencyInSeconds();
+
+    /**
+     * Returns the sgminer configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getSgminerConfigs();
 
     /**
      * Returns the srbminer configurations.

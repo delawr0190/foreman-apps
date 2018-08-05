@@ -1,6 +1,7 @@
 package mn.foreman.pickaxe.run;
 
 import mn.foreman.antminer.AntminerFactory;
+import mn.foreman.baikal.BaikalFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
@@ -17,6 +18,7 @@ import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
+import mn.foreman.sgminer.SgminerFactory;
 import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.trex.TrexFactory;
 import mn.foreman.xmrig.XmrigFactory;
@@ -66,6 +68,10 @@ public class RunMe {
                         new AntminerFactory()));
         minerList.addAll(
                 createMiners(
+                        this.configuration.getBaikalConfigs(),
+                        new BaikalFactory()));
+        minerList.addAll(
+                createMiners(
                         this.configuration.getBminerConfigs(),
                         new BminerFactory()));
         minerList.addAll(
@@ -113,6 +119,10 @@ public class RunMe {
                 createMiners(
                         this.configuration.getPhoenixConfigs(),
                         new ClaymoreFactory()));
+        minerList.addAll(
+                createMiners(
+                        this.configuration.getSgminerConfigs(),
+                        new SgminerFactory()));
         minerList.addAll(
                 createMiners(
                         this.configuration.getSrbminerConfigs(),
