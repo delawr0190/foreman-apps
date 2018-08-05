@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * A {@link Lolminer} represents a remote lolminer instance.
  *
- * <p>This class relies on the claymore-api being enabled and configured to
+ * <p>This class relies on the lolminer-api being enabled and configured to
  * allow the server that this application is running on to access it.  If this
  * application is running on the rig server, only localhost connections need to
  * be allowed.</p>
