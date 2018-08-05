@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-ewbf</artifactId>
-    <version>1.10.0-SNAPSHOT</version>
+    <version>1.10.0</version>
     <name>foreman: foreman-ewbf</name>
 
     <packaging>jar</packaging>
