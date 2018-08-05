@@ -11,11 +11,15 @@ antminers:
 #
 # Supported types:
 #
+#  "antminer_a3"
 #  "antminer_b3"
-#  "antminer_e3"
 #  "antminer_d3"
+#  "antminer_e3"
 #  "antminer_l3"
 #  "antminer_s9"
+#  "antminer_t9"
+#  "antminer_z9"
+#  "antminer_z9_mini"
 
 baikal:
 # Example:
