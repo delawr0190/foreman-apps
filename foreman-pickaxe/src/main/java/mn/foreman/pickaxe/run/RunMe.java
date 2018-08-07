@@ -159,10 +159,19 @@ public class RunMe {
                     }
                 }
 
-                final MetricsReport metricsReport = metricsReportBuilder.build();
-                LOG.debug("Generated report: {}", metricsReport);
+                try {
+                    // Metrics could be empty if everything was down
+                    final MetricsReport metricsReport =
+                            metricsReportBuilder.build();
 
-                metricsProcessingStrategy.process(metricsReportBuilder.build());
+                    LOG.debug("Generated report: {}", metricsReport);
+
+                    metricsProcessingStrategy.process(metricsReport);
+                } catch (final Exception e) {
+                    LOG.warn("Exception occurred while generating report - " +
+                                    "possibly no reachable miners",
+                            e);
+                }
 
                 TimeUnit.SECONDS.sleep(sleepInSeconds);
             }
