@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-model</artifactId>
-    <version>1.10.0</version>
+    <version>1.11.0-SNAPSHOT</version>
     <name>foreman: foreman-model</name>
 
     <packaging>jar</packaging>
