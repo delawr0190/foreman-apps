@@ -150,6 +150,13 @@ public interface Configuration {
     List<Map<String, String>> getTrexConfigs();
 
     /**
+     * Returns the wildrig configurations.
+     *
+     * @return The wildrig configurations.
+     */
+    List<Map<String, String>> getWildrigConfigs();
+
+    /**
      * Returns the xmrig configurations.
      *
      * @return The configurations.

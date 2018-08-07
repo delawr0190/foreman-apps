@@ -74,6 +74,9 @@ public class YmlConfiguration
     /** The trex configurations. */
     private final List<Map<String, String>> trexConfigs;
 
+    /** The wildrig configs. */
+    private final List<Map<String, String>> wildrigConfigs;
+
     /** The xmrig configs. */
     private final List<Map<String, String>> xmrigConfigs;
 
@@ -126,6 +129,7 @@ public class YmlConfiguration
             @JsonProperty("sgminer") final List<Map<String, String>> sgminerConfigs,
             @JsonProperty("srbminers") final List<Map<String, String>> srbminerConfigs,
             @JsonProperty("trex") final List<Map<String, String>> trexConfigs,
+            @JsonProperty("wildrig") final List<Map<String, String>> wildrigConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
             @JsonProperty("zenemys") final List<Map<String, String>> zenemyConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
@@ -157,6 +161,7 @@ public class YmlConfiguration
         this.sgminerConfigs = toConfigs(sgminerConfigs);
         this.srbminerConfigs = toConfigs(srbminerConfigs);
         this.trexConfigs = toConfigs(trexConfigs);
+        this.wildrigConfigs = toConfigs(wildrigConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
         this.zenemyConfigs = toConfigs(zenemyConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
@@ -260,6 +265,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getTrexConfigs() {
         return Collections.unmodifiableList(this.trexConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getWildrigConfigs() {
+        return Collections.unmodifiableList(this.wildrigConfigs);
     }
 
     @Override

@@ -131,6 +131,10 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getWildrigConfigs());
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getXmrigConfigs());
 
         validateGeneric(

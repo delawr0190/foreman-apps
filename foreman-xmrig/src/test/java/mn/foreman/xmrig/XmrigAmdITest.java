@@ -124,14 +124,14 @@ public class XmrigAmdITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("xmrig")
+                                        .setName("xmrig_XMRig/2.4.0-dev")
                                         .setHashRate(new BigDecimal("232.1"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
-                                                                        .setCount(1)
+                                                                        .setCount(0)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -148,7 +148,7 @@ public class XmrigAmdITest
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
-                                                                        .setCount(1)
+                                                                        .setCount(0)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -165,7 +165,7 @@ public class XmrigAmdITest
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
-                                                                        .setCount(1)
+                                                                        .setCount(0)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
@@ -182,7 +182,7 @@ public class XmrigAmdITest
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
-                                                                        .setCount(1)
+                                                                        .setCount(0)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(

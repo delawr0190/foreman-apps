@@ -127,6 +127,9 @@ public class RunMe {
                 this.configuration.getTrexConfigs(),
                 new TrexFactory()).forEach(this.activeCache::add);
         createMiners(
+                this.configuration.getWildrigConfigs(),
+                new XmrigFactory()).forEach(this.activeCache::add);
+        createMiners(
                 this.configuration.getXmrigConfigs(),
                 new XmrigFactory()).forEach(this.activeCache::add);
         createMiners(

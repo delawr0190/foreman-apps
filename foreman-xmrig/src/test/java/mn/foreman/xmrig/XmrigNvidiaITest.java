@@ -210,7 +210,7 @@ public class XmrigNvidiaITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("xmrig")
+                                        .setName("xmrig_XMRig/2.6.1")
                                         .setHashRate(new BigDecimal("3522.59"))
                                         .addGpu(
                                                 new Gpu.Builder()

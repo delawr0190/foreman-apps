@@ -97,12 +97,17 @@ trex:
     apiIp:   "0.0.0.18"
     apiPort: 18
 
-xmrigs:
+wildrig:
   - name:    "miner 19"
     apiIp:   "0.0.0.19"
     apiPort: 19
 
-zenemys:
+xmrigs:
   - name:    "miner 20"
     apiIp:   "0.0.0.20"
     apiPort: 20
+
+zenemys:
+  - name:    "miner 21"
+    apiIp:   "0.0.0.21"
+    apiPort: 21
