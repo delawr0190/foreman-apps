@@ -26,7 +26,9 @@ import java.util.List;
  *
  * <p>This class currently queries:</p>
  *
- * <ul> <li>http://{@link #apiIp}:{@link #apiPort}/</li> </ul>
+ * <ul>
+ *     <li>http://{@link #apiIp}:{@link #apiPort}/</li>
+ * </ul>
  *
  * <h1>Limitations</h1>
  *
