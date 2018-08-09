@@ -264,7 +264,7 @@ public class Claymore
                 "2.0",
                 "miner_getstat1",
                 (this.apiPassword != null && !this.apiPassword.isEmpty())
-                        ? ",\"apiPassword\":\"" + this.apiPassword + "\""
+                        ? ",\"psw\":\"" + this.apiPassword + "\""
                         : "");
     }
 }

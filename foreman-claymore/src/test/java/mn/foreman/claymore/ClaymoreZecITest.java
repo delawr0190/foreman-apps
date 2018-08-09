@@ -25,12 +25,12 @@ public class ClaymoreZecITest
                         "claymore",
                         "127.0.0.1",
                         3333,
-                        null,
+                        "password",
                         ClaymoreType.ZEC),
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(
-                                "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
+                                "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\",\"psw\":\"password\"}\n",
                                 new RpcHandler(
                                         "{\n\"id\":0,\n\"error\":null,\n\"result\":[\n\"12.6 - ZEC\",\n\"0\",\n\"128;0;0\",\n\"128\",\n\"0;0;0\",\n\"off\",\n\"60;33\",\n\"zec-eu1.nanopool.org:6633\",\n\"0;0;0;0\"\n]\n}\n"))),
                 new MinerStats.Builder()
