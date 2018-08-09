@@ -89,6 +89,10 @@
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-xmrig</artifactId>
         </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-xmrstak</artifactId>
+        </dependency>
 
         <!-- Utils -->
         <dependency>

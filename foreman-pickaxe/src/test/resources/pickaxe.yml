@@ -107,7 +107,12 @@ xmrigs:
     apiIp:   "0.0.0.20"
     apiPort: 20
 
-zenemys:
+xmrstak:
   - name:    "miner 21"
     apiIp:   "0.0.0.21"
     apiPort: 21
+
+zenemys:
+  - name:    "miner 22"
+    apiIp:   "0.0.0.22"
+    apiPort: 22

@@ -80,6 +80,9 @@ public class YmlConfiguration
     /** The xmrig configs. */
     private final List<Map<String, String>> xmrigConfigs;
 
+    /** The xmrstak configurations. */
+    private final List<Map<String, String>> xmrstakConfigs;
+
     /** The zenemy configurations. */
     private final List<Map<String, String>> zenemyConfigs;
 
@@ -107,6 +110,7 @@ public class YmlConfiguration
      * @param srbminerConfigs        The srbminer configs.
      * @param trexConfigs            The trex configs.
      * @param xmrigConfigs           The xmrig configs.
+     * @param xmrstakConfigs         The xmrstak configs.
      * @param pollFrequencyInSeconds How frequently to poll, in seconds.
      */
     private YmlConfiguration(
@@ -131,6 +135,7 @@ public class YmlConfiguration
             @JsonProperty("trex") final List<Map<String, String>> trexConfigs,
             @JsonProperty("wildrig") final List<Map<String, String>> wildrigConfigs,
             @JsonProperty("xmrigs") final List<Map<String, String>> xmrigConfigs,
+            @JsonProperty("xmrstak") final List<Map<String, String>> xmrstakConfigs,
             @JsonProperty("zenemys") final List<Map<String, String>> zenemyConfigs,
             @JsonProperty("pollFrequencyInSeconds") int pollFrequencyInSeconds) {
         Validate.notEmpty(
@@ -163,6 +168,7 @@ public class YmlConfiguration
         this.trexConfigs = toConfigs(trexConfigs);
         this.wildrigConfigs = toConfigs(wildrigConfigs);
         this.xmrigConfigs = toConfigs(xmrigConfigs);
+        this.xmrstakConfigs = toConfigs(xmrstakConfigs);
         this.zenemyConfigs = toConfigs(zenemyConfigs);
         this.pollFrequencyInSeconds = pollFrequencyInSeconds;
     }
@@ -275,6 +281,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getXmrigConfigs() {
         return Collections.unmodifiableList(this.xmrigConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getXmrstakConfigs() {
+        return Collections.unmodifiableList(this.xmrstakConfigs);
     }
 
     @Override

@@ -25,6 +25,7 @@ import mn.foreman.sgminer.SgminerFactory;
 import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.trex.TrexFactory;
 import mn.foreman.xmrig.XmrigFactory;
+import mn.foreman.xmrstak.XmrstakFactory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,6 +133,9 @@ public class RunMe {
         createMiners(
                 this.configuration.getXmrigConfigs(),
                 new XmrigFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getXmrstakConfigs(),
+                new XmrstakFactory()).forEach(this.activeCache::add);
         createMiners(
                 this.configuration.getZenemyConfigs(),
                 new CcminerFactory()).forEach(this.activeCache::add);

@@ -62,6 +62,7 @@
         <module>foreman-trex</module>
         <module>foreman-util</module>
         <module>foreman-xmrig</module>
+        <module>foreman-xmrstak</module>
     </modules>
 
     <dependencyManagement>
@@ -176,6 +177,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-xmrig</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-xmrstak</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
 

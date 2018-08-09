@@ -138,6 +138,10 @@ public class YmlConfigurationFactoryTest {
                 configuration.getXmrigConfigs());
 
         validateGeneric(
+                minerIndex++,
+                configuration.getXmrstakConfigs());
+
+        validateGeneric(
                 minerIndex,
                 configuration.getZenemyConfigs());
     }

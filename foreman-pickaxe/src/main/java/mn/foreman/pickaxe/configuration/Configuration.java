@@ -164,6 +164,13 @@ public interface Configuration {
     List<Map<String, String>> getXmrigConfigs();
 
     /**
+     * Returns the xmrstak configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getXmrstakConfigs();
+
+    /**
      * Returns the zenemy configurations.
      *
      * @return The configurations.

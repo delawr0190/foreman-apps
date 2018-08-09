@@ -164,12 +164,22 @@ wildrig:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 44444
+#
+# wildrig must be ran with "--api-port=<port>".
 
 xmrigs:
 # Example:
 #  - name:    "GPU Rig 1"
 #    apiIp:   "192.168.3.196"
 #    apiPort: 44444
+
+xmrstak:
+# Example:
+#  - name:    "GPU Rig 1"
+#    apiIp:   "192.168.3.196"
+#    apiPort: 44444
+#
+# xmrstak must be ran with the httpd_port set.
 
 zenemys:
 # Example:
