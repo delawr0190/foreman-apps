@@ -12,6 +12,9 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -89,6 +92,20 @@ public class Ethminer
         return String.format(
                 ", apiPassword=%s",
                 this.apiPassword);
+    }
+
+    @Override
+    protected void addToEquals(
+            final EqualsBuilder equalsBuilder,
+            final AbstractMiner other) {
+        final Ethminer otherMiner = (Ethminer) other;
+        equalsBuilder.append(this.apiPassword, otherMiner.apiPassword);
+    }
+
+    @Override
+    protected void addToHashCode(
+            final HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.apiPassword);
     }
 
     /**

@@ -24,9 +24,7 @@ import mn.foreman.xmrstak.json.Response;
  *
  * <p>This class currently queries:</p>
  *
- * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/api.json</li>
- * </ul>
+ * <ul> <li>http://{@link #apiIp}:{@link #apiPort}/api.json</li> </ul>
  *
  * <h1>Limitations</h1>
  *

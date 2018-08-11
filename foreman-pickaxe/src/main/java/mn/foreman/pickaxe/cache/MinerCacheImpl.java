@@ -36,6 +36,11 @@ public class MinerCacheImpl
     }
 
     @Override
+    public void invalidate() {
+        this.minerCache.set(new LinkedList<>());
+    }
+
+    @Override
     public void remove(final Miner miner) {
         List<Miner> currentCache;
         List<Miner> newCache;

@@ -24,6 +24,9 @@ public interface MinerCache {
      */
     List<Miner> getMiners();
 
+    /** Invalidates the cache. */
+    void invalidate();
+
     /**
      * Removes the {@link Miner} from the cache.
      *

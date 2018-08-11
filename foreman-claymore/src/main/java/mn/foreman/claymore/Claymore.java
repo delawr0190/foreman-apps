@@ -12,6 +12,9 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
@@ -129,6 +132,23 @@ public class Claymore
                 fans,
                 this.claymoreType,
                 statsBuilder);
+    }
+
+    @Override
+    protected void addToEquals(
+            final EqualsBuilder equalsBuilder,
+            final AbstractMiner other) {
+        final Claymore otherClaymore = (Claymore) other;
+        equalsBuilder
+                .append(this.apiPassword, otherClaymore.apiPassword)
+                .append(this.claymoreType, otherClaymore.claymoreType);
+    }
+
+    @Override
+    protected void addToHashCode(final HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder
+                .append(this.apiPassword)
+                .append(this.claymoreType);
     }
 
     @Override

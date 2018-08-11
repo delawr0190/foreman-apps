@@ -4,6 +4,8 @@ import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,6 +55,26 @@ public abstract class AbstractMiner
     }
 
     @Override
+    public boolean equals(final Object other) {
+        boolean equals = false;
+        if (this == other) {
+            equals = true;
+        } else if ((other != null) && (getClass() == other.getClass())) {
+            final AbstractMiner miner = (AbstractMiner) other;
+            final EqualsBuilder equalsBuilder =
+                    new EqualsBuilder()
+                            .append(this.name, miner.name)
+                            .append(this.apiIp, miner.apiIp)
+                            .append(this.apiPort, miner.apiPort);
+            addToEquals(
+                    equalsBuilder,
+                    miner);
+            equals = equalsBuilder.isEquals();
+        }
+        return equals;
+    }
+
+    @Override
     public MinerStats getStats()
             throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
@@ -69,6 +91,17 @@ public abstract class AbstractMiner
         addStats(builder);
 
         return builder.build();
+    }
+
+    @Override
+    public int hashCode() {
+        final HashCodeBuilder hashCodeBuilder =
+                new HashCodeBuilder()
+                        .append(this.name)
+                        .append(this.apiIp)
+                        .append(this.apiPort);
+        addToHashCode(hashCodeBuilder);
+        return hashCodeBuilder.hashCode();
     }
 
     @Override
@@ -92,6 +125,27 @@ public abstract class AbstractMiner
     protected abstract void addStats(
             MinerStats.Builder statsBuilder)
             throws MinerException;
+
+    /**
+     * Adds to the {@link EqualsBuilder}.
+     *
+     * @param equalsBuilder The builder.
+     * @param other         The other.
+     */
+    protected void addToEquals(
+            final EqualsBuilder equalsBuilder,
+            final AbstractMiner other) {
+        // Do nothing
+    }
+
+    /**
+     * Adds to the {@link HashCodeBuilder}.
+     *
+     * @param hashCodeBuilder The builder.
+     */
+    protected void addToHashCode(final HashCodeBuilder hashCodeBuilder) {
+        // Do nothing
+    }
 
     /**
      * Adds additional parameters to {@link #toString()}.
