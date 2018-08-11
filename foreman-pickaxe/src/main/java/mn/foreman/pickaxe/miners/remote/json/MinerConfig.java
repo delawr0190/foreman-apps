@@ -15,15 +15,15 @@ import java.util.List;
 public class MinerConfig {
 
     /** The API IP. */
-    @JsonProperty("apiIp")
+    @JsonProperty("api_ip")
     public String apiIp;
 
     /** The API port. */
-    @JsonProperty("apiPort")
+    @JsonProperty("api_port")
     public int apiPort;
 
     /** The API type. */
-    @JsonProperty("apiType")
+    @JsonProperty("api_type")
     public ApiType apiType;
 
     /** The name. */
