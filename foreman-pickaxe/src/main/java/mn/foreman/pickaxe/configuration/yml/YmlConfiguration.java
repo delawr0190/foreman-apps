@@ -18,9 +18,6 @@ public class YmlConfiguration
     /** The FOREMAN config API URL. */
     private final String foremanConfigUrl;
 
-    /** The group. */
-    private final String group;
-
     /**
      * Constructor.
      *
@@ -29,13 +26,11 @@ public class YmlConfiguration
      * @param foremanApiUrl    The FOREMAN API URL.
      * @param foremanConfigUrl The FOREMAN config URL.
      * @param apiKey           The API key.
-     * @param group            The group.
      */
     private YmlConfiguration(
             @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("foremanConfigUrl") final String foremanConfigUrl,
-            @JsonProperty("apiKey") final String apiKey,
-            @JsonProperty("group") final String group) {
+            @JsonProperty("apiKey") final String apiKey) {
         Validate.notEmpty(
                 foremanApiUrl,
                 "foremanApiUrl cannot be empty");
@@ -48,7 +43,6 @@ public class YmlConfiguration
         this.foremanApiUrl = foremanApiUrl;
         this.foremanConfigUrl = foremanConfigUrl;
         this.apiKey = apiKey;
-        this.group = group;
     }
 
     @Override
@@ -64,10 +58,5 @@ public class YmlConfiguration
     @Override
     public String getForemanConfigUrl() {
         return this.foremanConfigUrl;
-    }
-
-    @Override
-    public String getGroup() {
-        return this.group;
     }
 }

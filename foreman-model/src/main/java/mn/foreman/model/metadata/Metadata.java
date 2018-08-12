@@ -3,7 +3,6 @@ package mn.foreman.model.metadata;
 import mn.foreman.model.AbstractBuilder;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -22,14 +21,10 @@ import java.time.ZonedDateTime;
  *   }
  * </pre>
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Metadata {
 
     /** The API version. */
     private final ApiVersion apiVersion;
-
-    /** The group. */
-    private final String group;
 
     /** The timestamp. */
     @JsonFormat(
@@ -45,8 +40,7 @@ public class Metadata {
      */
     private Metadata(
             @JsonProperty("timestamp") final ZonedDateTime timestamp,
-            @JsonProperty("apiVersion") final ApiVersion apiVersion,
-            @JsonProperty("group") final String group) {
+            @JsonProperty("apiVersion") final ApiVersion apiVersion) {
         Validate.notNull(
                 timestamp,
                 "timestamp cannot be null");
@@ -55,7 +49,6 @@ public class Metadata {
                 "apiVersion cannot be null");
         this.timestamp = timestamp;
         this.apiVersion = apiVersion;
-        this.group = group;
     }
 
     @Override
@@ -71,7 +64,6 @@ public class Metadata {
                     new EqualsBuilder()
                             .append(this.timestamp, metadata.timestamp)
                             .append(this.apiVersion, metadata.apiVersion)
-                            .append(this.group, metadata.group)
                             .isEquals();
         }
         return isEqual;
@@ -84,15 +76,6 @@ public class Metadata {
      */
     public ApiVersion getApiVersion() {
         return this.apiVersion;
-    }
-
-    /**
-     * Returns the group.
-     *
-     * @return The group.
-     */
-    public String getGroup() {
-        return this.group;
     }
 
     /**
@@ -109,18 +92,16 @@ public class Metadata {
         return new HashCodeBuilder()
                 .append(this.timestamp)
                 .append(this.apiVersion)
-                .append(this.group)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ timestamp=%s, apiVersion=%s, group=%s ]",
+                "%s [ timestamp=%s, apiVersion=%s ]",
                 getClass().getSimpleName(),
                 this.timestamp,
-                this.apiVersion,
-                this.group);
+                this.apiVersion);
     }
 
     /** A builder for creating {@link Metadata metadatas}. */
@@ -130,9 +111,6 @@ public class Metadata {
         /** The API version. */
         private ApiVersion apiVersion = ApiVersion.V1_0_0;
 
-        /** The group. */
-        private String group = null;
-
         /** The timestamp. */
         private ZonedDateTime timestamp = ZonedDateTime.now();
 
@@ -140,8 +118,7 @@ public class Metadata {
         public Metadata build() {
             return new Metadata(
                     this.timestamp,
-                    this.apiVersion,
-                    this.group);
+                    this.apiVersion);
         }
 
         /**
@@ -153,18 +130,6 @@ public class Metadata {
          */
         public Builder setApiVersion(final ApiVersion apiVersion) {
             this.apiVersion = apiVersion;
-            return this;
-        }
-
-        /**
-         * Sets the group.
-         *
-         * @param group The group.
-         *
-         * @return This builder instance.
-         */
-        public Builder setGroup(final String group) {
-            this.group = group;
             return this;
         }
 
