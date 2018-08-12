@@ -199,10 +199,6 @@ public class Response {
     @JsonProperty("results")
     public Results results;
 
-    /** The ua. */
-    @JsonProperty("ua")
-    public String ua;
-
     /** Provides a model representation of the {@link Connection} object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Connection {

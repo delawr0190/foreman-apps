@@ -52,18 +52,15 @@ public class Ethminer
     /**
      * Constructor.
      *
-     * @param name        The name.
      * @param apiIp       The API IP.
      * @param apiPort     The API port.
      * @param apiPassword The API password.
      */
     Ethminer(
-            final String name,
             final String apiIp,
             final int apiPort,
             final String apiPassword) {
         super(
-                name,
                 apiIp,
                 apiPort);
         this.apiPassword = apiPassword;
@@ -148,7 +145,6 @@ public class Ethminer
             throws MinerException {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("ethminer_" + result.version)
                         .setHashRate(new BigDecimal(result.ethHashRate));
         final List<Integer> temperatures = result.temperatures;
         final List<Integer> fans = result.fanPercentages;

@@ -25,8 +25,6 @@ public class AntminerE3ITest
                                 ImmutableMap.of(
                                         "type",
                                         "antminer_e3",
-                                        "name",
-                                        "antminer",
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
@@ -41,7 +39,6 @@ public class AntminerE3ITest
                                 new RpcHandler(
                                         "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1533178352,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://us1.ethpool.org:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":85,\"Accepted\":38,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"#0x65CdB0EE9Ba1D9eFe2566965F8B089c2B9ffCE63.00B4C08382A1\",\"Last Share Time\":\"0:00:20\",\"Diff\":\"31\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":1259.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":32.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"us1.ethpool.org\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}"))),
                 new MinerStats.Builder()
-                        .setName("antminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(4028)
                         .addPool(
@@ -53,7 +50,6 @@ public class AntminerE3ITest
                                         .build())
                         .addAsic(
                                 new Asic.Builder()
-                                        .setName("antminer_e3")
                                         .setHashRate(new BigDecimal("197300000.00000000410713130172268847672967240214347839355468750000000000"))
                                         .setFanInfo(
                                                 new FanInfo.Builder()

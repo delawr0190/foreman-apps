@@ -22,7 +22,6 @@ public class JceminerITest
     public JceminerITest() {
         super(
                 new Jceminer(
-                        "jceminer",
                         "127.0.0.1",
                         3434),
                 new FakeHttpMinerServer(
@@ -82,7 +81,6 @@ public class JceminerITest
                                                 "  }\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("jceminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3434)
                         .addPool(
@@ -94,7 +92,6 @@ public class JceminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("jceminer_jce/0.32e/gpu")
                                         .setHashRate(new BigDecimal("7386.59"))
                                         .addGpu(
                                                 new Gpu.Builder()

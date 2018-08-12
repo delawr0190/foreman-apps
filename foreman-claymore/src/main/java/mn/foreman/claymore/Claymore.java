@@ -65,20 +65,17 @@ public class Claymore
     /**
      * Constructor.
      *
-     * @param name         The name.
      * @param apiIp        The API IP.
      * @param apiPort      The API port.
      * @param apiPassword  The API password.
      * @param claymoreType The claymore type.
      */
     Claymore(
-            final String name,
             final String apiIp,
             final int apiPort,
             final String apiPassword,
             final ClaymoreType claymoreType) {
         super(
-                name,
                 apiIp,
                 apiPort);
         this.apiPassword = apiPassword;
@@ -95,7 +92,6 @@ public class Claymore
                         makeCommand(),
                         Response.class);
         final List<String> results = response.result;
-        final String minerVersion = results.get(0);
 
         final String[] ethRateAndShares = results.get(2).split(";");
         final String ethHashRate = ethRateAndShares[0];
@@ -125,7 +121,6 @@ public class Claymore
                 new String[]{shares[0], shares[2]},
                 statsBuilder);
         addRig(
-                minerVersion,
                 ethHashRate,
                 dcrHashRate,
                 temps,
@@ -191,7 +186,6 @@ public class Claymore
     /**
      * Adds a {@link Rig} using the provided parameters.
      *
-     * @param version      The miner version.
      * @param ethHashRate  The ETH hash rate.
      * @param dcrHashRate  The DCR hash rate.
      * @param temps        The temperatures.
@@ -200,7 +194,6 @@ public class Claymore
      * @param builder      The builder to update.
      */
     private static void addRig(
-            final String version,
             final String ethHashRate,
             final String dcrHashRate,
             final List<String> temps,
@@ -209,7 +202,6 @@ public class Claymore
             final MinerStats.Builder builder) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("claymore_" + version)
                         .setHashRate(
                                 toHashRate(
                                         ethHashRate,

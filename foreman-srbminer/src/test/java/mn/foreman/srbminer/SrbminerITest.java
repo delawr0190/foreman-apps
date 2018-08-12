@@ -22,7 +22,6 @@ public class SrbminerITest
     public SrbminerITest() {
         super(
                 new Srbminer(
-                        "srbminer",
                         "127.0.0.1",
                         21555),
                 new FakeHttpMinerServer(
@@ -85,7 +84,6 @@ public class SrbminerITest
                                                 "    ]\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("srbminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(21555)
                         .addPool(
@@ -100,7 +98,6 @@ public class SrbminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("srbminer_SRBMiner-Rig")
                                         .setHashRate(new BigDecimal("1234.5678"))
                                         .addGpu(
                                                 new Gpu.Builder()

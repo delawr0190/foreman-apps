@@ -19,7 +19,6 @@ import java.util.List;
  *
  * <pre>
  *   {
- *     "name": "miner #1",
  *     "apiIp": "192.168.1.1",
  *     "apiPort": 42069,
  *     "pools": [
@@ -45,9 +44,6 @@ public class MinerStats {
     /** All of the ASICs. */
     private final List<Asic> asics;
 
-    /** The miner name. */
-    private final String name;
-
     /** All of the pools. */
     private final List<Pool> pools;
 
@@ -57,29 +53,23 @@ public class MinerStats {
     /**
      * Constructor.
      *
-     * @param name    The miner name.
      * @param apiIp   The API IP address.
      * @param apiPort The API port.
      * @param pools   The pools.
      * @param asics   The ASICs.
      */
     private MinerStats(
-            @JsonProperty("name") final String name,
             @JsonProperty("apiIp") final String apiIp,
             @JsonProperty("apiPort") final int apiPort,
             @JsonProperty("pools") final List<Pool> pools,
             @JsonProperty("asics") final List<Asic> asics,
             @JsonProperty("rigs") final List<Rig> rigs) {
         Validate.notEmpty(
-                name,
-                "name cannot be empty");
-        Validate.notEmpty(
                 apiIp,
                 "apiIp cannot be empty");
         Validate.inclusiveBetween(
                 0, Integer.MAX_VALUE, apiPort,
                 "apiPort cannot be empty");
-        this.name = name;
         this.apiIp = apiIp;
         this.apiPort = apiPort;
         this.pools = new ArrayList<>(pools);
@@ -98,7 +88,6 @@ public class MinerStats {
             final MinerStats miner = (MinerStats) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.name, miner.name)
                             .append(this.apiIp, miner.apiIp)
                             .append(this.apiPort, miner.apiPort)
                             .append(this.pools, miner.pools)
@@ -137,15 +126,6 @@ public class MinerStats {
     }
 
     /**
-     * Returns the name.
-     *
-     * @return The name.
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
      * Returns the pools.
      *
      * @return The pools.
@@ -166,7 +146,6 @@ public class MinerStats {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.name)
                 .append(this.apiIp)
                 .append(this.apiPort)
                 .append(this.pools)
@@ -178,15 +157,13 @@ public class MinerStats {
     @Override
     public String toString() {
         return String.format(
-                "%s [ name=%s, " +
-                        "apiIp=%s, " +
+                "%s [ apiIp=%s, " +
                         "apiPort=%d, " +
                         "pools=%s, " +
                         "asics=%s, " +
                         "rigs=%s" +
                         " ]",
                 getClass().getSimpleName(),
-                this.name,
                 this.apiIp,
                 this.apiPort,
                 this.pools,
@@ -212,9 +189,6 @@ public class MinerStats {
 
         /** The API port. */
         private int apiPort;
-
-        /** The miner name. */
-        private String name;
 
         /**
          * Adds the provided {@link Asic}.
@@ -260,7 +234,6 @@ public class MinerStats {
         @Override
         public MinerStats build() {
             return new MinerStats(
-                    this.name,
                     this.apiIp,
                     this.apiPort,
                     this.pools,
@@ -289,18 +262,6 @@ public class MinerStats {
          */
         public Builder setApiPort(final int apiPort) {
             this.apiPort = apiPort;
-            return this;
-        }
-
-        /**
-         * Sets the name.
-         *
-         * @param name The name.
-         *
-         * @return The builder instance.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
             return this;
         }
     }

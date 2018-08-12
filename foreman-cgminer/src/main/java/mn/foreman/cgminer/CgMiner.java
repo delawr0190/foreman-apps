@@ -58,7 +58,6 @@ public class CgMiner
      */
     CgMiner(final Builder builder) {
         super(
-                builder.name,
                 builder.apiIp,
                 Integer.parseInt(builder.apiPort));
         this.requests = new HashMap<>(builder.requests);
@@ -173,9 +172,6 @@ public class CgMiner
         /** The API port. */
         private String apiPort;
 
-        /** The name. */
-        private String name;
-
         /**
          * A {@link Map} of each {@link CgMinerRequest} to the {@link
          * ResponseStrategy} to use for processing the response.
@@ -224,18 +220,6 @@ public class CgMiner
          */
         public Builder setApiPort(final String apiPort) {
             this.apiPort = apiPort;
-            return this;
-        }
-
-        /**
-         * Sets the name.
-         *
-         * @param name The name.
-         *
-         * @return This builder instance.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
             return this;
         }
     }

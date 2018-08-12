@@ -25,7 +25,6 @@ public class WildRigITest
     public WildRigITest() {
         super(
                 new Xmrig(
-                        "wildrig",
                         "127.0.0.1",
                         44444),
                 new FakeHttpMinerServer(
@@ -93,7 +92,6 @@ public class WildRigITest
                                                 "    }\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("wildrig")
                         .setApiIp("127.0.0.1")
                         .setApiPort(44444)
                         .addPool(
@@ -108,7 +106,6 @@ public class WildRigITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("xmrig_WildRig/0.10.0")
                                         .setHashRate(new BigDecimal("693.13"))
                                         .addGpu(
                                                 new Gpu.Builder()

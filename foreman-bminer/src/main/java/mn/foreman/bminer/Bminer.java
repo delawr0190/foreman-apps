@@ -73,16 +73,13 @@ public class Bminer
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Bminer(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -91,8 +88,7 @@ public class Bminer
     protected void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
         final Rig.Builder rigBuilder =
-                new Rig.Builder()
-                        .setName("bminer");
+                new Rig.Builder();
 
         getDevices(rigBuilder);
         getSolvers(rigBuilder);

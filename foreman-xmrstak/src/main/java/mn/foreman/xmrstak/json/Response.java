@@ -105,10 +105,6 @@ public class Response {
     @JsonProperty("results")
     public Results results;
 
-    /** The version. */
-    @JsonProperty("version")
-    public String version;
-
     /** Provides a model representation of the {@link Connection} object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Connection {

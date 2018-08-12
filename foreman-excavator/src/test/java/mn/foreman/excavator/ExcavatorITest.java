@@ -22,7 +22,6 @@ public class ExcavatorITest
     public ExcavatorITest() {
         super(
                 new Excavator(
-                        "excavator",
                         "127.0.0.1",
                         3456),
                 new FakeRpcMinerServer(
@@ -148,7 +147,6 @@ public class ExcavatorITest
                                                 "   \"error\": null\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("excavator")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3456)
                         .addPool(
@@ -160,7 +158,6 @@ public class ExcavatorITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("excavator")
                                         .setHashRate(new BigDecimal("5088189363.13918988301843"))
                                         .addGpu(
                                                 new Gpu.Builder()

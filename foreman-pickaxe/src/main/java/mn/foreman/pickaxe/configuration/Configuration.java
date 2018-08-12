@@ -26,4 +26,11 @@ public interface Configuration {
      * @return The FOREMAN config URL.
      */
     String getForemanConfigUrl();
+
+    /**
+     * Returns the group.
+     *
+     * @return The group.
+     */
+    String getGroup();
 }

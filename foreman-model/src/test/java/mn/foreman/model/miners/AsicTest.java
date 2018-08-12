@@ -22,7 +22,6 @@ public class AsicTest {
     @SuppressWarnings("ConstantConditions")
     public void testSerialization()
             throws IOException {
-        final String name = "name";
         final BigDecimal hashRate = new BigDecimal(1);
         final FanInfo fanInfo =
                 new FanInfo.Builder()
@@ -36,7 +35,6 @@ public class AsicTest {
 
         final Asic asic =
                 new Asic.Builder()
-                        .setName(name)
                         .setHashRate(hashRate)
                         .setFanInfo(fanInfo)
                         .addTemp(temp)

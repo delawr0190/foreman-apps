@@ -50,16 +50,13 @@ public class Excavator
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Excavator(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -220,7 +217,6 @@ public class Excavator
                         Devices.class);
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("excavator")
                         .setHashRate(hashRate);
         devices.devices.forEach(
                 (device) ->

@@ -108,10 +108,6 @@ public class Summary {
     @JsonProperty("hashrate")
     public BigDecimal hashRate;
 
-    /** The name. */
-    @JsonProperty("name")
-    public String name;
-
     /** The rejected count. */
     @JsonProperty("rejected_count")
     public int rejectedCount;

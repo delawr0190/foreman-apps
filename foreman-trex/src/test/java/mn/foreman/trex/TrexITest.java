@@ -22,7 +22,6 @@ public class TrexITest
     public TrexITest() {
         super(
                 new Trex(
-                        "trex",
                         "127.0.0.1",
                         4067),
                 new FakeHttpMinerServer(
@@ -103,7 +102,6 @@ public class TrexITest
                                                 "  \"version\": \"0.5.6\"\n" +
                                                 "}\n"))),
                 new MinerStats.Builder()
-                        .setName("trex")
                         .setApiIp("127.0.0.1")
                         .setApiPort(4067)
                         .addPool(
@@ -115,7 +113,6 @@ public class TrexITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("trex_t-rex")
                                         .setHashRate(new BigDecimal(24300920))
                                         .addGpu(
                                                 new Gpu.Builder()

@@ -26,30 +26,21 @@ public abstract class AbstractMiner
     /** The API port. */
     protected final int apiPort;
 
-    /** The miner name. */
-    private final String name;
-
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The api IP.
      * @param apiPort The api port.
      */
     protected AbstractMiner(
-            final String name,
             final String apiIp,
             final int apiPort) {
-        Validate.notEmpty(
-                name,
-                "name cannot be empty");
         Validate.notEmpty(
                 apiIp,
                 "apiIp cannot be empty");
         Validate.isTrue(
                 apiPort > 0,
                 "apiPort must be > 0");
-        this.name = name;
         this.apiIp = apiIp;
         this.apiPort = apiPort;
     }
@@ -63,7 +54,6 @@ public abstract class AbstractMiner
             final AbstractMiner miner = (AbstractMiner) other;
             final EqualsBuilder equalsBuilder =
                     new EqualsBuilder()
-                            .append(this.name, miner.name)
                             .append(this.apiIp, miner.apiIp)
                             .append(this.apiPort, miner.apiPort);
             addToEquals(
@@ -78,15 +68,13 @@ public abstract class AbstractMiner
     public MinerStats getStats()
             throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
-                this.name,
                 this.apiIp,
                 this.apiPort);
 
         final MinerStats.Builder builder =
                 new MinerStats.Builder()
                         .setApiIp(this.apiIp)
-                        .setApiPort(this.apiPort)
-                        .setName(this.name);
+                        .setApiPort(this.apiPort);
 
         addStats(builder);
 
@@ -97,7 +85,6 @@ public abstract class AbstractMiner
     public int hashCode() {
         final HashCodeBuilder hashCodeBuilder =
                 new HashCodeBuilder()
-                        .append(this.name)
                         .append(this.apiIp)
                         .append(this.apiPort);
         addToHashCode(hashCodeBuilder);
@@ -107,9 +94,8 @@ public abstract class AbstractMiner
     @Override
     public String toString() {
         return String.format(
-                "%s [ name=%s, apiIp=%s, apiPort=%d%s ]",
+                "%s [ apiIp=%s, apiPort=%d%s ]",
                 getClass().getSimpleName(),
-                this.name,
                 this.apiIp,
                 this.apiPort,
                 addToString());

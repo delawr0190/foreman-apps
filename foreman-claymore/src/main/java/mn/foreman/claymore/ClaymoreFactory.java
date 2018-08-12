@@ -15,7 +15,6 @@ public class ClaymoreFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new Claymore(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")),
                 config.get("apiPassword"),

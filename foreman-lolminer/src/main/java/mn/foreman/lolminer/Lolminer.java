@@ -49,16 +49,13 @@ public class Lolminer
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Lolminer(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -93,7 +90,6 @@ public class Lolminer
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("lolminer_" + response.software)
                         .setHashRate(response.totalSpeed);
 
         int index = 0;

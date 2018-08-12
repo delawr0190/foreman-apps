@@ -22,7 +22,6 @@ public class EwbfITest
     public EwbfITest() {
         super(
                 new Ewbf(
-                        "ewbf",
                         "127.0.0.1",
                         42000),
                 new FakeHttpMinerServer(
@@ -154,7 +153,6 @@ public class EwbfITest
                                                 "  ]\n" +
                                                 "}\n"))),
                 new MinerStats.Builder()
-                        .setName("ewbf")
                         .setApiIp("127.0.0.1")
                         .setApiPort(42000)
                         .addPool(
@@ -166,7 +164,6 @@ public class EwbfITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("ewbf")
                                         .setHashRate(new BigDecimal(3974))
                                         .addGpu(
                                                 new Gpu.Builder()

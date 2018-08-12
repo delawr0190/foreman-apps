@@ -15,7 +15,6 @@ public class SrbminerFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new Srbminer(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }

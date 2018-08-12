@@ -15,7 +15,6 @@ public class CastxmrFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new Castxmr(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }

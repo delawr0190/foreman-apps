@@ -103,10 +103,6 @@ public class Response {
     @JsonProperty("ConnectedPool")
     public String pool;
 
-    /** The software version. */
-    @JsonProperty("Software")
-    public String software;
-
     /** The hash rate. */
     @JsonProperty("TotalSpeed(5s)")
     public BigDecimal totalSpeed;

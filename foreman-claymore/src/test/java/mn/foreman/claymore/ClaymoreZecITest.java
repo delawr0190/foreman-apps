@@ -22,7 +22,6 @@ public class ClaymoreZecITest
     public ClaymoreZecITest() {
         super(
                 new Claymore(
-                        "claymore",
                         "127.0.0.1",
                         3333,
                         "password",
@@ -34,7 +33,6 @@ public class ClaymoreZecITest
                                 new RpcHandler(
                                         "{\n\"id\":0,\n\"error\":null,\n\"result\":[\n\"12.6 - ZEC\",\n\"0\",\n\"128;0;0\",\n\"128\",\n\"0;0;0\",\n\"off\",\n\"60;33\",\n\"zec-eu1.nanopool.org:6633\",\n\"0;0;0;0\"\n]\n}\n"))),
                 new MinerStats.Builder()
-                        .setName("claymore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
                         .addPool(
@@ -46,7 +44,6 @@ public class ClaymoreZecITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("claymore_12.6 - ZEC")
                                         .setHashRate(new BigDecimal("128"))
                                         .addGpu(
                                                 new Gpu.Builder()

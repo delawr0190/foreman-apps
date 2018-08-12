@@ -26,7 +26,6 @@ public class XmrigAmdITest
     public XmrigAmdITest() {
         super(
                 new Xmrig(
-                        "xmrig",
                         "127.0.0.1",
                         8080),
                 new FakeHttpMinerServer(
@@ -109,7 +108,6 @@ public class XmrigAmdITest
                                                 "    }\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("xmrig")
                         .setApiIp("127.0.0.1")
                         .setApiPort(8080)
                         .addPool(
@@ -124,7 +122,6 @@ public class XmrigAmdITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("xmrig_XMRig/2.4.0-dev")
                                         .setHashRate(new BigDecimal("232.1"))
                                         .addGpu(
                                                 new Gpu.Builder()

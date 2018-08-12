@@ -22,7 +22,6 @@ public class BminerITest
     public BminerITest() {
         super(
                 new Bminer(
-                        "bminer",
                         "127.0.0.1",
                         8080),
                 new FakeHttpMinerServer(
@@ -104,7 +103,6 @@ public class BminerITest
                                                 "  }\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("bminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(8080)
                         .addPool(
@@ -123,7 +121,6 @@ public class BminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("bminer")
                                         .setHashRate(new BigDecimal("1809328342.570000171661376953125"))
                                         .addGpu(
                                                 new Gpu.Builder()

@@ -22,7 +22,6 @@ public class XmrstakITest
     public XmrstakITest() {
         super(
                 new Xmrstak(
-                        "xmrstak",
                         "127.0.0.1",
                         44444),
                 new FakeHttpMinerServer(
@@ -102,7 +101,6 @@ public class XmrstakITest
                                                 "  }\n" +
                                                 "}\n"))),
                 new MinerStats.Builder()
-                        .setName("xmrstak")
                         .setApiIp("127.0.0.1")
                         .setApiPort(44444)
                         .addPool(
@@ -117,7 +115,6 @@ public class XmrstakITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("xmrstak_xmr-stak/2.4.7")
                                         .setHashRate(new BigDecimal("376.8"))
                                         .addGpu(
                                                 new Gpu.Builder()

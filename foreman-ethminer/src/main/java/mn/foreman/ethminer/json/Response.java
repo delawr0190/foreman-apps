@@ -113,9 +113,5 @@ public class Response {
         /** The GPU temperatures. */
         @JsonProperty("temperatures")
         public List<Integer> temperatures;
-
-        /** The version. */
-        @JsonProperty("version")
-        public String version;
     }
 }

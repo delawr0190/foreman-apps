@@ -174,7 +174,6 @@ public class AvermoreITest
                                                 "  \"id\": 1\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("avermore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(4028)
                         .addPool(
@@ -203,7 +202,6 @@ public class AvermoreITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("sgminer")
                                         .setHashRate(new BigDecimal("525100.0000"))
                                         .addGpu(
                                                 new Gpu.Builder()

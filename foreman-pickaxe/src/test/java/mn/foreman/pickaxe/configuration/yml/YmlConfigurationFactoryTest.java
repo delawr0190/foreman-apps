@@ -14,17 +14,46 @@ public class YmlConfigurationFactoryTest {
 
     /** Tests loading of a configuration file. */
     @Test
-    public void testLoad()
+    public void testLoadWithGroup()
             throws IOException {
+        runLoadTest(
+                "/pickaxe_group.yml",
+                "group");
+    }
+
+    /** Tests loading of a configuration file. */
+    @Test
+    public void testLoadWithoutGroup()
+            throws IOException {
+        runLoadTest(
+                "/pickaxe_no-group.yml",
+                null);
+    }
+
+    /**
+     * Runs a {@link YmlConfigurationFactory#load(String)} test.
+     *
+     * @param fileName      The file to load.
+     * @param expectedGroup The expected group.
+     *
+     * @throws IOException on failure to read the file.
+     */
+    private static void runLoadTest(
+            final String fileName,
+            final String expectedGroup) throws IOException {
         final ConfigurationFactory configurationFactory =
                 new YmlConfigurationFactory();
         final Configuration configuration =
                 configurationFactory.load(
-                        getClass().getResource("/pickaxe.yml").getPath());
+                        YmlConfigurationFactoryTest.class
+                                .getResource(fileName).getPath());
 
         assertEquals(
                 "nicebro",
                 configuration.getApiKey());
+        assertEquals(
+                expectedGroup,
+                configuration.getGroup());
         assertEquals(
                 "http://localhost:80",
                 configuration.getForemanApiUrl());

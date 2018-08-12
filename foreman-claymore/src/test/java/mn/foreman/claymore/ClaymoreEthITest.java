@@ -22,7 +22,6 @@ public class ClaymoreEthITest
     public ClaymoreEthITest() {
         super(
                 new Claymore(
-                        "claymore",
                         "127.0.0.1",
                         3333,
                         null,
@@ -34,7 +33,6 @@ public class ClaymoreEthITest
                                 new RpcHandler(
                                         "{\"id\": 0, \"error\": null, \"result\": [\"11.8 - ETH\", \"0\", \"235321;2;0\", \"29482;29474;29427;29477;29523;29523;29533;28878\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"60;60;56;56;57;57;57;57;58;58;59;58;57;57;58;58\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"]}"))),
                 new MinerStats.Builder()
-                        .setName("claymore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
                         .addPool(
@@ -46,7 +44,6 @@ public class ClaymoreEthITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("claymore_11.8 - ETH")
                                         .setHashRate(new BigDecimal("235321000"))
                                         .addGpu(
                                                 new Gpu.Builder()

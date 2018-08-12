@@ -37,16 +37,13 @@ public class Srbminer
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Srbminer(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -66,7 +63,6 @@ public class Srbminer
                 response.shares);
         addRig(
                 statsBuilder,
-                response.rigName,
                 response.hashRate,
                 response.devices);
     }
@@ -100,18 +96,15 @@ public class Srbminer
      * Adds a rig to the provided builder.
      *
      * @param builder  The builder.
-     * @param name     The name.
      * @param hashRate The hash rate.
      * @param devices  The devices.
      */
     private static void addRig(
             final MinerStats.Builder builder,
-            final String name,
             final BigDecimal hashRate,
             final List<Response.Device> devices) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("srbminer_" + name)
                         .setHashRate(hashRate);
         for (final Response.Device device : devices) {
             rigBuilder.addGpu(

@@ -65,9 +65,6 @@ public class ResponseTest {
                                 json,
                                 Response.class);
         assertEquals(
-                "SRBMiner-Rig",
-                response.rigName);
-        assertEquals(
                 new BigDecimal("12345678"),
                 response.hashRate);
 

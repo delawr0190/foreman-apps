@@ -57,7 +57,6 @@ public class MetricsReportTest {
 
         final Asic asic =
                 new Asic.Builder()
-                        .setName("asicName")
                         .setHashRate(new BigDecimal(1))
                         .setFanInfo(fanInfo)
                         .addTemp(32)
@@ -66,7 +65,6 @@ public class MetricsReportTest {
 
         final Rig rig =
                 new Rig.Builder()
-                        .setName("rigName")
                         .setHashRate(new BigDecimal("5678.0000"))
                         .addGpu(
                                 new Gpu.Builder()
@@ -108,7 +106,6 @@ public class MetricsReportTest {
 
         final MinerStats minerStats =
                 new MinerStats.Builder()
-                        .setName("name")
                         .setApiIp("127.0.0.1")
                         .setApiPort(42069)
                         .addPool(pool)
@@ -120,10 +117,13 @@ public class MetricsReportTest {
                 ZonedDateTime.now(ZoneId.of("UTC"));
         final ApiVersion apiVersion =
                 ApiVersion.V1_0_0;
+        final String group =
+                "group";
         final Metadata metadata =
                 new Metadata.Builder()
                         .setTimestamp(timestamp)
                         .setApiVersion(apiVersion)
+                        .setGroup(group)
                         .build();
 
         final MetricsReport metricsReport =

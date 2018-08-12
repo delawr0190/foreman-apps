@@ -148,10 +148,6 @@ public class Response {
     @JsonProperty("hashrate")
     public Hashrate hashrate;
 
-    /** The miner. */
-    @JsonProperty("miner")
-    public Miner miner;
-
     /** The result. */
     @JsonProperty("result")
     public Result result;
@@ -188,15 +184,6 @@ public class Response {
         /** The total hash rate. */
         @JsonProperty("total")
         public BigDecimal total;
-    }
-
-    /** A model object representing the miner JSON object. */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Miner {
-
-        /** The version. */
-        @JsonProperty("version")
-        public String version;
     }
 
     /** A model object representing the result JSON object. */

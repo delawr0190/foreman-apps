@@ -135,8 +135,6 @@ public class RemoteConfiguration
                             ImmutableMap.of(
                                     "type",
                                     type,
-                                    "name",
-                                    config.name,
                                     "apiIp",
                                     config.apiIp,
                                     "apiPort",
@@ -186,7 +184,6 @@ public class RemoteConfiguration
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("type", toClaymoreType(config.apiType));
-        attributes.put("name", config.name);
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(config.apiPort));
         findParam(
@@ -232,7 +229,6 @@ public class RemoteConfiguration
     private static Miner toEthminerApi(
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
-        attributes.put("name", config.name);
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(config.apiPort));
         findParam(
@@ -258,8 +254,6 @@ public class RemoteConfiguration
             final mn.foreman.model.MinerFactory minerFactory) {
         return minerFactory.create(
                 ImmutableMap.of(
-                        "name",
-                        config.name,
                         "apiIp",
                         config.apiIp,
                         "apiPort",

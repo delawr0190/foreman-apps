@@ -22,7 +22,6 @@ public class CastxmrITest
     public CastxmrITest() {
         super(
                 new Castxmr(
-                        "castxmr",
                         "127.0.0.1",
                         7777),
                 new FakeHttpMinerServer(
@@ -109,7 +108,6 @@ public class CastxmrITest
                                                 "  ]\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("castxmr")
                         .setApiIp("127.0.0.1")
                         .setApiPort(7777)
                         .addPool(
@@ -121,7 +119,6 @@ public class CastxmrITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("castxmr")
                                         .setHashRate(new BigDecimal(1857957))
                                         .addGpu(
                                                 new Gpu.Builder()

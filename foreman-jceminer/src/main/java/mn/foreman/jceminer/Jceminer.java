@@ -52,16 +52,13 @@ public class Jceminer
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Jceminer(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -145,7 +142,6 @@ public class Jceminer
 
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
-                            .setName("jceminer_" + response.miner.version)
                             .setHashRate(response.hashrate.total);
             response.gpus.forEach(
                     (gpu) ->

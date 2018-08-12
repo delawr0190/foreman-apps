@@ -60,7 +60,6 @@ public class DevsResponseStrategy
                         .collect(Collectors.toList());
         final Asic.Builder asicBuilder =
                 new Asic.Builder()
-                        .setName(toName(asicValues))
                         .setHashRate(toRate(asicValues))
                         .hasErrors(toErrors(asicValues))
                         .setFanInfo(
@@ -107,22 +106,6 @@ public class DevsResponseStrategy
                                 Integer.parseInt(
                                         map.get("Hardware Errors")))
                 .sum() > 0;
-    }
-
-    /**
-     * Extracts the name from the values.
-     *
-     * @param values The values.
-     *
-     * @return The name.
-     */
-    private static String toName(
-            final List<Map<String, String>> values) {
-        return values
-                .stream()
-                .map((map) -> map.get("Name"))
-                .findFirst()
-                .orElse("sgminer_baikal");
     }
 
     /**

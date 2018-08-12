@@ -23,8 +23,6 @@ public class BaikalX10ITest
                 new BaikalFactory()
                         .create(
                                 ImmutableMap.of(
-                                        "name",
-                                        "baikal",
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
@@ -217,7 +215,6 @@ public class BaikalX10ITest
                                                 "  \"id\": 1\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("baikal")
                         .setApiIp("127.0.0.1")
                         .setApiPort(4028)
                         .addPool(
@@ -246,7 +243,6 @@ public class BaikalX10ITest
                                         .build())
                         .addAsic(
                                 new Asic.Builder()
-                                        .setName("BKLU")
                                         .setHashRate(new BigDecimal("10137551800.0000"))
                                         .setFanInfo(
                                                 new FanInfo.Builder()

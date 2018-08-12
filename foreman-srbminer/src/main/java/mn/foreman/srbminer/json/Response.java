@@ -74,10 +74,6 @@ public class Response {
     @JsonProperty("pool")
     public Pool pool;
 
-    /** The rig name. */
-    @JsonProperty("rig_name")
-    public String rigName;
-
     /** The shares. */
     @JsonProperty("shares")
     public Shares shares;

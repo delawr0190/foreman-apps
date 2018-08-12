@@ -40,16 +40,13 @@ public class Castxmr
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Castxmr(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -120,7 +117,6 @@ public class Castxmr
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("castxmr")
                         .setHashRate(response.hashRate);
         response.devices.forEach(
                 (device) ->

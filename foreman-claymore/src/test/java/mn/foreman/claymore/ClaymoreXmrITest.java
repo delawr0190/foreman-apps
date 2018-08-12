@@ -22,7 +22,6 @@ public class ClaymoreXmrITest
     public ClaymoreXmrITest() {
         super(
                 new Claymore(
-                        "claymore",
                         "127.0.0.1",
                         3333,
                         null,
@@ -34,7 +33,6 @@ public class ClaymoreXmrITest
                                 new RpcHandler(
                                         "{\n\"id\":0,\n\"error\":null,\n\"result\":[\n\"11.3 - XMR\",\n\"2\",\n\"339;0;0\",\n\"339\",\n\"0;0;0\",\n\"off\",\n\"61;44\",\n\"xmr-eu1.nanopool.org:14433\",\n\"0;0;0;0\"\n]\n}\n"))),
                 new MinerStats.Builder()
-                        .setName("claymore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
                         .addPool(
@@ -46,7 +44,6 @@ public class ClaymoreXmrITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("claymore_11.3 - XMR")
                                         .setHashRate(new BigDecimal("339"))
                                         .addGpu(
                                                 new Gpu.Builder()

@@ -8,7 +8,6 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.asic.Asic;
 
-import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,22 +28,6 @@ public class StatsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(StatsResponseStrategy.class);
 
-    /** The type (for grouping in Foreman). */
-    private final String type;
-
-    /**
-     * Constructor.
-     *
-     * @param type The type.
-     */
-    public StatsResponseStrategy(
-            final String type) {
-        Validate.notNull(
-                type,
-                "type cannot be null");
-        this.type = type;
-    }
-
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
@@ -58,7 +41,6 @@ public class StatsResponseStrategy
                             value ->
                                     addAsicStats(
                                             builder,
-                                            this.type,
                                             value));
         } else {
             LOG.debug("No ACICs founds");
@@ -70,12 +52,10 @@ public class StatsResponseStrategy
      * metrics, to a {@link Asic} and adds it to the provided builder.
      *
      * @param builder The builder to update.
-     * @param type    The type.
      * @param values  The asic values.
      */
     private static void addAsicStats(
             final MinerStats.Builder builder,
-            final String type,
             final Map<String, String> values) {
         final BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
@@ -83,7 +63,6 @@ public class StatsResponseStrategy
 
         final Asic.Builder asicBuilder =
                 new Asic.Builder()
-                        .setName(type)
                         .setHashRate(hashRate);
 
         // Fangs

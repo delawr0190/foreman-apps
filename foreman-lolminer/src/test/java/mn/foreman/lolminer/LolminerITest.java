@@ -22,7 +22,6 @@ public class LolminerITest
     public LolminerITest() {
         super(
                 new Lolminer(
-                        "lolminer",
                         "127.0.0.1",
                         8080),
                 new FakeRpcMinerServer(
@@ -53,7 +52,6 @@ public class LolminerITest
                                                 "  }\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("lolminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(8080)
                         .addPool(
@@ -65,7 +63,6 @@ public class LolminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("lolminer_lolMiner 0.41")
                                         .setHashRate(new BigDecimal("24722.0225"))
                                         .addGpu(
                                                 new Gpu.Builder()

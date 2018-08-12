@@ -53,16 +53,13 @@ public class Ewbf
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Ewbf(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -105,7 +102,6 @@ public class Ewbf
                                 .build());
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("ewbf")
                         .setHashRate(new BigDecimal(hashRate));
         stats.results.forEach(
                 (result) ->

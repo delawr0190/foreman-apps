@@ -62,7 +62,6 @@ public class DevsResponseStrategy
                         .collect(Collectors.toList());
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("sgminer")
                         .setHashRate(toRate(gpuValues));
         gpuValues
                 .stream()

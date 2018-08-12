@@ -23,7 +23,6 @@ public class AntminerFactory
         final AntminerType type =
                 AntminerType.forLabel(config.get("type"));
         return new CgMiner.Builder()
-                .setName(config.get("name"))
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
                 .addRequest(
@@ -37,8 +36,7 @@ public class AntminerFactory
                                 .build(),
                         new RateMultiplyingDecorator(
                                 type.getMultiplier(),
-                                new StatsResponseStrategy(
-                                        type.getLabel())))
+                                new StatsResponseStrategy()))
                 .build();
     }
 }

@@ -156,10 +156,6 @@ public class ResponseTest {
                 418,
                 78,
                 gpus.get(8));
-
-        assertEquals(
-                "jce/0.32e/gpu",
-                response.miner.version);
     }
 
     /**

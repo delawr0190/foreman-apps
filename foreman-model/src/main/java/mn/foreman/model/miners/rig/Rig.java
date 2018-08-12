@@ -24,33 +24,21 @@ public class Rig {
     @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal hashRate;
 
-    /** The name. */
-    private final String name;
-
     /**
      * Constructor.
      *
-     * @param name     The name.
      * @param hashRate The hash rate.
      * @param gpus     The GPUs.
      */
     private Rig(
-            @JsonProperty("name") final String name,
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("gpus") final List<Gpu> gpus) {
-        Validate.notNull(
-                name,
-                "Name cannot be null");
-        Validate.notEmpty(
-                name,
-                "Name cannot be empty");
         Validate.notNull(
                 hashRate,
                 "Speed cannot be null");
         Validate.notNull(
                 gpus,
                 "GPUs cannot be null");
-        this.name = name;
         this.hashRate = hashRate;
         this.gpus = new ArrayList<>(gpus);
     }
@@ -66,7 +54,6 @@ public class Rig {
             final Rig rig = (Rig) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.name, rig.name)
                             .append(this.hashRate, rig.hashRate)
                             .append(this.gpus, rig.gpus)
                             .isEquals();
@@ -92,19 +79,9 @@ public class Rig {
         return this.hashRate;
     }
 
-    /**
-     * Returns the name.
-     *
-     * @return The name.
-     */
-    public String getName() {
-        return this.name;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.name)
                 .append(this.hashRate)
                 .append(this.gpus)
                 .hashCode();
@@ -114,12 +91,10 @@ public class Rig {
     public String toString() {
         return String.format(
                 "%s [ " +
-                        "name=%s, " +
                         "hashRate=%s, " +
                         "gpus=%s" +
                         " ]",
                 getClass().getSimpleName(),
-                this.name,
                 this.hashRate,
                 this.gpus);
     }
@@ -152,7 +127,6 @@ public class Rig {
         @Override
         public Rig build() {
             return new Rig(
-                    this.name,
                     this.hashRate,
                     this.gpus);
         }

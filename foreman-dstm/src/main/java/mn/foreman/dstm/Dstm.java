@@ -47,16 +47,13 @@ public class Dstm
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Dstm(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -163,7 +160,6 @@ public class Dstm
                         .sum();
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("dstm")
                         .setHashRate(new BigDecimal(hashRate));
         results
                 .forEach(

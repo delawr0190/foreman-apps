@@ -15,7 +15,6 @@ public class LolminerFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new Lolminer(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }

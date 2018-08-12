@@ -16,7 +16,6 @@ public class EthminerFactory
     public Miner create(
             final Map<String, String> config) {
         return new Ethminer(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")),
                 config.get("apiPassword"));

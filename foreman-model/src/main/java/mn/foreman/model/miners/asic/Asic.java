@@ -21,7 +21,6 @@ import java.util.List;
  *
  * <pre>
  *   {
- *     "name": "Antminer S9",
  *     "hashRate": 13674000000000.52,
  *     "fans": {
  *       "num": 2,
@@ -54,30 +53,22 @@ public class Asic {
     @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal hashRate;
 
-    /** The ASIC name. */
-    private final String name;
-
     /** The temp sensor readings. */
     private final List<Integer> temps;
 
     /**
      * Constructor.
      *
-     * @param name      The name.
      * @param hashRate  The hash rate.
      * @param fans      The fan information.
      * @param temps     The temperatures.
      * @param hasErrors Whether or not errors were observed.
      */
     private Asic(
-            @JsonProperty("name") final String name,
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("hasErrors") final Boolean hasErrors) {
-        Validate.notEmpty(
-                name,
-                "name cannot be empty");
         Validate.notNull(
                 hashRate,
                 "hashRate cannot be null");
@@ -93,7 +84,6 @@ public class Asic {
         Validate.notNull(
                 hasErrors,
                 "hasErrors cannot be null");
-        this.name = name;
         this.hashRate = hashRate;
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
@@ -111,7 +101,6 @@ public class Asic {
             final Asic asic = (Asic) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.name, asic.name)
                             .append(this.hashRate, asic.hashRate)
                             .append(this.fans, asic.fans)
                             .append(this.temps, asic.temps)
@@ -149,15 +138,6 @@ public class Asic {
     }
 
     /**
-     * Returns the name.
-     *
-     * @return The name.
-     */
-    public String getName() {
-        return this.name;
-    }
-
-    /**
      * Returns the temps.
      *
      * @return The temps.
@@ -169,7 +149,6 @@ public class Asic {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.name)
                 .append(this.hashRate)
                 .append(this.fans)
                 .append(this.temps)
@@ -181,14 +160,12 @@ public class Asic {
     public String toString() {
         return String.format(
                 "%s [ " +
-                        "name=%s, " +
                         "hashRate=%s, " +
                         "fans=%s, " +
                         "temps=%s, " +
                         "hasErrors=%s" +
                         " ]",
                 getClass().getSimpleName(),
-                this.name,
                 this.hashRate,
                 this.fans,
                 this.temps,
@@ -210,9 +187,6 @@ public class Asic {
 
         /** The hash rate. */
         private BigDecimal hashRate;
-
-        /** The name. */
-        private String name = UNDEFINED_STRING;
 
         /**
          * Adds a new temperature reading.
@@ -248,7 +222,6 @@ public class Asic {
         @Override
         public Asic build() {
             return new Asic(
-                    this.name,
                     this.hashRate,
                     this.fanInfo,
                     this.temps,
@@ -288,18 +261,6 @@ public class Asic {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
-            return this;
-        }
-
-        /**
-         * Sets the name.
-         *
-         * @param name The name.
-         *
-         * @return The builder instance.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
             return this;
         }
     }

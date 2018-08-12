@@ -26,7 +26,6 @@ public class PhoenixITest
     public PhoenixITest() {
         super(
                 new Claymore(
-                        "claymore",
                         "127.0.0.1",
                         3333,
                         null,
@@ -38,7 +37,6 @@ public class PhoenixITest
                                 new RpcHandler(
                                         "{\"id\":0,\"jsonrpc\":\"2.0\",\"result\":[\"PM 3.0c - ETH\", \"0\", \"237936;1;0\", \"29792;29791;29689;29787;29793;29794;29793;29494\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"50;49;46;47;47;48;47;47;48;48;48;48;47;47;48;48\", \"ssl://eu1.ethermine.org:5555\", \"0;0;0;0\"]}\n"))),
                 new MinerStats.Builder()
-                        .setName("claymore")
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
                         .addPool(
@@ -50,7 +48,6 @@ public class PhoenixITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("claymore_PM 3.0c - ETH")
                                         .setHashRate(new BigDecimal("237936000"))
                                         .addGpu(
                                                 new Gpu.Builder()

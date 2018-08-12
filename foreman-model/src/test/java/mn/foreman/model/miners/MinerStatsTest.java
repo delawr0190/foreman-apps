@@ -23,7 +23,6 @@ public class MinerStatsTest {
     @SuppressWarnings("ConstantConditions")
     public void testSerialization()
             throws IOException {
-        final String name = "name";
         final String apiIp = "127.0.0.1";
         final int apiPort = 42069;
 
@@ -50,7 +49,6 @@ public class MinerStatsTest {
 
         final Asic asic =
                 new Asic.Builder()
-                        .setName("asicName")
                         .setHashRate(new BigDecimal(1234))
                         .setFanInfo(fanInfo)
                         .addTemp(32)
@@ -59,7 +57,6 @@ public class MinerStatsTest {
 
         final MinerStats stats =
                 new MinerStats.Builder()
-                        .setName(name)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .addPool(pool)
@@ -80,9 +77,6 @@ public class MinerStatsTest {
         assertEquals(
                 newMinerStats,
                 newMinerStats);
-        assertEquals(
-                name,
-                newMinerStats.getName());
         assertEquals(
                 apiIp,
                 newMinerStats.getApiIp());

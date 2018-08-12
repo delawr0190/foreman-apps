@@ -20,7 +20,6 @@ public class BaikalFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new CgMiner.Builder()
-                .setName(config.get("name"))
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
                 .addRequest(

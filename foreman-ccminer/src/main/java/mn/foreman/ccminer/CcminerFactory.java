@@ -15,7 +15,6 @@ public class CcminerFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new CcMiner(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }

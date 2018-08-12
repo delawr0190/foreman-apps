@@ -109,9 +109,6 @@ public class SummaryTest {
                 new BigDecimal(24300920),
                 summary.hashRate);
         assertEquals(
-                "t-rex",
-                summary.name);
-        assertEquals(
                 0,
                 summary.rejectedCount);
         assertEquals(

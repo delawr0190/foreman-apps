@@ -51,9 +51,6 @@ public class ResponseTest {
                                 Response.class);
 
         assertEquals(
-                "lolMiner 0.41",
-                response.software);
-        assertEquals(
                 "mine-btcz-euro.equipool.1ds.us:50061",
                 response.pool);
         assertEquals(

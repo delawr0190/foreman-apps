@@ -45,16 +45,13 @@ public class CcMiner
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The api IP.
      * @param apiPort The api port.
      */
     CcMiner(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -188,8 +185,6 @@ public class CcMiner
         final BigDecimal hashRate =
                 new BigDecimal(values.get("KHS"))
                         .multiply(new BigDecimal(1000));
-        rigBuilder
-                .setName("ccminer_" + values.get("NAME"))
-                .setHashRate(hashRate);
+        rigBuilder.setHashRate(hashRate);
     }
 }

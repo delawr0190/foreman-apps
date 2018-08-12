@@ -138,7 +138,6 @@ public class SgminerGmITest
                                                 "  \"id\": 1\n" +
                                                 "}"))),
                 new MinerStats.Builder()
-                        .setName("sgminer")
                         .setApiIp("127.0.0.1")
                         .setApiPort(4028)
                         .addPool(
@@ -155,7 +154,6 @@ public class SgminerGmITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setName("sgminer")
                                         .setHashRate(new BigDecimal("13.25000000"))
                                         .addGpu(
                                                 new Gpu.Builder()

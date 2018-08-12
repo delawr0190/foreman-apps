@@ -55,16 +55,13 @@ public class Xmrstak
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Xmrstak(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -155,10 +152,8 @@ public class Xmrstak
     private void addRig(
             final Response response,
             final MinerStats.Builder statsBuilder) {
-        final String[] version = response.version.split("/");
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("xmrstak_" + version[0] + "/" + version[1])
                         .setHashRate(response.hashrate.totals.get(0));
         for (int i = 0; i < response.hashrate.threads.size(); i++) {
             addGpuFromThread(

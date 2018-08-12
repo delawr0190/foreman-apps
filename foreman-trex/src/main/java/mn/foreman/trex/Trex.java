@@ -51,16 +51,13 @@ public class Trex
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Trex(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -91,7 +88,6 @@ public class Trex
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("trex_" + summary.name)
                         .setHashRate(summary.hashRate);
         for (int i = 0; i < summary.gpuTotal; i++) {
             rigBuilder.addGpu(

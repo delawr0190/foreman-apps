@@ -63,16 +63,13 @@ public class Xmrig
     /**
      * Constructor.
      *
-     * @param name    The name.
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
     Xmrig(
-            final String name,
             final String apiIp,
             final int apiPort) {
         super(
-                name,
                 apiIp,
                 apiPort);
     }
@@ -229,7 +226,6 @@ public class Xmrig
             final MinerStats.Builder statsBuilder) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setName("xmrig_" + response.ua.split(" ")[0])
                         .setHashRate(response.hashrate.totals.get(0));
         if (response.health != null) {
             addGpusFromHealths(

@@ -13,9 +13,8 @@ public class TrexFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(Map<String, String> config) {
+    public Miner create(final Map<String, String> config) {
         return new Trex(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }

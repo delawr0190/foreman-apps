@@ -114,8 +114,5 @@ public class ResponseTest {
                         68,
                         60),
                 result.temperatures);
-        assertEquals(
-                "ethminer-0.16.0.dev0+commit.41639944",
-                result.version);
     }
 }

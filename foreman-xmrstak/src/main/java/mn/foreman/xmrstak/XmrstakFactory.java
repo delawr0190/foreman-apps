@@ -15,7 +15,6 @@ public class XmrstakFactory
     @Override
     public Miner create(final Map<String, String> config) {
         return new Xmrstak(
-                config.get("name"),
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")));
     }
