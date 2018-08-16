@@ -38,6 +38,9 @@ public class YmlConfiguration
     /** The cryptodredge configurations. */
     private final List<Map<String, String>> cryptoDredgeConfigs;
 
+    /** The dragonmint configurations. */
+    private final List<Map<String, String>> dragonmintConfigs;
+
     /** The dstm configurations. */
     private final List<Map<String, String>> dstmConfigs;
 
@@ -99,6 +102,7 @@ public class YmlConfiguration
      * @param castxmrConfigs         The castxmr configs.
      * @param ccminerConfigs         The ccminer configs.
      * @param claymoreConfigs        The claymore configs.
+     * @param dragonmintConfigs      The dragonmint configs.
      * @param dstmConfigs            The dstm configs.
      * @param ethminerConfigs        The ethminer configs.
      * @param ewbfConfigs            The ewbf configs.
@@ -123,6 +127,7 @@ public class YmlConfiguration
             @JsonProperty("ccminers") final List<Map<String, String>> ccminerConfigs,
             @JsonProperty("claymores") final List<Map<String, String>> claymoreConfigs,
             @JsonProperty("cryptodredges") final List<Map<String, String>> cryptoDredgeConfigs,
+            @JsonProperty("dragonmint") final List<Map<String, String>> dragonmintConfigs,
             @JsonProperty("dstms") final List<Map<String, String>> dstmConfigs,
             @JsonProperty("ethminers") final List<Map<String, String>> ethminerConfigs,
             @JsonProperty("ewbfs") final List<Map<String, String>> ewbfConfigs,
@@ -156,6 +161,7 @@ public class YmlConfiguration
         this.ccminerConfigs = toConfigs(ccminerConfigs);
         this.claymoreConfigs = toConfigs(claymoreConfigs);
         this.cryptoDredgeConfigs = toConfigs(cryptoDredgeConfigs);
+        this.dragonmintConfigs = toConfigs(dragonmintConfigs);
         this.dstmConfigs = toConfigs(dstmConfigs);
         this.ethminerConfigs = toConfigs(ethminerConfigs);
         this.ewbfConfigs = toConfigs(ewbfConfigs);
@@ -211,6 +217,11 @@ public class YmlConfiguration
     @Override
     public List<Map<String, String>> getCryptoDredgeConfigs() {
         return Collections.unmodifiableList(this.cryptoDredgeConfigs);
+    }
+
+    @Override
+    public List<Map<String, String>> getDragonmintConfigs() {
+        return Collections.unmodifiableList(this.dragonmintConfigs);
     }
 
     @Override

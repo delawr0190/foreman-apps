@@ -75,6 +75,17 @@ cryptodredges:
 #    apiIp:   "192.168.3.196"
 #    apiPort: 4068
 
+dragonmint:
+# Example:
+#  - name:     "Dragonmint T1"
+#    apiIp:    "192.168.3.196"
+#    apiPort:  80
+#    username: admin
+#    password: dragonadmin
+#
+# Note: the dragonmint API is served on port 80, so that port most likely
+# won't need to change in your configuration.
+
 dstms:
 # Example:
 #  - name:    "GPU Rig 1"

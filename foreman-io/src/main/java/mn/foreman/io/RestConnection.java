@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * A {@link RestConnection} provides a connection to a remote miner instance.
@@ -58,6 +59,12 @@ public class RestConnection
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
+            for (final Map.Entry<String, String> property :
+                    this.request.getProperties().entrySet()) {
+                connection.setRequestProperty(
+                        property.getKey(),
+                        property.getValue());
+            }
 
             final int code = connection.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {

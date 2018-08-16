@@ -2,6 +2,9 @@ package mn.foreman.io;
 
 import org.apache.commons.lang3.Validate;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +24,9 @@ public class ApiRequestImpl
     /** The port. */
     private final int port;
 
+    /** The request properties. */
+    private final Map<String, String> properties;
+
     /** The request to send. */
     private final String request;
 
@@ -30,14 +36,16 @@ public class ApiRequestImpl
     /**
      * Constructor.
      *
-     * @param ip      The IP.
-     * @param port    The port.
-     * @param request The request.
+     * @param ip         The IP.
+     * @param port       The port.
+     * @param request    The request.
+     * @param properties The properties.
      */
     public ApiRequestImpl(
             final String ip,
             final int port,
-            final String request) {
+            final String request,
+            final Map<String, String> properties) {
         Validate.notNull(
                 ip,
                 "IP cannot be null");
@@ -53,6 +61,25 @@ public class ApiRequestImpl
         this.ip = ip;
         this.port = port;
         this.request = request;
+        this.properties = new HashMap<>(properties);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param ip      The IP.
+     * @param port    The port.
+     * @param request The request.
+     */
+    public ApiRequestImpl(
+            final String ip,
+            final int port,
+            final String request) {
+        this(
+                ip,
+                port,
+                request,
+                new HashMap<>());
     }
 
     @Override
@@ -68,6 +95,11 @@ public class ApiRequestImpl
     @Override
     public int getPort() {
         return this.port;
+    }
+
+    @Override
+    public Map<String, String> getProperties() {
+        return Collections.unmodifiableMap(this.properties);
     }
 
     @Override

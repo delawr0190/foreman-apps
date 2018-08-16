@@ -88,6 +88,15 @@ public class YmlConfigurationFactoryTest {
 
         validateGeneric(
                 minerIndex++,
+                configuration.getDragonmintConfigs(),
+                ImmutableMap.of(
+                        "username",
+                        "username",
+                        "password",
+                        "password"));
+
+        validateGeneric(
+                minerIndex++,
                 configuration.getDstmConfigs());
 
         validateGeneric(

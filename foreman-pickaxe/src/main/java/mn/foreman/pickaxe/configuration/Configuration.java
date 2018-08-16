@@ -66,6 +66,13 @@ public interface Configuration {
     List<Map<String, String>> getCryptoDredgeConfigs();
 
     /**
+     * Returns the dragonmint configurations.
+     *
+     * @return The configurations.
+     */
+    List<Map<String, String>> getDragonmintConfigs();
+
+    /**
      * Returns the dstm configurations.
      *
      * @return The configurations.

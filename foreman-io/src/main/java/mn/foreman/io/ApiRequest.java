@@ -1,5 +1,6 @@
 package mn.foreman.io;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -40,6 +41,13 @@ public interface ApiRequest {
      * @return The port.
      */
     int getPort();
+
+    /**
+     * Returns the request properties.
+     *
+     * @return The request properties.
+     */
+    Map<String, String> getProperties();
 
     /**
      * Returns the request.

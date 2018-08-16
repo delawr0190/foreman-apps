@@ -3,8 +3,10 @@ package mn.foreman.io;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 
 import java.io.IOException;
+import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 /** Provides utility methods for querying APIs. */
@@ -80,6 +82,52 @@ public class Query {
                         command);
         final Connection connection =
                 ConnectionFactory.createJsonConnection(
+                        request);
+        connection.query();
+
+        return
+                query(
+                        request,
+                        clazz);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp    The API IP.
+     * @param apiPort  The API port.
+     * @param uri      The URI.
+     * @param username The username.
+     * @param password The password.
+     * @param clazz    The response class.
+     * @param <T>      The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String username,
+            final String password,
+            final Class<T> clazz)
+            throws MinerException {
+        final String auth =
+                Base64.getEncoder().encodeToString(
+                        (username + ":" + password).getBytes());
+        final ApiRequest request =
+                new ApiRequestImpl(
+                        apiIp,
+                        apiPort,
+                        uri,
+                        ImmutableMap.of(
+                                "Authorization",
+                                "Basic " + auth));
+
+        final Connection connection =
+                ConnectionFactory.createRestConnection(
                         request);
         connection.query();
 

@@ -48,6 +48,7 @@
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-claymore</module>
+        <module>foreman-dragonmint</module>
         <module>foreman-dstm</module>
         <module>foreman-ethminer</module>
         <module>foreman-ewbf</module>
