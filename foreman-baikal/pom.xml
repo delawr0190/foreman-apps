@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-baikal</artifactId>
-    <version>1.13.0</version>
+    <version>1.13.1-SNAPSHOT</version>
     <name>foreman: foreman-baikal</name>
 
     <packaging>jar</packaging>
