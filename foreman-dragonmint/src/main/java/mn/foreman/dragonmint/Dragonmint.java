@@ -26,7 +26,7 @@ import java.util.List;
  * <p>This class currently queries:</p>
  *
  * <pre>
- *     GET http://{@link #apiIp}:{@link #apiPort}/api/summary
+ *     POST http://{@link #apiIp}:{@link #apiPort}/api/summary
  * </pre>
  */
 public class Dragonmint

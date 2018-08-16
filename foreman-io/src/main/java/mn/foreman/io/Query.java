@@ -128,7 +128,8 @@ public class Query {
 
         final Connection connection =
                 ConnectionFactory.createRestConnection(
-                        request);
+                        request,
+                        "POST");
         connection.query();
 
         return
@@ -164,7 +165,8 @@ public class Query {
 
         final Connection connection =
                 ConnectionFactory.createRestConnection(
-                        request);
+                        request,
+                        "GET");
         connection.query();
 
         return

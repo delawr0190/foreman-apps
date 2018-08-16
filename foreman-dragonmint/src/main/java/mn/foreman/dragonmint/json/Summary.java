@@ -11,7 +11,7 @@ import java.util.List;
  * from dragonmint:
  *
  * <pre>
- *     GET /api/summary
+ *     POST /api/summary
  * </pre>
  *
  * <p>The expected format of that object is:</p>

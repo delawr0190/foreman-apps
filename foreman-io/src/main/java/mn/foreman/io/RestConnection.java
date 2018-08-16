@@ -27,6 +27,9 @@ public class RestConnection
     private static final Logger LOG =
             LoggerFactory.getLogger(RestConnection.class);
 
+    /** The method. */
+    private final String method;
+
     /** The request. */
     private final ApiRequest request;
 
@@ -37,18 +40,24 @@ public class RestConnection
      * Constructor.
      *
      * @param url     The URL.
+     * @param method  The method.
      * @param request The request.
      */
     RestConnection(
             final String url,
+            final String method,
             final ApiRequest request) {
         Validate.notEmpty(
                 url,
                 "url cannot be empty");
+        Validate.notEmpty(
+                method,
+                "method cannot be empty");
         Validate.notNull(
                 request,
                 "request cannot be empty");
         this.url = url;
+        this.method = method;
         this.request = request;
     }
 
@@ -58,7 +67,7 @@ public class RestConnection
             final URL url = new URL(this.url);
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
+            connection.setRequestMethod(this.method);
             for (final Map.Entry<String, String> property :
                     this.request.getProperties().entrySet()) {
                 connection.setRequestProperty(
