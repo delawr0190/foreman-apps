@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-pickaxe</artifactId>
-    <version>1.13.0-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
     <name>foreman: foreman-pickaxe</name>
 
     <packaging>jar</packaging>
@@ -44,6 +44,10 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-claymore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-dragonmint</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>

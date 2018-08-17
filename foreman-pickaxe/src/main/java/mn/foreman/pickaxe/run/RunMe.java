@@ -73,7 +73,8 @@ public class RunMe {
         this.configuration = configuration;
         this.minerConfiguration =
                 new RemoteConfiguration(
-                        configuration.getForemanConfigUrl(),
+                        configuration.getForemanConfigUrl() + "/" +
+                                configuration.getPickaxeId(),
                         configuration.getApiKey());
     }
 

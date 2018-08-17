@@ -26,4 +26,11 @@ public interface Configuration {
      * @return The FOREMAN config URL.
      */
     String getForemanConfigUrl();
+
+    /**
+     * Returns the pickaxe ID.
+     *
+     * @return The pickaxe ID.
+     */
+    String getPickaxeId();
 }

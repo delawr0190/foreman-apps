@@ -121,17 +121,20 @@ public class ConnectionFactory {
      * Creates a {@link Connection} to a miner that has a REST interface.
      *
      * @param request The request.
+     * @param method  The method.
      *
      * @return The new {@link Connection}.
      */
     public static Connection createRestConnection(
-            final ApiRequest request) {
+            final ApiRequest request,
+            final String method) {
         return new RestConnection(
                 String.format(
                         "http://%s:%d%s",
                         request.getIp(),
                         request.getPort(),
                         request.getRequest()),
+                method,
                 request);
     }
 }

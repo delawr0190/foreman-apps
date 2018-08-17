@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-io</artifactId>
-    <version>1.13.0-SNAPSHOT</version>
+    <version>1.14.0-SNAPSHOT</version>
     <name>foreman: foreman-io</name>
 
     <packaging>jar</packaging>
@@ -20,6 +20,11 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-model</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
         </dependency>
 
         <dependency>

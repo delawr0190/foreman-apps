@@ -8,6 +8,8 @@ import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.ClaymoreType;
+import mn.foreman.dragonmint.Dragonmint;
+import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
@@ -60,7 +62,8 @@ public class RemoteConfiguration
     /**
      * Constructor.
      *
-     * @param url The URL.
+     * @param url    The URL.
+     * @param apiKey The API key.
      */
     public RemoteConfiguration(
             final String url,
@@ -220,6 +223,35 @@ public class RemoteConfiguration
     }
 
     /**
+     * Creates a {@link Dragonmint} miner from the configuration.
+     *
+     * @param config The config.
+     *
+     * @return The {@link Miner}.
+     */
+    private static Miner toDragonmintApi(
+            final MinerConfig config) {
+        final Map<String, String> attributes = new HashMap<>();
+        attributes.put("apiIp", config.apiIp);
+        attributes.put("apiPort", Integer.toString(config.apiPort));
+        findParam(
+                "username",
+                config.params).ifPresent(
+                (username) ->
+                        attributes.put(
+                                "username",
+                                username.value));
+        findParam(
+                "password",
+                config.params).ifPresent(
+                (password) ->
+                        attributes.put(
+                                "password",
+                                password.value));
+        return new DragonmintFactory().create(attributes);
+    }
+
+    /**
      * Creates an ethminer {@link Miner} from the config.
      *
      * @param config The config.
@@ -298,6 +330,9 @@ public class RemoteConfiguration
                 break;
             case DSTM_API:
                 miner = toMiner(config, new DstmFactory());
+                break;
+            case DRAGONMINT_API:
+                miner = toDragonmintApi(config);
                 break;
             case ETHMINER_API:
                 miner = toEthminerApi(config);

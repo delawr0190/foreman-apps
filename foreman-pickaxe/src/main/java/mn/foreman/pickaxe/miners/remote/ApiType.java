@@ -69,7 +69,10 @@ public enum ApiType {
     ANTMINER_KHS_API(19),
 
     /** baikal. */
-    BAIKAL_API(20);
+    BAIKAL_API(20),
+
+    /** dragonmint. */
+    DRAGONMINT_API(21);
 
     /** The type. */
     private final int type;

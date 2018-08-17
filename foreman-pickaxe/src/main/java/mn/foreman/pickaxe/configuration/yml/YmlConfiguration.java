@@ -2,10 +2,14 @@ package mn.foreman.pickaxe.configuration.yml;
 
 import mn.foreman.pickaxe.configuration.Configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 
 /** A YML-based {@link Configuration} parser. */
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class YmlConfiguration
         implements Configuration {
 
@@ -18,19 +22,21 @@ public class YmlConfiguration
     /** The FOREMAN config API URL. */
     private final String foremanConfigUrl;
 
+    /** The pickaxe identifier. */
+    private final String pickaxeId;
+
     /**
      * Constructor.
-     *
-     * <p>Note: intentionally hidden (built via JACKSON).</p>
      *
      * @param foremanApiUrl    The FOREMAN API URL.
      * @param foremanConfigUrl The FOREMAN config URL.
      * @param apiKey           The API key.
      */
-    private YmlConfiguration(
+    public YmlConfiguration(
             @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("foremanConfigUrl") final String foremanConfigUrl,
-            @JsonProperty("apiKey") final String apiKey) {
+            @JsonProperty("apiKey") final String apiKey,
+            @JsonProperty("pickaxeId") final String pickaxeId) {
         Validate.notEmpty(
                 foremanApiUrl,
                 "foremanApiUrl cannot be empty");
@@ -43,6 +49,7 @@ public class YmlConfiguration
         this.foremanApiUrl = foremanApiUrl;
         this.foremanConfigUrl = foremanConfigUrl;
         this.apiKey = apiKey;
+        this.pickaxeId = pickaxeId;
     }
 
     @Override
@@ -58,5 +65,10 @@ public class YmlConfiguration
     @Override
     public String getForemanConfigUrl() {
         return this.foremanConfigUrl;
+    }
+
+    @Override
+    public String getPickaxeId() {
+        return this.pickaxeId;
     }
 }

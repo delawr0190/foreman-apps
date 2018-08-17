@@ -20,7 +20,7 @@
         <java.version>1.8</java.version>
 
         <!-- Our versions -->
-        <foreman.version>1.13.0-SNAPSHOT</foreman.version>
+        <foreman.version>1.14.0-SNAPSHOT</foreman.version>
 
         <commons-collections.version>4.2</commons-collections.version>
         <commons-io.version>2.6</commons-io.version>
@@ -49,6 +49,7 @@
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
         <module>foreman-claymore</module>
+        <module>foreman-dragonmint</module>
         <module>foreman-dstm</module>
         <module>foreman-ethminer</module>
         <module>foreman-ewbf</module>
@@ -102,6 +103,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-claymore</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-dragonmint</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>
