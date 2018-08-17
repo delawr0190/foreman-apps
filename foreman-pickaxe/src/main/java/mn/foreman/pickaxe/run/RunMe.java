@@ -86,7 +86,8 @@ public class RunMe {
     public void run() {
         final MetricsProcessingStrategy metricsProcessingStrategy =
                 new HttpPostMetricsProcessingStrategy(
-                        this.configuration.getForemanApiUrl(),
+                        this.configuration.getForemanApiUrl() + "/" +
+                                this.configuration.getPickaxeId(),
                         this.configuration.getApiKey());
 
         startConfigQuerying();
