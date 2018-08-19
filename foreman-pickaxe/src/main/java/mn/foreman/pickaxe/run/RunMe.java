@@ -6,6 +6,7 @@ import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
+import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
@@ -97,6 +98,9 @@ public class RunMe {
         createMiners(
                 this.configuration.getCryptoDredgeConfigs(),
                 new CcminerFactory()).forEach(this.activeCache::add);
+        createMiners(
+                this.configuration.getDragonmintConfigs(),
+                new DragonmintFactory()).forEach(this.activeCache::add);
         createMiners(
                 this.configuration.getDstmConfigs(),
                 new DstmFactory()).forEach(this.activeCache::add);
