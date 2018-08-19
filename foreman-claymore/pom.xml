@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-claymore</artifactId>
-    <version>1.13.1-SNAPSHOT</version>
+    <version>1.13.1</version>
     <name>foreman: foreman-claymore</name>
 
     <packaging>jar</packaging>
