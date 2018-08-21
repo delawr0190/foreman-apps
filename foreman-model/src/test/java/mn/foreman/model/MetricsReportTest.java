@@ -117,10 +117,13 @@ public class MetricsReportTest {
                 ZonedDateTime.now(ZoneId.of("UTC"));
         final ApiVersion apiVersion =
                 ApiVersion.V1_0_0;
+        final String version =
+                "1.13.1";
         final Metadata metadata =
                 new Metadata.Builder()
                         .setTimestamp(timestamp)
                         .setApiVersion(apiVersion)
+                        .setVersion(version)
                         .build();
 
         final MetricsReport metricsReport =

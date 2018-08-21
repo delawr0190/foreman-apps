@@ -17,7 +17,7 @@ import java.time.ZonedDateTime;
  *   {
  *     "timestamp": "2017-12-11T18:53:49.600+0000",
  *     "appVersion": "1.2.3",
- *     "group": "aZ28fZzj"
+ *     "version": "1.0.0-SNAPSHOT"
  *   }
  * </pre>
  */
@@ -32,23 +32,32 @@ public class Metadata {
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private final ZonedDateTime timestamp;
 
+    /** The pickaxe version. */
+    private final String version;
+
     /**
      * Constructor.
      *
      * @param timestamp  The timestamp.
      * @param apiVersion The API version.
+     * @param version    The pickaxe version.
      */
     private Metadata(
             @JsonProperty("timestamp") final ZonedDateTime timestamp,
-            @JsonProperty("apiVersion") final ApiVersion apiVersion) {
+            @JsonProperty("apiVersion") final ApiVersion apiVersion,
+            @JsonProperty("version") final String version) {
         Validate.notNull(
                 timestamp,
                 "timestamp cannot be null");
         Validate.notNull(
                 apiVersion,
                 "apiVersion cannot be null");
+        Validate.notNull(
+                version,
+                "version cannot be null");
         this.timestamp = timestamp;
         this.apiVersion = apiVersion;
+        this.version = version;
     }
 
     @Override
@@ -64,6 +73,7 @@ public class Metadata {
                     new EqualsBuilder()
                             .append(this.timestamp, metadata.timestamp)
                             .append(this.apiVersion, metadata.apiVersion)
+                            .append(this.version, metadata.version)
                             .isEquals();
         }
         return isEqual;
@@ -87,26 +97,49 @@ public class Metadata {
         return this.timestamp;
     }
 
+    /**
+     * Returns the version.
+     *
+     * @return The version.
+     */
+    public String getVersion() {
+        return this.version;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.timestamp)
                 .append(this.apiVersion)
+                .append(this.version)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ timestamp=%s, apiVersion=%s ]",
+                "%s [ timestamp=%s, apiVersion=%s, version=%s ]",
                 getClass().getSimpleName(),
                 this.timestamp,
-                this.apiVersion);
+                this.apiVersion,
+                this.version);
     }
 
     /** A builder for creating {@link Metadata metadatas}. */
     public static class Builder
             extends AbstractBuilder<Metadata> {
+
+        /** The application version. */
+        private static final String DEFAULT_VERSION;
+
+        static {
+            String version =
+                    Metadata.class.getPackage().getImplementationVersion();
+            if ((version == null) || version.isEmpty()) {
+                version = UNDEFINED_STRING;
+            }
+            DEFAULT_VERSION = version;
+        }
 
         /** The API version. */
         private ApiVersion apiVersion = ApiVersion.V1_0_0;
@@ -114,11 +147,15 @@ public class Metadata {
         /** The timestamp. */
         private ZonedDateTime timestamp = ZonedDateTime.now();
 
+        /** The pickaxe version. */
+        private String version = DEFAULT_VERSION;
+
         @Override
         public Metadata build() {
             return new Metadata(
                     this.timestamp,
-                    this.apiVersion);
+                    this.apiVersion,
+                    this.version);
         }
 
         /**
@@ -142,6 +179,18 @@ public class Metadata {
          */
         public Builder setTimestamp(final ZonedDateTime timestamp) {
             this.timestamp = timestamp;
+            return this;
+        }
+
+        /**
+         * Sets the version.
+         *
+         * @param version The version.
+         *
+         * @return The builder instance.
+         */
+        public Builder setVersion(final String version) {
+            this.version = version;
             return this;
         }
     }
