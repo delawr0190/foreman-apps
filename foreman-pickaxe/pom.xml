@@ -171,27 +171,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <configuration>
-                    <useDefaultManifestFile>false</useDefaultManifestFile>
-                    <archive>
-                        <index>true</index>
-                        <manifest>
-                            <addClasspath>
-                                false
-                            </addClasspath>
-                            <addDefaultImplementationEntries>
-                                true
-                            </addDefaultImplementationEntries>
-                            <addDefaultSpecificationEntries>
-                                true
-                            </addDefaultSpecificationEntries>
-                        </manifest>
-                        <manifestEntries>
-                            <Built-By>${project.organization.name}</Built-By>
-                            <Build-Jdk>${java.version}</Build-Jdk>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
