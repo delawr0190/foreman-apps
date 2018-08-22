@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-xmrstak</artifactId>
-    <version>1.13.1</version>
+    <version>1.13.2-SNAPSHOT</version>
     <name>foreman: foreman-xmrstak</name>
 
     <packaging>jar</packaging>
