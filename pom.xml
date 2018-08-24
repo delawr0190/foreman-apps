@@ -30,7 +30,7 @@
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
-        <netty.version>4.1.8.Final</netty.version>
+        <netty.version>4.1.28.Final</netty.version>
         <slf.version>1.7.25</slf.version>
 
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>

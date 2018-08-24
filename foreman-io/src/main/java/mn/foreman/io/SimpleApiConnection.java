@@ -23,7 +23,7 @@ public class SimpleApiConnection
         implements Connection {
 
     /** How long to wait to connect to an API. */
-    private static final int API_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(15);
+    private static final int API_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(20);
 
     /** The logger for this class. */
     private static final Logger LOG =
