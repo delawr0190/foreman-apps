@@ -25,6 +25,7 @@ setup_java() {
     # JVM parameters
     JVM_PARAMS="-Dlogback.configurationFile=$PICKAXE_HOME/etc/logback.xml"
     JVM_PARAMS+=" -DLOG_LOCATION=$PICKAXE_HOME/logs"
+    JVM_PARAMS+=" -Dio.netty.tryReflectionSetAccessible=false"
 
     # JVM command line arguments
     JVM_COMMAND_LINE="-c $PICKAXE_HOME/conf/pickaxe.yml"
