@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-dstm</artifactId>
-    <version>1.13.2-SNAPSHOT</version>
+    <version>1.13.2</version>
     <name>foreman: foreman-dstm</name>
 
     <packaging>jar</packaging>

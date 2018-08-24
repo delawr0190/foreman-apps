@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-castxmr</artifactId>
-    <version>1.13.2-SNAPSHOT</version>
+    <version>1.13.2</version>
     <name>foreman: foreman-castxmr</name>
 
     <packaging>jar</packaging>
