@@ -163,7 +163,7 @@ public class CcMiner
                         .setCounts(
                                 values.get("ACC"),
                                 values.get("REJ"),
-                                values.get("STALE"))
+                                values.getOrDefault("STALE", "0"))
                         .build());
     }
 

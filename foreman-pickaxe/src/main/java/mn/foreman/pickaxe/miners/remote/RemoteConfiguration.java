@@ -300,6 +300,8 @@ public class RemoteConfiguration
      * @return The {@link Miner}.
      */
     private static Optional<Miner> toMiner(final MinerConfig config) {
+        LOG.debug("Adding miner for {}", config);
+
         Miner miner = null;
         switch (config.apiType) {
             case ANTMINER_GHS_API:

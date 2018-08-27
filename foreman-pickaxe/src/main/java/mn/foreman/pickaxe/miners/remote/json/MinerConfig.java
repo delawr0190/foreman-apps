@@ -30,6 +30,17 @@ public class MinerConfig {
     @JsonProperty("params")
     public List<Param> params;
 
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ apiIp=%s, apiPort=%d, apiType=%s, params=[%s] ]",
+                getClass().getSimpleName(),
+                this.apiIp,
+                this.apiPort,
+                this.apiType,
+                this.params);
+    }
+
     /** A miner configuration parameter. */
     public static class Param {
 
@@ -40,5 +51,13 @@ public class MinerConfig {
         /** The value. */
         @JsonProperty("value")
         public String value;
+
+        @Override
+        public String toString() {
+            return String.format("%s [ key=%s, value=%s ]",
+                    getClass().getSimpleName(),
+                    this.key,
+                    this.value);
+        }
     }
 }

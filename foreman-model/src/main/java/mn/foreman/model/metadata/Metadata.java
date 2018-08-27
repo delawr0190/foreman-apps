@@ -32,32 +32,23 @@ public class Metadata {
             pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ")
     private final ZonedDateTime timestamp;
 
-    /** The pickaxe version. */
-    private final String version;
-
     /**
      * Constructor.
      *
      * @param timestamp  The timestamp.
      * @param apiVersion The API version.
-     * @param version    The pickaxe version.
      */
     private Metadata(
             @JsonProperty("timestamp") final ZonedDateTime timestamp,
-            @JsonProperty("apiVersion") final ApiVersion apiVersion,
-            @JsonProperty("version") final String version) {
+            @JsonProperty("apiVersion") final ApiVersion apiVersion) {
         Validate.notNull(
                 timestamp,
                 "timestamp cannot be null");
         Validate.notNull(
                 apiVersion,
                 "apiVersion cannot be null");
-        Validate.notNull(
-                version,
-                "version cannot be null");
         this.timestamp = timestamp;
         this.apiVersion = apiVersion;
-        this.version = version;
     }
 
     @Override
@@ -73,7 +64,6 @@ public class Metadata {
                     new EqualsBuilder()
                             .append(this.timestamp, metadata.timestamp)
                             .append(this.apiVersion, metadata.apiVersion)
-                            .append(this.version, metadata.version)
                             .isEquals();
         }
         return isEqual;
@@ -97,49 +87,26 @@ public class Metadata {
         return this.timestamp;
     }
 
-    /**
-     * Returns the version.
-     *
-     * @return The version.
-     */
-    public String getVersion() {
-        return this.version;
-    }
-
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.timestamp)
                 .append(this.apiVersion)
-                .append(this.version)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ timestamp=%s, apiVersion=%s, version=%s ]",
+                "%s [ timestamp=%s, apiVersion=%s ]",
                 getClass().getSimpleName(),
                 this.timestamp,
-                this.apiVersion,
-                this.version);
+                this.apiVersion);
     }
 
     /** A builder for creating {@link Metadata metadatas}. */
     public static class Builder
             extends AbstractBuilder<Metadata> {
-
-        /** The application version. */
-        private static final String DEFAULT_VERSION;
-
-        static {
-            String version =
-                    Metadata.class.getPackage().getImplementationVersion();
-            if ((version == null) || version.isEmpty()) {
-                version = UNDEFINED_STRING;
-            }
-            DEFAULT_VERSION = version;
-        }
 
         /** The API version. */
         private ApiVersion apiVersion = ApiVersion.V1_0_0;
@@ -147,15 +114,11 @@ public class Metadata {
         /** The timestamp. */
         private ZonedDateTime timestamp = ZonedDateTime.now();
 
-        /** The pickaxe version. */
-        private String version = DEFAULT_VERSION;
-
         @Override
         public Metadata build() {
             return new Metadata(
                     this.timestamp,
-                    this.apiVersion,
-                    this.version);
+                    this.apiVersion);
         }
 
         /**
@@ -179,18 +142,6 @@ public class Metadata {
          */
         public Builder setTimestamp(final ZonedDateTime timestamp) {
             this.timestamp = timestamp;
-            return this;
-        }
-
-        /**
-         * Sets the version.
-         *
-         * @param version The version.
-         *
-         * @return The builder instance.
-         */
-        public Builder setVersion(final String version) {
-            this.version = version;
             return this;
         }
     }

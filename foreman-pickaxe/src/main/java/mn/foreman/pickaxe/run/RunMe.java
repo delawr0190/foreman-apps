@@ -10,6 +10,7 @@ import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.RemoteConfiguration;
 import mn.foreman.pickaxe.process.HttpPostMetricsProcessingStrategy;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
+import mn.foreman.util.VersionUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -73,8 +74,11 @@ public class RunMe {
         this.configuration = configuration;
         this.minerConfiguration =
                 new RemoteConfiguration(
-                        configuration.getForemanConfigUrl() + "/" +
+                        String.format(
+                                "%s/%s/%s",
+                                configuration.getForemanConfigUrl(),
                                 configuration.getPickaxeId(),
+                                VersionUtils.getVersion()),
                         configuration.getApiKey());
     }
 
@@ -187,11 +191,14 @@ public class RunMe {
                         if (!CollectionUtils.isEqualCollection(
                                 currentMiners,
                                 newMiners)) {
+                            LOG.debug("A new configuration has been obtained");
                             this.blacklistCache.invalidate();
                             this.activeCache.invalidate();
                             this.allCache.invalidate();
                             newMiners.forEach(this.allCache::add);
                             newMiners.forEach(this.activeCache::add);
+                        } else {
+                            LOG.debug("No configuration changes were observed");
                         }
                     } finally {
                         this.lock.writeLock().unlock();

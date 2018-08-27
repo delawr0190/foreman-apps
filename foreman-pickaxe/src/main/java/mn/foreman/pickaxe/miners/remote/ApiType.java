@@ -9,70 +9,70 @@ import com.fasterxml.jackson.annotation.JsonValue;
 public enum ApiType {
 
     /** bminer. */
-    BMINER_API(0),
+    BMINER_API(1),
 
     /** castxmr. */
-    CASTXMR_API(1),
+    CASTXMR_API(2),
 
     /** ccminer. */
-    CCMINER_API(2),
+    CCMINER_API(3),
 
     /** dstm. */
-    DSTM_API(3),
+    DSTM_API(4),
 
     /** ethminer. */
-    ETHMINER_API(4),
+    ETHMINER_API(5),
 
     /** ewbf. */
-    EWBF_API(5),
+    EWBF_API(6),
 
     /** excavator. */
-    EXCAVATOR_API(6),
+    EXCAVATOR_API(7),
 
     /** jceminer. */
-    JCEMINER_API(7),
+    JCEMINER_API(8),
 
     /** lolminer. */
-    LOLMINER_API(8),
+    LOLMINER_API(9),
 
     /** sgminer. */
-    SGMINER_API(9),
+    SGMINER_API(10),
 
     /** srbminer. */
-    SRBMINER_API(10),
+    SRBMINER_API(11),
 
     /** trex. */
-    TREX_API(11),
+    TREX_API(12),
 
     /** xmrig */
-    XMRIG_API(12),
+    XMRIG_API(13),
 
     /** xmrstak. */
-    XMRSTAK_API(13),
+    XMRSTAK_API(14),
 
     /** claymore-eth. */
-    CLAYMORE_ETH_API(14),
+    CLAYMORE_ETH_API(15),
 
     /** claymore-zec. */
-    CLAYMORE_ZEC_API(15),
+    CLAYMORE_ZEC_API(16),
 
     /** Antminer API that reports rates in Hs. */
-    ANTMINER_HS_API(16),
+    ANTMINER_HS_API(17),
 
     /** Antminer API that reports rates in MHs. */
-    ANTMINER_MHS_API(17),
+    ANTMINER_MHS_API(18),
 
     /** Antminer API that reports rates in GHs. */
-    ANTMINER_GHS_API(18),
+    ANTMINER_GHS_API(19),
 
     /** Antminer API that reports rates in MHs. */
-    ANTMINER_KHS_API(19),
+    ANTMINER_KHS_API(20),
 
     /** baikal. */
-    BAIKAL_API(20),
+    BAIKAL_API(21),
 
     /** dragonmint. */
-    DRAGONMINT_API(21);
+    DRAGONMINT_API(22);
 
     /** The type. */
     private final int type;

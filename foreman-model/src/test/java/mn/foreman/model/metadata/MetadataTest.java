@@ -23,13 +23,11 @@ public class MetadataTest {
             throws IOException {
         final ApiVersion apiVersion = ApiVersion.V1_0_0;
         final ZonedDateTime timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
-        final String version = "1.13.1";
 
         final Metadata metadata =
                 new Metadata.Builder()
                         .setApiVersion(apiVersion)
                         .setTimestamp(timestamp)
-                        .setVersion(version)
                         .build();
 
         final ObjectMapper objectMapper =
@@ -53,8 +51,5 @@ public class MetadataTest {
         assertEquals(
                 timestamp,
                 newMetadata.getTimestamp());
-        assertEquals(
-                version,
-                newMetadata.getVersion());
     }
 }
