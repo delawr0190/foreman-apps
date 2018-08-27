@@ -1,6 +1,10 @@
 package mn.foreman.pickaxe.miners.remote;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * An API type represents a FOREMAN server response that indicates the miner API
@@ -74,6 +78,16 @@ public enum ApiType {
     /** dragonmint. */
     DRAGONMINT_API(22);
 
+    /** A mapping of {@link #type} to {@link ApiType}. */
+    private static final Map<Integer, ApiType> MAPPINGS;
+
+    static {
+        MAPPINGS = new ConcurrentHashMap<>();
+        for (final ApiType apiType : values()) {
+            MAPPINGS.put(apiType.getType(), apiType);
+        }
+    }
+
     /** The type. */
     private final int type;
 
@@ -84,6 +98,18 @@ public enum ApiType {
      */
     ApiType(final int type) {
         this.type = type;
+    }
+
+    /**
+     * Returns the type for the provided value.
+     *
+     * @param value The value.
+     *
+     * @return The type.
+     */
+    @JsonCreator
+    public static ApiType forValue(final int value) {
+        return MAPPINGS.get(value);
     }
 
     /**

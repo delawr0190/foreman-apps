@@ -68,6 +68,7 @@ public abstract class AbstractMiner
     public MinerStats getStats()
             throws MinerException {
         LOG.debug("Obtaining stats from {}-{}:{}",
+                getClass().getSimpleName(),
                 this.apiIp,
                 this.apiPort);
 
