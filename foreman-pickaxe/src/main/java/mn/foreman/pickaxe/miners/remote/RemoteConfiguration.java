@@ -96,8 +96,8 @@ public class RemoteConfiguration
             miners.addAll(
                     toMiners(
                             configs));
-        } catch (final IOException ioe) {
-            LOG.warn("Exception occurred while downloading configuration", ioe);
+        } catch (final Exception e) {
+            LOG.warn("Exception occurred while downloading configuration", e);
         }
 
         return miners;
@@ -382,6 +382,7 @@ public class RemoteConfiguration
             final List<MinerConfig> configs) {
         return configs
                 .stream()
+                .filter(config -> config.apiType != null)
                 .map(RemoteConfiguration::toMiner)
                 .filter(Optional::isPresent)
                 .map(Optional::get)

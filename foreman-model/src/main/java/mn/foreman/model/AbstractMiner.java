@@ -67,10 +67,7 @@ public abstract class AbstractMiner
     @Override
     public MinerStats getStats()
             throws MinerException {
-        LOG.debug("Obtaining stats from {}-{}:{}",
-                getClass().getSimpleName(),
-                this.apiIp,
-                this.apiPort);
+        LOG.debug("Obtaining stats from {}", this);
 
         final MinerStats.Builder builder =
                 new MinerStats.Builder()

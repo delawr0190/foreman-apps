@@ -2,7 +2,6 @@ package mn.foreman.pickaxe.run;
 
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
-import mn.foreman.model.error.MinerException;
 import mn.foreman.pickaxe.cache.MinerCache;
 import mn.foreman.pickaxe.cache.MinerCacheImpl;
 import mn.foreman.pickaxe.configuration.Configuration;
@@ -63,7 +62,7 @@ public class RunMe {
 
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
-            Executors.newScheduledThreadPool(1);
+            Executors.newScheduledThreadPool(2);
 
     /**
      * Constructor.
@@ -135,7 +134,7 @@ public class RunMe {
                             e);
                 }
 
-                TimeUnit.SECONDS.sleep(60);
+                TimeUnit.MINUTES.sleep(1);
             }
         } catch (final InterruptedException ie) {
             LOG.debug("Interrupted while sleeping - terminating", ie);
@@ -162,7 +161,7 @@ public class RunMe {
 
                                 this.blacklistCache.remove(miner);
                                 this.activeCache.add(miner);
-                            } catch (final MinerException me) {
+                            } catch (final Exception e) {
                                 LOG.warn("Couldn't reach miner - keeping it " +
                                         "blacklisted");
                             }
@@ -171,9 +170,9 @@ public class RunMe {
                         this.lock.readLock().unlock();
                     }
                 },
-                60,
-                60,
-                TimeUnit.SECONDS);
+                1,
+                1,
+                TimeUnit.MINUTES);
     }
 
     /**
@@ -182,30 +181,30 @@ public class RunMe {
     private void startConfigQuerying() {
         this.threadPool.scheduleAtFixedRate(
                 () -> {
-                    this.lock.writeLock().lock();
-                    try {
-                        final List<Miner> currentMiners =
-                                this.allCache.getMiners();
-                        final List<Miner> newMiners =
-                                this.minerConfiguration.load();
-                        if (!CollectionUtils.isEqualCollection(
-                                currentMiners,
-                                newMiners)) {
+                    final List<Miner> currentMiners =
+                            this.allCache.getMiners();
+                    final List<Miner> newMiners =
+                            this.minerConfiguration.load();
+                    if (!CollectionUtils.isEqualCollection(
+                            currentMiners,
+                            newMiners)) {
+                        this.lock.writeLock().lock();
+                        try {
                             LOG.debug("A new configuration has been obtained");
                             this.blacklistCache.invalidate();
                             this.activeCache.invalidate();
                             this.allCache.invalidate();
                             newMiners.forEach(this.allCache::add);
                             newMiners.forEach(this.activeCache::add);
-                        } else {
-                            LOG.debug("No configuration changes were observed");
+                        } finally {
+                            this.lock.writeLock().unlock();
                         }
-                    } finally {
-                        this.lock.writeLock().unlock();
+                    } else {
+                        LOG.debug("No configuration changes were observed");
                     }
                 },
                 0,
-                5,
+                2,
                 TimeUnit.MINUTES);
     }
 }
