@@ -11,3 +11,4 @@ if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
 
 %NSSM% install Pickaxe "%PICKAXE_HOME%\bin\pickaxe.bat" ""
 %NSSM% set Pickaxe Description "Foreman Pickaxe"
+%NSSM% set Pickaxe Start SERVICE_AUTO_START
