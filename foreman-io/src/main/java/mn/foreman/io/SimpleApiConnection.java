@@ -22,6 +22,9 @@ import java.util.concurrent.TimeUnit;
 public class SimpleApiConnection
         implements Connection {
 
+    /** How long to wait to connect to an API. */
+    private static final int API_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(20);
+
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(SimpleApiConnection.class);
@@ -87,8 +90,7 @@ public class SimpleApiConnection
         bootstrap
                 .group(this.eventLoopGroup)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
-                        (int) TimeUnit.SECONDS.toMillis(5))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, API_TIMEOUT)
                 .handler(new ChannelInitializer<SocketChannel>() {
 
                     @Override

@@ -61,7 +61,6 @@ public class DevsResponseStrategy
         final Asic.Builder asicBuilder =
                 new Asic.Builder()
                         .setHashRate(toRate(asicValues))
-                        .hasErrors(toErrors(asicValues))
                         .setFanInfo(
                                 new FanInfo.Builder()
                                         .setCount(0)
@@ -88,24 +87,6 @@ public class DevsResponseStrategy
         return values
                 .stream()
                 .anyMatch((map) -> map.containsKey("ASC"));
-    }
-
-    /**
-     * Determines whether or not there are hardware errors.
-     *
-     * @param values The values to examine.
-     *
-     * @return Whether or not there are hardware errors.
-     */
-    private static Boolean toErrors(
-            final List<Map<String, String>> values) {
-        return values
-                .stream()
-                .mapToInt(
-                        (map) ->
-                                Integer.parseInt(
-                                        map.get("Hardware Errors")))
-                .sum() > 0;
     }
 
     /**

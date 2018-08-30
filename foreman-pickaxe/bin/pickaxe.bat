@@ -30,6 +30,7 @@ for %%i in ("%PICKAXE_HOME%\lib\*.jar") do (
 rem # Set JVM parameters
 set JVM_PARAMS=-Dlogback.configurationFile="%PICKAXE_HOME%\etc\logback.xml"
 set JVM_PARAMS=%JVM_PARAMS% -DLOG_LOCATION="%PICKAXE_HOME%\logs"
+set JVM_PARAMS=%JVM_PARAMS% -Dio.netty.tryReflectionSetAccessible=false
 
 rem # Set command line arguments
 set JVM_COMMAND_LINE=-c "%PICKAXE_HOME%\conf\pickaxe.yml"
