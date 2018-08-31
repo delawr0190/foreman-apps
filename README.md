@@ -22,14 +22,15 @@ At a high-level,
 
 1. Download pickaxe [(latest)](https://github.com/delawr0190/foreman-apps/releases).
 2. Unzip pickaxe.
-3. Add miners to `conf/pickaxe.yml` following the examples provided.
+3. Add your API information from [here](https://dashboard.foreman.mn/dashboard/profile/) to `conf/pickaxe.yml`.
 4. Start pickaxe.
+5. Add miners from your dashboard! :)
 
-Pickaxe queries the APIs built into each miner (most have this, and most are enabled by default).  If you're having trouble configuring pickaxe to connect to your miner, consult the miner's documentation on how to enable it.  Example:  according to [ccminer's README](https://github.com/tpruvot/ccminer/blob/windows/README.txt), providing `--api-remote` will enable the API.
+Pickaxe queries the APIs built into each miner (most have this, and most are enabled by default).  If you're having trouble getting your miner to update, consult our documentation [here](https://dashboard.foreman.mn/dashboard/support/miners/) - we've documented how every miner needs to be ran so pickaxe can connect to it.
 
 ## Requirements ##
 
-- JDK version 8
+- JDK version 8 (or higher)
 - Apache Maven (only if building Pickaxe from sources)
 
 ## Building ##
