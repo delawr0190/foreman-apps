@@ -143,7 +143,7 @@ public class RunMe {
 
     /** Starts {@link #blacklistCache} evaluation. */
     private void startBlacklistValidation() {
-        this.threadPool.scheduleAtFixedRate(
+        this.threadPool.scheduleWithFixedDelay(
                 () -> {
                     this.lock.readLock().lock();
                     try {
@@ -179,7 +179,7 @@ public class RunMe {
      * Starts the thread that will continuously query for new configurations.
      */
     private void startConfigQuerying() {
-        this.threadPool.scheduleAtFixedRate(
+        this.threadPool.scheduleWithFixedDelay(
                 () -> {
                     final List<Miner> currentMiners =
                             this.allCache.getMiners();
