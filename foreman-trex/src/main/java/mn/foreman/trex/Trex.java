@@ -35,8 +35,8 @@ import mn.foreman.util.PoolUtils;
  *
  * <h2>GPUs</h2>
  *
- * <p>Model, temperature, clocks, and fans are not exposed via the API.
- * Therefore, they aren't reporting to Foreman.</p>
+ * <p>Clocks are not exposed via the API. Therefore, they aren't reported to
+ * Foreman.</p>
  *
  * <h2>Pools</h2>
  *
@@ -89,24 +89,53 @@ public class Trex
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
                         .setHashRate(summary.hashRate);
-        for (int i = 0; i < summary.gpuTotal; i++) {
-            rigBuilder.addGpu(
-                    new Gpu.Builder()
-                            .setIndex(i)
-                            .setBus(i)
-                            .setName("GPU " + i)
-                            .setFans(
-                                    new FanInfo.Builder()
-                                            .setCount(0)
-                                            .setSpeedUnits("%")
-                                            .build())
-                            .setFreqInfo(
-                                    new FreqInfo.Builder()
-                                            .setFreq(0)
-                                            .setMemFreq(0)
-                                            .build())
+        summary.gpus.forEach(
+                (gpu) -> {
+                    addGpu(
+                            rigBuilder,
+                            gpu);
+                });
+        statsBuilder.addRig(rigBuilder.build());
+    }
+
+    /**
+     * Adds a GPU from the provided {@link Summary.Gpu GPU}.
+     *
+     * @param rigBuilder The builder to update.
+     * @param gpu        The {@link Summary.Gpu}.
+     */
+    private static void addGpu(
+            final Rig.Builder rigBuilder,
+            final Summary.Gpu gpu) {
+        final Gpu.Builder gpuBuilder =
+                new Gpu.Builder()
+                        .setIndex(gpu.deviceId)
+                        .setBus(0)
+                        .setName(
+                                gpu.name != null
+                                        ? gpu.name
+                                        : "GPU " + gpu.deviceId)
+                        .setTemp(gpu.temperature)
+                        .setFreqInfo(
+                                new FreqInfo.Builder()
+                                        .setFreq(0)
+                                        .setMemFreq(0)
+                                        .build());
+        if (gpu.fanSpeed > 0) {
+            gpuBuilder.setFans(
+                    new FanInfo.Builder()
+                            .setCount(1)
+                            .addSpeed(gpu.fanSpeed)
+                            .setSpeedUnits("%")
+                            .build());
+        } else {
+            // No fans in this version of the API
+            gpuBuilder.setFans(
+                    new FanInfo.Builder()
+                            .setCount(0)
+                            .setSpeedUnits("%")
                             .build());
         }
-        statsBuilder.addRig(rigBuilder.build());
+        rigBuilder.addGpu(gpuBuilder.build());
     }
 }
