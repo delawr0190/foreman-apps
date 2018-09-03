@@ -84,6 +84,28 @@ public class CcMiner
     }
 
     /**
+     * Utility method to convert a frequency to a valid value.
+     *
+     * @param value The value to convert.
+     *
+     * @return The frequency.
+     */
+    private static int toFreqInt(final String value) {
+        int freq = 0;
+        if (value != null && !value.isEmpty()) {
+            freq = Integer.parseInt(value);
+        }
+
+        // Some ccminer APIs report frequencies in Hz while others are MHz.
+        // Convert to MHz if any seem overly high.
+        if (freq / 1000 > 100) {
+            freq /= 1000;
+        }
+
+        return freq;
+    }
+
+    /**
      * Adds a {@link Gpu} to the {@link Rig} using the provided values.
      *
      * @param values  The values.
@@ -106,8 +128,12 @@ public class CcMiner
                                         .build())
                         .setFreqInfo(
                                 new FreqInfo.Builder()
-                                        .setFreq(values.get("FREQ"))
-                                        .setMemFreq(values.get("MEMFREQ"))
+                                        .setFreq(
+                                                toFreqInt(
+                                                        values.get("FREQ")))
+                                        .setMemFreq(
+                                                toFreqInt(
+                                                        values.get("MEMFREQ")))
                                         .build())
                         .build());
     }
