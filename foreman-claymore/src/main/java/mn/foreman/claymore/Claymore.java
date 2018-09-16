@@ -122,6 +122,11 @@ public class Claymore
                 statsBuilder);
         addRig(
                 ethHashRate,
+                temps,
+                fans,
+                this.claymoreType,
+                statsBuilder);
+        addRig(
                 dcrHashRate,
                 temps,
                 fans,
@@ -186,68 +191,65 @@ public class Claymore
     /**
      * Adds a {@link Rig} using the provided parameters.
      *
-     * @param ethHashRate  The ETH hash rate.
-     * @param dcrHashRate  The DCR hash rate.
+     * @param hashRate     The hash rate.
      * @param temps        The temperatures.
      * @param fans         The fans.
      * @param claymoreType The claymore type.
      * @param builder      The builder to update.
      */
     private static void addRig(
-            final String ethHashRate,
-            final String dcrHashRate,
+            final String hashRate,
             final List<String> temps,
             final List<String> fans,
             final ClaymoreType claymoreType,
             final MinerStats.Builder builder) {
-        final Rig.Builder rigBuilder =
-                new Rig.Builder()
-                        .setHashRate(
-                                toHashRate(
-                                        ethHashRate,
-                                        dcrHashRate,
-                                        claymoreType));
-        for (int i = 0; i < temps.size(); i++) {
-            rigBuilder
-                    .addGpu(
-                            new Gpu.Builder()
-                                    .setName("GPU " + i)
-                                    .setIndex(Integer.toString(i))
-                                    // Bus is not exposed in claymore
-                                    .setBus("0")
-                                    .setTemp(temps.get(i))
-                                    .setFans(
-                                            new FanInfo.Builder()
-                                                    .setCount(1)
-                                                    .addSpeed(fans.get(i))
-                                                    .setSpeedUnits("%")
-                                                    .build())
-                                    // No frequencies in claymore
-                                    .setFreqInfo(
-                                            new FreqInfo.Builder()
-                                                    .setFreq("0")
-                                                    .setMemFreq("0")
-                                                    .build())
-                                    .build());
+        final BigDecimal realHashRate =
+                toHashRate(
+                        hashRate,
+                        claymoreType);
+        if (realHashRate.compareTo(BigDecimal.ZERO) > 0) {
+            final Rig.Builder rigBuilder =
+                    new Rig.Builder()
+                            .setHashRate(realHashRate);
+            for (int i = 0; i < temps.size(); i++) {
+                rigBuilder
+                        .addGpu(
+                                new Gpu.Builder()
+                                        .setName("GPU " + i)
+                                        .setIndex(Integer.toString(i))
+                                        // Bus is not exposed in claymore
+                                        .setBus("0")
+                                        .setTemp(temps.get(i))
+                                        .setFans(
+                                                new FanInfo.Builder()
+                                                        .setCount(1)
+                                                        .addSpeed(fans.get(i))
+                                                        .setSpeedUnits("%")
+                                                        .build())
+                                        // No frequencies in claymore
+                                        .setFreqInfo(
+                                                new FreqInfo.Builder()
+                                                        .setFreq("0")
+                                                        .setMemFreq("0")
+                                                        .build())
+                                        .build());
+            }
+            builder.addRig(rigBuilder.build());
         }
-        builder.addRig(rigBuilder.build());
     }
 
     /**
-     * Combines the two hash rates into a {@link BigDecimal}.
+     * Converts the hash rate to the desired type in Hs.
      *
-     * @param ethRate      The ETH rate.
-     * @param dcrRate      The DCR rate.
+     * @param hashRate     The ETH rate.
      * @param claymoreType The claymore type.
      *
      * @return The hash rate.
      */
     private static BigDecimal toHashRate(
-            final String ethRate,
-            final String dcrRate,
+            final String hashRate,
             final ClaymoreType claymoreType) {
-        return new BigDecimal(ethRate).multiply(claymoreType.getMultiplier())
-                .add(new BigDecimal(dcrRate).multiply(claymoreType.getMultiplier()));
+        return new BigDecimal(hashRate).multiply(claymoreType.getMultiplier());
     }
 
     /**
