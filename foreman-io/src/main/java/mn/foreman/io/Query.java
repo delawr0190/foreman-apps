@@ -5,7 +5,6 @@ import mn.foreman.model.error.MinerException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
-import java.io.IOException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -47,13 +46,17 @@ public class Query {
                         request);
         connection.query();
 
-        if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
-            return request.getResponse();
-        } else {
+        final boolean completed =
+                request.waitForCompletion(
+                        10,
+                        TimeUnit.SECONDS);
+        final String response =
+                request.getResponse();
+        if (!completed || response == null) {
             throw new MinerException("Failed to obtain a response");
         }
+
+        return response;
     }
 
     /**
@@ -201,8 +204,8 @@ public class Query {
                         objectMapper.readValue(
                                 request.getResponse(),
                                 clazz);
-            } catch (final IOException ioe) {
-                throw new MinerException(ioe);
+            } catch (final Exception e) {
+                throw new MinerException(e);
             }
         } else {
             throw new MinerException("Failed to obtain a response");

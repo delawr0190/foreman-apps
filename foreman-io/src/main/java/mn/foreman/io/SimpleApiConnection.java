@@ -4,6 +4,7 @@ import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.ReadTimeoutHandler;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +96,10 @@ public class SimpleApiConnection
 
                     @Override
                     protected void initChannel(final SocketChannel channel) {
+                        channel.pipeline().addLast(
+                                new ReadTimeoutHandler(
+                                        15,
+                                        TimeUnit.SECONDS));
                         SimpleApiConnection.this.handlers
                                 .forEach((handler) ->
                                         channel.pipeline().addLast(handler));
