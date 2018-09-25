@@ -17,11 +17,12 @@ public class ConnectionITest {
     /**
      * Verifies that a hung API server will get terminated upon read timeout.
      *
-     * @throws MinerException on failure to parse.
+     * @throws MinerException       on failure to parse.
+     * @throws InterruptedException on failure to sleep.
      */
     @Test(expected = MinerException.class)
     public void testSlowRead()
-            throws MinerException {
+            throws MinerException, InterruptedException {
         final int serverPort = 36420;
 
         try (final MyServer server =
@@ -30,6 +31,9 @@ public class ConnectionITest {
             final Executor executor =
                     Executors.newSingleThreadExecutor();
             executor.execute(server);
+
+            // Wait for the server to start (nbio in the future?)
+            TimeUnit.SECONDS.sleep(5);
 
             Query.jsonQuery(
                     "localhost",
