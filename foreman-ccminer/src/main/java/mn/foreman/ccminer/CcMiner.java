@@ -32,6 +32,9 @@ import java.util.Map;
  *     <li>pool|</li>
  *     <li>hwinfo|</li>
  * </ul>
+ *
+ * <p>In the event that the "hwinfo" command isn't available, "gpus" will be
+ * used as an alternative with information stubbed out.</p>
  */
 public class CcMiner
         extends AbstractMiner {
@@ -63,7 +66,12 @@ public class CcMiner
                 new Rig.Builder();
 
         getSummary(rigBuilder);
-        getHwInfo(rigBuilder);
+        try {
+            getHwInfo(rigBuilder);
+        } catch (final MinerException me) {
+            // No hwinfo available on the API, so try gpus as a last resort
+            getGpus(rigBuilder);
+        }
         getPools(statsBuilder);
 
         statsBuilder.addRig(rigBuilder.build());
@@ -111,7 +119,7 @@ public class CcMiner
      * @param values  The values.
      * @param builder The builder.
      */
-    private void addGpu(
+    private void addFullGpu(
             final Map<String, String> values,
             final Rig.Builder builder) {
         builder.addGpu(
@@ -139,6 +147,65 @@ public class CcMiner
     }
 
     /**
+     * Adds a {@link Gpu} to the {@link Rig} using the provided values.
+     *
+     * @param values  The values.
+     * @param builder The builder.
+     */
+    private void addStubbedGpu(
+            final Map<String, String> values,
+            final Rig.Builder builder) {
+        builder.addGpu(
+                new Gpu.Builder()
+                        .setName("GPU " + values.get("GPU"))
+                        // Can't determine the index
+                        .setIndex(0)
+                        // Can't determine the bus
+                        .setBus(0)
+                        // Can't determine the temp
+                        .setTemp(0)
+                        // Can't determine the fans
+                        .setFans(
+                                new FanInfo.Builder()
+                                        .setCount(0)
+                                        .setSpeedUnits("%")
+                                        .build())
+                        // Can't determine the frequency info
+                        .setFreqInfo(
+                                new FreqInfo.Builder()
+                                        .setFreq(0)
+                                        .setMemFreq(0)
+                                        .build())
+                        .build());
+    }
+
+    /**
+     * Queries for GPUs and extracts the {@link Gpu GPUs} in the {@link Rig},
+     * adding them to the provided builder.
+     *
+     * @param builder The builder to update.
+     *
+     * @throws MinerException on failure to query.
+     */
+    private void getGpus(final Rig.Builder builder)
+            throws MinerException {
+        final String gpus =
+                Query.delimiterQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "gpus|");
+        Arrays
+                .stream(gpus.split(REGION_SEPARATOR))
+                .filter((info) -> info.contains("GPU"))
+                .map(CcMiner::split)
+                .filter((info) -> info.containsKey("GPU"))
+                .forEach((info) ->
+                        addStubbedGpu(
+                                info,
+                                builder));
+    }
+
+    /**
      * Queries for hardware info and extracts the {@link Gpu GPUs} in the {@link
      * Rig}, adding them to the provided builder.
      *
@@ -159,7 +226,7 @@ public class CcMiner
                 .map(CcMiner::split)
                 .filter((info) -> info.containsKey("GPU"))
                 .forEach((info) ->
-                        addGpu(
+                        addFullGpu(
                                 info,
                                 builder));
     }

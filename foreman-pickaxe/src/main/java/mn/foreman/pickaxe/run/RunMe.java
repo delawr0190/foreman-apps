@@ -93,6 +93,11 @@ public class RunMe {
                                 this.configuration.getPickaxeId(),
                         this.configuration.getApiKey());
 
+        // Query manually once - this will prevent the first round of stats
+        // querying from evaluating no miners
+        queryForConfigs();
+
+        // Now schedule our tasks
         startConfigQuerying();
         startBlacklistValidation();
 
@@ -141,6 +146,31 @@ public class RunMe {
         }
     }
 
+    /** Queries for a configuration. */
+    private void queryForConfigs() {
+        final List<Miner> currentMiners =
+                this.allCache.getMiners();
+        final List<Miner> newMiners =
+                this.minerConfiguration.load();
+        if (!CollectionUtils.isEqualCollection(
+                currentMiners,
+                newMiners)) {
+            this.lock.writeLock().lock();
+            try {
+                LOG.debug("A new configuration has been obtained");
+                this.blacklistCache.invalidate();
+                this.activeCache.invalidate();
+                this.allCache.invalidate();
+                newMiners.forEach(this.allCache::add);
+                newMiners.forEach(this.activeCache::add);
+            } finally {
+                this.lock.writeLock().unlock();
+            }
+        } else {
+            LOG.debug("No configuration changes were observed");
+        }
+    }
+
     /** Starts {@link #blacklistCache} evaluation. */
     private void startBlacklistValidation() {
         this.threadPool.scheduleWithFixedDelay(
@@ -180,29 +210,7 @@ public class RunMe {
      */
     private void startConfigQuerying() {
         this.threadPool.scheduleWithFixedDelay(
-                () -> {
-                    final List<Miner> currentMiners =
-                            this.allCache.getMiners();
-                    final List<Miner> newMiners =
-                            this.minerConfiguration.load();
-                    if (!CollectionUtils.isEqualCollection(
-                            currentMiners,
-                            newMiners)) {
-                        this.lock.writeLock().lock();
-                        try {
-                            LOG.debug("A new configuration has been obtained");
-                            this.blacklistCache.invalidate();
-                            this.activeCache.invalidate();
-                            this.allCache.invalidate();
-                            newMiners.forEach(this.allCache::add);
-                            newMiners.forEach(this.activeCache::add);
-                        } finally {
-                            this.lock.writeLock().unlock();
-                        }
-                    } else {
-                        LOG.debug("No configuration changes were observed");
-                    }
-                },
+                this::queryForConfigs,
                 0,
                 2,
                 TimeUnit.MINUTES);
