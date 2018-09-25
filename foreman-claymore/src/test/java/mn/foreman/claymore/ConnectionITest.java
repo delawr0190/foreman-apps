@@ -27,7 +27,6 @@ public class ConnectionITest {
         try (final MyServer server =
                      new MyServer(
                              serverPort)) {
-
             final Executor executor =
                     Executors.newSingleThreadExecutor();
             executor.execute(server);

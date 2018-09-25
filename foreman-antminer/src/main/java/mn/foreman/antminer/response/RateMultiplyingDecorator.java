@@ -74,11 +74,15 @@ public class RateMultiplyingDecorator
             final Map<String, String> values,
             final String key) {
         if (values.containsKey(key)) {
-            values.put(
-                    key,
-                    new BigDecimal(values.get(key))
-                            .multiply(this.multiplier)
-                            .toString());
+            final BigDecimal rate = new BigDecimal(values.get(key));
+            // Only scale the value if the rate isn't 0
+            if (rate.compareTo(BigDecimal.ZERO) != 0) {
+                values.put(
+                        key,
+                        new BigDecimal(values.get(key))
+                                .multiply(this.multiplier)
+                                .toString());
+            }
         }
     }
 
