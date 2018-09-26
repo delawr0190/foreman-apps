@@ -18,7 +18,7 @@ public class ConnectionFactory {
 
     /** A default thread pool. */
     private static final EventLoopGroup DEFAULT_GROUP =
-            new NioEventLoopGroup(1);
+            new NioEventLoopGroup();
 
     /**
      * Constructor.

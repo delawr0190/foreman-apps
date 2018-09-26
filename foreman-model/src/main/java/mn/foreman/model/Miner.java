@@ -10,6 +10,13 @@ import mn.foreman.model.miners.MinerStats;
 public interface Miner {
 
     /**
+     * Returns the ID.
+     *
+     * @return The ID.
+     */
+    MinerID getMinerID();
+
+    /**
      * Obtains a {@link MinerStats}.
      *
      * @return The {@link MinerStats}.

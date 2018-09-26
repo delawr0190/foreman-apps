@@ -4,6 +4,8 @@ import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.pickaxe.cache.MinerCache;
 import mn.foreman.pickaxe.cache.MinerCacheImpl;
+import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
+import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.RemoteConfiguration;
@@ -19,50 +21,33 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-/**
- * {@link RunMe} provides the application context for PICKAXE.
- *
- * <h2>Threading</h2>
- *
- * <p>A {@link ReentrantReadWriteLock} is leveraged between the 3 threads that
- * run pickaxe (main thread and 2 threads in the {@link #threadPool} that handle
- * blacklist management and metrics querying).  This allows for the metrics
- * querying and blacklisting to be processed in parallel ({@link
- * ReentrantReadWriteLock#readLock() read-locked}), and then a {@link
- * ReentrantReadWriteLock#writeLock() write lock} is acquired to prevent {@link
- * Miner miners} from possibly being preserved instead of pruned when a new
- * configuration is downloaded.</p>
- */
+/** {@link RunMe} provides the application context for PICKAXE. */
 public class RunMe {
 
     /** The logger for this class. */
     private final static Logger LOG =
             LoggerFactory.getLogger(RunMe.class);
 
-    /** A cache of all of the active miners. */
-    private final MinerCache activeCache = new MinerCacheImpl();
-
     /** A cache of all of the miners. */
     private final MinerCache allCache = new MinerCacheImpl();
-
-    /** A cache of all of the blacklisted miners. */
-    private final MinerCache blacklistCache = new MinerCacheImpl();
 
     /** The {@link Configuration}. */
     private final Configuration configuration;
 
-    /** The lock to enable multi-threaded cache accesses. */
-    private final ReentrantReadWriteLock lock =
-            new ReentrantReadWriteLock();
-
     /** The factory for creating all of the {@link Miner miners}. */
     private final MinerConfiguration minerConfiguration;
 
+    /** An in-memory cache for holding all of the active stats. */
+    private final StatsCache statsCache =
+            new SelfExpiringStatsCache(
+                    90,
+                    TimeUnit.SECONDS);
+
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
-            Executors.newScheduledThreadPool(2);
+            Executors.newScheduledThreadPool(
+                    Runtime.getRuntime().availableProcessors());
 
     /**
      * Constructor.
@@ -99,50 +84,35 @@ public class RunMe {
 
         // Now schedule our tasks
         startConfigQuerying();
-        startBlacklistValidation();
+        startUpdateMiners();
 
-        try {
-            //noinspection InfiniteLoopStatement
-            while (true) {
-                final MetricsReport.Builder metricsReportBuilder =
-                        new MetricsReport.Builder();
-                this.lock.readLock().lock();
-                try {
-                    for (final Miner miner : this.activeCache.getMiners()) {
-                        try {
-                            metricsReportBuilder.addMinerStats(
-                                    miner.getStats());
-                        } catch (final Exception e) {
-                            LOG.warn("Failed to obtain metrics for {} - " +
-                                            "temporarily blacklisting",
-                                    miner,
-                                    e);
-                            this.activeCache.remove(miner);
-                            this.blacklistCache.add(miner);
-                        }
-                    }
-                } finally {
-                    this.lock.readLock().unlock();
-                }
+        //noinspection InfiniteLoopStatement
+        while (true) {
+            final MetricsReport.Builder metricsReportBuilder =
+                    new MetricsReport.Builder();
+            this.statsCache
+                    .getMetrics()
+                    .forEach(metricsReportBuilder::addMinerStats);
 
-                try {
-                    // Metrics could be empty if everything was down
-                    final MetricsReport metricsReport =
-                            metricsReportBuilder.build();
+            try {
+                // Metrics could be empty if everything was down
+                final MetricsReport metricsReport =
+                        metricsReportBuilder.build();
 
-                    LOG.debug("Generated report: {}", metricsReport);
+                LOG.debug("Generated report: {}", metricsReport);
 
-                    metricsProcessingStrategy.process(metricsReport);
-                } catch (final Exception e) {
-                    LOG.warn("Exception occurred while generating report - " +
-                                    "possibly no reachable miners",
-                            e);
-                }
-
-                TimeUnit.MINUTES.sleep(1);
+                metricsProcessingStrategy.process(metricsReport);
+            } catch (final Exception e) {
+                LOG.warn("Exception occurred while generating report - " +
+                                "possibly no reachable miners",
+                        e);
             }
-        } catch (final InterruptedException ie) {
-            LOG.debug("Interrupted while sleeping - terminating", ie);
+
+            try {
+                TimeUnit.MINUTES.sleep(1);
+            } catch (final InterruptedException ie) {
+                // Ignore
+            }
         }
     }
 
@@ -155,54 +125,11 @@ public class RunMe {
         if (!CollectionUtils.isEqualCollection(
                 currentMiners,
                 newMiners)) {
-            this.lock.writeLock().lock();
-            try {
-                LOG.debug("A new configuration has been obtained");
-                this.blacklistCache.invalidate();
-                this.activeCache.invalidate();
-                this.allCache.invalidate();
-                newMiners.forEach(this.allCache::add);
-                newMiners.forEach(this.activeCache::add);
-            } finally {
-                this.lock.writeLock().unlock();
-            }
+            LOG.debug("A new configuration has been obtained");
+            this.allCache.setMiners(newMiners);
         } else {
             LOG.debug("No configuration changes were observed");
         }
-    }
-
-    /** Starts {@link #blacklistCache} evaluation. */
-    private void startBlacklistValidation() {
-        this.threadPool.scheduleWithFixedDelay(
-                () -> {
-                    this.lock.readLock().lock();
-                    try {
-                        final List<Miner> toValidate =
-                                this.blacklistCache.getMiners();
-
-                        LOG.debug("Evaluating {} miners for blacklist eviction",
-                                toValidate.size());
-
-                        for (final Miner miner : toValidate) {
-                            try {
-                                miner.getStats();
-
-                                LOG.debug("{} is reachable - restoring", miner);
-
-                                this.blacklistCache.remove(miner);
-                                this.activeCache.add(miner);
-                            } catch (final Exception e) {
-                                LOG.warn("Couldn't reach miner - keeping it " +
-                                        "blacklisted");
-                            }
-                        }
-                    } finally {
-                        this.lock.readLock().unlock();
-                    }
-                },
-                1,
-                1,
-                TimeUnit.MINUTES);
     }
 
     /**
@@ -214,5 +141,40 @@ public class RunMe {
                 0,
                 2,
                 TimeUnit.MINUTES);
+    }
+
+    /** Schedules the job to begin automatically updating miner stats. */
+    private void startUpdateMiners() {
+        this.threadPool.scheduleWithFixedDelay(
+                () -> {
+                    LOG.debug("Updating miner stats cache");
+                    this.allCache
+                            .getMiners()
+                            .forEach(this::updateMiner);
+                },
+                0,
+                1,
+                TimeUnit.MINUTES);
+    }
+
+    /**
+     * Fires a job for each miner that will query and update the cached stats
+     * for it.
+     *
+     * @param miner The miner.
+     */
+    private void updateMiner(final Miner miner) {
+        this.threadPool.execute(() -> {
+            try {
+                this.statsCache.add(
+                        miner.getMinerID(),
+                        miner.getStats());
+                LOG.debug("Cached metrics for {}", miner);
+            } catch (final Exception e) {
+                LOG.warn("Failed to obtain metrics for {}",
+                        miner,
+                        e);
+            }
+        });
     }
 }

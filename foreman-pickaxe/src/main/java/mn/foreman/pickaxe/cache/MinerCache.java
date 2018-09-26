@@ -11,26 +11,16 @@ import java.util.List;
 public interface MinerCache {
 
     /**
-     * Adds the {@link Miner} to the cache.
-     *
-     * @param miner The {@link Miner} to add.
-     */
-    void add(Miner miner);
-
-    /**
      * Returns all of the {@link Miner miners} in the cache.
      *
      * @return The {@link Miner miners}.
      */
     List<Miner> getMiners();
 
-    /** Invalidates the cache. */
-    void invalidate();
-
     /**
-     * Removes the {@link Miner} from the cache.
+     * Sets the {@link Miner miners} in the cache.
      *
-     * @param miner The {@link Miner} to remove.
+     * @param miners The {@link Miner miners}.
      */
-    void remove(Miner miner);
+    void setMiners(List<Miner> miners);
 }

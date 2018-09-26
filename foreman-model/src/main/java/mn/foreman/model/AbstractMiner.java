@@ -65,6 +65,13 @@ public abstract class AbstractMiner
     }
 
     @Override
+    public MinerID getMinerID() {
+        return new SimpleMinerID(
+                this.apiIp,
+                this.apiPort);
+    }
+
+    @Override
     public MinerStats getStats()
             throws MinerException {
         LOG.debug("Obtaining stats from {}", this);
