@@ -102,9 +102,7 @@ public class RunMe {
 
                     metricsProcessingStrategy.process(metricsReport);
                 } catch (final Exception e) {
-                    LOG.warn("Exception occurred while generating report - " +
-                                    "possibly no reachable miners",
-                            e);
+                    LOG.warn("Exception occurred while generating report", e);
                 }
             } else {
                 LOG.debug("No miners to evaluate");
