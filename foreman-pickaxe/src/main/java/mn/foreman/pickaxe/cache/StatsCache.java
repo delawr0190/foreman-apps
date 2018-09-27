@@ -27,4 +27,12 @@ public interface StatsCache {
      * @return The metrics in the cache.
      */
     List<MinerStats> getMetrics();
+
+    /**
+     * Invalidates the stats associated with the provided {@link MinerID}.
+     *
+     * @param minerID The ID to invalidate.
+     */
+    void invalidate(
+            MinerID minerID);
 }

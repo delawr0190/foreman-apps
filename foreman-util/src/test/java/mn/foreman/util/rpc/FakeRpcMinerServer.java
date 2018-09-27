@@ -11,6 +11,7 @@ import java.io.InputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
@@ -28,6 +29,10 @@ public class FakeRpcMinerServer
     /** A reusable thread pool. */
     private static final Executor THREAD_POOL =
             Executors.newSingleThreadExecutor();
+
+    /** A latch for waiting until the socket is closed. */
+    private final CountDownLatch closeLatch =
+            new CountDownLatch(1);
 
     /** The server. */
     private ServerSocket serverSocket;
@@ -47,6 +52,7 @@ public class FakeRpcMinerServer
     @Override
     public void close() throws Exception {
         this.serverSocket.close();
+        this.closeLatch.await();
     }
 
     @Override
@@ -77,6 +83,7 @@ public class FakeRpcMinerServer
                         break;
                     }
                 }
+                this.closeLatch.countDown();
             });
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred", ioe);

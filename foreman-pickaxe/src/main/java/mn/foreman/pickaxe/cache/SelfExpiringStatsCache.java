@@ -64,4 +64,9 @@ public class SelfExpiringStatsCache
     public List<MinerStats> getMetrics() {
         return new ArrayList<>(this.cache.asMap().values());
     }
+
+    @Override
+    public void invalidate(MinerID minerID) {
+        this.cache.invalidate(minerID);
+    }
 }

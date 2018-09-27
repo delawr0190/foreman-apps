@@ -2,8 +2,8 @@ package mn.foreman.pickaxe.run;
 
 import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
-import mn.foreman.pickaxe.cache.MinerCache;
-import mn.foreman.pickaxe.cache.MinerCacheImpl;
+import mn.foreman.model.MinerID;
+import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
 import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.configuration.Configuration;
@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** {@link RunMe} provides the application context for PICKAXE. */
 public class RunMe {
@@ -29,14 +30,15 @@ public class RunMe {
     private final static Logger LOG =
             LoggerFactory.getLogger(RunMe.class);
 
-    /** A cache of all of the miners. */
-    private final MinerCache allCache = new MinerCacheImpl();
-
     /** The {@link Configuration}. */
     private final Configuration configuration;
 
     /** The factory for creating all of the {@link Miner miners}. */
     private final MinerConfiguration minerConfiguration;
+
+    /** A cache of all of the miners. */
+    private final AtomicReference<List<Miner>> miners =
+            new AtomicReference<>();
 
     /** An in-memory cache for holding all of the active stats. */
     private final StatsCache statsCache =
@@ -78,11 +80,6 @@ public class RunMe {
                                 this.configuration.getPickaxeId(),
                         this.configuration.getApiKey());
 
-        // Query manually once - this will prevent the first round of stats
-        // querying from evaluating no miners
-        queryForConfigs();
-
-        // Now schedule our tasks
         startConfigQuerying();
         startUpdateMiners();
 
@@ -90,22 +87,27 @@ public class RunMe {
         while (true) {
             final MetricsReport.Builder metricsReportBuilder =
                     new MetricsReport.Builder();
-            this.statsCache
-                    .getMetrics()
-                    .forEach(metricsReportBuilder::addMinerStats);
+            final List<MinerStats> stats =
+                    this.statsCache.getMetrics();
+            if (!stats.isEmpty()) {
+                stats.forEach(
+                        metricsReportBuilder::addMinerStats);
 
-            try {
-                // Metrics could be empty if everything was down
-                final MetricsReport metricsReport =
-                        metricsReportBuilder.build();
+                try {
+                    // Metrics could be empty if everything was down
+                    final MetricsReport metricsReport =
+                            metricsReportBuilder.build();
 
-                LOG.debug("Generated report: {}", metricsReport);
+                    LOG.debug("Generated report: {}", metricsReport);
 
-                metricsProcessingStrategy.process(metricsReport);
-            } catch (final Exception e) {
-                LOG.warn("Exception occurred while generating report - " +
-                                "possibly no reachable miners",
-                        e);
+                    metricsProcessingStrategy.process(metricsReport);
+                } catch (final Exception e) {
+                    LOG.warn("Exception occurred while generating report - " +
+                                    "possibly no reachable miners",
+                            e);
+                }
+            } else {
+                LOG.debug("No miners to evaluate");
             }
 
             try {
@@ -116,28 +118,25 @@ public class RunMe {
         }
     }
 
-    /** Queries for a configuration. */
-    private void queryForConfigs() {
-        final List<Miner> currentMiners =
-                this.allCache.getMiners();
-        final List<Miner> newMiners =
-                this.minerConfiguration.load();
-        if (!CollectionUtils.isEqualCollection(
-                currentMiners,
-                newMiners)) {
-            LOG.debug("A new configuration has been obtained");
-            this.allCache.setMiners(newMiners);
-        } else {
-            LOG.debug("No configuration changes were observed");
-        }
-    }
-
     /**
      * Starts the thread that will continuously query for new configurations.
      */
     private void startConfigQuerying() {
         this.threadPool.scheduleWithFixedDelay(
-                this::queryForConfigs,
+                () -> {
+                    final List<Miner> currentMiners =
+                            this.miners.get();
+                    final List<Miner> newMiners =
+                            this.minerConfiguration.load();
+                    if (!CollectionUtils.isEqualCollection(
+                            currentMiners,
+                            newMiners)) {
+                        LOG.debug("A new configuration has been obtained");
+                        this.miners.set(newMiners);
+                    } else {
+                        LOG.debug("No configuration changes were observed");
+                    }
+                },
                 0,
                 2,
                 TimeUnit.MINUTES);
@@ -148,13 +147,13 @@ public class RunMe {
         this.threadPool.scheduleWithFixedDelay(
                 () -> {
                     LOG.debug("Updating miner stats cache");
-                    this.allCache
-                            .getMiners()
+                    this.miners
+                            .get()
                             .forEach(this::updateMiner);
                 },
                 0,
-                1,
-                TimeUnit.MINUTES);
+                30,
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -165,15 +164,17 @@ public class RunMe {
      */
     private void updateMiner(final Miner miner) {
         this.threadPool.execute(() -> {
+            final MinerID minerID = miner.getMinerID();
             try {
                 this.statsCache.add(
-                        miner.getMinerID(),
+                        minerID,
                         miner.getStats());
                 LOG.debug("Cached metrics for {}", miner);
             } catch (final Exception e) {
                 LOG.warn("Failed to obtain metrics for {}",
                         miner,
                         e);
+                this.statsCache.invalidate(minerID);
             }
         });
     }
