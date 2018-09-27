@@ -17,6 +17,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -38,7 +39,7 @@ public class RunMe {
 
     /** A cache of all of the miners. */
     private final AtomicReference<List<Miner>> miners =
-            new AtomicReference<>();
+            new AtomicReference<>(new LinkedList<>());
 
     /** An in-memory cache for holding all of the active stats. */
     private final StatsCache statsCache =
