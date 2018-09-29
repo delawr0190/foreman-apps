@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>foreman-excavator</artifactId>
-    <version>2.5.0</version>
+    <version>2.5.1-SNAPSHOT</version>
     <name>foreman: foreman-excavator</name>
 
     <packaging>jar</packaging>
