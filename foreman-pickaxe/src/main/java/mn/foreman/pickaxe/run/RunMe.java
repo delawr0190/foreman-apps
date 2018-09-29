@@ -62,7 +62,7 @@ public class RunMe {
         this.minerConfiguration =
                 new RemoteConfiguration(
                         String.format(
-                                "%s/%s/%s",
+                                "%s/%s/%s/",
                                 configuration.getForemanConfigUrl(),
                                 configuration.getPickaxeId(),
                                 VersionUtils.getVersion()),
@@ -77,8 +77,10 @@ public class RunMe {
     public void run() {
         final MetricsProcessingStrategy metricsProcessingStrategy =
                 new HttpPostMetricsProcessingStrategy(
-                        this.configuration.getForemanApiUrl() + "/" +
-                                this.configuration.getPickaxeId(),
+                        String.format(
+                                "%s/%s",
+                                this.configuration.getForemanApiUrl(),
+                                this.configuration.getPickaxeId()),
                         this.configuration.getApiKey());
 
         startConfigQuerying();
@@ -106,7 +108,7 @@ public class RunMe {
                     LOG.warn("Exception occurred while generating report", e);
                 }
             } else {
-                LOG.debug("No miners to evaluate");
+                LOG.debug("No miner stats to report");
             }
 
             try {
@@ -123,17 +125,21 @@ public class RunMe {
     private void startConfigQuerying() {
         this.threadPool.scheduleWithFixedDelay(
                 () -> {
-                    final List<Miner> currentMiners =
-                            this.miners.get();
-                    final List<Miner> newMiners =
-                            this.minerConfiguration.load();
-                    if (!CollectionUtils.isEqualCollection(
-                            currentMiners,
-                            newMiners)) {
-                        LOG.debug("A new configuration has been obtained");
-                        this.miners.set(newMiners);
-                    } else {
-                        LOG.debug("No configuration changes were observed");
+                    try {
+                        final List<Miner> currentMiners =
+                                this.miners.get();
+                        final List<Miner> newMiners =
+                                this.minerConfiguration.load();
+                        if (!CollectionUtils.isEqualCollection(
+                                currentMiners,
+                                newMiners)) {
+                            LOG.debug("A new configuration has been obtained");
+                            this.miners.set(newMiners);
+                        } else {
+                            LOG.debug("No configuration changes were observed");
+                        }
+                    } catch (final Exception e) {
+                        LOG.warn("Exception occurred while querying", e);
                     }
                 },
                 0,
@@ -145,10 +151,14 @@ public class RunMe {
     private void startUpdateMiners() {
         this.threadPool.scheduleWithFixedDelay(
                 () -> {
-                    LOG.debug("Updating miner stats cache");
-                    this.miners
-                            .get()
-                            .forEach(this::updateMiner);
+                    try {
+                        LOG.debug("Updating miner stats cache");
+                        this.miners
+                                .get()
+                                .forEach(this::updateMiner);
+                    } catch (final Exception e) {
+                        LOG.warn("Exception occurred while updating", e);
+                    }
                 },
                 0,
                 30,

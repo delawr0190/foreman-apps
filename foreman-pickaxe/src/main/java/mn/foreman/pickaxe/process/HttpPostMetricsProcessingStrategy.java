@@ -15,6 +15,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An {@link HttpPostMetricsProcessingStrategy} provides a mechanism for
@@ -76,6 +77,8 @@ public class HttpPostMetricsProcessingStrategy
             connection.setRequestProperty(
                     "Authorization",
                     "Token " + this.apiKey);
+            connection.setConnectTimeout(
+                    (int) TimeUnit.SECONDS.toMillis(10));
 
             final OutputStreamWriter outputStreamWriter =
                     new OutputStreamWriter(connection.getOutputStream());

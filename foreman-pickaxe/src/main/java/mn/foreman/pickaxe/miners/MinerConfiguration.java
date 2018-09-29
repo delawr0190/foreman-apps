@@ -14,6 +14,8 @@ public interface MinerConfiguration {
      * Loads the {@link Miner miners}.
      *
      * @return The miners.
+     *
+     * @throws Exception on failure to load a configuration.
      */
-    List<Miner> load();
+    List<Miner> load() throws Exception;
 }

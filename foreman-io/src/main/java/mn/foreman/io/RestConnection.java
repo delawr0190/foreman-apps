@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link RestConnection} provides a connection to a remote miner instance.
@@ -26,6 +27,10 @@ public class RestConnection
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(RestConnection.class);
+
+    /** How long to wait on socket operations before disconnecting. */
+    private static final int SOCKET_TIMEOUT =
+            (int) TimeUnit.SECONDS.toMillis(10);
 
     /** The method. */
     private final String method;
@@ -68,6 +73,8 @@ public class RestConnection
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(this.method);
+            connection.setConnectTimeout(SOCKET_TIMEOUT);
+            connection.setReadTimeout(SOCKET_TIMEOUT);
             for (final Map.Entry<String, String> property :
                     this.request.getProperties().entrySet()) {
                 connection.setRequestProperty(

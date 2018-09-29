@@ -38,6 +38,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -52,6 +53,10 @@ public class RemoteConfiguration
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(RemoteConfiguration.class);
+
+    /** How long to wait on socket operations before disconnecting. */
+    private static final int SOCKET_TIMEOUT =
+            (int) TimeUnit.SECONDS.toMillis(10);
 
     /** The API key. */
     private final String apiKey;
@@ -85,20 +90,17 @@ public class RemoteConfiguration
     }
 
     @Override
-    public List<Miner> load() {
+    public List<Miner> load()
+            throws Exception {
         LOG.debug("Querying {} for miners", this.url);
 
         final List<Miner> miners = new LinkedList<>();
 
-        try {
-            final List<MinerConfig> configs = getConfigs();
-            LOG.info("Downloaded configuration: {} miners", configs.size());
-            miners.addAll(
-                    toMiners(
-                            configs));
-        } catch (final Exception e) {
-            LOG.warn("Exception occurred while downloading configuration", e);
-        }
+        final List<MinerConfig> configs = getConfigs();
+        LOG.info("Downloaded configuration: {} miners", configs.size());
+        miners.addAll(
+                toMiners(
+                        configs));
 
         return miners;
     }
@@ -407,6 +409,8 @@ public class RemoteConfiguration
         connection.setRequestProperty(
                 "Authorization",
                 "Token " + this.apiKey);
+        connection.setConnectTimeout(SOCKET_TIMEOUT);
+        connection.setReadTimeout(SOCKET_TIMEOUT);
 
         final int code = connection.getResponseCode();
         if (code == HttpURLConnection.HTTP_OK) {

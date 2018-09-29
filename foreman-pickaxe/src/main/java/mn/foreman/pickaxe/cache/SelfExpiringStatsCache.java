@@ -62,6 +62,7 @@ public class SelfExpiringStatsCache
 
     @Override
     public List<MinerStats> getMetrics() {
+        this.cache.cleanUp();
         return new ArrayList<>(this.cache.asMap().values());
     }
 
