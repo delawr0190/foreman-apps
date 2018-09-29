@@ -88,7 +88,7 @@ public class Srbminer
                         .setCounts(
                                 shares.accepted,
                                 shares.rejected,
-                                shares.acceptedStale)
+                                0)
                         .build());
     }
 

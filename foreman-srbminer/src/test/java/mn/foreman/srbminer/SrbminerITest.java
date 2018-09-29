@@ -94,7 +94,7 @@ public class SrbminerITest
                                         .setCounts(
                                                 5,
                                                 4,
-                                                3)
+                                                0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
