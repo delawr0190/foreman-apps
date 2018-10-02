@@ -155,7 +155,7 @@ public class RemoteConfiguration
     }
 
     /**
-     * Creates an Antminer {@link Miner} from the provided config.
+     * Creates an ASIC {@link Miner} from the provided config.
      *
      * @param config       The config.
      * @param minerFactory The factory.
