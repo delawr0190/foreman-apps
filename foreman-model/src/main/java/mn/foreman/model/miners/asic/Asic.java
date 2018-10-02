@@ -197,7 +197,7 @@ public class Asic {
          */
         public Builder addTemp(final String temp) {
             if ((temp != null) && !temp.isEmpty()) {
-                return addTemp(Integer.parseInt(temp));
+                return addTemp(Double.valueOf(temp).intValue());
             }
             return this;
         }

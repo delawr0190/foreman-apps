@@ -14,9 +14,11 @@ import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
+import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.lolminer.LolminerFactory;
 import mn.foreman.model.Miner;
+import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
 import mn.foreman.sgminer.SgminerFactory;
@@ -39,6 +41,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -123,33 +126,6 @@ public class RemoteConfiguration
     }
 
     /**
-     * Creates an Antminer {@link Miner} from the provided config.
-     *
-     * @param config The config.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toAntminer(
-            final MinerConfig config) {
-        Miner miner = null;
-
-        final String type = toAntminerType(config.apiType);
-        if (type != null) {
-            miner =
-                    new AntminerFactory().create(
-                            ImmutableMap.of(
-                                    "type",
-                                    type,
-                                    "apiIp",
-                                    config.apiIp,
-                                    "apiPort",
-                                    Integer.toString(config.apiPort)));
-        }
-
-        return miner;
-    }
-
-    /**
      * Converts the type to an {@link AntminerType}.
      *
      * @param apiType The {@link ApiType}.
@@ -176,6 +152,37 @@ public class RemoteConfiguration
                 break;
         }
         return type;
+    }
+
+    /**
+     * Creates an Antminer {@link Miner} from the provided config.
+     *
+     * @param config       The config.
+     * @param minerFactory The factory.
+     * @param typeFunction The function for providing the type.
+     *
+     * @return The {@link Miner}.
+     */
+    private static Miner toAsic(
+            final MinerConfig config,
+            final MinerFactory minerFactory,
+            final Function<ApiType, String> typeFunction) {
+        Miner miner = null;
+
+        final String type = typeFunction.apply(config.apiType);
+        if (type != null) {
+            miner =
+                    minerFactory.create(
+                            ImmutableMap.of(
+                                    "type",
+                                    type,
+                                    "apiIp",
+                                    config.apiIp,
+                                    "apiPort",
+                                    Integer.toString(config.apiPort)));
+        }
+
+        return miner;
     }
 
     /**
@@ -276,6 +283,35 @@ public class RemoteConfiguration
     }
 
     /**
+     * Converts the type to an Innosilicon type.
+     *
+     * @param apiType The type.
+     *
+     * @return The type.
+     */
+    private static String toInnosiliconType(
+            final ApiType apiType) {
+        String type = null;
+        switch (apiType) {
+            case INNOSILICON_HS_API:
+                type = mn.foreman.innosilicon.ApiType.HS_API.name();
+                break;
+            case INNOSILICON_KHS_API:
+                type = mn.foreman.innosilicon.ApiType.KHS_API.name();
+                break;
+            case ANTMINER_MHS_API:
+                type = mn.foreman.innosilicon.ApiType.MHS_API.name();
+                break;
+            case ANTMINER_GHS_API:
+                type = mn.foreman.innosilicon.ApiType.GHS_API.name();
+                break;
+            default:
+                break;
+        }
+        return type;
+    }
+
+    /**
      * Converts the provided config to a {@link Miner}.
      *
      * @param config       The config.
@@ -306,14 +342,18 @@ public class RemoteConfiguration
 
         Miner miner = null;
         switch (config.apiType) {
-            case ANTMINER_GHS_API:
-                // Fall through
             case ANTMINER_HS_API:
                 // Fall through
             case ANTMINER_KHS_API:
                 // Fall through
             case ANTMINER_MHS_API:
-                miner = toAntminer(config);
+                // Fall through
+            case ANTMINER_GHS_API:
+                miner =
+                        toAsic(
+                                config,
+                                new AntminerFactory(),
+                                RemoteConfiguration::toAntminerType);
                 break;
             case BAIKAL_API:
                 miner = toMiner(config, new BaikalFactory());
@@ -346,6 +386,19 @@ public class RemoteConfiguration
                 break;
             case EXCAVATOR_API:
                 miner = toMiner(config, new ExcavatorFactory());
+                break;
+            case INNOSILICON_HS_API:
+                // Fall through
+            case INNOSILICON_KHS_API:
+                // Fall through
+            case INNOSILICON_MHS_API:
+                // Fall through
+            case INNOSILICON_GHS_API:
+                miner =
+                        toAsic(
+                                config,
+                                new InnosiliconFactory(),
+                                RemoteConfiguration::toInnosiliconType);
                 break;
             case JCEMINER_API:
                 miner = toMiner(config, new JceminerFactory());

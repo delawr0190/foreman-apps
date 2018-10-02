@@ -1,6 +1,5 @@
-package mn.foreman.antminer.response;
+package mn.foreman.cgminer;
 
-import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.MinerStats;
 
@@ -11,19 +10,24 @@ import java.util.Map;
 
 /**
  * A {@link RateMultiplyingDecorator} provides a decorator that fixes an error
- * in the cgminer fork used by Bitmain that incorrectly puts the hash rate from
- * every Antminer into the "GHS av" and "GHS 5s" fields, marked as GHs, despite
- * the actual hash rate being a different unit.
+ * in cgminer forks that incorrectly put the hash rate from every ASIC into the
+ * hash rate field despite the actual hash rates being different units.
  *
  * <p>This class patches that by multiplying the obtained hash rate by a {@link
- * #multiplier}, which will convert the hash rate to GHs so it can be properly
- * interpreted.</p>
+ * #multiplier}, which will convert the hash rate to the desired units so it can
+ * be properly interpreted.</p>
  */
 public class RateMultiplyingDecorator
         implements ResponseStrategy {
 
+    /** The hash rate key. */
+    private final String hashRateKey;
+
     /** The rate multiplier. */
     private final BigDecimal multiplier;
+
+    /** The object key. */
+    private final String objectKey;
 
     /** The real {@link ResponseStrategy}. */
     private final ResponseStrategy real;
@@ -31,12 +35,18 @@ public class RateMultiplyingDecorator
     /**
      * Constructor.
      *
-     * @param multiplier The rate multiplier.
-     * @param real       The real strategy.
+     * @param objectKey   The object key.
+     * @param hashRateKey The hash rate key.
+     * @param multiplier  The rate multiplier.
+     * @param real        The real strategy.
      */
     public RateMultiplyingDecorator(
+            final String objectKey,
+            final String hashRateKey,
             final BigDecimal multiplier,
             final ResponseStrategy real) {
+        this.objectKey = objectKey;
+        this.hashRateKey = hashRateKey;
         this.multiplier = multiplier;
         this.real = real;
     }
@@ -45,17 +55,32 @@ public class RateMultiplyingDecorator
     public void processResponse(
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
-        final List<Map<String, String>> origValues =
+        final Map<String, List<Map<String, String>>> origValues =
                 response.getValues();
 
         final CgMinerResponse.Builder responseBuilder =
                 new CgMinerResponse.Builder()
-                        .setId(response.getId())
-                        .setStatusSection(response.getStatusSection());
-        origValues
-                .stream()
-                .map(this::multiplyRate)
-                .forEach(responseBuilder::addValues);
+                        .addStatus(response.getStatus());
+
+        for (final Map.Entry<String, List<Map<String, String>>> entry :
+                origValues.entrySet()) {
+            final String key = entry.getKey();
+            if (key.equals(this.objectKey)) {
+                entry.getValue()
+                        .stream()
+                        .map(this::multiplyRate)
+                        .forEach(value ->
+                                responseBuilder.addValues(
+                                        key,
+                                        value));
+            } else {
+                entry.getValue().forEach(
+                        value ->
+                                responseBuilder.addValues(
+                                        key,
+                                        value));
+            }
+        }
 
         this.real.processResponse(
                 builder,
@@ -87,7 +112,7 @@ public class RateMultiplyingDecorator
     }
 
     /**
-     * Multiplies the rates to convert them to GHs if they're incorrect.
+     * Multiplies the rates to convert them if they're incorrect.
      *
      * @param values The values.
      *
@@ -95,8 +120,7 @@ public class RateMultiplyingDecorator
      */
     private Map<String, String> multiplyRate(final Map<String, String> values) {
         final Map<String, String> newValues = new HashMap<>(values);
-        multiplyIfContains(newValues, "GHS av");
-        multiplyIfContains(newValues, "GHS 5s");
+        multiplyIfContains(newValues, this.hashRateKey);
         return newValues;
     }
 }

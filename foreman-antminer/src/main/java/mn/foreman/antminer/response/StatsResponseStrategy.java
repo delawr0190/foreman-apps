@@ -33,15 +33,17 @@ public class StatsResponseStrategy
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
         if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
-            values
+            response.getValues()
+                    .entrySet()
                     .stream()
-                    .filter((map) -> map.containsKey("GHS 5s"))
-                    .forEach(
-                            value ->
-                                    addAsicStats(
-                                            builder,
-                                            value));
+                    .filter(entry -> entry.getKey().equals("STATS"))
+                    .map(Map.Entry::getValue)
+                    .flatMap(List::stream)
+                    .filter(value -> value.containsKey("GHS 5s"))
+                    .forEach(value ->
+                            addAsicStats(
+                                    builder,
+                                    value));
         } else {
             LOG.debug("No ACICs founds");
         }

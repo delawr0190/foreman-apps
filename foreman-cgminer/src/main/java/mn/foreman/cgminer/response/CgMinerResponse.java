@@ -2,68 +2,38 @@ package mn.foreman.cgminer.response;
 
 import mn.foreman.model.AbstractBuilder;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-/**
- * A generic cgminer response.
- *
- * <p>Note: the {@link #values} will be populated differently depending on what
- * command was executed.</p>
- *
- * <p>The {@link CgMinerStatusSection} is always present, even on a failed
- * command.</p>
- */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+/** A generic cgminer response. */
 public class CgMinerResponse {
 
-    /** The ID. */
-    @JsonProperty("id")
-    private long id;
-
-    /** The {@link CgMinerStatusSection}. */
-    @JsonProperty("STATUS")
-    private CgMinerStatusSection statusSection;
+    /** The status sections. */
+    private List<Map<String, String>> status;
 
     /** The returned values. */
-    @JsonAlias({"VERSION", "STATS", "POOLS", "DEVS"})
-    private List<Map<String, String>> values;
+    private Map<String, List<Map<String, String>>> values;
 
     /**
      * Constructor.
      *
-     * <p>Note:  intentionally hidden (only for JACKSON).</p>
-     */
-    private CgMinerResponse() {
-        // Do nothing.
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param statusSection The {@link CgMinerStatusSection}.
-     * @param values        The values.
-     * @param id            The ID.
+     * @param status The status.
+     * @param values The values.
      */
     private CgMinerResponse(
-            final CgMinerStatusSection statusSection,
-            final List<Map<String, String>> values,
-            final long id) {
+            final List<Map<String, String>> status,
+            final Map<String, List<Map<String, String>>> values) {
         Validate.notNull(
-                statusSection,
-                "statusSection is required");
-        this.statusSection = statusSection;
-        this.values = new ArrayList<>(values);
-        this.id = id;
+                status,
+                "status cannot be null");
+        Validate.notEmpty(
+                status,
+                "status cannot be empty");
+        this.status = new ArrayList<>(status);
+        this.values = new HashMap<>(values);
     }
 
     @Override
@@ -77,36 +47,22 @@ public class CgMinerResponse {
             final CgMinerResponse response = (CgMinerResponse) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(
-                                    this.statusSection,
-                                    response.statusSection)
-                            .append(
-                                    this.values,
+                            .append(this.status,
+                                    response.status)
+                            .append(this.values,
                                     response.values)
-                            .append(
-                                    this.id,
-                                    response.id)
                             .isEquals();
         }
         return isEqual;
     }
 
     /**
-     * Returns the ID.
+     * Returns the status.
      *
-     * @return The ID.
+     * @return The status.
      */
-    public long getId() {
-        return this.id;
-    }
-
-    /**
-     * Returns the {@link CgMinerStatusSection}.
-     *
-     * @return The {@link CgMinerStatusSection}.
-     */
-    public CgMinerStatusSection getStatusSection() {
-        return this.statusSection;
+    public List<Map<String, String>> getStatus() {
+        return Collections.unmodifiableList(this.status);
     }
 
     /**
@@ -114,12 +70,12 @@ public class CgMinerResponse {
      *
      * @return The values.
      */
-    public List<Map<String, String>> getValues() {
-        List<Map<String, String>> values = this.values;
+    public Map<String, List<Map<String, String>>> getValues() {
+        Map<String, List<Map<String, String>>> values = this.values;
         if (this.values == null) {
-            values = Collections.emptyList();
+            values = Collections.emptyMap();
         }
-        return Collections.unmodifiableList(values);
+        return Collections.unmodifiableMap(values);
     }
 
     /**
@@ -136,48 +92,68 @@ public class CgMinerResponse {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.statusSection)
+                .append(this.status)
                 .append(this.values)
-                .append(this.id)
                 .hashCode();
     }
 
     /**
-     * Checks to see if the message was successful.
+     * Checks whether all of the commands were successful.
      *
-     * @return Whether or not the message was successful.
+     * @return True if successful, false otherwise.
      */
     public boolean isSuccess() {
-        return this.statusSection.getStatusCode()
-                .equals(CgMinerStatusCode.SUCCESS);
+        return this.status
+                .stream()
+                .allMatch(status -> status.get("STATUS").equals("S"));
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ status=%s, values=%s, id=%d ]",
+                "%s [ status=%s, values=%s ]",
                 getClass().getSimpleName(),
-                this.statusSection,
-                this.values,
-                this.id);
+                this.status,
+                this.values);
     }
 
     /** A builder for creating new {@link CgMinerResponse responses}. */
     public static class Builder
             extends AbstractBuilder<CgMinerResponse> {
 
+        /** The status. */
+        private final List<Map<String, String>> status =
+                new LinkedList<>();
+
         /** The values. */
-        private final List<Map<String, String>> values =
-                new ArrayList<>();
+        private final Map<String, List<Map<String, String>>> values =
+                new HashMap<>();
 
-        /** The ID. */
-        private long id;
+        /**
+         * Adds the provided status.
+         *
+         * @param status The status.
+         *
+         * @return This builder instance.
+         */
+        public Builder addStatus(
+                final Map<String, String> status) {
+            this.status.add(status);
+            return this;
+        }
 
-        /** The {@link CgMinerStatusSection}. */
-        private CgMinerStatusSection statusSection =
-                new CgMinerStatusSection.Builder()
-                        .setStatusCode(CgMinerStatusCode.FATAL)
-                        .build();
+        /**
+         * Adds all of the statuses.
+         *
+         * @param status The statuses.
+         *
+         * @return This builder instance.
+         */
+        public Builder addStatus(
+                final List<Map<String, String>> status) {
+            this.status.addAll(status);
+            return this;
+        }
 
         /**
          * Adds the provided values.
@@ -186,42 +162,22 @@ public class CgMinerResponse {
          *
          * @return The builder instance.
          */
-        public Builder addValues(final Map<String, String> values) {
-            this.values.add(values);
+        public Builder addValues(
+                final String key,
+                final Map<String, String> values) {
+            final List<Map<String, String>> currentValues =
+                    this.values.computeIfAbsent(
+                            key,
+                            (value) -> new LinkedList<>());
+            currentValues.add(values);
             return this;
         }
 
         @Override
         public CgMinerResponse build() {
             return new CgMinerResponse(
-                    this.statusSection,
-                    this.values,
-                    this.id);
-        }
-
-        /**
-         * Sets the ID.
-         *
-         * @param id The ID.
-         *
-         * @return The builder instance.
-         */
-        public Builder setId(final long id) {
-            this.id = id;
-            return this;
-        }
-
-        /**
-         * Sets the {@link CgMinerStatusSection}.
-         *
-         * @param statusSection The section.
-         *
-         * @return The builder instance.
-         */
-        public Builder setStatusSection(
-                final CgMinerStatusSection statusSection) {
-            this.statusSection = statusSection;
-            return this;
+                    this.status,
+                    this.values);
         }
     }
 }

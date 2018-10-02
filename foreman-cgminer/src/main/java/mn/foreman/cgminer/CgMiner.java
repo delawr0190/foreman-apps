@@ -3,8 +3,6 @@ package mn.foreman.cgminer;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.cgminer.response.CgMinerResponse;
-import mn.foreman.cgminer.response.CgMinerStatusCode;
-import mn.foreman.cgminer.response.CgMinerStatusSection;
 import mn.foreman.io.ApiRequest;
 import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
@@ -14,13 +12,14 @@ import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
@@ -80,15 +79,75 @@ public class CgMiner
     }
 
     /**
+     * Fixes invalid JSON formatting present in some forks of cgminer.
+     *
+     * @param json The JSON to patch.
+     *
+     * @return The patched JSON.
+     */
+    private static String patchJson(final String json) {
+        String goodJson = json;
+        final int errorObjectEnd = json.indexOf("}{");
+        if (errorObjectEnd >= 0) {
+            final int errorObjectStart =
+                    json.lastIndexOf(
+                            "{",
+                            errorObjectEnd);
+            goodJson =
+                    json.substring(0, errorObjectStart) +
+                            json.substring(
+                                    errorObjectEnd + 1,
+                                    json.length());
+        }
+
+        try {
+            // Remove id
+            final ObjectMapper objectMapper =
+                    new ObjectMapper();
+            final Map<String, Object> parsed =
+                    objectMapper.readValue(
+                            goodJson,
+                            new TypeReference<Map<String, Object>>() {
+                            });
+            parsed.remove("id");
+            goodJson = objectMapper.writeValueAsString(parsed);
+        } catch (final IOException e) {
+            // Ignore
+        }
+        return goodJson;
+    }
+
+    /**
+     * Converts the response map to a {@link CgMinerResponse}.
+     *
+     * @param response The map.
+     *
+     * @return The response.
+     */
+    private static CgMinerResponse toResponse(
+            final Map<String, List<Map<String, String>>> response) {
+        final CgMinerResponse.Builder builder =
+                new CgMinerResponse.Builder();
+        response.get("STATUS").forEach(builder::addStatus);
+        response.entrySet()
+                .stream()
+                .filter(entry -> !entry.getKey().equals("STATUS"))
+                .forEach(
+                        entry ->
+                                entry.getValue().forEach(
+                                        value ->
+                                                builder.addValues(
+                                                        entry.getKey(),
+                                                        value)));
+        return builder.build();
+    }
+
+    /**
      * Connects to the IP and port provided and sends the {@link CgMinerRequest}
      * as bytes to the interface.
      *
      * <p>This function also waits and reads the entire response until the
      * socket is closed.</p>
-     *
-     * <p>Note: if an exception occurs throughout this function, a {@link
-     * CgMinerResponse} will be returned with a {@link CgMinerStatusCode#FATAL}
-     * set and the reason will reside in the {@link CgMinerStatusSection#description}.</p>
      *
      * @param request The request to send.
      *
@@ -99,11 +158,10 @@ public class CgMiner
     private CgMinerResponse query(
             final CgMinerRequest request)
             throws MinerException {
-        CgMinerResponse response;
+        CgMinerResponse response = null;
+
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.enable(
-                    DeserializationFeature.UNWRAP_SINGLE_VALUE_ARRAYS);
 
             final String message =
                     objectMapper.writeValueAsString(request);
@@ -126,37 +184,30 @@ public class CgMiner
             if (apiRequest.waitForCompletion(
                     10,
                     TimeUnit.SECONDS)) {
-                String responseString = apiRequest.getResponse();
+                final String responseString =
+                        patchJson(
+                                apiRequest.getResponse());
 
-                // Some forks of cgminer return invalid JSON, so prune the
-                // invalid object out
-                final int errorObjectEnd = responseString.indexOf("}{");
-                if (errorObjectEnd >= 0) {
-                    final int errorObjectStart =
-                            responseString.lastIndexOf("{", errorObjectEnd);
-                    responseString =
-                            responseString.substring(0, errorObjectStart) +
-                                    responseString.substring(
-                                            errorObjectEnd + 1,
-                                            responseString.length());
-                }
-
-                response =
+                final Map<String, List<Map<String, String>>> responseMap =
                         objectMapper.readValue(
                                 responseString,
-                                CgMinerResponse.class);
-
-                LOG.debug("Read response: {}", response);
+                                new TypeReference<Map<String, List<Map<String, String>>>>() {
+                                });
+                if (!responseMap.isEmpty()) {
+                    response = toResponse(responseMap);
+                }
             } else {
                 LOG.warn("No response received from cgminer");
-                throw new MinerException("Failed to obtain a response");
             }
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred while querying {}:{}",
                     this.apiIp,
                     this.apiPort,
                     ioe);
-            throw new MinerException(ioe);
+        }
+
+        if (response == null) {
+            throw new MinerException("Failed to obtain a response");
         }
 
         return response;

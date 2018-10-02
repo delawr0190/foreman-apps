@@ -35,7 +35,14 @@ public class DevsResponseStrategy
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
         if (response.hasValues()) {
-            final List<Map<String, String>> values = response.getValues();
+            final List<Map<String, String>> values =
+                    response.getValues()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> entry.getKey().equals("DEVS"))
+                            .map(Map.Entry::getValue)
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList());
             if (hasGpus(values)) {
                 addRig(
                         values,

@@ -76,7 +76,19 @@ public enum ApiType {
     BAIKAL_API(21),
 
     /** dragonmint. */
-    DRAGONMINT_API(22);
+    DRAGONMINT_API(22),
+
+    /** Innosilicon. */
+    INNOSILICON_HS_API(23),
+
+    /** Innosilicon. */
+    INNOSILICON_KHS_API(24),
+
+    /** Innosilicon. */
+    INNOSILICON_MHS_API(26),
+
+    /** Innosilicon. */
+    INNOSILICON_GHS_API(27);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
