@@ -299,10 +299,10 @@ public class RemoteConfiguration
             case INNOSILICON_KHS_API:
                 type = mn.foreman.innosilicon.ApiType.KHS_API.name();
                 break;
-            case ANTMINER_MHS_API:
+            case INNOSILICON_MHS_API:
                 type = mn.foreman.innosilicon.ApiType.MHS_API.name();
                 break;
-            case ANTMINER_GHS_API:
+            case INNOSILICON_GHS_API:
                 type = mn.foreman.innosilicon.ApiType.GHS_API.name();
                 break;
             default:

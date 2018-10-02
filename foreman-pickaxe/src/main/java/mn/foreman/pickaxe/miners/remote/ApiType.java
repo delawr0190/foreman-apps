@@ -85,10 +85,10 @@ public enum ApiType {
     INNOSILICON_KHS_API(24),
 
     /** Innosilicon. */
-    INNOSILICON_MHS_API(26),
+    INNOSILICON_MHS_API(25),
 
     /** Innosilicon. */
-    INNOSILICON_GHS_API(27);
+    INNOSILICON_GHS_API(26);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
