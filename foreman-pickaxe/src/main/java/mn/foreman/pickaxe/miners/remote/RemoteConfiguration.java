@@ -8,6 +8,7 @@ import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.ClaymoreType;
+import mn.foreman.dayun.DayunFactory;
 import mn.foreman.dragonmint.Dragonmint;
 import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
@@ -371,6 +372,9 @@ public class RemoteConfiguration
                 // Fall through
             case CLAYMORE_ZEC_API:
                 miner = toClaymore(config);
+                break;
+            case DAYUN_API:
+                miner = toMiner(config, new DayunFactory());
                 break;
             case DSTM_API:
                 miner = toMiner(config, new DstmFactory());

@@ -45,6 +45,13 @@ public class CgMiner
             LoggerFactory.getLogger(CgMiner.class);
 
     /**
+     * A {@link Map} of every {@link CgMinerRequest} to a {@link
+     * ResponsePatchingStrategy} to sanitize the JSON.
+     */
+    private final Map<CgMinerRequest, ResponsePatchingStrategy>
+            patchingStrategies;
+
+    /**
      * A {@link Map} of every {@link CgMinerRequest} to send and the {@link
      * ResponseStrategy} to use for each.
      */
@@ -60,6 +67,7 @@ public class CgMiner
                 builder.apiIp,
                 Integer.parseInt(builder.apiPort));
         this.requests = new HashMap<>(builder.requests);
+        this.patchingStrategies = new HashMap<>(builder.patchingStrategies);
     }
 
     @Override
@@ -81,11 +89,17 @@ public class CgMiner
     /**
      * Fixes invalid JSON formatting present in some forks of cgminer.
      *
-     * @param json The JSON to patch.
+     * @param json             The JSON to patch.
+     * @param patchingStrategy The strategy to use for patching the response.
      *
      * @return The patched JSON.
+     *
+     * @throws IOException on failure to patch JSON.
      */
-    private static String patchJson(final String json) {
+    private static String patchJson(
+            final String json,
+            final ResponsePatchingStrategy patchingStrategy)
+            throws IOException {
         String goodJson = json;
         final int errorObjectEnd = json.indexOf("}{");
         if (errorObjectEnd >= 0) {
@@ -114,7 +128,8 @@ public class CgMiner
         } catch (final IOException e) {
             // Ignore
         }
-        return goodJson;
+
+        return patchingStrategy.patch(goodJson);
     }
 
     /**
@@ -186,7 +201,8 @@ public class CgMiner
                     TimeUnit.SECONDS)) {
                 final String responseString =
                         patchJson(
-                                apiRequest.getResponse());
+                                apiRequest.getResponse(),
+                                this.patchingStrategies.get(request));
 
                 final Map<String, List<Map<String, String>>> responseMap =
                         objectMapper.readValue(
@@ -224,6 +240,13 @@ public class CgMiner
         private String apiPort;
 
         /**
+         * A map of every request to a patching strategy to sanitize the
+         * response.
+         */
+        private Map<CgMinerRequest, ResponsePatchingStrategy>
+                patchingStrategies = new ConcurrentHashMap<>();
+
+        /**
          * A {@link Map} of each {@link CgMinerRequest} to the {@link
          * ResponseStrategy} to use for processing the response.
          */
@@ -241,7 +264,28 @@ public class CgMiner
         public Builder addRequest(
                 final CgMinerRequest request,
                 final ResponseStrategy strategy) {
-            this.requests.put(request, strategy);
+            return addRequest(
+                    request,
+                    strategy,
+                    new NullPatchingStrategy());
+        }
+
+        /**
+         * Adds the request and the strategies to use for processing the
+         * response.
+         *
+         * @param request          The request.
+         * @param responseStrategy The response strategy.
+         * @param patchingStrategy The patching strategy.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRequest(
+                final CgMinerRequest request,
+                final ResponseStrategy responseStrategy,
+                final ResponsePatchingStrategy patchingStrategy) {
+            this.requests.put(request, responseStrategy);
+            this.patchingStrategies.put(request, patchingStrategy);
             return this;
         }
 
