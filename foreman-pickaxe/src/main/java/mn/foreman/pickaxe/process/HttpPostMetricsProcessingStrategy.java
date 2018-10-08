@@ -28,6 +28,10 @@ public class HttpPostMetricsProcessingStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(HttpPostMetricsProcessingStrategy.class);
 
+    /** The socket timeout. */
+    private static final int SOCKET_TIMEOUT =
+            (int) TimeUnit.SECONDS.toMillis(20);
+
     /** The API key. */
     private final String apiKey;
 
@@ -78,7 +82,9 @@ public class HttpPostMetricsProcessingStrategy
                     "Authorization",
                     "Token " + this.apiKey);
             connection.setConnectTimeout(
-                    (int) TimeUnit.SECONDS.toMillis(10));
+                    SOCKET_TIMEOUT);
+            connection.setReadTimeout(
+                    SOCKET_TIMEOUT);
 
             final OutputStreamWriter outputStreamWriter =
                     new OutputStreamWriter(connection.getOutputStream());
