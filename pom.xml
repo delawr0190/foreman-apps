@@ -65,6 +65,7 @@
         <module>foreman-srbminer</module>
         <module>foreman-trex</module>
         <module>foreman-util</module>
+        <module>foreman-whatsminer</module>
         <module>foreman-xmrig</module>
         <module>foreman-xmrstak</module>
     </modules>
@@ -192,6 +193,11 @@
                 <artifactId>foreman-util</artifactId>
                 <version>${foreman.version}</version>
                 <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-whatsminer</artifactId>
+                <version>${foreman.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>

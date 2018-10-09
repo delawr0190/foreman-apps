@@ -12,6 +12,9 @@ public enum CgMinerCommand {
     /** The cgminer "devs" command. */
     DEVS("devs"),
 
+    /** The cgminer "summary" command. */
+    SUMMARY("summary"),
+
     /** The cgminer "version" command. */
     VERSION("version");
 

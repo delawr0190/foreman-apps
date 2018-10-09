@@ -91,7 +91,10 @@ public enum ApiType {
     INNOSILICON_GHS_API(26),
 
     /** Dayun. */
-    DAYUN_API(27);
+    DAYUN_API(27),
+
+    /** Whatsminer. */
+    WHATSMINER_API(28);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
