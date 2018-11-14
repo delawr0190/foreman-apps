@@ -56,6 +56,7 @@
         <module>foreman-ethminer</module>
         <module>foreman-ewbf</module>
         <module>foreman-excavator</module>
+        <module>foreman-gminer</module>
         <module>foreman-innosilicon</module>
         <module>foreman-io</module>
         <module>foreman-jceminer</module>
@@ -142,6 +143,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-excavator</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-gminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

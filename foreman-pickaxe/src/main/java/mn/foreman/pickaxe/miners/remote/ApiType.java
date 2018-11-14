@@ -97,7 +97,10 @@ public enum ApiType {
     WHATSMINER_API(28),
 
     /** Avalon. */
-    AVALON_API(29);
+    AVALON_API(29),
+
+    /** Gminer. */
+    GMINER_API(30);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
