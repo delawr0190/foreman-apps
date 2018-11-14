@@ -23,10 +23,6 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
-            <artifactId>foreman-sgminer</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mn.foreman</groupId>
             <artifactId>foreman-util</artifactId>
         </dependency>
 
