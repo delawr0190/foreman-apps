@@ -31,6 +31,16 @@ setup_java() {
     JVM_COMMAND_LINE="-c $PICKAXE_HOME/conf/pickaxe.yml"
 }
 
+# Application status
+status() {
+    if pgrep -f "java.*pickaxe" > /dev/null
+    then
+        echo "Pickaxe is running..."
+    else
+        echo "Pickaxe not running..."
+    fi
+}
+
 # Starts the application
 start() {
     if pgrep -f "java.*pickaxe" > /dev/null
@@ -69,6 +79,9 @@ if [ ! -z $1 ]; then
             stop
             sleep 1
             start
+            ;;
+        "status")
+            status
             ;;
         *)
             echo "Invalid argument provided: $1"
