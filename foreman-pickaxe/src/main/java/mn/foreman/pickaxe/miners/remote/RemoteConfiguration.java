@@ -2,6 +2,7 @@ package mn.foreman.pickaxe.miners.remote;
 
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.antminer.AntminerType;
+import mn.foreman.avalon.AvalonFactory;
 import mn.foreman.baikal.BaikalFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
@@ -99,15 +100,10 @@ public class RemoteConfiguration
             throws Exception {
         LOG.debug("Querying {} for miners", this.url);
 
-        final List<Miner> miners = new LinkedList<>();
-
         final List<MinerConfig> configs = getConfigs();
         LOG.info("Downloaded configuration: {} miners", configs.size());
-        miners.addAll(
-                toMiners(
-                        configs));
 
-        return miners;
+        return toMiners(configs);
     }
 
     /**
@@ -356,6 +352,9 @@ public class RemoteConfiguration
                                 config,
                                 new AntminerFactory(),
                                 RemoteConfiguration::toAntminerType);
+                break;
+            case AVALON_API:
+                miner = toMiner(config, new AvalonFactory());
                 break;
             case BAIKAL_API:
                 miner = toMiner(config, new BaikalFactory());

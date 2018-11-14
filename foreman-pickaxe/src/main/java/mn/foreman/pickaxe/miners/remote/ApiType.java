@@ -94,7 +94,10 @@ public enum ApiType {
     DAYUN_API(27),
 
     /** Whatsminer. */
-    WHATSMINER_API(28);
+    WHATSMINER_API(28),
+
+    /** Avalon. */
+    AVALON_API(29);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
