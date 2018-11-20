@@ -26,6 +26,10 @@ public class MinerConfig {
     @JsonProperty("apiType")
     public ApiType apiType;
 
+    /** The chisel configuration. */
+    @JsonProperty("chisel")
+    public ChiselConfig chisel;
+
     /** The parameters. */
     @JsonProperty("params")
     public List<Param> params;
@@ -33,12 +37,35 @@ public class MinerConfig {
     @Override
     public String toString() {
         return String.format(
-                "%s [ apiIp=%s, apiPort=%d, apiType=%s, params=[%s] ]",
+                "%s [ " +
+                        "apiIp=%s, " +
+                        "apiPort=%d, " +
+                        "apiType=%s, " +
+                        "params=[%s], " +
+                        "chisel=%s " +
+                        "]",
                 getClass().getSimpleName(),
                 this.apiIp,
                 this.apiPort,
                 this.apiType,
-                this.params);
+                this.params,
+                this.chisel);
+    }
+
+    /** A chisel configuration. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class ChiselConfig {
+
+        /** The port where chisel is listening. */
+        @JsonProperty("apiPort")
+        public int apiPort;
+
+        @Override
+        public String toString() {
+            return String.format("%s [ apiPort=%d ]",
+                    getClass().getSimpleName(),
+                    this.apiPort);
+        }
     }
 
     /** A miner configuration parameter. */

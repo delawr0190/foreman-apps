@@ -113,6 +113,11 @@
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
+                <artifactId>foreman-chisel</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
                 <artifactId>foreman-claymore</artifactId>
                 <version>${foreman.version}</version>
             </dependency>

@@ -7,6 +7,7 @@ import mn.foreman.baikal.BaikalFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
+import mn.foreman.chisel.ChiselMinerDecorator;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.ClaymoreType;
 import mn.foreman.dayun.DayunFactory;
@@ -433,6 +434,18 @@ public class RemoteConfiguration
                 miner = toMiner(config, new XmrstakFactory());
                 break;
         }
+
+        // The user may be running chisel to extract additional metrics from
+        // miners that offer weak APIs
+        final MinerConfig.ChiselConfig chiselConfig = config.chisel;
+        if (chiselConfig != null) {
+            miner =
+                    new ChiselMinerDecorator(
+                            config.apiIp,
+                            chiselConfig.apiPort,
+                            miner);
+        }
+
         return Optional.ofNullable(miner);
     }
 
