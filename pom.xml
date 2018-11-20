@@ -49,6 +49,7 @@
         <module>foreman-castxmr</module>
         <module>foreman-ccminer</module>
         <module>foreman-cgminer</module>
+        <module>foreman-chisel</module>
         <module>foreman-claymore</module>
         <module>foreman-dayun</module>
         <module>foreman-dragonmint</module>

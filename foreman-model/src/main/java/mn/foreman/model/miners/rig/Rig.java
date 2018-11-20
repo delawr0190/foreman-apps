@@ -109,9 +109,6 @@ public class Rig {
         /** The speed info. */
         private BigDecimal hashRate;
 
-        /** The name. */
-        private String name;
-
         /**
          * Adds the {@link Gpu}.
          *
@@ -140,18 +137,6 @@ public class Rig {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
-            return this;
-        }
-
-        /**
-         * Sets the name.
-         *
-         * @param name The name.
-         *
-         * @return This builder instance.
-         */
-        public Builder setName(final String name) {
-            this.name = name;
             return this;
         }
     }

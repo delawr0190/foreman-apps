@@ -21,8 +21,10 @@ public class MetadataTest {
     @Test
     public void testSerialization()
             throws IOException {
-        final ApiVersion apiVersion = ApiVersion.V1_0_0;
-        final ZonedDateTime timestamp = ZonedDateTime.now(ZoneId.of("UTC"));
+        final ApiVersion apiVersion =
+                ApiVersion.V1_0_0;
+        final ZonedDateTime timestamp =
+                ZonedDateTime.now(ZoneId.of("UTC")).withNano(0);
 
         final Metadata metadata =
                 new Metadata.Builder()

@@ -114,7 +114,7 @@ public class MetricsReportTest {
                         .build();
 
         final ZonedDateTime timestamp =
-                ZonedDateTime.now(ZoneId.of("UTC"));
+                ZonedDateTime.now(ZoneId.of("UTC")).withNano(0);
         final ApiVersion apiVersion =
                 ApiVersion.V1_0_0;
         final Metadata metadata =
