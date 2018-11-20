@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
  * add GPU-specific metrics to a {@link MinerStats} that was returned from a
  * {@link Miner}.
  *
- * <p>This class provides as a mechanism for adding metrics to {@link
- * MinerStats} that aren't present on all APIs.</p>
+ * <p>This class provides a mechanism for adding metrics to {@link MinerStats}
+ * that aren't present on all APIs.</p>
  */
 public class ChiselMinerDecorator
         implements Miner {
