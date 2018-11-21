@@ -438,7 +438,7 @@ public class RemoteConfiguration
         // The user may be running chisel to extract additional metrics from
         // miners that offer weak APIs
         final MinerConfig.ChiselConfig chiselConfig = config.chisel;
-        if (chiselConfig != null) {
+        if (chiselConfig != null && chiselConfig.apiPort > 0) {
             miner =
                     new ChiselMinerDecorator(
                             config.apiIp,
