@@ -17,6 +17,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,9 +38,9 @@ import java.util.Optional;
  * <p>This class currently queries:</p>
  *
  * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/solver</li>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/device</li>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/stratum</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/solver</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/device</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/stratum</li>
  * </ul>
  *
  * <h1>Limitations</h1>
@@ -190,7 +192,8 @@ public class Bminer
                         this.apiIp,
                         this.apiPort,
                         toUri("device"),
-                        Devices.class);
+                        new TypeReference<Devices>() {
+                        });
         final Map<String, Device> deviceMap = devices.devices;
         if (deviceMap != null) {
             for (final Map.Entry<String, Device> entry :
@@ -218,7 +221,9 @@ public class Bminer
                         this.apiIp,
                         this.apiPort,
                         toUri("solver"),
-                        mn.foreman.bminer.json.solver.Devices.class);
+                        new TypeReference<
+                                mn.foreman.bminer.json.solver.Devices>() {
+                        });
         final Map<String, Solvers> solversMap = devices.devices;
         if (solversMap != null) {
             solversMap
@@ -253,7 +258,8 @@ public class Bminer
                         this.apiIp,
                         this.apiPort,
                         toUri("stratum"),
-                        Stratums.class);
+                        new TypeReference<Stratums>() {
+                        });
         final Map<String, Stratum> stratumMap = stratums.stratums;
         if (stratumMap != null) {
             for (final Stratum stratum : stratumMap.values()) {

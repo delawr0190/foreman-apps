@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.srbminer.json.Response;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -28,7 +30,7 @@ import java.util.List;
  * <p>This class currently queries:</p>
  *
  * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/</li>
  * </ul>
  */
 public class Srbminer
@@ -56,7 +58,8 @@ public class Srbminer
                         this.apiIp,
                         this.apiPort,
                         "/",
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
         addPool(
                 statsBuilder,
                 response.pool,

@@ -90,40 +90,38 @@ public class ChiselMinerDecoratorTest {
                                      "/stats",
                                      new HttpHandler(
                                              "",
-                                             "{\n" +
-                                                     "  \"gpus\": [\n" +
-                                                     "    {\n" +
-                                                     "      \"id\": 0,\n" +
-                                                     "      \"busId\": 1,\n" +
-                                                     "      \"name\": \"GeForce GTX 1070 Ti\",\n" +
-                                                     "      \"temp\": 67,\n" +
-                                                     "      \"fan\": 99,\n" +
-                                                     "      \"clocks\": {\n" +
-                                                     "        \"core\": 1234,\n" +
-                                                     "        \"memory\": 5678\n" +
-                                                     "      },\n" +
-                                                     "      \"processes\": [\n" +
-                                                     "        \"ethminer\",\n" +
-                                                     "        \"something else\"\n" +
-                                                     "      ]\n" +
+                                             "[\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 0,\n" +
+                                                     "    \"busId\": 1,\n" +
+                                                     "    \"name\": \"GeForce GTX 1070 Ti\",\n" +
+                                                     "    \"temp\": 67,\n" +
+                                                     "    \"fan\": 99,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 1234,\n" +
+                                                     "      \"memory\": 5678\n" +
                                                      "    },\n" +
-                                                     "    {\n" +
-                                                     "      \"id\": 1,\n" +
-                                                     "      \"busId\": 3,\n" +
-                                                     "      \"name\": \"GeForce GTX 1080 Ti\",\n" +
-                                                     "      \"temp\": 69,\n" +
-                                                     "      \"fan\": 75,\n" +
-                                                     "      \"clocks\": {\n" +
-                                                     "        \"core\": 5678,\n" +
-                                                     "        \"memory\": 1234\n" +
-                                                     "      },\n" +
-                                                     "      \"processes\": [\n" +
-                                                     "        \"ethminer\",\n" +
-                                                     "        \"something else\"\n" +
-                                                     "      ]\n" +
-                                                     "    }\n" +
-                                                     "  ]\n" +
-                                                     "}")))) {
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  },\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 1,\n" +
+                                                     "    \"busId\": 3,\n" +
+                                                     "    \"name\": \"GeForce GTX 1080 Ti\",\n" +
+                                                     "    \"temp\": 69,\n" +
+                                                     "    \"fan\": 75,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 5678,\n" +
+                                                     "      \"memory\": 1234\n" +
+                                                     "    },\n" +
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  }\n" +
+                                                     "]")))) {
             fakeChisel.start();
 
             final MinerStats actualStats =

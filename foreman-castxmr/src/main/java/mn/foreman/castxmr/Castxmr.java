@@ -12,13 +12,15 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * <h1>Overview</h1>
  *
  * A {@link Castxmr} represents a remote castxmr instance.
  *
- * <p>This class relies on the castxmr-api being enabled and configured to allow
- * the server that this application is running on to access it.  If this
+ * <p>This class relies on the castxmr-api being enabled and configured to
+ * allow the server that this application is running on to access it.  If this
  * application is running on the rig server, only localhost connections need to
  * be allowed.</p>
  *
@@ -60,7 +62,8 @@ public class Castxmr
                         this.apiIp,
                         this.apiPort,
                         "/",
-                        Response.class));
+                        new TypeReference<Response>() {
+                        }));
     }
 
     /**

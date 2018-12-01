@@ -20,6 +20,7 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
@@ -39,9 +40,9 @@ import java.util.Arrays;
  * (the HTTP interface is not used):</p>
  *
  * <ul>
- *     <li>subscribe.info</li>
- *     <li>devices.get</li>
- *     <li>algorithm.list</li>
+ * <li>subscribe.info</li>
+ * <li>devices.get</li>
+ * <li>algorithm.list</li>
  * </ul>
  */
 public class Excavator
@@ -182,13 +183,15 @@ public class Excavator
                         this.apiIp,
                         this.apiPort,
                         makeCommand(SubscribeMethod.INFO),
-                        Subscribe.class);
+                        new TypeReference<Subscribe>() {
+                        });
         final Algorithms algorithms =
                 Query.jsonQuery(
                         this.apiIp,
                         this.apiPort,
                         makeCommand(AlgorithmMethod.LIST),
-                        Algorithms.class);
+                        new TypeReference<Algorithms>() {
+                        });
         return addPools(
                 builder,
                 subscribe,
@@ -214,7 +217,8 @@ public class Excavator
                         this.apiIp,
                         this.apiPort,
                         makeCommand(DevicesMethod.GET),
-                        Devices.class);
+                        new TypeReference<Devices>() {
+                        });
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
                         .setHashRate(hashRate);

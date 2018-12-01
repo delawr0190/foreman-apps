@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.math.BigDecimal;
 import java.util.List;
 
@@ -66,7 +68,8 @@ public class Dstm
                         this.apiIp,
                         this.apiPort,
                         makeCommand(),
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
         addPool(
                 response,
                 statsBuilder);

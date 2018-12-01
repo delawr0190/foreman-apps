@@ -12,6 +12,7 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -90,7 +91,8 @@ public class Claymore
                         this.apiIp,
                         this.apiPort,
                         makeCommand(),
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
         final List<String> results = response.result;
 
         final String[] ethRateAndShares = results.get(2).split(";");

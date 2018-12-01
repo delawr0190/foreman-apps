@@ -1,6 +1,6 @@
 package mn.foreman.chisel;
 
-import mn.foreman.chisel.json.Response;
+import mn.foreman.chisel.json.GpuInfo;
 import mn.foreman.io.Query;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
@@ -11,6 +11,7 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,16 +99,17 @@ public class ChiselMinerDecorator
         MinerStats minerStats =
                 this.realMiner.getStats();
         try {
-            final Response response =
+            final List<GpuInfo> gpus =
                     Query.restQuery(
                             this.chiselIp,
                             this.chiselPort,
                             "/stats",
-                            Response.class);
+                            new TypeReference<List<GpuInfo>>() {
+                            });
             minerStats =
                     enrichStats(
                             minerStats,
-                            response);
+                            gpus);
         } catch (final MinerException me) {
             // Don't let a failed chisel response prevent basic metrics from
             // going to the dashboard
@@ -129,13 +131,13 @@ public class ChiselMinerDecorator
     }
 
     /**
-     * Adds a {@link Gpu} from the {@link Response.GpuInfo}.
+     * Adds a {@link Gpu} from the {@link GpuInfo}.
      *
      * @param gpuInfo    The info.
      * @param rigBuilder The builder.
      */
     private static void addGpu(
-            final Response.GpuInfo gpuInfo,
+            final GpuInfo gpuInfo,
             final Rig.Builder rigBuilder) {
         rigBuilder.addGpu(
                 new Gpu.Builder()
@@ -160,25 +162,24 @@ public class ChiselMinerDecorator
     /**
      * Enriches the {@link Rig} with metrics provided by chisel.
      *
-     * @param rig      The {@link Rig}.
-     * @param response The response.
+     * @param rig  The {@link Rig}.
+     * @param gpus The {@link GpuInfo GPUs}.
      *
      * @return The enriched {@link Rig}.
      */
     private static Rig enrichRig(
             final Rig rig,
-            final Response response) {
+            final List<GpuInfo> gpus) {
         Rig newRig = rig;
 
         // Only enrich rigs that have the same number of GPUs in both the
         // actual rig and the chisel response
-        final List<Response.GpuInfo> chiselGpus = response.gpus;
         final List<Gpu> apiGpus = rig.getGpus();
-        if (chiselGpus.size() == apiGpus.size()) {
+        if (gpus.size() == apiGpus.size()) {
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
                             .setHashRate(rig.getHashRate());
-            chiselGpus.forEach(gpu ->
+            gpus.forEach(gpu ->
                     addGpu(
                             gpu,
                             rigBuilder));
@@ -186,7 +187,7 @@ public class ChiselMinerDecorator
         } else {
             LOG.warn("Chisel returned more GPUs than the miner API - not " +
                             "enriching (chisel: {}, actual: {})",
-                    chiselGpus.size(),
+                    gpus.size(),
                     apiGpus.size());
         }
 
@@ -198,13 +199,13 @@ public class ChiselMinerDecorator
      * MinerStats} that contains additional metrics extracted from chisel.
      *
      * @param minerStats The stats to enrich.
-     * @param response   The stats to add.
+     * @param gpus       The {@link GpuInfo GPUs}.
      *
      * @return The new stats.
      */
     private static MinerStats enrichStats(
             final MinerStats minerStats,
-            final Response response) {
+            final List<GpuInfo> gpus) {
         final MinerStats.Builder newStatsBuilder =
                 new MinerStats.Builder()
                         .setApiIp(minerStats.getApiIp())
@@ -222,7 +223,7 @@ public class ChiselMinerDecorator
                 .map(rig ->
                         enrichRig(
                                 rig,
-                                response))
+                                gpus))
                 .collect(Collectors.toList())
                 .forEach(newStatsBuilder::addRig);
 

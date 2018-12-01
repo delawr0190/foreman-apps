@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * <h1>Overview</h1>
  *
@@ -71,7 +73,8 @@ public class Jceminer
                         this.apiIp,
                         this.apiPort,
                         "/",
-                        Response.class),
+                        new TypeReference<Response>() {
+                        }),
                 statsBuilder);
     }
 

@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.function.Function;
@@ -29,7 +31,7 @@ import java.util.function.Function;
  * <p>This class currently queries:</p>
  *
  * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/getstat</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/getstat</li>
  * </ul>
  *
  * <h1>Limitations</h1>
@@ -72,7 +74,8 @@ public class Ewbf
                         this.apiIp,
                         this.apiPort,
                         "/getstat",
-                        Stat.class);
+                        new TypeReference<Stat>() {
+                        });
         final long acceptedShares =
                 sumResultAttribute(
                         stats.results,

@@ -2,6 +2,7 @@ package mn.foreman.io;
 
 import mn.foreman.model.error.MinerException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
@@ -65,7 +66,7 @@ public class Query {
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      * @param command The command.
-     * @param clazz   The response class.
+     * @param type    The response class.
      * @param <T>     The response type.
      *
      * @return The response.
@@ -76,7 +77,7 @@ public class Query {
             final String apiIp,
             final int apiPort,
             final String command,
-            final Class<T> clazz)
+            final TypeReference<T> type)
             throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -91,7 +92,7 @@ public class Query {
         return
                 query(
                         request,
-                        clazz);
+                        type);
     }
 
     /**
@@ -102,7 +103,7 @@ public class Query {
      * @param uri      The URI.
      * @param username The username.
      * @param password The password.
-     * @param clazz    The response class.
+     * @param type     The response class.
      * @param <T>      The response type.
      *
      * @return The response.
@@ -115,7 +116,7 @@ public class Query {
             final String uri,
             final String username,
             final String password,
-            final Class<T> clazz)
+            final TypeReference<T> type)
             throws MinerException {
         final String auth =
                 Base64.getEncoder().encodeToString(
@@ -138,7 +139,7 @@ public class Query {
         return
                 query(
                         request,
-                        clazz);
+                        type);
     }
 
     /**
@@ -147,7 +148,7 @@ public class Query {
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      * @param uri     The URI.
-     * @param clazz   The response class.
+     * @param type    The response class.
      * @param <T>     The response type.
      *
      * @return The response.
@@ -158,7 +159,7 @@ public class Query {
             final String apiIp,
             final int apiPort,
             final String uri,
-            final Class<T> clazz)
+            final TypeReference<T> type)
             throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -175,14 +176,14 @@ public class Query {
         return
                 query(
                         request,
-                        clazz);
+                        type);
     }
 
     /**
      * Runs the query.
      *
      * @param request The request.
-     * @param clazz   The response class.
+     * @param type    The response class.
      * @param <T>     The response type.
      *
      * @return The response.
@@ -191,7 +192,7 @@ public class Query {
      */
     private static <T> T query(
             final ApiRequest request,
-            final Class<T> clazz)
+            final TypeReference<T> type)
             throws MinerException {
         T response;
         if (request.waitForCompletion(
@@ -203,7 +204,7 @@ public class Query {
                 response =
                         objectMapper.readValue(
                                 request.getResponse(),
-                                clazz);
+                                type);
             } catch (final Exception e) {
                 throw new MinerException(e);
             }

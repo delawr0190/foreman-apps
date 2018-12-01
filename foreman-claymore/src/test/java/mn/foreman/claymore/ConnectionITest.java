@@ -3,6 +3,7 @@ package mn.foreman.claymore;
 import mn.foreman.io.Query;
 import mn.foreman.model.error.MinerException;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -39,7 +40,8 @@ public class ConnectionITest {
                     "localhost",
                     serverPort,
                     "blah",
-                    String.class);
+                    new TypeReference<String>() {
+                    });
         }
     }
 

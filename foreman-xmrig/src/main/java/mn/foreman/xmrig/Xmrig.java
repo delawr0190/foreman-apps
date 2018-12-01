@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 import mn.foreman.xmrig.json.Response;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.util.List;
 
 /**
@@ -27,7 +29,7 @@ import java.util.List;
  * <p>This class currently queries:</p>
  *
  * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/</li>
  * </ul>
  *
  * <h1>Limitations</h1>
@@ -82,7 +84,8 @@ public class Xmrig
                         this.apiIp,
                         this.apiPort,
                         "/",
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
         addPool(
                 response,
                 statsBuilder);

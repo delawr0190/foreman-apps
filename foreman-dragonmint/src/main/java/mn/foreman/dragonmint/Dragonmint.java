@@ -10,6 +10,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
@@ -72,7 +73,8 @@ public class Dragonmint
                         "/api/summary",
                         this.username,
                         this.password,
-                        Summary.class);
+                        new TypeReference<Summary>() {
+                        });
         addAsics(
                 statsBuilder,
                 summary.devs,

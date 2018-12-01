@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.trex.json.Summary;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * <h1>Overview</h1>
  *
@@ -70,7 +72,8 @@ public class Trex
                         this.apiIp,
                         this.apiPort,
                         "/summary",
-                        Summary.class);
+                        new TypeReference<Summary>() {
+                        });
         statsBuilder.addPool(
                 new Pool.Builder()
                         .setName(
@@ -90,11 +93,10 @@ public class Trex
                 new Rig.Builder()
                         .setHashRate(summary.hashRate);
         summary.gpus.forEach(
-                (gpu) -> {
-                    addGpu(
-                            rigBuilder,
-                            gpu);
-                });
+                (gpu) ->
+                        addGpu(
+                                rigBuilder,
+                                gpu));
         statsBuilder.addRig(rigBuilder.build());
     }
 

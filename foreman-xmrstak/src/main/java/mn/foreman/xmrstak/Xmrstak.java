@@ -12,20 +12,22 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 import mn.foreman.xmrstak.json.Response;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 /**
  * <h1>Overview</h1>
  *
  * An {@link Xmrstak} represents a remote xmrstak instance.
  *
- * <p>This class relies on the xmrstak-api being enabled and configured to allow
- * the server that this application is running on to access it.  If this
+ * <p>This class relies on the xmrstak-api being enabled and configured to
+ * allow the server that this application is running on to access it.  If this
  * application is running on the rig server, only localhost connections need to
  * be allowed.</p>
  *
  * <p>This class currently queries:</p>
  *
  * <ul>
- *     <li>http://{@link #apiIp}:{@link #apiPort}/api.json</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/api.json</li>
  * </ul>
  *
  * <h1>Limitations</h1>
@@ -75,7 +77,8 @@ public class Xmrstak
                         this.apiIp,
                         this.apiPort,
                         "/api.json",
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
         addPool(
                 response,
                 statsBuilder);

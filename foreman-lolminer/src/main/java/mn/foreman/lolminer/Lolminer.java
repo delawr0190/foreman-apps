@@ -12,6 +12,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -69,7 +71,8 @@ public class Lolminer
                         this.apiIp,
                         this.apiPort,
                         "",
-                        Response.class);
+                        new TypeReference<Response>() {
+                        });
 
         if (!response.pool.trim().isEmpty()) {
             statsBuilder.addPool(
