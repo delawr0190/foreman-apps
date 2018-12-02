@@ -37,6 +37,9 @@ public class PoolUtils {
             // Remove slashes
             sanitized = sanitized.replace("/", "");
 
+            // Remove >
+            sanitized = sanitized.replace(">", "");
+
             // Trim padding
             sanitized = sanitized.trim();
         }

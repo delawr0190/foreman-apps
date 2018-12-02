@@ -34,6 +34,15 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
+    public void sanitizePhoenix() {
+        assertEquals(
+                "eu1.ethermine.org:4444",
+                PoolUtils.sanitizeUrl(
+                        ">eu1.ethermine.org:4444"));
+    }
+
+    /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
+    @Test
     public void sanitizeStandard() {
         assertEquals(
                 "cryptonightv7.eu.nicehash.com:3363",
