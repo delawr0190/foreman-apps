@@ -78,6 +78,21 @@ public class DevsResponseStrategy
     }
 
     /**
+     * Extracts the appropriate hash rate (keys are sometimes different).
+     *
+     * @param map The {@link Map} to evaluate.
+     *
+     * @return The hash rate.
+     */
+    private static BigDecimal getRate(
+            final Map<String, String> map) {
+        return new BigDecimal(
+                map.containsKey("MHS 5s")
+                        ? map.get("MHS 5s")
+                        : map.get("MHS 30s"));
+    }
+
+    /**
      * Checks to see if the values have GPUs.
      *
      * @param values The values.
@@ -130,7 +145,7 @@ public class DevsResponseStrategy
             final List<Map<String, String>> values) {
         return values
                 .stream()
-                .map((map) -> new BigDecimal(map.get("MHS 5s")))
+                .map(DevsResponseStrategy::getRate)
                 .map((value) ->
                         value.multiply(
                                 new BigDecimal(1000 * 1000)))

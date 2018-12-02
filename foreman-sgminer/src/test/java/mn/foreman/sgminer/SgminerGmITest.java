@@ -25,8 +25,6 @@ public class SgminerGmITest
                 new SgminerFactory()
                         .create(
                                 ImmutableMap.of(
-                                        "name",
-                                        "sgminer",
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
