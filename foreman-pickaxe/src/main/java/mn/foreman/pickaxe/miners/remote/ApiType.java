@@ -100,7 +100,10 @@ public enum ApiType {
     AVALON_API(29),
 
     /** Gminer. */
-    GMINER_API(30);
+    GMINER_API(30),
+
+    /** mkxminer. */
+    MKXMINER_API(31);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

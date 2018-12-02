@@ -21,6 +21,7 @@ import mn.foreman.gminer.GminerFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.lolminer.LolminerFactory;
+import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
@@ -414,6 +415,9 @@ public class RemoteConfiguration
                 break;
             case LOLMINER_API:
                 miner = toMiner(config, new LolminerFactory());
+                break;
+            case MKXMINER_API:
+                miner = toMiner(config, new MkxminerFactory());
                 break;
             case SGMINER_API:
                 miner = toMiner(config, new SgminerFactory());

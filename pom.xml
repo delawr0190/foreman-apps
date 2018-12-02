@@ -62,6 +62,7 @@
         <module>foreman-io</module>
         <module>foreman-jceminer</module>
         <module>foreman-lolminer</module>
+        <module>foreman-mkxminer</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
         <module>foreman-sgminer</module>
@@ -179,6 +180,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-miner</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-mkxminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>
