@@ -103,7 +103,7 @@ public class ChiselMinerDecorator
                     Query.restQuery(
                             this.chiselIp,
                             this.chiselPort,
-                            "/stats",
+                            "/stats/gpus",
                             new TypeReference<List<GpuInfo>>() {
                             });
             minerStats =
