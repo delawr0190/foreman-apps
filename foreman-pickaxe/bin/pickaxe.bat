@@ -12,11 +12,18 @@ if defined JAVA_HOME (
     for %%I in (java.exe) do set JAVA="%%~$PATH:I"
 )
 
-if not exist %JAVA% (
-    echo Failed to find java - set JAVA_HOME or add java to the PATH 1>&2
-    exit /b 1
+if exist %JAVA% goto found_java
+
+rem # No java - was it bundled?
+if exist "%PICKAXE_HOME%\jre" (
+	set JAVA="%PICKAXE_HOME%\jre\bin\java.exe"
+	goto found_java
 )
 
+echo Failed to find java - set JAVA_HOME or add java to the PATH 1>&2
+exit /b 1
+
+:found_java
 rem # Set JVM options
 set JVM_OPTS_FILE="%PICKAXE_HOME%\conf\jvm.options"
 for /F "usebackq delims=" %%a in (`findstr /b \- %JVM_OPTS_FILE%`) do set options=!options! %%a
