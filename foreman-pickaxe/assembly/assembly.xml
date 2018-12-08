@@ -17,15 +17,20 @@
         <fileSet>
             <directory>${project.basedir}/bin</directory>
             <outputDirectory>bin</outputDirectory>
+            <directoryMode>755</directoryMode>
             <fileMode>755</fileMode>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/conf</directory>
             <outputDirectory>conf</outputDirectory>
+            <directoryMode>755</directoryMode>
+            <fileMode>644</fileMode>
         </fileSet>
         <fileSet>
             <directory>${project.basedir}/etc</directory>
             <outputDirectory>etc</outputDirectory>
+            <directoryMode>755</directoryMode>
+            <fileMode>644</fileMode>
         </fileSet>
         <fileSet>
             <directory>.</directory>
@@ -33,6 +38,7 @@
             <excludes>
                 <exclude>*/**</exclude>
             </excludes>
+            <directoryMode>755</directoryMode>
             <fileMode>666</fileMode>
         </fileSet>
     </fileSets>
@@ -42,6 +48,8 @@
             <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
             <scope>runtime</scope>
+            <directoryMode>755</directoryMode>
+            <fileMode>644</fileMode>
         </dependencySet>
     </dependencySets>
 </assembly>
