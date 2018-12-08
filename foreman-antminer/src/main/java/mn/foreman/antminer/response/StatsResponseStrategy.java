@@ -67,7 +67,7 @@ public class StatsResponseStrategy
                 new Asic.Builder()
                         .setHashRate(hashRate);
 
-        // Fangs
+        // Fans
         final FanInfo.Builder fanBuilder =
                 new FanInfo.Builder()
                         .setCount(values.get("fan_num"))

@@ -103,7 +103,10 @@ public enum ApiType {
     GMINER_API(30),
 
     /** mkxminer. */
-    MKXMINER_API(31);
+    MKXMINER_API(31),
+
+    /** Blackminer API. */
+    BLACKMINER_API(32);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

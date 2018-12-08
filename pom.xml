@@ -45,6 +45,7 @@
         <module>foreman-antminer</module>
         <module>foreman-avalon</module>
         <module>foreman-baikal</module>
+        <module>foreman-blackminer</module>
         <module>foreman-bminer</module>
         <module>foreman-castxmr</module>
         <module>foreman-ccminer</module>
@@ -90,6 +91,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-baikal</artifactId>
+                <version>${foreman.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-blackminer</artifactId>
                 <version>${foreman.version}</version>
             </dependency>
             <dependency>

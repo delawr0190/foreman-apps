@@ -3,7 +3,7 @@ package mn.foreman.pickaxe.miners.remote;
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.antminer.AntminerType;
 import mn.foreman.avalon.AvalonFactory;
-import mn.foreman.baikal.BaikalFactory;
+import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
@@ -360,7 +360,10 @@ public class RemoteConfiguration
                 miner = toMiner(config, new AvalonFactory());
                 break;
             case BAIKAL_API:
-                miner = toMiner(config, new BaikalFactory());
+                miner = toMiner(config, new BlackminerFactory());
+                break;
+            case BLACKMINER_API:
+                miner = toMiner(config, new BlackminerFactory());
                 break;
             case BMINER_API:
                 miner = toMiner(config, new BminerFactory());
