@@ -134,6 +134,12 @@
             <artifactId>foreman-xmrstak</artifactId>
         </dependency>
 
+        <!-- Apache -->
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+
         <!-- Utils -->
         <dependency>
             <groupId>net.sf.jopt-simple</groupId>

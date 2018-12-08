@@ -4,16 +4,19 @@ import mn.foreman.model.MetricsReport;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -59,48 +62,49 @@ public class HttpPostMetricsProcessingStrategy
 
     @Override
     public void process(final MetricsReport metricsReport) {
-        final ObjectMapper objectMapper =
-                new ObjectMapper()
-                        .registerModule(new JavaTimeModule());
+        final RequestConfig requestConfig =
+                RequestConfig.custom()
+                        .setConnectTimeout(SOCKET_TIMEOUT)
+                        .setConnectionRequestTimeout(SOCKET_TIMEOUT)
+                        .setSocketTimeout(SOCKET_TIMEOUT)
+                        .build();
 
-        try {
+        try (final CloseableHttpClient httpClient =
+                     HttpClients.custom()
+                             .setDefaultRequestConfig(requestConfig)
+                             .build()) {
+            final ObjectMapper objectMapper =
+                    new ObjectMapper()
+                            .registerModule(new JavaTimeModule());
             final String json =
                     objectMapper.writeValueAsString(metricsReport);
-
             LOG.debug("{} generated {}", metricsReport, json);
 
-            final URL url = new URL(this.url);
-            final HttpURLConnection connection =
-                    (HttpURLConnection) url.openConnection();
+            final StringEntity stringEntity =
+                    new StringEntity(json);
 
-            connection.setDoOutput(true);
-            connection.setRequestMethod("PUT");
-            connection.setRequestProperty(
+            final HttpPut httpPut =
+                    new HttpPut(this.url);
+            httpPut.setEntity(stringEntity);
+            httpPut.setHeader(
                     "Content-Type",
                     "application/json");
-            connection.setRequestProperty(
+            httpPut.setHeader(
                     "Authorization",
                     "Token " + this.apiKey);
-            connection.setConnectTimeout(
-                    SOCKET_TIMEOUT);
-            connection.setReadTimeout(
-                    SOCKET_TIMEOUT);
 
-            final OutputStreamWriter outputStreamWriter =
-                    new OutputStreamWriter(connection.getOutputStream());
-            outputStreamWriter.write(json);
-            outputStreamWriter.flush();
-            outputStreamWriter.close();
-
-            final int code = connection.getResponseCode();
-            if (code != HttpURLConnection.HTTP_CREATED) {
-                LOG.warn("Received a bad response: " +
-                                "code({}), message({}), response({})",
-                        code,
-                        connection.getResponseMessage(),
-                        IOUtils.toString(
-                                connection.getErrorStream(),
-                                Charset.defaultCharset()));
+            try (final CloseableHttpResponse httpResponse =
+                         httpClient.execute(httpPut)) {
+                final int statusCode =
+                        httpResponse
+                                .getStatusLine()
+                                .getStatusCode();
+                if (statusCode != HttpStatus.SC_CREATED) {
+                    LOG.warn("Received a bad response: code({})", statusCode);
+                }
+                EntityUtils.consumeQuietly(httpResponse.getEntity());
+            } catch (final IOException ioe) {
+                LOG.warn("Exception occurred while uploading metrics", ioe);
             }
         } catch (final IOException ioe) {
             LOG.warn("Exception occurred while uploading metrics", ioe);

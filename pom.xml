@@ -22,6 +22,7 @@
         <!-- Our versions -->
         <foreman.version>2.11.0-SNAPSHOT</foreman.version>
 
+        <apache-httpclient.version>4.5.6</apache-httpclient.version>
         <commons-collections.version>4.2</commons-collections.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-lang.version>3.7</commons-lang.version>
@@ -238,6 +239,13 @@
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-xmrstak</artifactId>
                 <version>${foreman.version}</version>
+            </dependency>
+
+            <!-- Apache -->
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpclient</artifactId>
+                <version>${apache-httpclient.version}</version>
             </dependency>
 
             <!-- Netty -->
