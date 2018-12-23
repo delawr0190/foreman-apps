@@ -183,6 +183,10 @@ public class Summary {
         @JsonProperty("MHS 5s")
         public BigDecimal hashRate;
 
+        /** The device name. */
+        @JsonProperty("Name")
+        public String name;
+
         /** The status. */
         @JsonProperty("Status")
         public String status;

@@ -27,8 +27,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * A {@link CgMiner} represents a remote cgminer instance.
  *
- * <p>This class relies on the cgminer-api being enabled and configured to allow
- * the server that this application is running on to access it.</p>
+ * <p>This class relies on the cgminer-api being enabled and configured to
+ * allow the server that this application is running on to access it.</p>
  *
  * <p>As of right now, only {@link CgMinerCommand#VERSION}, {@link
  * CgMinerCommand#STATS} and {@link CgMinerCommand#POOLS} are polled.  These
@@ -315,6 +315,18 @@ public class CgMiner
          */
         public Builder setApiPort(final String apiPort) {
             this.apiPort = apiPort;
+            return this;
+        }
+
+        /**
+         * Sets the API port.
+         *
+         * @param apiPort The API port.
+         *
+         * @return This builder instance.
+         */
+        public Builder setApiPort(final int apiPort) {
+            this.apiIp = Integer.toString(apiPort);
             return this;
         }
     }
