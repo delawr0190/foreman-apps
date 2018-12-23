@@ -9,6 +9,7 @@ import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link ConnectionFactory} provides a factory to creating {@link Connection
@@ -33,12 +34,16 @@ public class ConnectionFactory {
      * Creates a {@link Connection} to a miner that accepts RPC calls that are
      * delimiter based.
      *
-     * @param request The request.
+     * @param request             The request.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout (units).
      *
      * @return The new {@link Connection}.
      */
     public static Connection createDelimiterConnection(
-            final ApiRequest request) {
+            final ApiRequest request,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
         final StringBuilder stringBuilder = new StringBuilder();
         return new SimpleApiConnection(
                 request.getIp(),
@@ -70,19 +75,25 @@ public class ConnectionFactory {
                                 context.close();
                             }
                         }),
-                DEFAULT_GROUP);
+                DEFAULT_GROUP,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 
     /**
      * Creates a {@link Connection} to a miner that accepts RPC calls that are
      * JSON based.
      *
-     * @param request The request.
+     * @param request             The request.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      *
      * @return The new {@link Connection}.
      */
     public static Connection createJsonConnection(
-            final ApiRequest request) {
+            final ApiRequest request,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
         return new SimpleApiConnection(
                 request.getIp(),
                 request.getPort(),
@@ -111,23 +122,30 @@ public class ConnectionFactory {
                             public void exceptionCaught(
                                     final ChannelHandlerContext context,
                                     final Throwable cause) {
+                                request.completed();
                                 context.close();
                             }
                         }),
-                DEFAULT_GROUP);
+                DEFAULT_GROUP,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 
     /**
      * Creates a {@link Connection} to a miner that has a REST interface.
      *
-     * @param request The request.
-     * @param method  The method.
+     * @param request             The request.
+     * @param method              The method.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      *
      * @return The new {@link Connection}.
      */
     public static Connection createRestConnection(
             final ApiRequest request,
-            final String method) {
+            final String method,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
         return new RestConnection(
                 String.format(
                         "http://%s:%d%s",
@@ -135,6 +153,8 @@ public class ConnectionFactory {
                         request.getPort(),
                         request.getRequest()),
                 method,
-                request);
+                request,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 }

@@ -37,6 +37,34 @@ public class Query {
             final int apiPort,
             final String command)
             throws MinerException {
+        return delimiterQuery(
+                apiIp,
+                apiPort,
+                command,
+                15,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Utility method to perform a query against a delimiter-based API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param command             The command.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static String delimiterQuery(
+            final String apiIp,
+            final int apiPort,
+            final String command,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
+            throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
                         apiIp,
@@ -44,13 +72,15 @@ public class Query {
                         command);
         final Connection connection =
                 ConnectionFactory.createDelimiterConnection(
-                        request);
+                        request,
+                        connectTimeout,
+                        connectTimeoutUnits);
         connection.query();
 
         final boolean completed =
                 request.waitForCompletion(
-                        10,
-                        TimeUnit.SECONDS);
+                        connectTimeout,
+                        connectTimeoutUnits);
         final String response =
                 request.getResponse();
         if (!completed || response == null) {
@@ -79,6 +109,38 @@ public class Query {
             final String command,
             final TypeReference<T> type)
             throws MinerException {
+        return jsonQuery(
+                apiIp,
+                apiPort,
+                command,
+                type,
+                10,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Utility method to perform a query against a JSON RPC API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param command             The command.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T jsonQuery(
+            final String apiIp,
+            final int apiPort,
+            final String command,
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
+            throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
                         apiIp,
@@ -86,13 +148,16 @@ public class Query {
                         command);
         final Connection connection =
                 ConnectionFactory.createJsonConnection(
-                        request);
+                        request,
+                        connectTimeout,
+                        connectTimeoutUnits);
         connection.query();
 
-        return
-                query(
-                        request,
-                        type);
+        return query(
+                request,
+                type,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 
     /**
@@ -118,6 +183,44 @@ public class Query {
             final String password,
             final TypeReference<T> type)
             throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                username,
+                password,
+                type,
+                10,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param uri                 The URI.
+     * @param username            The username.
+     * @param password            The password.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String username,
+            final String password,
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
+            throws MinerException {
         final String auth =
                 Base64.getEncoder().encodeToString(
                         (username + ":" + password).getBytes());
@@ -133,13 +236,16 @@ public class Query {
         final Connection connection =
                 ConnectionFactory.createRestConnection(
                         request,
-                        "POST");
+                        "POST",
+                        connectTimeout,
+                        connectTimeoutUnits);
         connection.query();
 
-        return
-                query(
-                        request,
-                        type);
+        return query(
+                request,
+                type,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 
     /**
@@ -161,6 +267,38 @@ public class Query {
             final String uri,
             final TypeReference<T> type)
             throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                type,
+                10,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param uri                 The URI.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
+            throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
                         apiIp,
@@ -170,21 +308,26 @@ public class Query {
         final Connection connection =
                 ConnectionFactory.createRestConnection(
                         request,
-                        "GET");
+                        "GET",
+                        connectTimeout,
+                        connectTimeoutUnits);
         connection.query();
 
-        return
-                query(
-                        request,
-                        type);
+        return query(
+                request,
+                type,
+                connectTimeout,
+                connectTimeoutUnits);
     }
 
     /**
      * Runs the query.
      *
-     * @param request The request.
-     * @param type    The response class.
-     * @param <T>     The response type.
+     * @param request             The request.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
      *
      * @return The response.
      *
@@ -192,12 +335,14 @@ public class Query {
      */
     private static <T> T query(
             final ApiRequest request,
-            final TypeReference<T> type)
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
             throws MinerException {
         T response;
         if (request.waitForCompletion(
-                10,
-                TimeUnit.SECONDS)) {
+                connectTimeout,
+                connectTimeoutUnits)) {
             final ObjectMapper objectMapper =
                     new ObjectMapper();
             try {

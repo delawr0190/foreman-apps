@@ -44,6 +44,12 @@ public class CgMiner
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMiner.class);
 
+    /** The connection timeout. */
+    private final int connectTimeout;
+
+    /** The connection timeout units. */
+    private final TimeUnit connectTimeoutUnits;
+
     /**
      * A {@link Map} of every {@link CgMinerRequest} to a {@link
      * ResponsePatchingStrategy} to sanitize the JSON.
@@ -62,12 +68,14 @@ public class CgMiner
      *
      * @param builder The builder.
      */
-    CgMiner(final Builder builder) {
+    private CgMiner(final Builder builder) {
         super(
                 builder.apiIp,
                 Integer.parseInt(builder.apiPort));
         this.requests = new HashMap<>(builder.requests);
         this.patchingStrategies = new HashMap<>(builder.patchingStrategies);
+        this.connectTimeout = builder.connectTimeout;
+        this.connectTimeoutUnits = builder.connectTimeoutUnits;
     }
 
     @Override
@@ -110,8 +118,7 @@ public class CgMiner
             goodJson =
                     json.substring(0, errorObjectStart) +
                             json.substring(
-                                    errorObjectEnd + 1,
-                                    json.length());
+                                    errorObjectEnd + 1);
         }
 
         try {
@@ -193,37 +200,44 @@ public class CgMiner
 
             final Connection connection =
                     ConnectionFactory.createJsonConnection(
-                            apiRequest);
+                            apiRequest,
+                            this.connectTimeout,
+                            this.connectTimeoutUnits);
             connection.query();
 
             if (apiRequest.waitForCompletion(
-                    10,
-                    TimeUnit.SECONDS)) {
-                final String responseString =
-                        patchJson(
-                                apiRequest.getResponse(),
-                                this.patchingStrategies.get(request));
-
-                final Map<String, List<Map<String, String>>> responseMap =
-                        objectMapper.readValue(
-                                responseString,
-                                new TypeReference<Map<String, List<Map<String, String>>>>() {
-                                });
-                if (!responseMap.isEmpty()) {
-                    response = toResponse(responseMap);
+                    this.connectTimeout,
+                    this.connectTimeoutUnits)) {
+                String responseString =
+                        apiRequest.getResponse();
+                if (responseString != null && !responseString.isEmpty()) {
+                    responseString =
+                            patchJson(
+                                    responseString,
+                                    this.patchingStrategies.get(request));
+                    final Map<String, List<Map<String, String>>> responseMap =
+                            objectMapper.readValue(
+                                    responseString,
+                                    new TypeReference<Map<String, List<Map<String, String>>>>() {
+                                    });
+                    if (!responseMap.isEmpty()) {
+                        response = toResponse(responseMap);
+                    }
                 }
-            } else {
-                LOG.warn("No response received from cgminer");
             }
         } catch (final IOException ioe) {
-            LOG.warn("Exception occurred while querying {}:{}",
+            LOG.debug("Exception occurred while querying {}:{}",
                     this.apiIp,
                     this.apiPort,
                     ioe);
         }
 
         if (response == null) {
-            throw new MinerException("Failed to obtain a response");
+            throw new MinerException(
+                    String.format(
+                            "Failed to obtain a response from %s:%d",
+                            this.apiIp,
+                            this.apiPort));
         }
 
         return response;
@@ -238,6 +252,12 @@ public class CgMiner
 
         /** The API port. */
         private String apiPort;
+
+        /** The connection timeout. */
+        private int connectTimeout = 10;
+
+        /** The connection timeout units. */
+        private TimeUnit connectTimeoutUnits = TimeUnit.SECONDS;
 
         /**
          * A map of every request to a patching strategy to sanitize the
@@ -327,6 +347,22 @@ public class CgMiner
          */
         public Builder setApiPort(final int apiPort) {
             this.apiIp = Integer.toString(apiPort);
+            return this;
+        }
+
+        /**
+         * Sets the connection timeout.
+         *
+         * @param connectTimeout      The connection timeout.
+         * @param connectTimeoutUnits The connection timeout units.
+         *
+         * @return This builder instance.
+         */
+        public Builder setConnectTimeout(
+                final int connectTimeout,
+                final TimeUnit connectTimeoutUnits) {
+            this.connectTimeout = connectTimeout;
+            this.connectTimeoutUnits = connectTimeoutUnits;
             return this;
         }
     }

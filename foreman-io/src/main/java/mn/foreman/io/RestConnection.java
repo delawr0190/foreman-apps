@@ -16,8 +16,8 @@ import java.util.concurrent.TimeUnit;
 /**
  * A {@link RestConnection} provides a connection to a remote miner instance.
  *
- * <p>{@link #query()} will block until the response has been fully received and
- * the connection is terminated.</p>
+ * <p>{@link #query()} will block until the response has been fully received
+ * and the connection is terminated.</p>
  *
  * @see HttpURLConnection
  */
@@ -28,9 +28,11 @@ public class RestConnection
     private static final Logger LOG =
             LoggerFactory.getLogger(RestConnection.class);
 
-    /** How long to wait on socket operations before disconnecting. */
-    private static final int SOCKET_TIMEOUT =
-            (int) TimeUnit.SECONDS.toMillis(10);
+    /** The connection timeout. */
+    private final int connectionTimeout;
+
+    /** The connection timeout units. */
+    private final TimeUnit connectionTimeoutUnits;
 
     /** The method. */
     private final String method;
@@ -44,14 +46,18 @@ public class RestConnection
     /**
      * Constructor.
      *
-     * @param url     The URL.
-     * @param method  The method.
-     * @param request The request.
+     * @param url                 The URL.
+     * @param method              The method.
+     * @param request             The request.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      */
     RestConnection(
             final String url,
             final String method,
-            final ApiRequest request) {
+            final ApiRequest request,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
         Validate.notEmpty(
                 url,
                 "url cannot be empty");
@@ -61,20 +67,31 @@ public class RestConnection
         Validate.notNull(
                 request,
                 "request cannot be empty");
+        Validate.isTrue(
+                connectTimeout >= 0,
+                "connectTimeout must be >= 0");
+        Validate.notNull(
+                connectTimeoutUnits,
+                "connectTimeoutUnits cannot be null");
         this.url = url;
         this.method = method;
         this.request = request;
+        this.connectionTimeout = connectTimeout;
+        this.connectionTimeoutUnits = connectTimeoutUnits;
     }
 
     @Override
     public void query() {
         try {
+            final int socketTimeout =
+                    (int) this.connectionTimeoutUnits.toMillis(
+                            this.connectionTimeout);
             final URL url = new URL(this.url);
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
             connection.setRequestMethod(this.method);
-            connection.setConnectTimeout(SOCKET_TIMEOUT);
-            connection.setReadTimeout(SOCKET_TIMEOUT);
+            connection.setConnectTimeout(socketTimeout);
+            connection.setReadTimeout(socketTimeout);
             for (final Map.Entry<String, String> property :
                     this.request.getProperties().entrySet()) {
                 connection.setRequestProperty(

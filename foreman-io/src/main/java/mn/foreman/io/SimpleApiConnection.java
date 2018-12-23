@@ -17,18 +17,21 @@ import java.util.concurrent.TimeUnit;
  * A {@link SimpleApiConnection} provides a blocking, Netty-based connection to
  * a remote miner instance.
  *
- * <p>{@link #query()} will block until the response has been fully received and
- * the connection is terminated.</p>
+ * <p>{@link #query()} will block until the response has been fully received
+ * and the connection is terminated.</p>
  */
 public class SimpleApiConnection
         implements Connection {
 
-    /** How long to wait to connect to an API. */
-    private static final int API_TIMEOUT = (int) TimeUnit.SECONDS.toMillis(15);
-
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(SimpleApiConnection.class);
+
+    /** The connection timeout. */
+    private final int connectTimeout;
+
+    /** The connection timeout units. */
+    private final TimeUnit connectTimeoutUnits;
 
     /** The event group. */
     private final EventLoopGroup eventLoopGroup;
@@ -48,18 +51,22 @@ public class SimpleApiConnection
     /**
      * Constructor.
      *
-     * @param ip             The IP.
-     * @param port           The port.
-     * @param request        The request to send.
-     * @param handlers       The handlers.
-     * @param eventLoopGroup The event group.
+     * @param ip                  The IP.
+     * @param port                The port.
+     * @param request             The request to send.
+     * @param handlers            The handlers.
+     * @param eventLoopGroup      The event group.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      */
     SimpleApiConnection(
             final String ip,
             final int port,
             final String request,
             final List<ChannelHandler> handlers,
-            final EventLoopGroup eventLoopGroup) {
+            final EventLoopGroup eventLoopGroup,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
         Validate.notNull(
                 ip,
                 "IP cannot be null");
@@ -78,28 +85,40 @@ public class SimpleApiConnection
         Validate.notNull(
                 eventLoopGroup,
                 "Event group cannot be null");
+        Validate.isTrue(
+                connectTimeout >= 0,
+                "connectTimeout must be >= 0");
+        Validate.notNull(
+                connectTimeoutUnits,
+                "connectTimeoutUnits cannot be null");
         this.ip = ip;
         this.port = port;
         this.request = request;
         this.handlers = new ArrayList<>(handlers);
         this.eventLoopGroup = eventLoopGroup;
+        this.connectTimeout = connectTimeout;
+        this.connectTimeoutUnits = connectTimeoutUnits;
     }
 
     @Override
     public void query() {
+        final int connectTimeoutMillis =
+                (int) this.connectTimeoutUnits.toMillis(
+                        this.connectTimeout);
         final Bootstrap bootstrap = new Bootstrap();
         bootstrap
                 .group(this.eventLoopGroup)
                 .channel(NioSocketChannel.class)
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, API_TIMEOUT)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS,
+                        connectTimeoutMillis)
                 .handler(new ChannelInitializer<SocketChannel>() {
 
                     @Override
                     protected void initChannel(final SocketChannel channel) {
                         channel.pipeline().addLast(
                                 new ReadTimeoutHandler(
-                                        15,
-                                        TimeUnit.SECONDS));
+                                        SimpleApiConnection.this.connectTimeout,
+                                        SimpleApiConnection.this.connectTimeoutUnits));
                         SimpleApiConnection.this.handlers
                                 .forEach((handler) ->
                                         channel.pipeline().addLast(handler));
@@ -117,10 +136,11 @@ public class SimpleApiConnection
                 channel.writeAndFlush(this.request).sync();
             }
 
-            // Wait until the connection is closed - should be closed immediately
+            // Wait until the connection is closed - should be closed
+            // immediately
             channel.closeFuture().sync();
         } catch (final InterruptedException ie) {
-            LOG.warn("Exception occurred while communicating with {}:{}",
+            LOG.debug("Exception occurred while communicating with {}:{}",
                     this.ip,
                     this.port,
                     ie);
