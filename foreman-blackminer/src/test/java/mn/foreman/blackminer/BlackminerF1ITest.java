@@ -1,6 +1,5 @@
-package mn.foreman.baikal;
+package mn.foreman.blackminer;
 
-import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
