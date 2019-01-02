@@ -19,12 +19,12 @@
         <repository>
             <id>central</id>
             <name>2666cfb367e1-releases</name>
-            <url>https://artifactory.foreman.mn:443/artifactory/libs-release</url>
+            <url>https://artifactory.foreman.mn/artifactory/libs-release</url>
         </repository>
         <snapshotRepository>
             <id>snapshots</id>
             <name>2666cfb367e1-snapshots</name>
-            <url>https://artifactory.foreman.mn:443/artifactory/libs-snapshot</url>
+            <url>https://artifactory.foreman.mn/artifactory/libs-snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 
