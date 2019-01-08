@@ -30,6 +30,15 @@ public class DevsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(DevsResponseStrategy.class);
 
+    /** MHs 30s. */
+    private static final String MHS_30_KEY = "MHS 30s";
+
+    /** MHs 5s. */
+    private static final String MHS_5_KEY = "MHS 5s";
+
+    /** MHs av. */
+    private static final String MHS_AV_KEY = "MHS av";
+
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
@@ -86,10 +95,15 @@ public class DevsResponseStrategy
      */
     private static BigDecimal getRate(
             final Map<String, String> map) {
-        return new BigDecimal(
-                map.containsKey("MHS 5s")
-                        ? map.get("MHS 5s")
-                        : map.get("MHS 30s"));
+        final String rate;
+        if (map.containsKey(MHS_5_KEY)) {
+            rate = map.get(MHS_5_KEY);
+        } else if (map.containsKey(MHS_30_KEY)) {
+            rate = map.get(MHS_30_KEY);
+        } else {
+            rate = map.get(MHS_AV_KEY);
+        }
+        return new BigDecimal(rate);
     }
 
     /**
