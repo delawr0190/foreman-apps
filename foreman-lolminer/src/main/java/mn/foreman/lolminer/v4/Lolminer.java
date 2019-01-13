@@ -1,7 +1,7 @@
-package mn.foreman.lolminer;
+package mn.foreman.lolminer.v4;
 
 import mn.foreman.io.Query;
-import mn.foreman.lolminer.json.Response;
+import mn.foreman.lolminer.v4.json.Response;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -54,7 +54,7 @@ public class Lolminer
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    Lolminer(
+    public Lolminer(
             final String apiIp,
             final int apiPort) {
         super(

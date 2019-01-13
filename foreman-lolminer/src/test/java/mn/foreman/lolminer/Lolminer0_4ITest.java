@@ -14,16 +14,19 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link LolminerITest} against a fake API. */
-public class LolminerITest
+/** Runs an integration tests using {@link Lolminer0_4ITest} against a fake API. */
+public class Lolminer0_4ITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public LolminerITest() {
+    public Lolminer0_4ITest() {
         super(
-                new Lolminer(
-                        "127.0.0.1",
-                        8080),
+                new LolminerFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "8080")),
                 new FakeRpcMinerServer(
                         8080,
                         ImmutableMap.of(

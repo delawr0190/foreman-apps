@@ -1,5 +1,6 @@
 package mn.foreman.lolminer;
 
+import mn.foreman.lolminer.v4.Lolminer;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -14,8 +15,14 @@ public class LolminerFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
-        return new Lolminer(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+        final String apiIp = config.get("apiIp");
+        final int apiPort = Integer.parseInt(config.get("apiPort"));
+        return new VersionDecorator(
+                new Lolminer(
+                        apiIp,
+                        apiPort),
+                new mn.foreman.lolminer.v6.Lolminer(
+                        apiIp,
+                        apiPort));
     }
 }

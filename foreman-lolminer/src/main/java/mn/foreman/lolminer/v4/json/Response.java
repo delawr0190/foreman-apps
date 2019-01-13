@@ -1,4 +1,4 @@
-package mn.foreman.lolminer.json;
+package mn.foreman.lolminer.v4.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
