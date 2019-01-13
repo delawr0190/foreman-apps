@@ -77,6 +77,7 @@
         <module>foreman-mkxminer</module>
         <module>foreman-model</module>
         <module>foreman-pickaxe</module>
+        <module>foreman-rhminer</module>
         <module>foreman-sgminer</module>
         <module>foreman-srbminer</module>
         <module>foreman-trex</module>
@@ -207,6 +208,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-rhminer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

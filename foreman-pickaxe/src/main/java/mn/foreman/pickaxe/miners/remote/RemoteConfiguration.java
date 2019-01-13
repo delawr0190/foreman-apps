@@ -26,6 +26,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
+import mn.foreman.rhminer.RhminerFactory;
 import mn.foreman.sgminer.SgminerFactory;
 import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.trex.TrexFactory;
@@ -421,6 +422,9 @@ public class RemoteConfiguration
                 break;
             case MKXMINER_API:
                 miner = toMiner(config, new MkxminerFactory());
+                break;
+            case RHMINER_API:
+                miner = toMiner(config, new RhminerFactory());
                 break;
             case SGMINER_API:
                 miner = toMiner(config, new SgminerFactory());
