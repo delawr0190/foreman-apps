@@ -7,7 +7,7 @@
     <groupId>mn.foreman</groupId>
     <artifactId>foreman-buildmaster</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
+    <version>2.12.0-SNAPSHOT</version>
 
     <name>foreman: buildmaster</name>
     <organization>
@@ -32,16 +32,13 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
 
-        <!-- Our versions -->
-        <foreman.version>2.12.0-SNAPSHOT</foreman.version>
-
         <apache-httpclient.version>4.5.6</apache-httpclient.version>
         <commons-collections.version>4.2</commons-collections.version>
         <commons-io.version>2.6</commons-io.version>
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
         <guava.version>23.5-jre</guava.version>
-        <jackson.version>2.9.5</jackson.version>
+        <jackson.version>2.9.8</jackson.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
@@ -95,163 +92,163 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-antminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-avalon</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-baikal</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-blackminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-bminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-castxmr</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-ccminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-cgminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-chisel</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-claymore</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dayun</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dragonmint</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dstm</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-ethminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-ewbf</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-excavator</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-gminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-io</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-innosilicon</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-jceminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-lolminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-miner</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-mkxminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-model</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-sgminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-srbminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-trex</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-util</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-util</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
                 <classifier>tests</classifier>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-whatsminer</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-xmrig</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-xmrstak</artifactId>
-                <version>${foreman.version}</version>
+                <version>${project.version}</version>
             </dependency>
 
             <!-- Apache -->
@@ -394,7 +391,8 @@
                                 </addDefaultSpecificationEntries>
                             </manifest>
                             <manifestEntries>
-                                <Built-By>${project.organization.name}</Built-By>
+                                <Built-By>${project.organization.name}
+                                </Built-By>
                                 <Build-Jdk>${java.version}</Build-Jdk>
                             </manifestEntries>
                         </archive>
