@@ -76,14 +76,22 @@ public class Gminer
                         "/stat",
                         new TypeReference<Stat>() {
                         });
-        final long acceptedShares =
+        long acceptedShares =
                 sumDeviceAttribute(
                         stats.devices,
                         (result) -> (long) result.acceptedShares);
-        final long rejectedShares =
+        // May be total shares instead of per-GPU
+        if (acceptedShares == 0) {
+            acceptedShares = stats.totalAcceptedShares;
+        }
+        long rejectedShares =
                 sumDeviceAttribute(
                         stats.devices,
                         (result) -> (long) result.rejectedShares);
+        // May be total shares instead of per-GPU
+        if (rejectedShares == 0) {
+            rejectedShares = stats.totalRejectedShares;
+        }
         final long hashRate =
                 sumDeviceAttribute(
                         stats.devices,

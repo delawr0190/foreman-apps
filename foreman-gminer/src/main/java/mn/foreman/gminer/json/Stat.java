@@ -86,6 +86,14 @@ public class Stat {
     @JsonProperty("server")
     public String server;
 
+    /** The total accepted shares. */
+    @JsonProperty("total_accepted_shares")
+    public int totalAcceptedShares = 0;
+
+    /** The total rejected shares. */
+    @JsonProperty("total_rejected_shares")
+    public int totalRejectedShares = 0;
+
     /** Provides a model representation of the {@link Device} object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Device {
