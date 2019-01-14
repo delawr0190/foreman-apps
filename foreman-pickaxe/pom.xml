@@ -107,6 +107,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-multiminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-rhminer</artifactId>
         </dependency>
         <dependency>

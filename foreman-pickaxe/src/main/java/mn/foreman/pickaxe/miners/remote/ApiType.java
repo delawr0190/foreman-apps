@@ -109,7 +109,10 @@ public enum ApiType {
     BLACKMINER_API(32),
 
     /** rhminer. */
-    RHMINER_API(33);
+    RHMINER_API(33),
+
+    /** multiminer. */
+    MULTIMINER_API(34);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
