@@ -29,11 +29,6 @@ set JVM_OPTS_FILE="%PICKAXE_HOME%\conf\jvm.options"
 for /F "usebackq delims=" %%a in (`findstr /b \- %JVM_OPTS_FILE%`) do set options=!options! %%a
 set "JVM_OPTS=!options! %JVM_OPTS%"
 
-rem # Set JVM classpath
-for %%i in ("%PICKAXE_HOME%\lib\*.jar") do (
-    call :concat "%%i"
-)
-
 rem # Set JVM parameters
 set JVM_PARAMS=-Dlogback.configurationFile="%PICKAXE_HOME%\etc\logback.xml"
 set JVM_PARAMS=%JVM_PARAMS% -DLOG_LOCATION="%PICKAXE_HOME%\logs"
@@ -51,16 +46,8 @@ echo - run 'service-stop_RUN_AS_ADMIN.bat' to stop
 echo - run 'service-remove_RUN_AS_ADMIN.bat' to uninstall
 echo;
 echo Starting pickaxe...(leave this window open)
-%JAVA% %JVM_OPTS% %JVM_PARAMS% -cp %CLASSPATH% mn.foreman.pickaxe.Main %JVM_COMMAND_LINE%
+%JAVA% %JVM_OPTS% %JVM_PARAMS% -cp "%PICKAXE_HOME%\lib\*" mn.foreman.pickaxe.Main %JVM_COMMAND_LINE%
 goto end
-
-:concat
-if not defined CLASSPATH (
-    set CLASSPATH="%~1"
-) else (
-    set CLASSPATH=%CLASSPATH%;"%~1"
-)
-goto :eof
 
 :end
 endlocal
