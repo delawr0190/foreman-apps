@@ -81,11 +81,13 @@ public class Hspminer
                                 0)
                         .build());
 
+        final BigDecimal multiplier = new BigDecimal((double) 1 / 60);
+
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
                         .setHashRate(miner.devices
                                 .stream()
-                                .map(device -> device.hashrate)
+                                .map(device -> device.hashrate.multiply(multiplier))
                                 .reduce(BigDecimal.ZERO, BigDecimal::add));
         miner.devices.forEach(
                 device ->
