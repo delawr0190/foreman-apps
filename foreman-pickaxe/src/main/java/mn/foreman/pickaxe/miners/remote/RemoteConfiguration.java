@@ -18,6 +18,7 @@ import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.gminer.GminerFactory;
+import mn.foreman.hspminer.HspminerFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.lolminer.LolminerFactory;
@@ -401,6 +402,9 @@ public class RemoteConfiguration
                 break;
             case GMINER_API:
                 miner = toMiner(config, new GminerFactory());
+                break;
+            case HSPMINER_API:
+                miner = toMiner(config, new HspminerFactory());
                 break;
             case INNOSILICON_HS_API:
                 // Fall through

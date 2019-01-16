@@ -70,6 +70,7 @@
         <module>foreman-ewbf</module>
         <module>foreman-excavator</module>
         <module>foreman-gminer</module>
+        <module>foreman-hspminer</module>
         <module>foreman-innosilicon</module>
         <module>foreman-io</module>
         <module>foreman-jceminer</module>
@@ -174,6 +175,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-gminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-hspminer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
