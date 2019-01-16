@@ -151,7 +151,9 @@ public class HspminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal(1493))
+                                        .setHashRate(
+                                                new BigDecimal(1493)
+                                                        .multiply(new BigDecimal((double) 1 / 60)))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setIndex(0)
