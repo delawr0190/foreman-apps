@@ -115,7 +115,10 @@ public enum ApiType {
     MULTIMINER_API(34),
 
     /** hspminer. */
-    HSPMINER_API(35);
+    HSPMINER_API(35),
+
+    /** nanominer. */
+    NANOMINER_API(36);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
