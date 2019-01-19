@@ -27,6 +27,46 @@ public class BminerITest
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
+                                "/api/status",
+                                new HttpHandler(
+                                        "",
+                                        "{\n" +
+                                                "  \"stratum\": {\n" +
+                                                "    \"accepted_shares\": 1,\n" +
+                                                "    \"rejected_shares\": 0,\n" +
+                                                "    \"accepted_share_rate\": 0.01,\n" +
+                                                "    \"rejected_share_rate\": 0\n" +
+                                                "  },\n" +
+                                                "  \"miners\": {\n" +
+                                                "    \"0\": {\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 535.6,\n" +
+                                                "        \"nonce_rate\": 287.07\n" +
+                                                "      },\n" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 45,\n" +
+                                                "        \"power\": 255,\n" +
+                                                "        \"fan_speed\": 74,\n" +
+                                                "        \"global_memory_used\": 828,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 100,\n" +
+                                                "          \"memory\": 84\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1885,\n" +
+                                                "          \"memory\": 5005\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 2,\n" +
+                                                "          \"rx_throughput\": 22,\n" +
+                                                "          \"tx_throughput\": 6\n" +
+                                                "        }\n" +
+                                                "      }\n" +
+                                                "    }\n" +
+                                                "  },\n" +
+                                                "  \"version\": \"v5.1.0-6b8803e\",\n" +
+                                                "  \"start_time\": 1516502494\n" +
+                                                "}"),
                                 "/api/v1/status/solver",
                                 new HttpHandler(
                                         "",
@@ -50,27 +90,6 @@ public class BminerITest
                                                 "    }\n" +
                                                 "  }\n" +
                                                 "}\n"),
-                                "/api/v1/status/device",
-                                new HttpHandler(
-                                        "",
-                                        "{\n" +
-                                                "  \"devices\": {\n" +
-                                                "    \"0\": {\n" +
-                                                "      \"temperature\": 83,\n" +
-                                                "      \"power\": 199,\n" +
-                                                "      \"fan_speed\": 74,\n" +
-                                                "      \"global_memory_used\": 4385,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 100,\n" +
-                                                "        \"memory\": 73\n" +
-                                                "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1809,\n" +
-                                                "        \"memory\": 5005\n" +
-                                                "      }\n" +
-                                                "    }\n" +
-                                                "  }\n" +
-                                                "}"),
                                 "/api/v1/status/stratum",
                                 new HttpHandler(
                                         "",
@@ -125,7 +144,7 @@ public class BminerITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
-                                                        .setTemp(83)
+                                                        .setTemp(45)
                                                         .setIndex(0)
                                                         .setBus(0)
                                                         .setFans(
@@ -136,7 +155,7 @@ public class BminerITest
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1809)
+                                                                        .setFreq(1885)
                                                                         .setMemFreq(5005)
                                                                         .build())
                                                         .build())

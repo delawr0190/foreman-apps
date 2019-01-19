@@ -37,7 +37,7 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.44\n" +
+                                                "            \"hash_rate\": 5.05\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
@@ -47,7 +47,7 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.44\n" +
+                                                "            \"hash_rate\": 4.92\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
@@ -57,7 +57,7 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.44\n" +
+                                                "            \"hash_rate\": 4.54\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
@@ -67,7 +67,7 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.46\n" +
+                                                "            \"hash_rate\": 4.9\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
@@ -77,7 +77,7 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.44\n" +
+                                                "            \"hash_rate\": 4.75\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
@@ -87,133 +87,172 @@ public class BminerCuckooITest
                                                 "        {\n" +
                                                 "          \"algorithm\": \"aeternity\",\n" +
                                                 "          \"speed_info\": {\n" +
-                                                "            \"hash_rate\": 2.51\n" +
+                                                "            \"hash_rate\": 4.75\n" +
                                                 "          }\n" +
                                                 "        }\n" +
                                                 "      ]\n" +
                                                 "    }\n" +
                                                 "  }\n" +
                                                 "}"),
-                                "/api/v1/status/device",
+                                "/api/status",
                                 new HttpHandler(
                                         "",
                                         "{\n" +
-                                                "  \"devices\": {\n" +
+                                                "  \"algorithm\": \"aeternity\",\n" +
+                                                "  \"stratum\": {\n" +
+                                                "    \"accepted_shares\": 31,\n" +
+                                                "    \"rejected_shares\": 0,\n" +
+                                                "    \"accepted_share_rate\": 0.09,\n" +
+                                                "    \"rejected_share_rate\": 0\n" +
+                                                "  },\n" +
+                                                "  \"miners\": {\n" +
                                                 "    \"0\": {\n" +
-                                                "      \"temperature\": 51,\n" +
-                                                "      \"power\": 168,\n" +
-                                                "      \"fan_speed\": 55,\n" +
-                                                "      \"global_memory_used\": 6094,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 100,\n" +
-                                                "        \"memory\": 63\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.98\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 470,\n" +
-                                                "        \"tx_throughput\": 58\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 46,\n" +
+                                                "        \"power\": 162,\n" +
+                                                "        \"fan_speed\": 56,\n" +
+                                                "        \"global_memory_used\": 6361,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 83,\n" +
+                                                "          \"memory\": 40\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 627,\n" +
+                                                "          \"tx_throughput\": 91\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    },\n" +
                                                 "    \"1\": {\n" +
-                                                "      \"temperature\": 52,\n" +
-                                                "      \"power\": 154,\n" +
-                                                "      \"fan_speed\": 58,\n" +
-                                                "      \"global_memory_used\": 5950,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 99,\n" +
-                                                "        \"memory\": 41\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.9\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 1028,\n" +
-                                                "        \"tx_throughput\": 84\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 48,\n" +
+                                                "        \"power\": 162,\n" +
+                                                "        \"fan_speed\": 58,\n" +
+                                                "        \"global_memory_used\": 6073,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 69,\n" +
+                                                "          \"memory\": 43\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 609,\n" +
+                                                "          \"tx_throughput\": 63\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    },\n" +
                                                 "    \"2\": {\n" +
-                                                "      \"temperature\": 52,\n" +
-                                                "      \"power\": 149,\n" +
-                                                "      \"fan_speed\": 59,\n" +
-                                                "      \"global_memory_used\": 5950,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 97,\n" +
-                                                "        \"memory\": 42\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.7\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 741,\n" +
-                                                "        \"tx_throughput\": 59\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 47,\n" +
+                                                "        \"power\": 71,\n" +
+                                                "        \"fan_speed\": 58,\n" +
+                                                "        \"global_memory_used\": 6338,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 89,\n" +
+                                                "          \"memory\": 53\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 475,\n" +
+                                                "          \"tx_throughput\": 57\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    },\n" +
                                                 "    \"3\": {\n" +
-                                                "      \"temperature\": 50,\n" +
-                                                "      \"power\": 149,\n" +
-                                                "      \"fan_speed\": 50,\n" +
-                                                "      \"global_memory_used\": 5950,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 98,\n" +
-                                                "        \"memory\": 61\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.91\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 522,\n" +
-                                                "        \"tx_throughput\": 78\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 45,\n" +
+                                                "        \"power\": 158,\n" +
+                                                "        \"fan_speed\": 55,\n" +
+                                                "        \"global_memory_used\": 5952,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 93,\n" +
+                                                "          \"memory\": 53\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 446,\n" +
+                                                "          \"tx_throughput\": 1807\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    },\n" +
                                                 "    \"4\": {\n" +
-                                                "      \"temperature\": 51,\n" +
-                                                "      \"power\": 127,\n" +
-                                                "      \"fan_speed\": 53,\n" +
-                                                "      \"global_memory_used\": 5950,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 99,\n" +
-                                                "        \"memory\": 51\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.81\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 1142,\n" +
-                                                "        \"tx_throughput\": 52\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 45,\n" +
+                                                "        \"power\": 70,\n" +
+                                                "        \"fan_speed\": 55,\n" +
+                                                "        \"global_memory_used\": 5952,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 97,\n" +
+                                                "          \"memory\": 55\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 512,\n" +
+                                                "          \"tx_throughput\": 43\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    },\n" +
                                                 "    \"5\": {\n" +
-                                                "      \"temperature\": 49,\n" +
-                                                "      \"power\": 143,\n" +
-                                                "      \"fan_speed\": 48,\n" +
-                                                "      \"global_memory_used\": 5950,\n" +
-                                                "      \"utilization\": {\n" +
-                                                "        \"gpu\": 97,\n" +
-                                                "        \"memory\": 52\n" +
+                                                "      \"solver\": {\n" +
+                                                "        \"solution_rate\": 4.78\n" +
                                                 "      },\n" +
-                                                "      \"clocks\": {\n" +
-                                                "        \"core\": 1695,\n" +
-                                                "        \"memory\": 5508\n" +
-                                                "      },\n" +
-                                                "      \"pci\": {\n" +
-                                                "        \"bar1_used\": 229,\n" +
-                                                "        \"rx_throughput\": 562,\n" +
-                                                "        \"tx_throughput\": 37\n" +
-                                                "      }" +
+                                                "      \"device\": {\n" +
+                                                "        \"temperature\": 43,\n" +
+                                                "        \"power\": 159,\n" +
+                                                "        \"fan_speed\": 53,\n" +
+                                                "        \"global_memory_used\": 6195,\n" +
+                                                "        \"utilization\": {\n" +
+                                                "          \"gpu\": 80,\n" +
+                                                "          \"memory\": 45\n" +
+                                                "        },\n" +
+                                                "        \"clocks\": {\n" +
+                                                "          \"core\": 1632,\n" +
+                                                "          \"memory\": 5508\n" +
+                                                "        },\n" +
+                                                "        \"pci\": {\n" +
+                                                "          \"bar1_used\": 229,\n" +
+                                                "          \"rx_throughput\": 800,\n" +
+                                                "          \"tx_throughput\": 56\n" +
+                                                "        }\n" +
+                                                "      }\n" +
                                                 "    }\n" +
-                                                "  }\n" +
+                                                "  },\n" +
+                                                "  \"version\": \"v12.1.0-5083c32\",\n" +
+                                                "  \"start_time\": 1547723050\n" +
                                                 "}"),
                                 "/api/v1/status/stratum",
                                 new HttpHandler(
@@ -223,13 +262,13 @@ public class BminerCuckooITest
                                                 "    \"aeternity\": {\n" +
                                                 "      \"failover_uris\": [\n" +
                                                 "        {\n" +
-                                                "          \"name\": \"somethingthing@mypool.com:5678\",\n" +
+                                                "          \"name\": \"aeternity:\\/\\/ak_xxxx.1080Ti@ae.f2pool.com:7898\",\n" +
                                                 "          \"active\": true\n" +
                                                 "        }\n" +
                                                 "      ],\n" +
-                                                "      \"accepted_shares\": 1,\n" +
+                                                "      \"accepted_shares\": 16,\n" +
                                                 "      \"rejected_shares\": 0,\n" +
-                                                "      \"accepted_share_rate\": 0.02,\n" +
+                                                "      \"accepted_share_rate\": 0.15,\n" +
                                                 "      \"rejected_share_rate\": 0\n" +
                                                 "    }\n" +
                                                 "  }\n" +
@@ -239,36 +278,36 @@ public class BminerCuckooITest
                         .setApiPort(8080)
                         .addPool(
                                 new Pool.Builder()
-                                        .setName("mypool.com:5678")
+                                        .setName("ae.f2pool.com:7898")
                                         .setStatus(true, true)
                                         .setPriority(0)
-                                        .setCounts(1, 0, 0)
+                                        .setCounts(16, 0, 0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal(14.73))
+                                        .setHashRate(new BigDecimal("28.910000000000000142108547152020037174224853515625"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
-                                                        .setTemp(51)
+                                                        .setTemp(46)
                                                         .setIndex(0)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(55)
+                                                                        .addSpeed(56)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1695)
+                                                                        .setFreq(1632)
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 1")
-                                                        .setTemp(52)
+                                                        .setTemp(48)
                                                         .setIndex(1)
                                                         .setBus(0)
                                                         .setFans(
@@ -279,51 +318,69 @@ public class BminerCuckooITest
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1695)
+                                                                        .setFreq(1632)
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 2")
-                                                        .setTemp(52)
+                                                        .setTemp(47)
                                                         .setIndex(2)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(59)
+                                                                        .addSpeed(58)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1695)
+                                                                        .setFreq(1632)
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 3")
-                                                        .setTemp(50)
+                                                        .setTemp(45)
                                                         .setIndex(3)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(50)
+                                                                        .addSpeed(55)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1695)
+                                                                        .setFreq(1632)
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 4")
-                                                        .setTemp(51)
+                                                        .setTemp(45)
                                                         .setIndex(4)
+                                                        .setBus(0)
+                                                        .setFans(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(1)
+                                                                        .addSpeed(55)
+                                                                        .setSpeedUnits("%")
+                                                                        .build())
+                                                        .setFreqInfo(
+                                                                new FreqInfo.Builder()
+                                                                        .setFreq(1632)
+                                                                        .setMemFreq(5508)
+                                                                        .build())
+                                                        .build())
+                                        .addGpu(
+                                                new Gpu.Builder()
+                                                        .setName("GPU 5")
+                                                        .setTemp(43)
+                                                        .setIndex(5)
                                                         .setBus(0)
                                                         .setFans(
                                                                 new FanInfo.Builder()
@@ -333,25 +390,7 @@ public class BminerCuckooITest
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(1695)
-                                                                        .setMemFreq(5508)
-                                                                        .build())
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setName("GPU 5")
-                                                        .setTemp(49)
-                                                        .setIndex(5)
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(1)
-                                                                        .addSpeed(48)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(1695)
+                                                                        .setFreq(1632)
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())

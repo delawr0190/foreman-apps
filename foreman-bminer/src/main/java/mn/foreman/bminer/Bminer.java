@@ -1,8 +1,7 @@
 package mn.foreman.bminer;
 
-import mn.foreman.bminer.json.devices.Device;
-import mn.foreman.bminer.json.devices.Devices;
 import mn.foreman.bminer.json.solver.Solvers;
+import mn.foreman.bminer.json.status.Status;
 import mn.foreman.bminer.json.stratum.Failover;
 import mn.foreman.bminer.json.stratum.Stratum;
 import mn.foreman.bminer.json.stratum.Stratums;
@@ -38,8 +37,8 @@ import java.util.Optional;
  * <p>This class currently queries:</p>
  *
  * <ul>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/api/status</li>
  * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/solver</li>
- * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/device</li>
  * <li>http://{@link #apiIp}:{@link #apiPort}/api/v1/status/stratum</li>
  * </ul>
  *
@@ -92,7 +91,7 @@ public class Bminer
         final Rig.Builder rigBuilder =
                 new Rig.Builder();
 
-        getDevices(rigBuilder);
+        getStatus(rigBuilder);
         getSolvers(rigBuilder);
         getStratums(statsBuilder);
 
@@ -100,7 +99,8 @@ public class Bminer
     }
 
     /**
-     * Converts the provided device ID and {@link Device} to a {@link Gpu}.
+     * Converts the provided device ID and {@link Status.Device} to a {@link
+     * Gpu}.
      *
      * @param id     The Cuda ID.
      * @param device The device.
@@ -109,7 +109,7 @@ public class Bminer
      */
     private static Gpu toGpu(
             final String id,
-            final Device device) {
+            final Status.Device device) {
         return new Gpu.Builder()
                 .setName("GPU " + id)
                 .setIndex(id)
@@ -179,34 +179,6 @@ public class Bminer
     }
 
     /**
-     * Queries the devices and updates the {@link Rig.Builder}.
-     *
-     * @param rigBuilder The builder to update.
-     *
-     * @throws MinerException on failure to query.
-     */
-    private void getDevices(final Rig.Builder rigBuilder)
-            throws MinerException {
-        final Devices devices =
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
-                        toUri("device"),
-                        new TypeReference<Devices>() {
-                        });
-        final Map<String, Device> deviceMap = devices.devices;
-        if (deviceMap != null) {
-            for (final Map.Entry<String, Device> entry :
-                    deviceMap.entrySet()) {
-                rigBuilder.addGpu(
-                        toGpu(
-                                entry.getKey(),
-                                entry.getValue()));
-            }
-        }
-    }
-
-    /**
      * Queries the solvers and updates the {@link Rig.Builder}.
      *
      * @param rigBuilder The builder to update.
@@ -242,6 +214,34 @@ public class Bminer
                                 .stream()
                                 .mapToDouble(Double::doubleValue)
                                 .sum()));
+    }
+
+    /**
+     * Queries the devices and updates the {@link Rig.Builder}.
+     *
+     * @param rigBuilder The builder to update.
+     *
+     * @throws MinerException on failure to query.
+     */
+    private void getStatus(final Rig.Builder rigBuilder)
+            throws MinerException {
+        final Status status =
+                Query.restQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "/api/status",
+                        new TypeReference<Status>() {
+                        });
+        final Map<String, Status.Miner> deviceMap = status.miners;
+        if (deviceMap != null) {
+            for (final Map.Entry<String, Status.Miner> entry :
+                    deviceMap.entrySet()) {
+                rigBuilder.addGpu(
+                        toGpu(
+                                entry.getKey(),
+                                entry.getValue().device));
+            }
+        }
     }
 
     /**
