@@ -30,6 +30,53 @@ public class Avalon7XXITest
                 new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(
+                                "{\"command\":\"summary\"}",
+                                new RpcHandler(
+                                        "{\n" +
+                                                "  \"STATUS\": [\n" +
+                                                "    {\n" +
+                                                "      \"STATUS\": \"S\",\n" +
+                                                "      \"When\": 1487889040,\n" +
+                                                "      \"Code\": 11,\n" +
+                                                "      \"Msg\": \"Summary\",\n" +
+                                                "      \"Description\": \"cgminer 4.10.0\"\n" +
+                                                "    }\n" +
+                                                "  ],\n" +
+                                                "  \"SUMMARY\": [\n" +
+                                                "    {\n" +
+                                                "      \"Elapsed\": 118,\n" +
+                                                "      \"MHS av\": 47071128.8,\n" +
+                                                "      \"MHS 5s\": 52126282.15,\n" +
+                                                "      \"MHS 1m\": 42592214.65,\n" +
+                                                "      \"MHS 5m\": 15441333.8,\n" +
+                                                "      \"MHS 15m\": 5789185.8,\n" +
+                                                "      \"Found Blocks\": 0,\n" +
+                                                "      \"Getworks\": 8,\n" +
+                                                "      \"Accepted\": 19,\n" +
+                                                "      \"Rejected\": 1,\n" +
+                                                "      \"Hardware Errors\": 3,\n" +
+                                                "      \"Utility\": 9.69,\n" +
+                                                "      \"Discarded\": 62,\n" +
+                                                "      \"Stale\": 0,\n" +
+                                                "      \"Get Failures\": 0,\n" +
+                                                "      \"Local Work\": 5367,\n" +
+                                                "      \"Remote Failures\": 0,\n" +
+                                                "      \"Network Blocks\": 1,\n" +
+                                                "      \"Total MH\": 5537208847,\n" +
+                                                "      \"Work Utility\": 675309.63,\n" +
+                                                "      \"Difficulty Accepted\": 819200,\n" +
+                                                "      \"Difficulty Rejected\": 32768,\n" +
+                                                "      \"Difficulty Stale\": 0,\n" +
+                                                "      \"Best Share\": 1548937,\n" +
+                                                "      \"Device Hardware%\": 0.0002,\n" +
+                                                "      \"Device Rejected%\": 2.4749,\n" +
+                                                "      \"Pool Rejected%\": 3.8462,\n" +
+                                                "      \"Pool Stale%\": 0,\n" +
+                                                "      \"Last getwork\": 1487889038\n" +
+                                                "    }\n" +
+                                                "  ],\n" +
+                                                "  \"id\": 1\n" +
+                                                "}"),
                                 "{\"command\":\"stats\"}",
                                 new RpcHandler(
                                         "{\n" +
@@ -281,7 +328,7 @@ public class Avalon7XXITest
                                         .build())
                         .addAsic(
                                 new Asic.Builder()
-                                        .setHashRate(new BigDecimal("68243510000000.00"))
+                                        .setHashRate(new BigDecimal("52126282150000.00"))
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(10)

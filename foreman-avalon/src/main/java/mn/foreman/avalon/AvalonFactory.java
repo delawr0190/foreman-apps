@@ -1,6 +1,6 @@
 package mn.foreman.avalon;
 
-import mn.foreman.avalon.response.StatsResponseStrategy;
+import mn.foreman.avalon.response.SummaryAndStatsResponseStrategy;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
@@ -19,6 +19,8 @@ public class AvalonFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
+        final SummaryAndStatsResponseStrategy responseStrategy =
+                new SummaryAndStatsResponseStrategy();
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -29,9 +31,14 @@ public class AvalonFactory
                         new PoolsResponseStrategy())
                 .addRequest(
                         new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.SUMMARY)
+                                .build(),
+                        responseStrategy)
+                .addRequest(
+                        new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        new StatsResponseStrategy())
+                        responseStrategy)
                 .build();
     }
 }
