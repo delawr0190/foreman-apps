@@ -34,6 +34,9 @@ public class PoolUtils {
                 sanitized = sanitized.split("@")[1];
             }
 
+            // Lowercase
+            sanitized = sanitized.toLowerCase();
+
             // Remove slashes
             sanitized = sanitized.replace("/", "");
 

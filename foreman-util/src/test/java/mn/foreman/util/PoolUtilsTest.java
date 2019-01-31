@@ -9,7 +9,7 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizeBminer() {
+    public void testSanitizeBminer() {
         assertEquals(
                 "blake2s.mine.zpool.ca:5766",
                 PoolUtils.sanitizeUrl(
@@ -18,7 +18,7 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizeEmpty() {
+    public void testSanitizeEmpty() {
         assertEquals(
                 "",
                 PoolUtils.sanitizeUrl(""));
@@ -26,7 +26,7 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizePadded() {
+    public void testSanitizePadded() {
         assertEquals(
                 "",
                 PoolUtils.sanitizeUrl("    "));
@@ -34,7 +34,7 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizePhoenix() {
+    public void testSanitizePhoenix() {
         assertEquals(
                 "eu1.ethermine.org:4444",
                 PoolUtils.sanitizeUrl(
@@ -43,7 +43,7 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizeStandard() {
+    public void testSanitizeStandard() {
         assertEquals(
                 "cryptonightv7.eu.nicehash.com:3363",
                 PoolUtils.sanitizeUrl(
@@ -52,10 +52,19 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
-    public void sanitizeTrailingSlash() {
+    public void testSanitizeTrailingSlash() {
         assertEquals(
                 "cryptonightv7.eu.nicehash.com:3363",
                 PoolUtils.sanitizeUrl(
                         "stratum+tcp://cryptonightv7.eu.nicehash.com:3363/"));
+    }
+
+    /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
+    @Test
+    public void testSanitizeUppercase() {
+        assertEquals(
+                "sha256asicboost.usa.nicehash.com:3334#xnsub",
+                PoolUtils.sanitizeUrl(
+                        "SHA256AsicBoost.usa.nicehash.com:3334#xnsub"));
     }
 }
