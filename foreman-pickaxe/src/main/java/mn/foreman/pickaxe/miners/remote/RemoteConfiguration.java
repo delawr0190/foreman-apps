@@ -27,6 +27,9 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
+import mn.foreman.nicehash.AlgoType;
+import mn.foreman.nicehash.AlgorithmCandidates;
+import mn.foreman.nicehash.NiceHashMiner;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
 import mn.foreman.rhminer.RhminerFactory;
@@ -37,6 +40,7 @@ import mn.foreman.whatsminer.WhatsminerFactory;
 import mn.foreman.xmrig.XmrigFactory;
 import mn.foreman.xmrstak.XmrstakFactory;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.IOUtils;
@@ -51,6 +55,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -107,10 +112,38 @@ public class RemoteConfiguration
             throws Exception {
         LOG.debug("Querying {} for miners", this.url);
 
-        final List<MinerConfig> configs = getConfigs();
+        final ObjectMapper objectMapper = new ObjectMapper();
+
+        final List<MinerConfig> configs = new LinkedList<>();
+        getConfig(response -> {
+            try {
+                configs.addAll(
+                        Arrays.asList(
+                                objectMapper.readValue(
+                                        response,
+                                        MinerConfig[].class)));
+            } catch (final IOException ioe) {
+                LOG.warn("Failed to parse response", ioe);
+            }
+        });
         LOG.info("Downloaded configuration: {} miners", configs.size());
 
-        return toMiners(configs);
+        final Map<AlgoType, List<ApiType>> niceHashConfig = new HashMap<>();
+        getConfig(response -> {
+            try {
+                niceHashConfig.putAll(
+                        objectMapper.readValue(
+                                response,
+                                new TypeReference<Map<AlgoType, List<ApiType>>>() {
+                                }));
+            } catch (final IOException ioe) {
+                LOG.warn("Failed to parse response", ioe);
+            }
+        });
+
+        return toMiners(
+                configs,
+                niceHashConfig);
     }
 
     /**
@@ -162,6 +195,7 @@ public class RemoteConfiguration
     /**
      * Creates an ASIC {@link Miner} from the provided config.
      *
+     * @param apiType      The {@link ApiType}.
      * @param config       The config.
      * @param minerFactory The factory.
      * @param typeFunction The function for providing the type.
@@ -169,12 +203,13 @@ public class RemoteConfiguration
      * @return The {@link Miner}.
      */
     private static Miner toAsic(
+            final ApiType apiType,
             final MinerConfig config,
             final MinerFactory minerFactory,
             final Function<ApiType, String> typeFunction) {
         Miner miner = null;
 
-        final String type = typeFunction.apply(config.apiType);
+        final String type = typeFunction.apply(apiType);
         if (type != null) {
             miner =
                     minerFactory.create(
@@ -193,14 +228,16 @@ public class RemoteConfiguration
     /**
      * Creates a claymore {@link Miner} from the config.
      *
-     * @param config The config.
+     * @param apiType The {@link ApiType}.
+     * @param config  The config.
      *
      * @return The {@link Miner}.
      */
     private static Miner toClaymore(
+            final ApiType apiType,
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
-        attributes.put("type", toClaymoreType(config.apiType));
+        attributes.put("type", toClaymoreType(apiType));
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(config.apiPort));
         findParam(
@@ -338,15 +375,20 @@ public class RemoteConfiguration
     /**
      * Converts each {@link MinerConfig} to a {@link Miner}.
      *
-     * @param config The {@link MinerConfig}.
+     * @param apiType         The {@link ApiType}.
+     * @param config          The {@link MinerConfig}.
+     * @param niceHashConfigs The NiceHash configuration.
      *
      * @return The {@link Miner}.
      */
-    private static Optional<Miner> toMiner(final MinerConfig config) {
+    private static Optional<Miner> toMiner(
+            final ApiType apiType,
+            final MinerConfig config,
+            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
         LOG.debug("Adding miner for {}", config);
 
         Miner miner = null;
-        switch (config.apiType) {
+        switch (apiType) {
             case ANTMINER_HS_API:
                 // Fall through
             case ANTMINER_KHS_API:
@@ -356,6 +398,7 @@ public class RemoteConfiguration
             case ANTMINER_GHS_API:
                 miner =
                         toAsic(
+                                apiType,
                                 config,
                                 new AntminerFactory(),
                                 RemoteConfiguration::toAntminerType);
@@ -381,7 +424,7 @@ public class RemoteConfiguration
             case CLAYMORE_ETH_API:
                 // Fall through
             case CLAYMORE_ZEC_API:
-                miner = toClaymore(config);
+                miner = toClaymore(apiType, config);
                 break;
             case DAYUN_API:
                 miner = toMiner(config, new DayunFactory());
@@ -416,6 +459,7 @@ public class RemoteConfiguration
             case INNOSILICON_GHS_API:
                 miner =
                         toAsic(
+                                apiType,
                                 config,
                                 new InnosiliconFactory(),
                                 RemoteConfiguration::toInnosiliconType);
@@ -434,6 +478,9 @@ public class RemoteConfiguration
                 break;
             case NANOMINER_API:
                 miner = toMiner(config, new NanominerFactory());
+                break;
+            case NICEHASH_API:
+                miner = toNiceHashMiner(config, niceHashConfigs);
                 break;
             case RHMINER_API:
                 miner = toMiner(config, new RhminerFactory());
@@ -456,6 +503,8 @@ public class RemoteConfiguration
             case XMRSTAK_API:
                 miner = toMiner(config, new XmrstakFactory());
                 break;
+            default:
+                break;
         }
 
         // The user may be running chisel to extract additional metrics from
@@ -476,31 +525,70 @@ public class RemoteConfiguration
      * Creates a {@link Miner} from every miner in the {@link MinerConfig
      * configs}.
      *
-     * @param configs The configurations.
+     * @param configs         The configurations.
+     * @param niceHashConfigs The NiceHash configurations.
      *
      * @return The {@link Miner miners}.
      */
     private static List<Miner> toMiners(
-            final List<MinerConfig> configs) {
+            final List<MinerConfig> configs,
+            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
-                .map(RemoteConfiguration::toMiner)
+                .map(config -> toMiner(config.apiType, config, niceHashConfigs))
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toList());
     }
 
     /**
-     * Downloads the configurations.
+     * Creates a {@link NiceHashMiner}.
      *
-     * @return The configs.
+     * @param config          The configuration.
+     * @param niceHashConfigs The algorithm mappings.
+     *
+     * @return The new {@link Miner}.
+     */
+    private static Miner toNiceHashMiner(
+            final MinerConfig config,
+            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
+        Miner miner = null;
+        final MinerConfig.NiceHashConfig niceHashConfig =
+                config.niceHashConfig;
+        if (niceHashConfig != null) {
+            final AlgorithmCandidates.Builder candidatesBuilder =
+                    new AlgorithmCandidates.Builder();
+            niceHashConfigs.forEach((algoType, apiTypes) ->
+                    apiTypes.stream()
+                            .map(apiType ->
+                                    toMiner(
+                                            apiType,
+                                            config,
+                                            niceHashConfigs))
+                            .filter(Optional::isPresent)
+                            .forEach(opt ->
+                                    candidatesBuilder.addCandidate(
+                                            algoType,
+                                            opt.get())));
+            miner =
+                    new NiceHashMiner(
+                            config.apiIp,
+                            config.apiPort,
+                            niceHashConfig.algo,
+                            candidatesBuilder.build());
+        }
+        return miner;
+    }
+
+    /**
+     * Downloads the configurations.
      *
      * @throws IOException on failure to download configs.
      */
-    private List<MinerConfig> getConfigs() throws IOException {
-        final List<MinerConfig> configs = new LinkedList<>();
-
+    private void getConfig(
+            final Consumer<String> responseStrategy)
+            throws IOException {
         final URL url = new URL(this.url);
         final HttpURLConnection connection =
                 (HttpURLConnection) url.openConnection();
@@ -520,17 +608,10 @@ public class RemoteConfiguration
                  final BufferedReader reader =
                          new BufferedReader(
                                  inputStreamReader)) {
-                configs.addAll(
-                        Arrays.asList(
-                                new ObjectMapper()
-                                        .readValue(
-                                                IOUtils.toString(reader),
-                                                MinerConfig[].class)));
+                responseStrategy.accept(IOUtils.toString(reader));
             }
         } else {
-            LOG.warn("Failed to obtain configuration: {}", code);
+            LOG.warn("Failed to obtain a configuration: {}", code);
         }
-
-        return configs;
     }
 }

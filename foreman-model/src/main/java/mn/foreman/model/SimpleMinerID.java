@@ -21,7 +21,7 @@ public class SimpleMinerID
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    SimpleMinerID(
+    public SimpleMinerID(
             final String apiIp,
             final int apiPort) {
         this.apiIp = apiIp;

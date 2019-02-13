@@ -118,7 +118,10 @@ public enum ApiType {
     HSPMINER_API(35),
 
     /** nanominer. */
-    NANOMINER_API(36);
+    NANOMINER_API(36),
+
+    /** nicehash. */
+    NICEHASH_API(37);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

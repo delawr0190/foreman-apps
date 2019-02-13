@@ -71,15 +71,20 @@ public class FakeRpcMinerServer
                             final InputStream inputStream =
                                     socket.getInputStream();
                             while (true) {
-                                request += (char) inputStream.read();
-                                if (this.handlers.containsKey(request)) {
-                                    this.handlers.get(request).process(socket);
+                                final int read = inputStream.read();
+                                if (read >= 0) {
+                                    request += (char) read;
+                                    if (this.handlers.containsKey(request)) {
+                                        this.handlers.get(request).process(socket);
+                                        break;
+                                    }
+                                } else {
                                     break;
                                 }
                             }
                         }
-                        socket.close();
                     } catch (final IOException ioe) {
+                        // Ignore
                         break;
                     }
                 }

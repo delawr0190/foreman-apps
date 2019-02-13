@@ -1,5 +1,6 @@
 package mn.foreman.pickaxe.miners.remote.json;
 
+import mn.foreman.nicehash.AlgoType;
 import mn.foreman.pickaxe.miners.remote.ApiType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -31,6 +32,10 @@ public class MinerConfig {
     /** The chisel configuration. */
     @JsonProperty("chisel")
     public ChiselConfig chisel;
+
+    /** The NiceHash configuration. */
+    @JsonProperty("nicehash")
+    public NiceHashConfig niceHashConfig;
 
     /** The parameters. */
     @JsonProperty("params")
@@ -67,6 +72,20 @@ public class MinerConfig {
             return String.format("%s [ apiPort=%d ]",
                     getClass().getSimpleName(),
                     this.apiPort);
+        }
+    }
+
+    /** NiceHash configuration. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class NiceHashConfig {
+
+        /** The algorithm. */
+        @JsonProperty("algo")
+        public AlgoType algo;
+
+        @Override
+        public String toString() {
+            return this.algo.toString();
         }
     }
 
