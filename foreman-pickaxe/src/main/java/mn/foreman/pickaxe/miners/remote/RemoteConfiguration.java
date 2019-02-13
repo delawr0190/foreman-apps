@@ -27,7 +27,6 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
-import mn.foreman.nicehash.AlgoType;
 import mn.foreman.nicehash.AlgorithmCandidates;
 import mn.foreman.nicehash.NiceHashMiner;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
@@ -128,13 +127,13 @@ public class RemoteConfiguration
         });
         LOG.info("Downloaded configuration: {} miners", configs.size());
 
-        final Map<AlgoType, List<ApiType>> niceHashConfig = new HashMap<>();
+        final Map<Integer, List<ApiType>> niceHashConfig = new HashMap<>();
         getConfig(response -> {
             try {
                 niceHashConfig.putAll(
                         objectMapper.readValue(
                                 response,
-                                new TypeReference<Map<AlgoType, List<ApiType>>>() {
+                                new TypeReference<Map<Integer, List<ApiType>>>() {
                                 }));
             } catch (final IOException ioe) {
                 LOG.warn("Failed to parse response", ioe);
@@ -384,7 +383,7 @@ public class RemoteConfiguration
     private static Optional<Miner> toMiner(
             final ApiType apiType,
             final MinerConfig config,
-            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
+            final Map<Integer, List<ApiType>> niceHashConfigs) {
         LOG.debug("Adding miner for {}", config);
 
         Miner miner = null;
@@ -532,7 +531,7 @@ public class RemoteConfiguration
      */
     private static List<Miner> toMiners(
             final List<MinerConfig> configs,
-            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
+            final Map<Integer, List<ApiType>> niceHashConfigs) {
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
@@ -552,7 +551,7 @@ public class RemoteConfiguration
      */
     private static Miner toNiceHashMiner(
             final MinerConfig config,
-            final Map<AlgoType, List<ApiType>> niceHashConfigs) {
+            final Map<Integer, List<ApiType>> niceHashConfigs) {
         Miner miner = null;
         final MinerConfig.NiceHashConfig niceHashConfig =
                 config.niceHashConfig;

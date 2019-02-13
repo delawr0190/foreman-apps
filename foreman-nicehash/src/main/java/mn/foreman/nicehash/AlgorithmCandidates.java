@@ -11,13 +11,13 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An {@link AlgorithmCandidates} provides a mapping of a {@link AlgoType
- * NiceHash algorithm} to all possible mining candidates for that algorithm.
+ * An {@link AlgorithmCandidates} provides a mapping of a nicehash algorithm to
+ * all possible mining candidates for that algorithm.
  */
 public class AlgorithmCandidates {
 
     /** The algorithm map. */
-    private final Map<AlgoType, List<Miner>> algoMap;
+    private final Map<Integer, List<Miner>> algoMap;
 
     /**
      * Constructor.
@@ -75,7 +75,7 @@ public class AlgorithmCandidates {
      *
      * @return The {@link Miner Miners}.
      */
-    List<Miner> getForAlgo(final AlgoType algo) {
+    List<Miner> getForAlgo(final int algo) {
         return this.algoMap.getOrDefault(algo, new LinkedList<>());
     }
 
@@ -83,7 +83,7 @@ public class AlgorithmCandidates {
     public static class Builder {
 
         /** The algorithm mapping. */
-        private final Map<AlgoType, List<Miner>> algoMap =
+        private final Map<Integer, List<Miner>> algoMap =
                 new ConcurrentHashMap<>();
 
         /**
@@ -95,7 +95,7 @@ public class AlgorithmCandidates {
          * @return This builder instance.
          */
         public Builder addCandidate(
-                final AlgoType algo,
+                final int algo,
                 final Miner miner) {
             final List<Miner> candidates =
                     this.algoMap.computeIfAbsent(

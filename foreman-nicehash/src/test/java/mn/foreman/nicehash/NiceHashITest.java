@@ -26,10 +26,10 @@ public class NiceHashITest
                 new NiceHashMiner(
                         "127.0.0.1",
                         4000,
-                        AlgoType.DAGGERHASHIMOTO,
+                        20,
                         new AlgorithmCandidates.Builder()
                                 .addCandidate(
-                                        AlgoType.DAGGERHASHIMOTO,
+                                        20,
                                         new EthminerFactory().create(
                                                 ImmutableMap.of(
                                                         "apiIp",
@@ -37,7 +37,7 @@ public class NiceHashITest
                                                         "apiPort",
                                                         "4000")))
                                 .addCandidate(
-                                        AlgoType.DAGGERHASHIMOTO,
+                                        20,
                                         new ClaymoreFactory().create(
                                                 ImmutableMap.of(
                                                         "apiIp",

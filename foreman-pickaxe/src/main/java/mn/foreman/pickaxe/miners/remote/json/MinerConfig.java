@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.miners.remote.json;
 
-import mn.foreman.nicehash.AlgoType;
 import mn.foreman.pickaxe.miners.remote.ApiType;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -81,11 +80,13 @@ public class MinerConfig {
 
         /** The algorithm. */
         @JsonProperty("algo")
-        public AlgoType algo;
+        public int algo;
 
         @Override
         public String toString() {
-            return this.algo.toString();
+            return String.format("%s [ algo=%d ]",
+                    getClass().getSimpleName(),
+                    this.algo);
         }
     }
 

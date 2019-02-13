@@ -20,7 +20,7 @@ public class NiceHashMiner
         implements Miner {
 
     /** The algorithm that's actively being mined. */
-    private final AlgoType algo;
+    private final int algo;
 
     /** The API IP. */
     private final String apiIp;
@@ -45,7 +45,7 @@ public class NiceHashMiner
     public NiceHashMiner(
             final String apiIp,
             final int apiPort,
-            final AlgoType algo,
+            final int algo,
             final AlgorithmCandidates candidates) {
         this.apiIp = apiIp;
         this.apiPort = apiPort;
