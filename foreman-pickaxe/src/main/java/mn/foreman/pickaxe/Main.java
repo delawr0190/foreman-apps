@@ -71,7 +71,9 @@ public class Main {
                         new YmlConfiguration(
                                 configuration.getForemanApiUrl(),
                                 configuration.getForemanConfigUrl(),
+                                configuration.getForemanNicehashUrl(),
                                 configuration.getApiKey(),
+                                configuration.getClientId(),
                                 UUID.randomUUID().toString());
                 writeConfiguration(
                         objectMapper,

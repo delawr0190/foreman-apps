@@ -62,10 +62,12 @@ public class RunMe {
         this.minerConfiguration =
                 new RemoteConfiguration(
                         String.format(
-                                "%s/%s/%s/",
+                                "%s/%s/%s/%s/",
                                 configuration.getForemanConfigUrl(),
+                                configuration.getClientId(),
                                 configuration.getPickaxeId(),
                                 VersionUtils.getVersion()),
+                        configuration.getForemanNicehashUrl(),
                         configuration.getApiKey());
     }
 
@@ -78,8 +80,9 @@ public class RunMe {
         final MetricsProcessingStrategy metricsProcessingStrategy =
                 new HttpPostMetricsProcessingStrategy(
                         String.format(
-                                "%s/%s",
+                                "%s/%s/%s",
                                 this.configuration.getForemanApiUrl(),
+                                this.configuration.getClientId(),
                                 this.configuration.getPickaxeId()),
                         this.configuration.getApiKey());
 

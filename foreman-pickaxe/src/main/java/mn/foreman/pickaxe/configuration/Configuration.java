@@ -14,18 +14,32 @@ public interface Configuration {
     String getApiKey();
 
     /**
-     * Returns the FOREMAN API URL.
+     * Returns the user's client ID.
      *
-     * @return The FOREMAN API URL.
+     * @return The user's client ID.
+     */
+    String getClientId();
+
+    /**
+     * Returns the Foreman API URL.
+     *
+     * @return The Foreman API URL.
      */
     String getForemanApiUrl();
 
     /**
-     * Returns the FOREMAN config URL.
+     * Returns the Foreman config URL.
      *
-     * @return The FOREMAN config URL.
+     * @return The Foreman config URL.
      */
     String getForemanConfigUrl();
+
+    /**
+     * Returns the Foreman nicehash URL.
+     *
+     * @return The Foreman nicehash URL.
+     */
+    String getForemanNicehashUrl();
 
     /**
      * Returns the pickaxe ID.

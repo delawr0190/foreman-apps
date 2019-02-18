@@ -36,6 +36,9 @@ public class YmlConfigurationTest {
                 "http://127.0.0.1:8080",
                 configuration.getForemanConfigUrl());
         assertEquals(
+                "http://127.0.0.1:8081",
+                configuration.getForemanNicehashUrl());
+        assertEquals(
                 "cafebabe",
                 configuration.getPickaxeId());
     }
@@ -60,6 +63,9 @@ public class YmlConfigurationTest {
         assertEquals(
                 "http://127.0.0.1:8080",
                 configuration.getForemanConfigUrl());
+        assertEquals(
+                "http://127.0.0.1:8081",
+                configuration.getForemanNicehashUrl());
         assertNull(
                 configuration.getPickaxeId());
     }

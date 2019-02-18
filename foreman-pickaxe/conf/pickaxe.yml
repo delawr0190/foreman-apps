@@ -1,3 +1,5 @@
 apiKey: "<your_api_key>"
-foremanApiUrl: "https://dashboard.foreman.mn/api/metrics/<your_client_id>"
-foremanConfigUrl: "https://dashboard.foreman.mn/api/config/<your_client_id>"
+clientId: "<your_client_id>"
+foremanApiUrl: "https://dashboard.foreman.mn/api/metrics"
+foremanConfigUrl: "https://dashboard.foreman.mn/api/config"
+foremanNicehashUrl: "https://dashboard.foreman.mn/api/nicehash"

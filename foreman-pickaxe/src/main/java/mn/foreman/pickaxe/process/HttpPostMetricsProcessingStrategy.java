@@ -100,9 +100,12 @@ public class HttpPostMetricsProcessingStrategy
                                 .getStatusLine()
                                 .getStatusCode();
                 if (statusCode != HttpStatus.SC_CREATED) {
-                    LOG.warn("Received a bad response: code({})", statusCode);
+                    LOG.warn("Received a bad response from {}: code({})",
+                            this.url,
+                            statusCode);
                 }
-                EntityUtils.consumeQuietly(httpResponse.getEntity());
+                LOG.debug("Metrics response content: {}",
+                        EntityUtils.toString(httpResponse.getEntity()));
             } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while uploading metrics", ioe);
             }

@@ -78,67 +78,83 @@ public class RemoteConfiguration
     /** The API key. */
     private final String apiKey;
 
-    /** The URL. */
-    private final String url;
+    /** The config URL. */
+    private final String configUrl;
+
+    /** The nicehash config URL. */
+    private final String nicehashConfigUrl;
 
     /**
      * Constructor.
      *
-     * @param url    The URL.
-     * @param apiKey The API key.
+     * @param configUrl         The config URL.
+     * @param nicehashConfigUrl The nicehash config URL.
+     * @param apiKey            The API key.
      */
     public RemoteConfiguration(
-            final String url,
+            final String configUrl,
+            final String nicehashConfigUrl,
             final String apiKey) {
         Validate.notNull(
-                url,
-                "url cannot be null");
+                configUrl,
+                "configUrl cannot be null");
         Validate.notEmpty(
-                url,
-                "url cannot be empty");
+                configUrl,
+                "configUrl cannot be empty");
+        Validate.notNull(
+                nicehashConfigUrl,
+                "nicehashConfigUrl cannot be null");
+        Validate.notEmpty(
+                nicehashConfigUrl,
+                "nicehashConfigUrl cannot be empty");
         Validate.notNull(
                 apiKey,
                 "apiKey cannot be null");
         Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
-        this.url = url;
+        this.configUrl = configUrl;
+        this.nicehashConfigUrl = nicehashConfigUrl;
         this.apiKey = apiKey;
     }
 
     @Override
     public List<Miner> load()
             throws Exception {
-        LOG.debug("Querying {} for miners", this.url);
+        LOG.debug("Querying {} for miners", this.configUrl);
 
         final ObjectMapper objectMapper = new ObjectMapper();
 
         final List<MinerConfig> configs = new LinkedList<>();
-        getConfig(response -> {
-            try {
-                configs.addAll(
-                        Arrays.asList(
-                                objectMapper.readValue(
-                                        response,
-                                        MinerConfig[].class)));
-            } catch (final IOException ioe) {
-                LOG.warn("Failed to parse response", ioe);
-            }
-        });
+        getConfig(
+                this.configUrl,
+                response -> {
+                    try {
+                        configs.addAll(
+                                Arrays.asList(
+                                        objectMapper.readValue(
+                                                response,
+                                                MinerConfig[].class)));
+                    } catch (final IOException ioe) {
+                        LOG.warn("Failed to parse response", ioe);
+                    }
+                });
         LOG.info("Downloaded configuration: {} miners", configs.size());
 
         final Map<Integer, List<ApiType>> niceHashConfig = new HashMap<>();
-        getConfig(response -> {
-            try {
-                niceHashConfig.putAll(
-                        objectMapper.readValue(
-                                response,
-                                new TypeReference<Map<Integer, List<ApiType>>>() {
-                                }));
-            } catch (final IOException ioe) {
-                LOG.warn("Failed to parse response", ioe);
-            }
-        });
+        getConfig(
+                this.nicehashConfigUrl,
+                response -> {
+                    try {
+                        niceHashConfig.putAll(
+                                objectMapper.readValue(
+                                        response,
+                                        new TypeReference<Map<Integer, List<ApiType>>>() {
+                                        }));
+                    } catch (final IOException ioe) {
+                        LOG.warn("Failed to parse response", ioe);
+                    }
+                });
 
         return toMiners(
                 configs,
@@ -583,12 +599,15 @@ public class RemoteConfiguration
     /**
      * Downloads the configurations.
      *
+     * @param configUrl The configuration URL.
+     *
      * @throws IOException on failure to download configs.
      */
     private void getConfig(
+            final String configUrl,
             final Consumer<String> responseStrategy)
             throws IOException {
-        final URL url = new URL(this.url);
+        final URL url = new URL(configUrl);
         final HttpURLConnection connection =
                 (HttpURLConnection) url.openConnection();
 
@@ -610,7 +629,9 @@ public class RemoteConfiguration
                 responseStrategy.accept(IOUtils.toString(reader));
             }
         } else {
-            LOG.warn("Failed to obtain a configuration: {}", code);
+            LOG.warn("Failed to obtain a configuration from {}: {}",
+                    configUrl,
+                    code);
         }
     }
 }

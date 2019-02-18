@@ -1,3 +1,4 @@
 apiKey: "nicebro"
 foremanApiUrl: "http://localhost:80"
 foremanConfigUrl: "http://127.0.0.1:8080"
+foremanNicehashUrl: "http://127.0.0.1:8081"

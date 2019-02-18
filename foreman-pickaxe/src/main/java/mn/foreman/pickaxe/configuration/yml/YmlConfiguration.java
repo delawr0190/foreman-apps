@@ -16,11 +16,17 @@ public class YmlConfiguration
     /** The user's API key. */
     private final String apiKey;
 
-    /** The FOREMAN API URL. */
+    /** The client ID. */
+    private final String clientId;
+
+    /** The Foreman API URL. */
     private final String foremanApiUrl;
 
-    /** The FOREMAN config API URL. */
+    /** The Foreman config API URL. */
     private final String foremanConfigUrl;
+
+    /** The Foreman nicehash API URL. */
+    private final String foremanNicehashUrl;
 
     /** The pickaxe identifier. */
     private final String pickaxeId;
@@ -28,14 +34,19 @@ public class YmlConfiguration
     /**
      * Constructor.
      *
-     * @param foremanApiUrl    The FOREMAN API URL.
-     * @param foremanConfigUrl The FOREMAN config URL.
-     * @param apiKey           The API key.
+     * @param foremanApiUrl      The Foreman API URL.
+     * @param foremanConfigUrl   The Foreman config URL.
+     * @param foremanNicehashUrl The Foreman nicehash URL.
+     * @param apiKey             The API key.
+     * @param clientId           The client ID.
+     * @param pickaxeId          The pickaxe ID.
      */
     public YmlConfiguration(
             @JsonProperty("foremanApiUrl") final String foremanApiUrl,
             @JsonProperty("foremanConfigUrl") final String foremanConfigUrl,
+            @JsonProperty("foremanNicehashUrl") final String foremanNicehashUrl,
             @JsonProperty("apiKey") final String apiKey,
+            @JsonProperty("clientId") final String clientId,
             @JsonProperty("pickaxeId") final String pickaxeId) {
         Validate.notEmpty(
                 foremanApiUrl,
@@ -44,17 +55,27 @@ public class YmlConfiguration
                 foremanConfigUrl,
                 "foremanConfigUrl cannot be empty");
         Validate.notEmpty(
+                foremanNicehashUrl,
+                "foremanNicehashUrl cannot be empty");
+        Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
         this.foremanApiUrl = foremanApiUrl;
         this.foremanConfigUrl = foremanConfigUrl;
+        this.foremanNicehashUrl = foremanNicehashUrl;
         this.apiKey = apiKey;
+        this.clientId = clientId;
         this.pickaxeId = pickaxeId;
     }
 
     @Override
     public String getApiKey() {
         return this.apiKey;
+    }
+
+    @Override
+    public String getClientId() {
+        return this.clientId;
     }
 
     @Override
@@ -65,6 +86,11 @@ public class YmlConfiguration
     @Override
     public String getForemanConfigUrl() {
         return this.foremanConfigUrl;
+    }
+
+    @Override
+    public String getForemanNicehashUrl() {
+        return this.foremanNicehashUrl;
     }
 
     @Override
