@@ -13,8 +13,11 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.google.common.collect.Iterables;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.LinkedList;
@@ -56,6 +59,10 @@ import java.util.List;
  */
 public class Claymore
         extends AbstractMiner {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(Claymore.class);
 
     /** The API password. */
     private final String apiPassword;
@@ -100,6 +107,8 @@ public class Claymore
         final String ethTotalShares = ethRateAndShares[1];
         final String ethRejectedShares = ethRateAndShares[2];
 
+        final int numGpus = results.get(3).split(";").length;
+
         final String[] dcrRateAndShares = results.get(4).split(";");
         final String dcrHashRate = dcrRateAndShares[0];
         final String dcrTotalShares = dcrRateAndShares[1];
@@ -108,9 +117,13 @@ public class Claymore
         final List<String> temps = new LinkedList<>();
         final List<String> fans = new LinkedList<>();
         final String[] tempsAndFans = results.get(6).split(";");
-        for (int i = 0; i < tempsAndFans.length; i += 2) {
-            temps.add(tempsAndFans[i]);
-            fans.add(tempsAndFans[i + 1]);
+        if (tempsAndFans.length % 2 == 0) {
+            for (int i = 0; i < tempsAndFans.length; i += 2) {
+                temps.add(tempsAndFans[i]);
+                fans.add(tempsAndFans[i + 1]);
+            }
+        } else {
+            LOG.info("Claymore returned a non-paired fan and temp value");
         }
 
         final String[] pools = results.get(7).split(";");
@@ -124,12 +137,14 @@ public class Claymore
                 statsBuilder);
         addRig(
                 ethHashRate,
+                numGpus,
                 temps,
                 fans,
                 this.claymoreType,
                 statsBuilder);
         addRig(
                 dcrHashRate,
+                numGpus,
                 temps,
                 fans,
                 this.claymoreType,
@@ -194,6 +209,7 @@ public class Claymore
      * Adds a {@link Rig} using the provided parameters.
      *
      * @param hashRate     The hash rate.
+     * @param numGpus      The number of GPUs.
      * @param temps        The temperatures.
      * @param fans         The fans.
      * @param claymoreType The claymore type.
@@ -201,6 +217,7 @@ public class Claymore
      */
     private static void addRig(
             final String hashRate,
+            final int numGpus,
             final List<String> temps,
             final List<String> fans,
             final ClaymoreType claymoreType,
@@ -213,7 +230,7 @@ public class Claymore
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
                             .setHashRate(realHashRate);
-            for (int i = 0; i < temps.size(); i++) {
+            for (int i = 0; i < numGpus; i++) {
                 rigBuilder
                         .addGpu(
                                 new Gpu.Builder()
@@ -221,11 +238,11 @@ public class Claymore
                                         .setIndex(Integer.toString(i))
                                         // Bus is not exposed in claymore
                                         .setBus("0")
-                                        .setTemp(temps.get(i))
+                                        .setTemp(Iterables.get(temps, i, "0"))
                                         .setFans(
                                                 new FanInfo.Builder()
-                                                        .setCount(1)
-                                                        .addSpeed(fans.get(i))
+                                                        .setCount(fans.isEmpty() ? 0 : 1)
+                                                        .addSpeed(Iterables.get(fans, i, "0"))
                                                         .setSpeedUnits("%")
                                                         .build())
                                         // No frequencies in claymore
