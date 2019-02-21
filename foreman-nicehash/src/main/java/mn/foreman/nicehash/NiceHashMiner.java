@@ -157,7 +157,7 @@ public class NiceHashMiner
                     found = true;
                 }
             }
-        } catch (final MinerException me) {
+        } catch (final Exception e) {
             // Ignore
         }
         return found;

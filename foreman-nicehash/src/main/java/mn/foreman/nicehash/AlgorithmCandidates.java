@@ -59,8 +59,8 @@ public class AlgorithmCandidates {
             stringBuilder
                     .append(key)
                     .append(" -> [ ");
-            value.forEach(stringBuilder::append);
-            stringBuilder.append(" ] ");
+            value.forEach(miner -> stringBuilder.append(miner).append(", "));
+            stringBuilder.append(" ], ");
         });
         return String.format(
                 "%s [ mappings=[ %s ] ]",
