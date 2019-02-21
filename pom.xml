@@ -80,6 +80,7 @@
         <module>foreman-multiminer</module>
         <module>foreman-nanominer</module>
         <module>foreman-nicehash</module>
+        <module>foreman-optiminer</module>
         <module>foreman-pickaxe</module>
         <module>foreman-rhminer</module>
         <module>foreman-sgminer</module>
@@ -232,6 +233,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-nicehash</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-optiminer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

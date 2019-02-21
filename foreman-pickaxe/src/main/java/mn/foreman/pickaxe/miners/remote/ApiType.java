@@ -121,7 +121,10 @@ public enum ApiType {
     NANOMINER_API(36),
 
     /** nicehash. */
-    NICEHASH_API(37);
+    NICEHASH_API(37),
+
+    /** optiminer. */
+    OPTIMINER_API(38);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
