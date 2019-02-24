@@ -124,7 +124,10 @@ public enum ApiType {
     NICEHASH_API(37),
 
     /** optiminer. */
-    OPTIMINER_API(38);
+    OPTIMINER_API(38),
+
+    /** grinpro. */
+    GRINPRO_API(39);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

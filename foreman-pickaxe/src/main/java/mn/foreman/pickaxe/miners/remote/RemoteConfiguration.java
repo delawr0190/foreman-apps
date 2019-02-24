@@ -18,6 +18,7 @@ import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.gminer.GminerFactory;
+import mn.foreman.grinpro.GrinProFactory;
 import mn.foreman.hspminer.HspminerFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.jceminer.JceminerFactory;
@@ -29,6 +30,7 @@ import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nicehash.AlgorithmCandidates;
 import mn.foreman.nicehash.NiceHashMiner;
+import mn.foreman.optiminer.OptiminerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
 import mn.foreman.rhminer.RhminerFactory;
@@ -462,6 +464,9 @@ public class RemoteConfiguration
             case GMINER_API:
                 miner = toMiner(config, new GminerFactory());
                 break;
+            case GRINPRO_API:
+                miner = toMiner(config, new GrinProFactory());
+                break;
             case HSPMINER_API:
                 miner = toMiner(config, new HspminerFactory());
                 break;
@@ -496,6 +501,9 @@ public class RemoteConfiguration
                 break;
             case NICEHASH_API:
                 miner = toNiceHashMiner(config, niceHashConfigs);
+                break;
+            case OPTIMINER_API:
+                miner = toMiner(config, new OptiminerFactory());
                 break;
             case RHMINER_API:
                 miner = toMiner(config, new RhminerFactory());
