@@ -11,6 +11,8 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
  * A {@link NiceHashMiner} provides a {@link Miner} that will find the active
@@ -30,6 +32,9 @@ public class NiceHashMiner
 
     /** The candidate miners for each algorithm. */
     private final AlgorithmCandidates candidates;
+
+    /** A lock to prevent multiple threads from discovering at the same time. */
+    private final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /** The miner that's actively running (prevents continuous discovery). */
     private Miner miner;
@@ -84,20 +89,37 @@ public class NiceHashMiner
 
     @Override
     public MinerStats getStats() throws MinerException {
-        if (this.miner == null) {
-            discover();
-        }
-
-        MinerStats minerStats = null;
+        this.lock.writeLock().lock();
         try {
-            minerStats = this.miner.getStats();
-        } catch (final MinerException me) {
-            this.miner = null;
-            discover();
-        }
+            if (this.miner == null) {
+                discover();
+            }
 
-        // Would have thrown if nothing could be found
-        return minerStats;
+            MinerStats minerStats = null;
+            try {
+                minerStats = this.miner.getStats();
+            } catch (final Exception me) {
+                this.miner = null;
+                discover();
+            }
+
+            // Rebuild the stats to be the correct port
+            if (minerStats != null) {
+                final MinerStats.Builder builder =
+                        new MinerStats.Builder()
+                                .setApiIp(this.apiIp)
+                                .setApiPort(this.apiPort);
+                minerStats.getPools().forEach(builder::addPool);
+                minerStats.getAsics().forEach(builder::addAsic);
+                minerStats.getRigs().forEach(builder::addRig);
+                minerStats = builder.build();
+            }
+
+            // Would have thrown if nothing could be found
+            return minerStats;
+        } finally {
+            this.lock.writeLock().unlock();
+        }
     }
 
     @Override

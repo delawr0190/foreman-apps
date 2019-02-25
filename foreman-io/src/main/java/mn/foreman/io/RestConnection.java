@@ -113,9 +113,11 @@ public class RestConnection
                 }
             } else {
                 LOG.warn("Received an unexpected status code: {}", code);
+                this.request.completed();
             }
         } catch (final IOException ioe) {
             LOG.debug("Exception occurred while querying", ioe);
+            this.request.completed();
         }
     }
 }

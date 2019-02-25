@@ -212,6 +212,7 @@ public class RemoteConfiguration
     /**
      * Creates an ASIC {@link Miner} from the provided config.
      *
+     * @param port         The port.
      * @param apiType      The {@link ApiType}.
      * @param config       The config.
      * @param minerFactory The factory.
@@ -220,6 +221,7 @@ public class RemoteConfiguration
      * @return The {@link Miner}.
      */
     private static Miner toAsic(
+            final int port,
             final ApiType apiType,
             final MinerConfig config,
             final MinerFactory minerFactory,
@@ -236,7 +238,7 @@ public class RemoteConfiguration
                                     "apiIp",
                                     config.apiIp,
                                     "apiPort",
-                                    Integer.toString(config.apiPort)));
+                                    Integer.toString(port)));
         }
 
         return miner;
@@ -245,18 +247,20 @@ public class RemoteConfiguration
     /**
      * Creates a claymore {@link Miner} from the config.
      *
+     * @param port    The port.
      * @param apiType The {@link ApiType}.
      * @param config  The config.
      *
      * @return The {@link Miner}.
      */
     private static Miner toClaymore(
+            final int port,
             final ApiType apiType,
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("type", toClaymoreType(apiType));
         attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(config.apiPort));
+        attributes.put("apiPort", Integer.toString(port));
         findParam(
                 "apiPassword",
                 config.params).ifPresent(
@@ -293,15 +297,17 @@ public class RemoteConfiguration
     /**
      * Creates a {@link Dragonmint} miner from the configuration.
      *
+     * @param port   The port.
      * @param config The config.
      *
      * @return The {@link Miner}.
      */
     private static Miner toDragonmintApi(
+            final int port,
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(config.apiPort));
+        attributes.put("apiPort", Integer.toString(port));
         findParam(
                 "username",
                 config.params).ifPresent(
@@ -322,15 +328,17 @@ public class RemoteConfiguration
     /**
      * Creates an ethminer {@link Miner} from the config.
      *
+     * @param port   The port.
      * @param config The config.
      *
      * @return The {@link Miner}.
      */
     private static Miner toEthminerApi(
+            final int port,
             final MinerConfig config) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(config.apiPort));
+        attributes.put("apiPort", Integer.toString(port));
         findParam(
                 "apiPassword",
                 config.params).ifPresent(
@@ -373,12 +381,14 @@ public class RemoteConfiguration
     /**
      * Converts the provided config to a {@link Miner}.
      *
+     * @param port         The port.
      * @param config       The config.
      * @param minerFactory The factory.
      *
      * @return The {@link Miner}.
      */
     private static Miner toMiner(
+            final int port,
             final MinerConfig config,
             final mn.foreman.model.MinerFactory minerFactory) {
         return minerFactory.create(
@@ -386,25 +396,27 @@ public class RemoteConfiguration
                         "apiIp",
                         config.apiIp,
                         "apiPort",
-                        Integer.toString(config.apiPort)));
+                        Integer.toString(port)));
     }
 
     /**
      * Converts each {@link MinerConfig} to a {@link Miner}.
      *
      * @param apiType         The {@link ApiType}.
+     * @param port            The port.
      * @param config          The {@link MinerConfig}.
      * @param niceHashConfigs The NiceHash configuration.
      *
-     * @return The {@link Miner}.
+     * @return The {@link Miner miners}.
      */
-    private static Optional<Miner> toMiner(
+    private static List<Miner> toMiner(
             final ApiType apiType,
+            final int port,
             final MinerConfig config,
             final Map<Integer, List<ApiType>> niceHashConfigs) {
         LOG.debug("Adding miner for {}", config);
 
-        Miner miner = null;
+        final List<Miner> miners = new LinkedList<>();
         switch (apiType) {
             case ANTMINER_HS_API:
                 // Fall through
@@ -413,62 +425,63 @@ public class RemoteConfiguration
             case ANTMINER_MHS_API:
                 // Fall through
             case ANTMINER_GHS_API:
-                miner =
+                miners.add(
                         toAsic(
+                                port,
                                 apiType,
                                 config,
                                 new AntminerFactory(),
-                                RemoteConfiguration::toAntminerType);
+                                RemoteConfiguration::toAntminerType));
                 break;
             case AVALON_API:
-                miner = toMiner(config, new AvalonFactory());
+                miners.add(toMiner(port, config, new AvalonFactory()));
                 break;
             case BAIKAL_API:
-                miner = toMiner(config, new BlackminerFactory());
+                miners.add(toMiner(port, config, new BlackminerFactory()));
                 break;
             case BLACKMINER_API:
-                miner = toMiner(config, new BlackminerFactory());
+                miners.add(toMiner(port, config, new BlackminerFactory()));
                 break;
             case BMINER_API:
-                miner = toMiner(config, new BminerFactory());
+                miners.add(toMiner(port, config, new BminerFactory()));
                 break;
             case CASTXMR_API:
-                miner = toMiner(config, new CastxmrFactory());
+                miners.add(toMiner(port, config, new CastxmrFactory()));
                 break;
             case CCMINER_API:
-                miner = toMiner(config, new CcminerFactory());
+                miners.add(toMiner(port, config, new CcminerFactory()));
                 break;
             case CLAYMORE_ETH_API:
                 // Fall through
             case CLAYMORE_ZEC_API:
-                miner = toClaymore(apiType, config);
+                miners.add(toClaymore(port, apiType, config));
                 break;
             case DAYUN_API:
-                miner = toMiner(config, new DayunFactory());
+                miners.add(toMiner(port, config, new DayunFactory()));
                 break;
             case DSTM_API:
-                miner = toMiner(config, new DstmFactory());
+                miners.add(toMiner(port, config, new DstmFactory()));
                 break;
             case DRAGONMINT_API:
-                miner = toDragonmintApi(config);
+                miners.add(toDragonmintApi(port, config));
                 break;
             case ETHMINER_API:
-                miner = toEthminerApi(config);
+                miners.add(toEthminerApi(port, config));
                 break;
             case EWBF_API:
-                miner = toMiner(config, new EwbfFactory());
+                miners.add(toMiner(port, config, new EwbfFactory()));
                 break;
             case EXCAVATOR_API:
-                miner = toMiner(config, new ExcavatorFactory());
+                miners.add(toMiner(port, config, new ExcavatorFactory()));
                 break;
             case GMINER_API:
-                miner = toMiner(config, new GminerFactory());
+                miners.add(toMiner(port, config, new GminerFactory()));
                 break;
             case GRINPRO_API:
-                miner = toMiner(config, new GrinProFactory());
+                miners.add(toMiner(port, config, new GrinProFactory()));
                 break;
             case HSPMINER_API:
-                miner = toMiner(config, new HspminerFactory());
+                miners.add(toMiner(port, config, new HspminerFactory()));
                 break;
             case INNOSILICON_HS_API:
                 // Fall through
@@ -477,54 +490,55 @@ public class RemoteConfiguration
             case INNOSILICON_MHS_API:
                 // Fall through
             case INNOSILICON_GHS_API:
-                miner =
+                miners.add(
                         toAsic(
+                                port,
                                 apiType,
                                 config,
                                 new InnosiliconFactory(),
-                                RemoteConfiguration::toInnosiliconType);
+                                RemoteConfiguration::toInnosiliconType));
                 break;
             case JCEMINER_API:
-                miner = toMiner(config, new JceminerFactory());
+                miners.add(toMiner(port, config, new JceminerFactory()));
                 break;
             case LOLMINER_API:
-                miner = toMiner(config, new LolminerFactory());
+                miners.add(toMiner(port, config, new LolminerFactory()));
                 break;
             case MKXMINER_API:
-                miner = toMiner(config, new MkxminerFactory());
+                miners.add(toMiner(port, config, new MkxminerFactory()));
                 break;
             case MULTIMINER_API:
-                miner = toMiner(config, new MultiminerFactory());
+                miners.add(toMiner(port, config, new MultiminerFactory()));
                 break;
             case NANOMINER_API:
-                miner = toMiner(config, new NanominerFactory());
+                miners.add(toMiner(port, config, new NanominerFactory()));
                 break;
             case NICEHASH_API:
-                miner = toNiceHashMiner(config, niceHashConfigs);
+                miners.addAll(toNiceHashMiner(config, niceHashConfigs));
                 break;
             case OPTIMINER_API:
-                miner = toMiner(config, new OptiminerFactory());
+                miners.add(toMiner(port, config, new OptiminerFactory()));
                 break;
             case RHMINER_API:
-                miner = toMiner(config, new RhminerFactory());
+                miners.add(toMiner(port, config, new RhminerFactory()));
                 break;
             case SGMINER_API:
-                miner = toMiner(config, new SgminerFactory());
+                miners.add(toMiner(port, config, new SgminerFactory()));
                 break;
             case SRBMINER_API:
-                miner = toMiner(config, new SrbminerFactory());
+                miners.add(toMiner(port, config, new SrbminerFactory()));
                 break;
             case TREX_API:
-                miner = toMiner(config, new TrexFactory());
+                miners.add(toMiner(port, config, new TrexFactory()));
                 break;
             case WHATSMINER_API:
-                miner = toMiner(config, new WhatsminerFactory());
+                miners.add(toMiner(port, config, new WhatsminerFactory()));
                 break;
             case XMRIG_API:
-                miner = toMiner(config, new XmrigFactory());
+                miners.add(toMiner(port, config, new XmrigFactory()));
                 break;
             case XMRSTAK_API:
-                miner = toMiner(config, new XmrstakFactory());
+                miners.add(toMiner(port, config, new XmrstakFactory()));
                 break;
             default:
                 break;
@@ -534,14 +548,19 @@ public class RemoteConfiguration
         // miners that offer weak APIs
         final MinerConfig.ChiselConfig chiselConfig = config.chisel;
         if (chiselConfig != null && chiselConfig.apiPort > 0) {
-            miner =
-                    new ChiselMinerDecorator(
-                            config.apiIp,
-                            chiselConfig.apiPort,
-                            miner);
+            final List<Miner> chiseledMiners = miners
+                    .stream()
+                    .map(miner ->
+                            new ChiselMinerDecorator(
+                                    config.apiIp,
+                                    chiselConfig.apiPort,
+                                    miner))
+                    .collect(Collectors.toList());
+            miners.clear();
+            miners.addAll(chiseledMiners);
         }
 
-        return Optional.ofNullable(miner);
+        return miners;
     }
 
     /**
@@ -559,9 +578,13 @@ public class RemoteConfiguration
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
-                .map(config -> toMiner(config.apiType, config, niceHashConfigs))
-                .filter(Optional::isPresent)
-                .map(Optional::get)
+                .map(config ->
+                        toMiner(
+                                config.apiType,
+                                config.apiPort,
+                                config,
+                                niceHashConfigs))
+                .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
@@ -571,37 +594,42 @@ public class RemoteConfiguration
      * @param config          The configuration.
      * @param niceHashConfigs The algorithm mappings.
      *
-     * @return The new {@link Miner}.
+     * @return The new {@link Miner miners}.
      */
-    private static Miner toNiceHashMiner(
+    private static List<Miner> toNiceHashMiner(
             final MinerConfig config,
             final Map<Integer, List<ApiType>> niceHashConfigs) {
-        Miner miner = null;
+        final List<Miner> miners = new LinkedList<>();
         final MinerConfig.NiceHashConfig niceHashConfig =
                 config.niceHashConfig;
         if (niceHashConfig != null) {
             final AlgorithmCandidates.Builder candidatesBuilder =
                     new AlgorithmCandidates.Builder();
-            niceHashConfigs.forEach((algoType, apiTypes) ->
-                    apiTypes.stream()
-                            .map(apiType ->
-                                    toMiner(
-                                            apiType,
-                                            config,
-                                            niceHashConfigs))
-                            .filter(Optional::isPresent)
-                            .forEach(opt ->
-                                    candidatesBuilder.addCandidate(
-                                            algoType,
-                                            opt.get())));
-            miner =
+            // Query up to a 5-port range for nicehashlegacy
+            for (int i = 0; i < 5; i++) {
+                final int port = config.apiPort + i;
+                niceHashConfigs.forEach((algoType, apiTypes) ->
+                        apiTypes.stream()
+                                .map(apiType ->
+                                        toMiner(
+                                                apiType,
+                                                port,
+                                                config,
+                                                niceHashConfigs))
+                                .flatMap(List::stream)
+                                .forEach(m ->
+                                        candidatesBuilder.addCandidate(
+                                                algoType,
+                                                m)));
+            }
+            miners.add(
                     new NiceHashMiner(
                             config.apiIp,
                             config.apiPort,
                             niceHashConfig.algo,
-                            candidatesBuilder.build());
+                            candidatesBuilder.build()));
         }
-        return miner;
+        return miners;
     }
 
     /**
