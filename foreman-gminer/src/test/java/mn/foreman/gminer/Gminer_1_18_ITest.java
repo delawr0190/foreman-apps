@@ -15,11 +15,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link Gminer} against a fake API. */
-public class Gminer1_18ITest
+public class Gminer_1_18_ITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public Gminer1_18ITest() {
+    public Gminer_1_18_ITest() {
         super(
                 new GminerFactory().create(
                         ImmutableMap.of(
