@@ -21,8 +21,7 @@ import java.util.Map;
  * A {@link CcMiner} represents a remove ccminer instance.
  *
  * <p>This class relies on the ccminer-api being enabled and configured to
- * allow
- * the server that this application is running on to access it.  If this
+ * allow the server that this application is running on to access it.  If this
  * applications is running on the rig server, only localhost connections need to
  * be allowed.</p>
  *
