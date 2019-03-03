@@ -2,6 +2,7 @@ package mn.foreman.pickaxe.miners.remote;
 
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.antminer.AntminerType;
+import mn.foreman.autominer.AutoMinerFactory;
 import mn.foreman.avalon.AvalonFactory;
 import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.bminer.BminerFactory;
@@ -432,6 +433,9 @@ public class RemoteConfiguration
                                 config,
                                 new AntminerFactory(),
                                 RemoteConfiguration::toAntminerType));
+                break;
+            case AUTOMINER_API:
+                miners.add(toMiner(port, config, new AutoMinerFactory()));
                 break;
             case AVALON_API:
                 miners.add(toMiner(port, config, new AvalonFactory()));

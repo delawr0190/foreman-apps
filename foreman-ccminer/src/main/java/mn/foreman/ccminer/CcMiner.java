@@ -20,7 +20,8 @@ import java.util.Map;
 /**
  * A {@link CcMiner} represents a remove ccminer instance.
  *
- * <p>This class relies on the ccminer-api being enabled and configured to allow
+ * <p>This class relies on the ccminer-api being enabled and configured to
+ * allow
  * the server that this application is running on to access it.  If this
  * applications is running on the rig server, only localhost connections need to
  * be allowed.</p>
@@ -28,9 +29,9 @@ import java.util.Map;
  * <p>This class currently queries for:</p>
  *
  * <ul>
- *     <li>summary|</li>
- *     <li>pool|</li>
- *     <li>hwinfo|</li>
+ * <li>summary|</li>
+ * <li>pool|</li>
+ * <li>hwinfo|</li>
  * </ul>
  *
  * <p>In the event that the "hwinfo" command isn't available, "gpus" will be
@@ -249,7 +250,7 @@ public class CcMiner
         builder.addPool(
                 new Pool.Builder()
                         .setName(PoolUtils.sanitizeUrl(values.get("URL")))
-                        .setPriority(1)
+                        .setPriority(0)
                         .setStatus(
                                 true,
                                 Integer.parseInt(values.get("UPTIME")) > 0)

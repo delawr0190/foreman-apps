@@ -43,7 +43,7 @@ public class CcMinerITest
                                 new Pool.Builder()
                                         .setName("us.ravenminer.com:4567")
                                         .setStatus(true, true)
-                                        .setPriority(1)
+                                        .setPriority(0)
                                         .setCounts(25, 0, 0)
                                         .build())
                         .addRig(

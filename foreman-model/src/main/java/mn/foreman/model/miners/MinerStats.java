@@ -203,6 +203,18 @@ public class MinerStats {
         }
 
         /**
+         * Adds the provided {@link Asic ASICs}.
+         *
+         * @param asics The {@link Asic ASICs}.
+         *
+         * @return This builder instance.
+         */
+        public Builder addAsics(final List<Asic> asics) {
+            asics.forEach(this::addAsic);
+            return this;
+        }
+
+        /**
          * Adds the provided {@link Pool}.
          *
          * @param pool The {@link Pool}.
@@ -215,6 +227,18 @@ public class MinerStats {
         }
 
         /**
+         * Adds the provided {@link Pool pools}.
+         *
+         * @param pools The {@link Pool pools} to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addPools(final List<Pool> pools) {
+            pools.forEach(this::addPool);
+            return this;
+        }
+
+        /**
          * Adds the provided {@link Rig}.
          *
          * @param rig The {@link Rig}.
@@ -223,6 +247,18 @@ public class MinerStats {
          */
         public Builder addRig(final Rig rig) {
             this.rigs.add(rig);
+            return this;
+        }
+
+        /**
+         * Adds the provided {@link Rig rigs}.
+         *
+         * @param rigs The {@link Rig rigs}.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRigs(final List<Rig> rigs) {
+            rigs.forEach(this::addRig);
             return this;
         }
 

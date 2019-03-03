@@ -45,7 +45,7 @@ public class ZjazzITest
                                 new Pool.Builder()
                                         .setName("mine.icemining.ca:3343")
                                         .setStatus(true, true)
-                                        .setPriority(1)
+                                        .setPriority(0)
                                         .setCounts(18, 0, 0)
                                         .build())
                         .addRig(

@@ -43,7 +43,7 @@ public class ZenemyITest
                                 new Pool.Builder()
                                         .setName("ravenminer.com:3636")
                                         .setStatus(true, true)
-                                        .setPriority(1)
+                                        .setPriority(0)
                                         .setCounts(3, 0, 0)
                                         .build())
                         .addRig(

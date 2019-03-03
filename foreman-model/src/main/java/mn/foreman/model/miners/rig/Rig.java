@@ -10,12 +10,13 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /** A {@link Rig} represents a miner that's comprised of {@link Gpu GPUs}. */
 public class Rig {
+
+    /** Miscellaneous rig attributes. */
+    private final Map<String, String> attributes;
 
     /** The GPUs. */
     private final List<Gpu> gpus;
@@ -27,20 +28,26 @@ public class Rig {
     /**
      * Constructor.
      *
-     * @param hashRate The hash rate.
-     * @param gpus     The GPUs.
+     * @param hashRate   The hash rate.
+     * @param gpus       The GPUs.
+     * @param attributes Rig attributes.
      */
     private Rig(
             @JsonProperty("hashRate") final BigDecimal hashRate,
-            @JsonProperty("gpus") final List<Gpu> gpus) {
+            @JsonProperty("gpus") final List<Gpu> gpus,
+            @JsonProperty("attributes") final Map<String, String> attributes) {
         Validate.notNull(
                 hashRate,
                 "Speed cannot be null");
         Validate.notNull(
                 gpus,
                 "GPUs cannot be null");
+        Validate.notNull(
+                attributes,
+                "attributes cannot be null");
         this.hashRate = hashRate;
         this.gpus = new ArrayList<>(gpus);
+        this.attributes = new HashMap<>(attributes);
     }
 
     @Override
@@ -56,9 +63,19 @@ public class Rig {
                     new EqualsBuilder()
                             .append(this.hashRate, rig.hashRate)
                             .append(this.gpus, rig.gpus)
+                            .append(this.attributes, rig.attributes)
                             .isEquals();
         }
         return isEqual;
+    }
+
+    /**
+     * Returns the attributes.
+     *
+     * @return The attributes.
+     */
+    public Map<String, String> getAttributes() {
+        return Collections.unmodifiableMap(this.attributes);
     }
 
     /**
@@ -84,6 +101,7 @@ public class Rig {
         return new HashCodeBuilder()
                 .append(this.hashRate)
                 .append(this.gpus)
+                .append(this.attributes)
                 .hashCode();
     }
 
@@ -92,22 +110,45 @@ public class Rig {
         return String.format(
                 "%s [ " +
                         "hashRate=%s, " +
-                        "gpus=%s" +
+                        "gpus=%s, " +
+                        "attributes=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
-                this.gpus);
+                this.gpus,
+                this.attributes);
     }
 
     /** A builder for creating {@link Rig Rigs}. */
     public static class Builder
             extends AbstractBuilder<Rig> {
 
+        /** The attributes. */
+        private final Map<String, String> attributes = new HashMap<>();
+
         /** The {@link Gpu GPUs}. */
         private final List<Gpu> gpus = new LinkedList<>();
 
         /** The speed info. */
         private BigDecimal hashRate;
+
+        /**
+         * Adds a rig attribute.
+         *
+         * @param key   The key.
+         * @param value The value.
+         *
+         * @return This builder instance.
+         */
+        public Builder addAttribute(
+                final String key,
+                final String value) {
+            if ((key != null) && (!key.isEmpty()) &&
+                    (value != null) && (!value.isEmpty())) {
+                this.attributes.put(key, value);
+            }
+            return this;
+        }
 
         /**
          * Adds the {@link Gpu}.
@@ -121,11 +162,24 @@ public class Rig {
             return this;
         }
 
+        /**
+         * Adds the {@link Gpu GPUs}.
+         *
+         * @param gpus The {@link Gpu GPUs} to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addGpus(final List<Gpu> gpus) {
+            gpus.forEach(this::addGpu);
+            return this;
+        }
+
         @Override
         public Rig build() {
             return new Rig(
                     this.hashRate,
-                    this.gpus);
+                    this.gpus,
+                    this.attributes);
         }
 
         /**

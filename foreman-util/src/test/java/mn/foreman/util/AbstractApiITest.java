@@ -5,6 +5,9 @@ import mn.foreman.model.miners.MinerStats;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static junit.framework.TestCase.assertEquals;
@@ -16,11 +19,27 @@ public abstract class AbstractApiITest {
     /** The expected metrics. */
     private final MinerStats expectedStats;
 
-    /** The fake server. */
-    private final FakeMinerServer fakeMinerServer;
+    /** The fake servers. */
+    private final List<FakeMinerServer> fakeMinerServers;
 
     /** The {@link Miner} under test. */
     private final Miner miner;
+
+    /**
+     * Constructor.
+     *
+     * @param miner            The {@link Miner} under test.
+     * @param fakeMinerServers A fake servers for query testing.
+     * @param expectedStats    The expected metrics.
+     */
+    public AbstractApiITest(
+            final Miner miner,
+            final List<FakeMinerServer> fakeMinerServers,
+            final MinerStats expectedStats) {
+        this.miner = miner;
+        this.fakeMinerServers = new ArrayList<>(fakeMinerServers);
+        this.expectedStats = expectedStats;
+    }
 
     /**
      * Constructor.
@@ -33,25 +52,34 @@ public abstract class AbstractApiITest {
             final Miner miner,
             final FakeMinerServer fakeMinerServer,
             final MinerStats expectedStats) {
-        this.fakeMinerServer = fakeMinerServer;
-        this.miner = miner;
-        this.expectedStats = expectedStats;
+        this(
+                miner,
+                Collections.singletonList(fakeMinerServer),
+                expectedStats);
     }
 
     /** Test the metrics querying performed by {@link #miner}. */
     @Test
     public void testMiner() throws Exception {
         try {
-            this.fakeMinerServer.start();
+            this.fakeMinerServers.forEach(FakeMinerServer::start);
             assertEquals(
                     this.expectedStats,
                     this.miner.getStats());
-            assertTrue(
-                    this.fakeMinerServer.waitTillDone(
-                            10,
-                            TimeUnit.SECONDS));
+            this.fakeMinerServers.forEach(server -> {
+                assertTrue(
+                        server.waitTillDone(
+                                10,
+                                TimeUnit.SECONDS));
+            });
         } finally {
-            this.fakeMinerServer.close();
+            this.fakeMinerServers.forEach(server -> {
+                try {
+                    server.close();
+                } catch (final Exception e) {
+                    // Ignore
+                }
+            });
         }
     }
 }
