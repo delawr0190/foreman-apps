@@ -5,6 +5,7 @@ import mn.foreman.model.miners.BigDecimalSerializer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,7 +17,7 @@ import java.util.*;
 public class Rig {
 
     /** Miscellaneous rig attributes. */
-    private final Map<String, String> attributes;
+    private final List<Map<String, String>> attributes;
 
     /** The GPUs. */
     private final List<Gpu> gpus;
@@ -35,7 +36,7 @@ public class Rig {
     private Rig(
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("gpus") final List<Gpu> gpus,
-            @JsonProperty("attributes") final Map<String, String> attributes) {
+            @JsonProperty("attributes") final List<Map<String, String>> attributes) {
         Validate.notNull(
                 hashRate,
                 "Speed cannot be null");
@@ -47,7 +48,7 @@ public class Rig {
                 "attributes cannot be null");
         this.hashRate = hashRate;
         this.gpus = new ArrayList<>(gpus);
-        this.attributes = new HashMap<>(attributes);
+        this.attributes = new ArrayList<>(attributes);
     }
 
     @Override
@@ -74,8 +75,8 @@ public class Rig {
      *
      * @return The attributes.
      */
-    public Map<String, String> getAttributes() {
-        return Collections.unmodifiableMap(this.attributes);
+    public List<Map<String, String>> getAttributes() {
+        return Collections.unmodifiableList(this.attributes);
     }
 
     /**
@@ -124,7 +125,7 @@ public class Rig {
             extends AbstractBuilder<Rig> {
 
         /** The attributes. */
-        private final Map<String, String> attributes = new HashMap<>();
+        private final List<Map<String, String>> attributes = new ArrayList<>();
 
         /** The {@link Gpu GPUs}. */
         private final List<Gpu> gpus = new LinkedList<>();
@@ -145,7 +146,12 @@ public class Rig {
                 final String value) {
             if ((key != null) && (!key.isEmpty()) &&
                     (value != null) && (!value.isEmpty())) {
-                this.attributes.put(key, value);
+                this.attributes.add(
+                        ImmutableMap.of(
+                                "key",
+                                key,
+                                "value",
+                                value));
             }
             return this;
         }
