@@ -1,6 +1,7 @@
 package mn.foreman.autominer;
 
 import mn.foreman.ccminer.CcminerFactory;
+import mn.foreman.gminer.GminerFactory;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.trex.TrexFactory;
 
@@ -24,6 +25,12 @@ public enum MinerType {
 
     /** ccminer. */
     CCMINER("ccminer", new CcminerFactory()),
+
+    /** z-enemy. */
+    ZENEMY("z-enemy", new CcminerFactory()),
+
+    /** gminer. */
+    GMINER("gminer", new GminerFactory()),
 
     /** Unknown miner type. */
     UNKNOWN("NONE", null);
