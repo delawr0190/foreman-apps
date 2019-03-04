@@ -29,6 +29,10 @@
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-util</artifactId>
         </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-xmrstak</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>ch.qos.logback</groupId>

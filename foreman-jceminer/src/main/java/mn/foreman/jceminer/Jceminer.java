@@ -14,6 +14,8 @@ import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.math.BigDecimal;
+
 /**
  * <h1>Overview</h1>
  *
@@ -89,7 +91,7 @@ public class Jceminer
             final Rig.Builder rigBuilder) {
         rigBuilder.addGpu(
                 new Gpu.Builder()
-                        .setName("GPU " + gpu.index)
+                        .setName(gpu.processor)
                         .setIndex(gpu.index)
                         .setBus(0)
                         .setTemp(gpu.temperature)
@@ -145,7 +147,11 @@ public class Jceminer
 
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
-                            .setHashRate(response.hashrate.total);
+                            .setHashRate(
+                                    response.hashrate.hashRates
+                                            .stream()
+                                            .reduce(BigDecimal.ZERO,
+                                                    BigDecimal::add));
             response.gpus.forEach(
                     (gpu) ->
                             addGpu(

@@ -21,9 +21,12 @@ public class JceminerITest
     /** Constructor. */
     public JceminerITest() {
         super(
-                new Jceminer(
-                        "127.0.0.1",
-                        3434),
+                new JceminerFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "3434")),
                 new FakeHttpMinerServer(
                         3434,
                         ImmutableMap.of(
@@ -92,10 +95,10 @@ public class JceminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("7386.59"))
+                                        .setHashRate(new BigDecimal("7386.62"))
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 0")
+                                                        .setName("Ellesmere")
                                                         .setIndex(0)
                                                         .setBus(0)
                                                         .setTemp(69)
@@ -113,7 +116,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 1")
+                                                        .setName("Ellesmere")
                                                         .setIndex(1)
                                                         .setBus(0)
                                                         .setTemp(69)
@@ -131,7 +134,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 2")
+                                                        .setName("Ellesmere")
                                                         .setIndex(2)
                                                         .setBus(0)
                                                         .setTemp(64)
@@ -149,7 +152,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 3")
+                                                        .setName("Ellesmere")
                                                         .setIndex(3)
                                                         .setBus(0)
                                                         .setTemp(64)
@@ -167,7 +170,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 4")
+                                                        .setName("Ellesmere")
                                                         .setIndex(4)
                                                         .setBus(0)
                                                         .setTemp(57)
@@ -185,7 +188,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 5")
+                                                        .setName("Ellesmere")
                                                         .setIndex(5)
                                                         .setBus(0)
                                                         .setTemp(75)
@@ -203,7 +206,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 6")
+                                                        .setName("Ellesmere")
                                                         .setIndex(6)
                                                         .setBus(0)
                                                         .setTemp(75)
@@ -221,7 +224,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 7")
+                                                        .setName("Ellesmere")
                                                         .setIndex(7)
                                                         .setBus(0)
                                                         .setTemp(75)
@@ -239,7 +242,7 @@ public class JceminerITest
                                                         .build())
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setName("GPU 8")
+                                                        .setName("Ellesmere")
                                                         .setIndex(8)
                                                         .setBus(0)
                                                         .setTemp(68)

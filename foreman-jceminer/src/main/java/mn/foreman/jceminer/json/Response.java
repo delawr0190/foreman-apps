@@ -172,6 +172,10 @@ public class Response {
         @JsonProperty("index")
         public int index;
 
+        /** The processor. */
+        @JsonProperty("processor")
+        public String processor;
+
         /** The temperature. */
         @JsonProperty("temperature")
         public int temperature;
@@ -181,9 +185,9 @@ public class Response {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Hashrate {
 
-        /** The total hash rate. */
-        @JsonProperty("total")
-        public BigDecimal total;
+        /** The GPU hash rates. */
+        @JsonProperty("thread_gpu")
+        public List<BigDecimal> hashRates;
     }
 
     /** A model object representing the result JSON object. */

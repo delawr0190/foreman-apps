@@ -78,10 +78,6 @@ public class ResponseTest {
                                 Response.class);
 
         assertEquals(
-                new BigDecimal("7386.59"),
-                response.hashrate.total);
-
-        assertEquals(
                 "bittube.miner.rocks:5555",
                 response.result.pool);
         assertEquals(
