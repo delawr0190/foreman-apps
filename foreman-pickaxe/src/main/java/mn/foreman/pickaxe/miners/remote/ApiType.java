@@ -130,7 +130,10 @@ public enum ApiType {
     GRINPRO_API(39),
 
     /** autominer. */
-    AUTOMINER_API(40);
+    AUTOMINER_API(40),
+
+    /** spondoolies. */
+    SPONDOOLIES_API(41);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

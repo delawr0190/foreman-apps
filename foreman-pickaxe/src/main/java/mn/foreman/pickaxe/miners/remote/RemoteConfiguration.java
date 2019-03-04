@@ -36,6 +36,7 @@ import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
 import mn.foreman.rhminer.RhminerFactory;
 import mn.foreman.sgminer.SgminerFactory;
+import mn.foreman.spondoolies.SpondooliesFactory;
 import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.trex.TrexFactory;
 import mn.foreman.whatsminer.WhatsminerFactory;
@@ -528,6 +529,9 @@ public class RemoteConfiguration
                 break;
             case SGMINER_API:
                 miners.add(toMiner(port, config, new SgminerFactory()));
+                break;
+            case SPONDOOLIES_API:
+                miners.add(toMiner(port, config, new SpondooliesFactory()));
                 break;
             case SRBMINER_API:
                 miners.add(toMiner(port, config, new SrbminerFactory()));

@@ -86,6 +86,7 @@
         <module>foreman-pickaxe</module>
         <module>foreman-rhminer</module>
         <module>foreman-sgminer</module>
+        <module>foreman-spondoolies</module>
         <module>foreman-srbminer</module>
         <module>foreman-trex</module>
         <module>foreman-util</module>
@@ -260,6 +261,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-sgminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-spondoolies</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
