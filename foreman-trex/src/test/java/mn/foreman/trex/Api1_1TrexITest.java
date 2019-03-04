@@ -14,16 +14,19 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link Trex} against a fake API. */
+/** Runs an integration tests using {@link TrexHttp} against a fake API. */
 public class Api1_1TrexITest
         extends AbstractApiITest {
 
     /** Constructor. */
     public Api1_1TrexITest() {
         super(
-                new Trex(
-                        "127.0.0.1",
-                        4067),
+                new TrexFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "4067")),
                 new FakeHttpMinerServer(
                         4067,
                         ImmutableMap.of(

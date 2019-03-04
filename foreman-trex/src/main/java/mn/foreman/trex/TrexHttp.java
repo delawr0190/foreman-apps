@@ -17,7 +17,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 /**
  * <h1>Overview</h1>
  *
- * A {@link Trex} represents a remote t-rex instance.
+ * A {@link TrexHttp} represents a remote t-rex instance.
  *
  * <p>This class relies on the trex-http-api being enabled and configured to
  * allow the server that this application is running on to access it.  If this
@@ -47,7 +47,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  * <p>Stale shares are not directly reported.  They are most likely included in
  * the reported rejected shares.</p>
  */
-public class Trex
+public class TrexHttp
         extends AbstractMiner {
 
     /**
@@ -56,7 +56,7 @@ public class Trex
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    Trex(
+    TrexHttp(
             final String apiIp,
             final int apiPort) {
         super(

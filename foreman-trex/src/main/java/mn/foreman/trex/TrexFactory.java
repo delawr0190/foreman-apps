@@ -14,8 +14,14 @@ public class TrexFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
-        return new Trex(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+        final String apiIp = config.get("apiIp");
+        final int apiPort = Integer.parseInt(config.get("apiPort"));
+        return new TrexFacade(
+                new TrexHttp(
+                        apiIp,
+                        apiPort),
+                new TrexCcminer(
+                        apiIp,
+                        apiPort));
     }
 }
