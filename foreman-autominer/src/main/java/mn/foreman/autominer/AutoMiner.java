@@ -16,6 +16,7 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -97,41 +98,53 @@ public class AutoMiner
                 .addPools(minerStats.getPools())
                 .addAsics(minerStats.getAsics())
                 .addRigs(
-                        addGroup(
+                        addAttributes(
                                 response.gpuRigGroup,
+                                response.startTime,
+                                response.gpuAlgo,
                                 minerStats.getRigs()));
     }
 
     /**
-     * Adds the MRR group to every rig.
+     * Adds attributes to every rig.
      *
-     * @param mrrGroup The MRR group.
-     * @param rigs     The rigs.
+     * @param mrrGroup  The MRR group.
+     * @param startTime The start time.
+     * @param gpuAlgo   The GPU algorithm.
+     * @param rigs      The rigs.
      *
      * @return The new rigs with the MRR group set.
      */
-    private static List<Rig> addGroup(
+    private static List<Rig> addAttributes(
             final int mrrGroup,
+            final ZonedDateTime startTime,
+            final String gpuAlgo,
             final List<Rig> rigs) {
         return rigs
                 .stream()
                 .map(rig ->
-                        addGroup(
+                        addAttributes(
                                 mrrGroup,
+                                startTime,
+                                gpuAlgo,
                                 rig))
                 .collect(Collectors.toList());
     }
 
     /**
-     * Adds the MRR group to the rig.
+     * Adds attributes to the rig.
      *
-     * @param mrrGroup The MRR group.
-     * @param rig      The rig.
+     * @param mrrGroup  The MRR group.
+     * @param startTime The start time.
+     * @param gpuAlgo   The GPU algorithm.
+     * @param rig       The rig.
      *
      * @return The new rig with the group.
      */
-    private static Rig addGroup(
+    private static Rig addAttributes(
             final int mrrGroup,
+            final ZonedDateTime startTime,
+            final String gpuAlgo,
             final Rig rig) {
         return new Rig.Builder()
                 .setHashRate(rig.getHashRate())
@@ -139,6 +152,12 @@ public class AutoMiner
                 .addAttribute(
                         "mrr_group",
                         Integer.toString(mrrGroup))
+                .addAttribute(
+                        "start_time",
+                        startTime.toString())
+                .addAttribute(
+                        "gpu_algo",
+                        gpuAlgo)
                 .build();
     }
 

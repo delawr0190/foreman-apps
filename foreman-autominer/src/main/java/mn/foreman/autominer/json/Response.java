@@ -6,6 +6,7 @@ import mn.foreman.autominer.MinerType;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -84,6 +85,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
 
+    /** The GPU algorithm. */
+    @JsonProperty("GPUAlgo")
+    public String gpuAlgo;
+
     /** The GPU api port. */
     @JsonProperty("GPUApiPort")
     public int gpuApiPort;
@@ -99,6 +104,10 @@ public class Response {
     /** The GPUs. */
     @JsonProperty("GPUList")
     public List<Gpu> gpus;
+
+    /** The start time. */
+    @JsonProperty("StartTime")
+    public ZonedDateTime startTime;
 
     /** Provides a model representation of a GPU. */
     @JsonIgnoreProperties(ignoreUnknown = true)

@@ -4,6 +4,7 @@ import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Base64;
@@ -344,7 +345,8 @@ public class Query {
                 connectTimeout,
                 connectTimeoutUnits)) {
             final ObjectMapper objectMapper =
-                    new ObjectMapper();
+                    new ObjectMapper()
+                            .registerModule(new JavaTimeModule());
             try {
                 response =
                         objectMapper.readValue(

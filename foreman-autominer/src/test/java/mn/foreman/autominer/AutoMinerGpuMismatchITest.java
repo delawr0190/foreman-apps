@@ -36,6 +36,7 @@ public class AutoMinerGpuMismatchITest
                                         new HttpHandler(
                                                 "",
                                                 "{\n" +
+                                                        "  \"StartTime\": \"2019-03-05T00:01:24.2177796Z\"," +
                                                         "  \"GPUMiner\": \"trex\",\n" +
                                                         "  \"GPUAlgo\": \"x16rt\",\n" +
                                                         "  \"GPUApiPort\": 4067,\n" +
@@ -147,6 +148,12 @@ public class AutoMinerGpuMismatchITest
                                         .addAttribute(
                                                 "mrr_group",
                                                 "17")
+                                        .addAttribute(
+                                                "start_time",
+                                                "2019-03-05T00:01:24.217779600Z[UTC]")
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "x16rt")
                                         .build())
                         .build());
     }

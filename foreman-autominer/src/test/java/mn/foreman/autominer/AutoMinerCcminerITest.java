@@ -38,6 +38,7 @@ public class AutoMinerCcminerITest
                                         new HttpHandler(
                                                 "",
                                                 "{\n" +
+                                                        "  \"StartTime\": \"2019-03-05T00:01:24.2177796Z\"," +
                                                         "  \"GPUMiner\": \"ccminer\",\n" +
                                                         "  \"GPUAlgo\": \"x16rt\",\n" +
                                                         "  \"GPUApiPort\": 4068,\n" +
@@ -103,6 +104,12 @@ public class AutoMinerCcminerITest
                                         .addAttribute(
                                                 "mrr_group",
                                                 "17")
+                                        .addAttribute(
+                                                "start_time",
+                                                "2019-03-05T00:01:24.217779600Z[UTC]")
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "x16rt")
                                         .build())
                         .build());
     }
