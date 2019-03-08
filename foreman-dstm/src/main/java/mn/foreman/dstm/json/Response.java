@@ -1,5 +1,6 @@
 package mn.foreman.dstm.json;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -52,6 +53,7 @@ public class Response {
 
     /** The connection time. */
     @JsonProperty("contime")
+    @JsonAlias("start_time")
     public long connectionTime;
 
     /** The port. */
@@ -64,6 +66,7 @@ public class Response {
 
     /** The server. */
     @JsonProperty("server")
+    @JsonAlias("current_server")
     public String server;
 
     /** Provides a model representation of the {@link Result} object. */
@@ -74,21 +77,32 @@ public class Response {
         @JsonProperty("accepted_shares")
         public int acceptedShares;
 
+        /** The core clock. */
+        @JsonProperty("gpu_clock_core_max")
+        public int coreClock;
+
         /** The fan speed (percentage). */
         @JsonProperty("fan_speed")
+        @JsonAlias("gpu_fan_speed")
         public int fanSpeed;
 
         /** The GPU ID. */
         @JsonProperty("gpu_id")
+        @JsonAlias("gpuid")
         public int gpuId;
 
         /** The GPU name. */
         @JsonProperty("gpu_name")
+        @JsonAlias("name")
         public String gpuName;
 
         /** The GPU PCI bus ID. */
         @JsonProperty("gpu_pci_bus_id")
         public int gpuPciBusId;
+
+        /** The memory clock. */
+        @JsonProperty("gpu_clock_memory")
+        public int memoryClock;
 
         /** The rejected shares. */
         @JsonProperty("rejected_shares")
@@ -96,6 +110,7 @@ public class Response {
 
         /** The solution rate. */
         @JsonProperty("sol_ps")
+        @JsonAlias("speed_sps")
         public double solutionRate;
 
         /** The temperature. */

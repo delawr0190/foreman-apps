@@ -98,8 +98,8 @@ public class Dstm
                                 .setFreqInfo(
                                         // No freq info in API
                                         new FreqInfo.Builder()
-                                                .setFreq(0)
-                                                .setMemFreq(0)
+                                                .setFreq(result.coreClock)
+                                                .setMemFreq(result.memoryClock)
                                                 .build())
                                 .setFans(
                                         new FanInfo.Builder()
@@ -134,7 +134,10 @@ public class Dstm
                         new Pool.Builder()
                                 .setName(
                                         PoolUtils.sanitizeUrl(
-                                                response.server + ":" + response.port))
+                                                // For miniz support
+                                                (response.port == 0
+                                                        ? response.server
+                                                        : response.server + ":" + response.port)))
                                 .setPriority(0)
                                 .setStatus(
                                         true,
