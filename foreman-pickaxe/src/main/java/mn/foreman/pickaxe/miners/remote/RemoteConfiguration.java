@@ -29,6 +29,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
+import mn.foreman.nbminer.NbminerFactory;
 import mn.foreman.nicehash.AlgorithmCandidates;
 import mn.foreman.nicehash.NiceHashMiner;
 import mn.foreman.optiminer.OptiminerFactory;
@@ -517,6 +518,9 @@ public class RemoteConfiguration
                 break;
             case NANOMINER_API:
                 miners.add(toMiner(port, config, new NanominerFactory()));
+                break;
+            case NBMINER_API:
+                miners.add(toMiner(port, config, new NbminerFactory()));
                 break;
             case NICEHASH_API:
                 miners.addAll(toNiceHashMiner(config, niceHashConfigs));

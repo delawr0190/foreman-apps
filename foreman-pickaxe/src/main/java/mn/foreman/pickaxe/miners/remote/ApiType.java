@@ -133,7 +133,10 @@ public enum ApiType {
     AUTOMINER_API(40),
 
     /** spondoolies. */
-    SPONDOOLIES_API(41);
+    SPONDOOLIES_API(41),
+
+    /** nbminer. */
+    NBMINER_API(42);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
