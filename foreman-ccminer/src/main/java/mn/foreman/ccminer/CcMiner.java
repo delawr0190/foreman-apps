@@ -65,14 +65,17 @@ public class CcMiner
         final Rig.Builder rigBuilder =
                 new Rig.Builder();
 
-        getSummary(rigBuilder);
+        final Map<String, String> summaryValues =
+                getSummary(rigBuilder);
         try {
             getHwInfo(rigBuilder);
         } catch (final MinerException me) {
             // No hwinfo available on the API, so try gpus as a last resort
             getGpus(rigBuilder);
         }
-        getPools(statsBuilder);
+        getPools(
+                summaryValues,
+                statsBuilder);
 
         statsBuilder.addRig(rigBuilder.build());
     }
@@ -88,7 +91,7 @@ public class CcMiner
     private static Map<String, String> split(final String value) {
         return Splitter.on(VALUE_SEPARATOR)
                 .withKeyValueSeparator("=")
-                .split(value.replace("|", ""));
+                .split(value.trim().replace("|", ""));
     }
 
     /**
@@ -234,11 +237,14 @@ public class CcMiner
     /**
      * Queries for pool info and adds them to the provided builder.
      *
-     * @param builder The builder.
+     * @param summaryValues The summary values.
+     * @param builder       The builder.
      *
      * @throws MinerException on failure to query.
      */
-    private void getPools(final MinerStats.Builder builder)
+    private void getPools(
+            final Map<String, String> summaryValues,
+            final MinerStats.Builder builder)
             throws MinerException {
         final String pool =
                 Query.delimiterQuery(
@@ -254,9 +260,22 @@ public class CcMiner
                                 true,
                                 Integer.parseInt(values.get("UPTIME")) > 0)
                         .setCounts(
-                                values.get("ACC"),
-                                values.get("REJ"),
-                                values.getOrDefault("STALE", "0"))
+                                // Some ccminers put the shares in 'summary'
+                                values.getOrDefault(
+                                        "ACC",
+                                        summaryValues.getOrDefault(
+                                                "ACC",
+                                                "0")),
+                                values.getOrDefault(
+                                        "REJ",
+                                        summaryValues.getOrDefault(
+                                                "REJ",
+                                                "0")),
+                                values.getOrDefault(
+                                        "STALE",
+                                        summaryValues.getOrDefault(
+                                                "STALE",
+                                                "0")))
                         .build());
     }
 
@@ -265,9 +284,11 @@ public class CcMiner
      *
      * @param rigBuilder The builder.
      *
+     * @return The summary values.
+     *
      * @throws MinerException on failure to query.
      */
-    private void getSummary(final Rig.Builder rigBuilder)
+    private Map<String, String> getSummary(final Rig.Builder rigBuilder)
             throws MinerException {
         final String summary =
                 Query.delimiterQuery(
@@ -279,5 +300,6 @@ public class CcMiner
                 new BigDecimal(values.get("KHS"))
                         .multiply(new BigDecimal(1000));
         rigBuilder.setHashRate(hashRate);
+        return values;
     }
 }
