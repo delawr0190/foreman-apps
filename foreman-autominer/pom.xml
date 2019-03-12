@@ -23,6 +23,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-claymore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-gminer</artifactId>
         </dependency>
         <dependency>
@@ -31,7 +35,23 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-jceminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-lolminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-model</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-sgminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-srbminer</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
@@ -40,6 +60,10 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-util</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-xmrig</artifactId>
         </dependency>
         
         <dependency>

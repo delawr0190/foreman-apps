@@ -1,9 +1,15 @@
 package mn.foreman.autominer;
 
 import mn.foreman.ccminer.CcminerFactory;
+import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.gminer.GminerFactory;
+import mn.foreman.jceminer.JceminerFactory;
+import mn.foreman.lolminer.LolminerFactory;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.sgminer.SgminerFactory;
+import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.trex.TrexFactory;
+import mn.foreman.xmrig.XmrigFactory;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
@@ -31,6 +37,24 @@ public enum MinerType {
 
     /** gminer. */
     GMINER("gminer", new GminerFactory()),
+
+    /** srbminer. */
+    SRBMINER("srbminer", new SrbminerFactory()),
+
+    /** jceminer. */
+    JCEMINER("jceminer", new JceminerFactory()),
+
+    /** trm. */
+    TEAMREDMINER("teamredminer", new SgminerFactory()),
+
+    /** lolminer. */
+    LOLMINER("lolminer", new LolminerFactory()),
+
+    /** phoenix. */
+    PHOENIX("phoenix", new ClaymoreFactory()),
+
+    /** wildrigmulti. */
+    WILDRIGMULTI("wildrigmulti", new XmrigFactory()),
 
     /** Unknown miner type. */
     UNKNOWN("NONE", null);

@@ -1,6 +1,7 @@
 package mn.foreman.autominer;
 
 import mn.foreman.autominer.json.Response;
+import mn.foreman.claymore.ClaymoreType;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.Miner;
@@ -12,12 +13,13 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -280,12 +282,14 @@ public class AutoMiner
             final MinerType minerType,
             final String apiIp,
             final int apiPort) {
-        return minerType.getFactory().map(factory ->
-                factory.create(
-                        ImmutableMap.of(
-                                "apiIp",
-                                apiIp,
-                                "apiPort",
-                                Integer.toString(apiPort))));
+        return minerType.getFactory().map(factory -> {
+            final Map<String, String> attributes = new HashMap<>();
+            attributes.put("apiIp", apiIp);
+            attributes.put("apiPort", Integer.toString(apiPort));
+            if (minerType == MinerType.PHOENIX) {
+                attributes.put("type", ClaymoreType.ETH.name().toLowerCase());
+            }
+            return factory.create(attributes);
+        });
     }
 }
