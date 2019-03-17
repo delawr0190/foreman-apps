@@ -67,37 +67,43 @@ public class TrexHttp
     @Override
     public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        final Summary summary =
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
-                        "/summary",
-                        new TypeReference<Summary>() {
-                        });
-        statsBuilder.addPool(
-                new Pool.Builder()
-                        .setName(
-                                PoolUtils.sanitizeUrl(
-                                        summary.activePool.url))
-                        .setStatus(
-                                true,
-                                summary.uptime > 0)
-                        .setPriority(0)
-                        .setCounts(
-                                summary.acceptCount,
-                                summary.rejectedCount,
-                                0)
-                        .build());
+        try {
+            final Summary summary =
+                    Query.restQuery(
+                            this.apiIp,
+                            this.apiPort,
+                            "/summary",
+                            new TypeReference<Summary>() {
+                            });
+            statsBuilder.addPool(
+                    new Pool.Builder()
+                            .setName(
+                                    PoolUtils.sanitizeUrl(
+                                            summary.activePool.url))
+                            .setStatus(
+                                    true,
+                                    summary.uptime > 0)
+                            .setPriority(0)
+                            .setCounts(
+                                    summary.acceptCount,
+                                    summary.rejectedCount,
+                                    0)
+                            .build());
 
-        final Rig.Builder rigBuilder =
-                new Rig.Builder()
-                        .setHashRate(summary.hashRate);
-        summary.gpus.forEach(
-                (gpu) ->
-                        addGpu(
-                                rigBuilder,
-                                gpu));
-        statsBuilder.addRig(rigBuilder.build());
+            final Rig.Builder rigBuilder =
+                    new Rig.Builder()
+                            .setHashRate(summary.hashRate);
+            summary.gpus.forEach(
+                    (gpu) ->
+                            addGpu(
+                                    rigBuilder,
+                                    gpu));
+            statsBuilder.addRig(rigBuilder.build());
+        } catch (final Exception e) {
+            throw new MinerException(
+                    "Possibly not a trex or miner is down",
+                    e);
+        }
     }
 
     /**

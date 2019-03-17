@@ -70,14 +70,20 @@ public class Jceminer
     @Override
     public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        addRig(
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
-                        "/",
-                        new TypeReference<Response>() {
-                        }),
-                statsBuilder);
+        try {
+            addRig(
+                    Query.restQuery(
+                            this.apiIp,
+                            this.apiPort,
+                            "/",
+                            new TypeReference<Response>() {
+                            }),
+                    statsBuilder);
+        } catch (final Exception e) {
+            throw new MinerException(
+                    "Possibly not a jceminer or miner is down",
+                    e);
+        }
     }
 
     /**
