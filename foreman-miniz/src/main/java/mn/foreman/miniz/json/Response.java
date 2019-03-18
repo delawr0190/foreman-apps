@@ -49,10 +49,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
 
-    /** The connection time. */
-    @JsonProperty("start_time")
-    public long connectionTime;
-
     /** The results. */
     @JsonProperty("result")
     public List<Result> results;

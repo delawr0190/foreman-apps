@@ -64,10 +64,9 @@ public class Miniz
     public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
         final Response response =
-                Query.restQuery(
+                Query.jsonQuery(
                         this.apiIp,
                         this.apiPort,
-                        "/",
                         makeCommand(),
                         new TypeReference<Response>() {
                         });
@@ -177,7 +176,7 @@ public class Miniz
      */
     private String makeCommand() {
         return String.format(
-                "{\"id\":%d,\"method\":\"%s\"}\n",
+                "{\"id\":\"%d\", \"method\":\"%s\"}",
                 0,
                 "getstat");
     }
