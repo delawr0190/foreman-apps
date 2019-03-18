@@ -77,6 +77,7 @@
         <module>foreman-io</module>
         <module>foreman-jceminer</module>
         <module>foreman-lolminer</module>
+        <module>foreman-miniz</module>
         <module>foreman-mkxminer</module>
         <module>foreman-model</module>
         <module>foreman-multiminer</module>
@@ -221,7 +222,7 @@
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
-                <artifactId>foreman-miner</artifactId>
+                <artifactId>foreman-miniz</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

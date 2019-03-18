@@ -66,12 +66,11 @@ public abstract class AbstractApiITest {
             assertEquals(
                     this.expectedStats,
                     this.miner.getStats());
-            this.fakeMinerServers.forEach(server -> {
-                assertTrue(
-                        server.waitTillDone(
-                                10,
-                                TimeUnit.SECONDS));
-            });
+            this.fakeMinerServers.forEach(server ->
+                    assertTrue(
+                            server.waitTillDone(
+                                    10,
+                                    TimeUnit.SECONDS)));
         } finally {
             this.fakeMinerServers.forEach(server -> {
                 try {

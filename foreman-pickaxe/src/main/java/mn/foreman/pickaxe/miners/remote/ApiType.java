@@ -136,7 +136,10 @@ public enum ApiType {
     SPONDOOLIES_API(41),
 
     /** nbminer. */
-    NBMINER_API(42);
+    NBMINER_API(42),
+
+    /** miniz. */
+    MINIZ_API(43);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

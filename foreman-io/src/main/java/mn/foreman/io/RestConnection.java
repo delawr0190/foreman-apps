@@ -1,15 +1,20 @@
 package mn.foreman.io;
 
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -82,42 +87,63 @@ public class RestConnection
 
     @Override
     public void query() {
-        try {
-            final int socketTimeout =
-                    (int) this.connectionTimeoutUnits.toMillis(
-                            this.connectionTimeout);
-            final URL url = new URL(this.url);
-            final HttpURLConnection connection =
-                    (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod(this.method);
-            connection.setConnectTimeout(socketTimeout);
-            connection.setReadTimeout(socketTimeout);
+        final int socketTimeout =
+                (int) this.connectionTimeoutUnits.toMillis(
+                        this.connectionTimeout);
+        final RequestConfig requestConfig =
+                RequestConfig.custom()
+                        .setConnectTimeout(socketTimeout)
+                        .setConnectionRequestTimeout(socketTimeout)
+                        .setSocketTimeout(socketTimeout)
+                        .build();
+
+        try (final CloseableHttpClient httpClient =
+                     HttpClients.custom()
+                             .setDefaultRequestConfig(requestConfig)
+                             .build()) {
+            final HttpRequestBase httpRequest =
+                    new HttpRequestBase() {
+                        @Override
+                        public String getMethod() {
+                            return method;
+                        }
+
+                        @Override
+                        public URI getURI() {
+                            try {
+                                return new URI(url);
+                            } catch (final URISyntaxException use) {
+                                return super.getURI();
+                            }
+                        }
+                    };
             for (final Map.Entry<String, String> property :
                     this.request.getProperties().entrySet()) {
-                connection.setRequestProperty(
+                httpRequest.setHeader(
                         property.getKey(),
                         property.getValue());
             }
 
-            final int code = connection.getResponseCode();
-            if (code == HttpURLConnection.HTTP_OK) {
-                try (final InputStreamReader inputStreamReader =
-                             new InputStreamReader(
-                                     connection.getInputStream());
-                     final BufferedReader reader =
-                             new BufferedReader(
-                                     inputStreamReader)) {
-                    this.request.setResponse(
-                            IOUtils.toString(reader));
-                    this.request.completed();
+            try (final CloseableHttpResponse httpResponse =
+                         httpClient.execute(httpRequest)) {
+                final int statusCode =
+                        httpResponse
+                                .getStatusLine()
+                                .getStatusCode();
+                if (statusCode != HttpStatus.SC_OK) {
+                    LOG.warn("Received a bad response from {}: code({})",
+                            this.url,
+                            statusCode);
                 }
-            } else {
-                LOG.warn("Received an unexpected status code: {}", code);
-                this.request.completed();
+                request.setResponse(
+                        EntityUtils.toString(httpResponse.getEntity()));
+            } catch (final IOException ioe) {
+                LOG.warn("Exception occurred while querying", ioe);
             }
         } catch (final IOException ioe) {
-            LOG.debug("Exception occurred while querying", ioe);
-            this.request.completed();
+            LOG.warn("Exception occurred while querying", ioe);
         }
+
+        request.completed();
     }
 }

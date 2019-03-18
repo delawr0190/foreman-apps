@@ -59,6 +59,7 @@ public class Lolminer
                         this.apiIp,
                         this.apiPort,
                         "/summary",
+                        "GET",
                         new TypeReference<Response>() {
                         },
                         1,

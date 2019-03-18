@@ -1,4 +1,4 @@
-package mn.foreman.dstm.json;
+package mn.foreman.miniz.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -16,34 +16,33 @@ import java.util.List;
  *
  * <pre>
  * {
- *   "id": 1,
+ *   "id": 0,
+ *   "method": "getstat",
+ *   "error": null,
+ *   "start_time": 0,
+ *   "current_server": "us-btg.2miners.com:4040",
+ *   "server_latency": 22.1,
+ *   "available_servers": 1,
+ *   "server_status": 1,
  *   "result": [
  *     {
- *       "gpu_id": 0,
- *       "gpu_name": "string",
- *       "gpu_pci_bus_id": 0,
- *       "gpu_pci_device_id": 0,
- *       "gpu_uuid": "string",
- *       "temperature": 0,
- *       "fan_speed": 0,
- *       "sol_ps": 0.00,
- *       "avg_sol_ps": 0.00,
- *       "sol_pw": 0.00,
- *       "avg_sol_pw": 0.00,
- *       "power_usage": 0.00,
- *       "avg_power_usage": 0.00,
+ *       "gpuid": 0,
+ *       "cudaid": 0,
+ *       "busid": "busid",
+ *       "name": "GeForce GTX 1050 Ti",
+ *       "gpu_status": 2,
+ *       "solver": -1,
+ *       "temperature": 46,
+ *       "gpu_fan_speed": 0,
+ *       "gpu_power_usage": 0,
+ *       "gpu_clock_core_max": 278,
+ *       "gpu_clock_memory": 2504,
+ *       "speed_sps": 0,
  *       "accepted_shares": 0,
  *       "rejected_shares": 0,
- *       "latency": 0
+ *       "start_time": 0
  *     }
- *   ],
- *   "uptime": 0,
- *   "contime": 0,
- *   "server": "string",
- *   "port": 0000,
- *   "user": "string",
- *   "version": "string",
- *   "error": null
+ *   ]
  * }
  * </pre>
  */
@@ -51,19 +50,15 @@ import java.util.List;
 public class Response {
 
     /** The connection time. */
-    @JsonProperty("contime")
+    @JsonProperty("start_time")
     public long connectionTime;
-
-    /** The port. */
-    @JsonProperty("port")
-    public int port;
 
     /** The results. */
     @JsonProperty("result")
     public List<Result> results;
 
     /** The server. */
-    @JsonProperty("server")
+    @JsonProperty("current_server")
     public String server;
 
     /** Provides a model representation of the {@link Result} object. */
@@ -79,20 +74,16 @@ public class Response {
         public int coreClock;
 
         /** The fan speed (percentage). */
-        @JsonProperty("fan_speed")
+        @JsonProperty("gpu_fan_speed")
         public int fanSpeed;
 
         /** The GPU ID. */
-        @JsonProperty("gpu_id")
+        @JsonProperty("gpuid")
         public int gpuId;
 
         /** The GPU name. */
-        @JsonProperty("gpu_name")
+        @JsonProperty("name")
         public String gpuName;
-
-        /** The GPU PCI bus ID. */
-        @JsonProperty("gpu_pci_bus_id")
-        public int gpuPciBusId;
 
         /** The memory clock. */
         @JsonProperty("gpu_clock_memory")
@@ -103,7 +94,7 @@ public class Response {
         public int rejectedShares;
 
         /** The solution rate. */
-        @JsonProperty("sol_ps")
+        @JsonProperty("speed_sps")
         public double solutionRate;
 
         /** The temperature. */

@@ -198,6 +198,37 @@ public class Query {
     /**
      * Utility method to perform a query against a REST API.
      *
+     * @param apiIp   The API IP.
+     * @param apiPort The API port.
+     * @param uri     The URI.
+     * @param command The command.
+     * @param type    The response class.
+     * @param <T>     The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String command,
+            final TypeReference<T> type)
+            throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                command,
+                type,
+                10,
+                TimeUnit.SECONDS);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
      * @param apiIp               The API IP.
      * @param apiPort             The API port.
      * @param uri                 The URI.
@@ -272,8 +303,9 @@ public class Query {
                 apiIp,
                 apiPort,
                 uri,
+                "GET",
                 type,
-                10,
+                2,
                 TimeUnit.SECONDS);
     }
 
@@ -283,6 +315,7 @@ public class Query {
      * @param apiIp               The API IP.
      * @param apiPort             The API port.
      * @param uri                 The URI.
+     * @param command             The command.
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
@@ -296,6 +329,7 @@ public class Query {
             final String apiIp,
             final int apiPort,
             final String uri,
+            final String command,
             final TypeReference<T> type,
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits)
@@ -309,7 +343,7 @@ public class Query {
         final Connection connection =
                 ConnectionFactory.createRestConnection(
                         request,
-                        "GET",
+                        command,
                         connectTimeout,
                         connectTimeoutUnits);
         connection.query();
