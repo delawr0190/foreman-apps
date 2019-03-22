@@ -20,15 +20,13 @@ public class InnosiliconA9ITest
     /** Constructor. */
     public InnosiliconA9ITest() {
         super(
-                new InnosiliconFactory()
+                new InnosiliconFactory(ApiType.HS_API)
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028",
-                                        "type",
-                                        ApiType.HS_API.name())),
+                                        "4028")),
                 new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(

@@ -18,10 +18,20 @@ import java.util.Map;
 public class InnosiliconFactory
         implements MinerFactory {
 
+    /** The api type. */
+    private final ApiType apiType;
+
+    /**
+     * Constructor.
+     *
+     * @param apiType The api type.
+     */
+    public InnosiliconFactory(final ApiType apiType) {
+        this.apiType = apiType;
+    }
+
     @Override
     public Miner create(final Map<String, String> config) {
-        final ApiType apiType =
-                ApiType.valueOf(config.get("type"));
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -34,7 +44,7 @@ public class InnosiliconFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        createResponseStrategy(apiType))
+                        createResponseStrategy(this.apiType))
                 .build();
     }
 

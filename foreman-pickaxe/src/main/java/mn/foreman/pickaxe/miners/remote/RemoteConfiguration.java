@@ -3,7 +3,9 @@ package mn.foreman.pickaxe.miners.remote;
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.antminer.AntminerType;
 import mn.foreman.autominer.AutoMinerFactory;
+import mn.foreman.autominer.MinerMapping;
 import mn.foreman.avalon.AvalonFactory;
+import mn.foreman.baikal.BaikalFactory;
 import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.castxmr.CastxmrFactory;
@@ -33,6 +35,7 @@ import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
 import mn.foreman.nicehash.AlgorithmCandidates;
 import mn.foreman.nicehash.NiceHashMiner;
+import mn.foreman.nicehash.NiceHashMinerFactory;
 import mn.foreman.optiminer.OptiminerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
@@ -61,7 +64,6 @@ import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -81,6 +83,9 @@ public class RemoteConfiguration
     private static final int SOCKET_TIMEOUT =
             (int) TimeUnit.SECONDS.toMillis(10);
 
+    /** The autominer mapping URL. */
+    private final String amMappingUrl;
+
     /** The API key. */
     private final String apiKey;
 
@@ -95,11 +100,13 @@ public class RemoteConfiguration
      *
      * @param configUrl         The config URL.
      * @param nicehashConfigUrl The nicehash config URL.
+     * @param amMappingUrl      The autominer mapping URL.
      * @param apiKey            The API key.
      */
     public RemoteConfiguration(
             final String configUrl,
             final String nicehashConfigUrl,
+            final String amMappingUrl,
             final String apiKey) {
         Validate.notNull(
                 configUrl,
@@ -114,6 +121,12 @@ public class RemoteConfiguration
                 nicehashConfigUrl,
                 "nicehashConfigUrl cannot be empty");
         Validate.notNull(
+                amMappingUrl,
+                "amMappingUrl cannot be null");
+        Validate.notEmpty(
+                amMappingUrl,
+                "amMappingUrl cannot be empty");
+        Validate.notNull(
                 apiKey,
                 "apiKey cannot be null");
         Validate.notEmpty(
@@ -121,6 +134,7 @@ public class RemoteConfiguration
                 "apiKey cannot be empty");
         this.configUrl = configUrl;
         this.nicehashConfigUrl = nicehashConfigUrl;
+        this.amMappingUrl = amMappingUrl;
         this.apiKey = apiKey;
     }
 
@@ -162,9 +176,25 @@ public class RemoteConfiguration
                     }
                 });
 
+        final Map<String, ApiType> amMappings = new HashMap<>();
+        getConfig(
+                this.amMappingUrl,
+                response -> {
+                    try {
+                        amMappings.putAll(
+                                objectMapper.readValue(
+                                        response,
+                                        new TypeReference<Map<String, ApiType>>() {
+                                        }));
+                    } catch (final IOException ioe) {
+                        LOG.warn("Failed to parse response", ioe);
+                    }
+                });
+
         return toMiners(
                 configs,
-                niceHashConfig);
+                niceHashConfig,
+                amMappings);
     }
 
     /**
@@ -191,21 +221,21 @@ public class RemoteConfiguration
      *
      * @return The {@link AntminerType}.
      */
-    private static String toAntminerType(
+    private static AntminerType toAntminerType(
             final ApiType apiType) {
-        String type = null;
+        AntminerType type = null;
         switch (apiType) {
             case ANTMINER_HS_API:
-                type = AntminerType.ANTMINER_B3.getLabel();
+                type = AntminerType.ANTMINER_B3;
                 break;
             case ANTMINER_KHS_API:
-                type = AntminerType.ANTMINER_Z9.getLabel();
+                type = AntminerType.ANTMINER_Z9;
                 break;
             case ANTMINER_MHS_API:
-                type = AntminerType.ANTMINER_L3.getLabel();
+                type = AntminerType.ANTMINER_L3;
                 break;
             case ANTMINER_GHS_API:
-                type = AntminerType.ANTMINER_S9.getLabel();
+                type = AntminerType.ANTMINER_S9;
                 break;
             default:
                 break;
@@ -214,38 +244,32 @@ public class RemoteConfiguration
     }
 
     /**
-     * Creates an ASIC {@link Miner} from the provided config.
+     * Creates an {@link AutoMinerFactory}.
      *
-     * @param port         The port.
-     * @param apiType      The {@link ApiType}.
-     * @param config       The config.
-     * @param minerFactory The factory.
-     * @param typeFunction The function for providing the type.
+     * @param minerConfig     The config.
+     * @param niceHashConfigs The nicehash configs.
+     * @param amMappings      The autominer mappings.
      *
-     * @return The {@link Miner}.
+     * @return The {@link AutoMinerFactory}.
      */
-    private static Miner toAsic(
-            final int port,
-            final ApiType apiType,
-            final MinerConfig config,
-            final MinerFactory minerFactory,
-            final Function<ApiType, String> typeFunction) {
-        Miner miner = null;
-
-        final String type = typeFunction.apply(apiType);
-        if (type != null) {
-            miner =
-                    minerFactory.create(
-                            ImmutableMap.of(
-                                    "type",
-                                    type,
-                                    "apiIp",
-                                    config.apiIp,
-                                    "apiPort",
-                                    Integer.toString(port)));
-        }
-
-        return miner;
+    private static MinerFactory toAutominerFactory(
+            final MinerConfig minerConfig,
+            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final Map<String, ApiType> amMappings) {
+        final MinerMapping.Builder mappingBuilder =
+                new MinerMapping.Builder();
+        amMappings.forEach(
+                (s, apiType) ->
+                        mappingBuilder.addMapping(
+                                s,
+                                toFactory(
+                                        minerConfig,
+                                        apiType,
+                                        niceHashConfigs,
+                                        amMappings).orElseThrow(
+                                        () -> new IllegalArgumentException(
+                                                "Invalid api type"))));
+        return new AutoMinerFactory(mappingBuilder.build());
     }
 
     /**
@@ -354,27 +378,188 @@ public class RemoteConfiguration
     }
 
     /**
+     * Creates a {@link MinerFactory} for the provided configuration
+     * parameters.
+     *
+     * @param minerConfig     The config.
+     * @param apiType         The type.
+     * @param niceHashConfigs The NiceHash mappings.
+     * @param amMappings      The autominer mappings.
+     *
+     * @return The {@link MinerFactory}.
+     */
+    @SuppressWarnings("ConstantConditions")
+    private static Optional<MinerFactory> toFactory(
+            final MinerConfig minerConfig,
+            final ApiType apiType,
+            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final Map<String, ApiType> amMappings) {
+        MinerFactory minerFactory = null;
+        switch (apiType) {
+            case ANTMINER_HS_API:
+                // Fall through
+            case ANTMINER_KHS_API:
+                // Fall through
+            case ANTMINER_MHS_API:
+                // Fall through
+            case ANTMINER_GHS_API:
+                minerFactory =
+                        new AntminerFactory(
+                                toAntminerType(
+                                        apiType));
+                break;
+            case AUTOMINER_API:
+                minerFactory =
+                        toAutominerFactory(
+                                minerConfig,
+                                niceHashConfigs,
+                                amMappings);
+                break;
+            case AVALON_API:
+                minerFactory = new AvalonFactory();
+                break;
+            case BAIKAL_API:
+                minerFactory = new BaikalFactory();
+                break;
+            case BLACKMINER_API:
+                minerFactory = new BlackminerFactory();
+                break;
+            case BMINER_API:
+                minerFactory = new BminerFactory();
+                break;
+            case CASTXMR_API:
+                minerFactory = new CastxmrFactory();
+                break;
+            case CCMINER_API:
+                minerFactory = new CcminerFactory();
+                break;
+            case CLAYMORE_ETH_API:
+                // Fall through
+            case CLAYMORE_ZEC_API:
+                minerFactory = new ClaymoreFactory();
+                break;
+            case DAYUN_API:
+                minerFactory = new DayunFactory();
+                break;
+            case DSTM_API:
+                minerFactory = new DstmFactory();
+                break;
+            case DRAGONMINT_API:
+                minerFactory = new DragonmintFactory();
+                break;
+            case ETHMINER_API:
+                minerFactory = new EthminerFactory();
+                break;
+            case EWBF_API:
+                minerFactory = new EwbfFactory();
+                break;
+            case EXCAVATOR_API:
+                minerFactory = new ExcavatorFactory();
+                break;
+            case GMINER_API:
+                minerFactory = new GminerFactory();
+                break;
+            case GRINPRO_API:
+                minerFactory = new GrinProFactory();
+                break;
+            case HSPMINER_API:
+                minerFactory = new HspminerFactory();
+                break;
+            case INNOSILICON_HS_API:
+                // Fall through
+            case INNOSILICON_KHS_API:
+                // Fall through
+            case INNOSILICON_MHS_API:
+                // Fall through
+            case INNOSILICON_GHS_API:
+                minerFactory =
+                        new InnosiliconFactory(
+                                toInnosiliconType(
+                                        apiType));
+                break;
+            case JCEMINER_API:
+                minerFactory = new JceminerFactory();
+                break;
+            case LOLMINER_API:
+                minerFactory = new LolminerFactory();
+                break;
+            case MINIZ_API:
+                minerFactory = new MinizFactory();
+                break;
+            case MKXMINER_API:
+                minerFactory = new MkxminerFactory();
+                break;
+            case MULTIMINER_API:
+                minerFactory = new MultiminerFactory();
+                break;
+            case NANOMINER_API:
+                minerFactory = new NanominerFactory();
+                break;
+            case NBMINER_API:
+                minerFactory = new NbminerFactory();
+                break;
+            case NICEHASH_API:
+                minerFactory =
+                        toNiceHashFactory(
+                                minerConfig,
+                                niceHashConfigs,
+                                amMappings);
+                break;
+            case OPTIMINER_API:
+                minerFactory = new OptiminerFactory();
+                break;
+            case RHMINER_API:
+                minerFactory = new RhminerFactory();
+                break;
+            case SGMINER_API:
+                minerFactory = new SgminerFactory();
+                break;
+            case SPONDOOLIES_API:
+                minerFactory = new SpondooliesFactory();
+                break;
+            case SRBMINER_API:
+                minerFactory = new SrbminerFactory();
+                break;
+            case TREX_API:
+                minerFactory = new TrexFactory();
+                break;
+            case WHATSMINER_API:
+                minerFactory = new WhatsminerFactory();
+                break;
+            case XMRIG_API:
+                minerFactory = new XmrigFactory();
+                break;
+            case XMRSTAK_API:
+                minerFactory = new XmrstakFactory();
+                break;
+            default:
+                break;
+        }
+        return Optional.ofNullable(minerFactory);
+    }
+
+    /**
      * Converts the type to an Innosilicon type.
      *
      * @param apiType The type.
      *
      * @return The type.
      */
-    private static String toInnosiliconType(
+    private static mn.foreman.innosilicon.ApiType toInnosiliconType(
             final ApiType apiType) {
-        String type = null;
+        mn.foreman.innosilicon.ApiType type = null;
         switch (apiType) {
             case INNOSILICON_HS_API:
-                type = mn.foreman.innosilicon.ApiType.HS_API.name();
+                type = mn.foreman.innosilicon.ApiType.HS_API;
                 break;
             case INNOSILICON_KHS_API:
-                type = mn.foreman.innosilicon.ApiType.KHS_API.name();
+                type = mn.foreman.innosilicon.ApiType.KHS_API;
                 break;
             case INNOSILICON_MHS_API:
-                type = mn.foreman.innosilicon.ApiType.MHS_API.name();
+                type = mn.foreman.innosilicon.ApiType.MHS_API;
                 break;
             case INNOSILICON_GHS_API:
-                type = mn.foreman.innosilicon.ApiType.GHS_API.name();
+                type = mn.foreman.innosilicon.ApiType.GHS_API;
                 break;
             default:
                 break;
@@ -410,6 +595,7 @@ public class RemoteConfiguration
      * @param port            The port.
      * @param config          The {@link MinerConfig}.
      * @param niceHashConfigs The NiceHash configuration.
+     * @param amMappings      The autominer mappings.
      *
      * @return The {@link Miner miners}.
      */
@@ -417,57 +603,26 @@ public class RemoteConfiguration
             final ApiType apiType,
             final int port,
             final MinerConfig config,
-            final Map<Integer, List<ApiType>> niceHashConfigs) {
+            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final Map<String, ApiType> amMappings) {
         LOG.debug("Adding miner for {}", config);
+
+        final MinerFactory minerFactory =
+                toFactory(
+                        config,
+                        apiType,
+                        niceHashConfigs,
+                        amMappings)
+                        .orElseThrow(
+                                () -> new IllegalArgumentException(
+                                        "Unknown api type"));
 
         final List<Miner> miners = new LinkedList<>();
         switch (apiType) {
-            case ANTMINER_HS_API:
-                // Fall through
-            case ANTMINER_KHS_API:
-                // Fall through
-            case ANTMINER_MHS_API:
-                // Fall through
-            case ANTMINER_GHS_API:
-                miners.add(
-                        toAsic(
-                                port,
-                                apiType,
-                                config,
-                                new AntminerFactory(),
-                                RemoteConfiguration::toAntminerType));
-                break;
-            case AUTOMINER_API:
-                miners.add(toMiner(port, config, new AutoMinerFactory()));
-                break;
-            case AVALON_API:
-                miners.add(toMiner(port, config, new AvalonFactory()));
-                break;
-            case BAIKAL_API:
-                miners.add(toMiner(port, config, new BlackminerFactory()));
-                break;
-            case BLACKMINER_API:
-                miners.add(toMiner(port, config, new BlackminerFactory()));
-                break;
-            case BMINER_API:
-                miners.add(toMiner(port, config, new BminerFactory()));
-                break;
-            case CASTXMR_API:
-                miners.add(toMiner(port, config, new CastxmrFactory()));
-                break;
-            case CCMINER_API:
-                miners.add(toMiner(port, config, new CcminerFactory()));
-                break;
             case CLAYMORE_ETH_API:
                 // Fall through
             case CLAYMORE_ZEC_API:
                 miners.add(toClaymore(port, apiType, config));
-                break;
-            case DAYUN_API:
-                miners.add(toMiner(port, config, new DayunFactory()));
-                break;
-            case DSTM_API:
-                miners.add(toMiner(port, config, new DstmFactory()));
                 break;
             case DRAGONMINT_API:
                 miners.add(toDragonmintApi(port, config));
@@ -475,88 +630,8 @@ public class RemoteConfiguration
             case ETHMINER_API:
                 miners.add(toEthminerApi(port, config));
                 break;
-            case EWBF_API:
-                miners.add(toMiner(port, config, new EwbfFactory()));
-                break;
-            case EXCAVATOR_API:
-                miners.add(toMiner(port, config, new ExcavatorFactory()));
-                break;
-            case GMINER_API:
-                miners.add(toMiner(port, config, new GminerFactory()));
-                break;
-            case GRINPRO_API:
-                miners.add(toMiner(port, config, new GrinProFactory()));
-                break;
-            case HSPMINER_API:
-                miners.add(toMiner(port, config, new HspminerFactory()));
-                break;
-            case INNOSILICON_HS_API:
-                // Fall through
-            case INNOSILICON_KHS_API:
-                // Fall through
-            case INNOSILICON_MHS_API:
-                // Fall through
-            case INNOSILICON_GHS_API:
-                miners.add(
-                        toAsic(
-                                port,
-                                apiType,
-                                config,
-                                new InnosiliconFactory(),
-                                RemoteConfiguration::toInnosiliconType));
-                break;
-            case JCEMINER_API:
-                miners.add(toMiner(port, config, new JceminerFactory()));
-                break;
-            case LOLMINER_API:
-                miners.add(toMiner(port, config, new LolminerFactory()));
-                break;
-            case MINIZ_API:
-                miners.add(toMiner(port, config, new MinizFactory()));
-                break;
-            case MKXMINER_API:
-                miners.add(toMiner(port, config, new MkxminerFactory()));
-                break;
-            case MULTIMINER_API:
-                miners.add(toMiner(port, config, new MultiminerFactory()));
-                break;
-            case NANOMINER_API:
-                miners.add(toMiner(port, config, new NanominerFactory()));
-                break;
-            case NBMINER_API:
-                miners.add(toMiner(port, config, new NbminerFactory()));
-                break;
-            case NICEHASH_API:
-                miners.addAll(toNiceHashMiner(config, niceHashConfigs));
-                break;
-            case OPTIMINER_API:
-                miners.add(toMiner(port, config, new OptiminerFactory()));
-                break;
-            case RHMINER_API:
-                miners.add(toMiner(port, config, new RhminerFactory()));
-                break;
-            case SGMINER_API:
-                miners.add(toMiner(port, config, new SgminerFactory()));
-                break;
-            case SPONDOOLIES_API:
-                miners.add(toMiner(port, config, new SpondooliesFactory()));
-                break;
-            case SRBMINER_API:
-                miners.add(toMiner(port, config, new SrbminerFactory()));
-                break;
-            case TREX_API:
-                miners.add(toMiner(port, config, new TrexFactory()));
-                break;
-            case WHATSMINER_API:
-                miners.add(toMiner(port, config, new WhatsminerFactory()));
-                break;
-            case XMRIG_API:
-                miners.add(toMiner(port, config, new XmrigFactory()));
-                break;
-            case XMRSTAK_API:
-                miners.add(toMiner(port, config, new XmrstakFactory()));
-                break;
             default:
+                miners.add(toMiner(port, config, minerFactory));
                 break;
         }
 
@@ -585,12 +660,14 @@ public class RemoteConfiguration
      *
      * @param configs         The configurations.
      * @param niceHashConfigs The NiceHash configurations.
+     * @param amMappings      The autominer mappings.
      *
      * @return The {@link Miner miners}.
      */
     private static List<Miner> toMiners(
             final List<MinerConfig> configs,
-            final Map<Integer, List<ApiType>> niceHashConfigs) {
+            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final Map<String, ApiType> amMappings) {
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
@@ -599,7 +676,8 @@ public class RemoteConfiguration
                                 config.apiType,
                                 config.apiPort,
                                 config,
-                                niceHashConfigs))
+                                niceHashConfigs,
+                                amMappings))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
@@ -609,43 +687,39 @@ public class RemoteConfiguration
      *
      * @param config          The configuration.
      * @param niceHashConfigs The algorithm mappings.
+     * @param amMappings      The autominer mappings.
      *
      * @return The new {@link Miner miners}.
      */
-    private static List<Miner> toNiceHashMiner(
+    private static MinerFactory toNiceHashFactory(
             final MinerConfig config,
-            final Map<Integer, List<ApiType>> niceHashConfigs) {
-        final List<Miner> miners = new LinkedList<>();
+            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final Map<String, ApiType> amMappings) {
         final MinerConfig.NiceHashConfig niceHashConfig =
                 config.niceHashConfig;
-        if (niceHashConfig != null) {
-            final AlgorithmCandidates.Builder candidatesBuilder =
-                    new AlgorithmCandidates.Builder();
-            // Query up to a 5-port range for nicehashlegacy
-            for (int i = 0; i < 5; i++) {
-                final int port = config.apiPort + i;
-                niceHashConfigs.forEach((algoType, apiTypes) ->
-                        apiTypes.stream()
-                                .map(apiType ->
-                                        toMiner(
-                                                apiType,
-                                                port,
-                                                config,
-                                                niceHashConfigs))
-                                .flatMap(List::stream)
-                                .forEach(m ->
-                                        candidatesBuilder.addCandidate(
-                                                algoType,
-                                                m)));
-            }
-            miners.add(
-                    new NiceHashMiner(
-                            config.apiIp,
-                            config.apiPort,
-                            niceHashConfig.algo,
-                            candidatesBuilder.build()));
+        final AlgorithmCandidates.Builder candidatesBuilder =
+                new AlgorithmCandidates.Builder();
+        // Query up to a 5-port range for nicehashlegacy
+        for (int i = 0; i < 5; i++) {
+            final int port = config.apiPort + i;
+            niceHashConfigs.forEach((algoType, apiTypes) ->
+                    apiTypes.stream()
+                            .map(apiType ->
+                                    toMiner(
+                                            apiType,
+                                            port,
+                                            config,
+                                            niceHashConfigs,
+                                            amMappings))
+                            .flatMap(List::stream)
+                            .forEach(m ->
+                                    candidatesBuilder.addCandidate(
+                                            algoType,
+                                            m)));
         }
-        return miners;
+        return new NiceHashMinerFactory(
+                niceHashConfig.algo,
+                candidatesBuilder.build());
     }
 
     /**

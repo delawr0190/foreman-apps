@@ -72,6 +72,7 @@ public class Main {
                                 configuration.getForemanApiUrl(),
                                 configuration.getForemanConfigUrl(),
                                 configuration.getForemanNicehashUrl(),
+                                configuration.getForemanAutominerUrl(),
                                 configuration.getApiKey(),
                                 configuration.getClientId(),
                                 UUID.randomUUID().toString());

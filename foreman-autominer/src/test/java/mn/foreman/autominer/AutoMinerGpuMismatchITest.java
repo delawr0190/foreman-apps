@@ -6,6 +6,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
+import mn.foreman.trex.TrexFactory;
 import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -22,12 +23,18 @@ public class AutoMinerGpuMismatchITest
     /** Constructor. */
     public AutoMinerGpuMismatchITest() {
         super(
-                new AutoMinerFactory().create(
-                        ImmutableMap.of(
-                                "apiIp",
-                                "127.0.0.1",
-                                "apiPort",
-                                "1234")),
+                new AutoMinerFactory(
+                        new MinerMapping.Builder()
+                                .addMapping(
+                                        "trex",
+                                        new TrexFactory())
+                                .build())
+                        .create(
+                                ImmutableMap.of(
+                                        "apiIp",
+                                        "127.0.0.1",
+                                        "apiPort",
+                                        "1234")),
                 Arrays.asList(
                         new FakeHttpMinerServer(
                                 1234,

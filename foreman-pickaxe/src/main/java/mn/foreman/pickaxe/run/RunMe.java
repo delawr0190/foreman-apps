@@ -68,6 +68,7 @@ public class RunMe {
                                 configuration.getPickaxeId(),
                                 VersionUtils.getVersion()),
                         configuration.getForemanNicehashUrl(),
+                        configuration.getForemanAutominerUrl(),
                         configuration.getApiKey());
     }
 

@@ -12,10 +12,23 @@ import java.util.Map;
 public class AutoMinerFactory
         implements MinerFactory {
 
+    /** Sets the mappings. */
+    private final MinerMapping mappings;
+
+    /**
+     * Constructor.
+     *
+     * @param mappings The mappings.
+     */
+    public AutoMinerFactory(final MinerMapping mappings) {
+        this.mappings = mappings;
+    }
+
     @Override
     public Miner create(final Map<String, String> config) {
         return new AutoMiner(
                 config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+                Integer.parseInt(config.get("apiPort")),
+                this.mappings);
     }
 }

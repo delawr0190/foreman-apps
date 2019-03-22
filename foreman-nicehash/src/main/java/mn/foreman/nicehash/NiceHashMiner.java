@@ -47,7 +47,7 @@ public class NiceHashMiner
      * @param algo       The algorithm being mined.
      * @param candidates The candidates for each algorithm.
      */
-    public NiceHashMiner(
+    NiceHashMiner(
             final String apiIp,
             final int apiPort,
             final int algo,

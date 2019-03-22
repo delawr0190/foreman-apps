@@ -13,6 +13,8 @@ import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,18 +53,24 @@ public class AutoMiner
     private static final Logger LOG =
             LoggerFactory.getLogger(AutoMiner.class);
 
+    /** The miner mappings. */
+    private final MinerMapping minerMapping;
+
     /**
      * Constructor.
      *
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
+     * @param apiIp        The API IP.
+     * @param apiPort      The API port.
+     * @param minerMapping The mappings.
      */
     AutoMiner(
             final String apiIp,
-            final int apiPort) {
+            final int apiPort,
+            final MinerMapping minerMapping) {
         super(
                 apiIp,
                 apiPort);
+        this.minerMapping = minerMapping;
     }
 
     @Override
@@ -105,6 +113,26 @@ public class AutoMiner
                                 response.startTime,
                                 response.gpuAlgo,
                                 minerStats.getRigs()));
+    }
+
+    @Override
+    protected void addToEquals(
+            final EqualsBuilder equalsBuilder,
+            final AbstractMiner other) {
+        final AutoMiner otherAutominer = (AutoMiner) other;
+        equalsBuilder.append(this.minerMapping, otherAutominer.minerMapping);
+    }
+
+    @Override
+    protected void addToHashCode(final HashCodeBuilder hashCodeBuilder) {
+        hashCodeBuilder.append(this.minerMapping);
+    }
+
+    @Override
+    protected String addToString() {
+        return String.format(
+                ", minerMapping=%s",
+                this.minerMapping);
     }
 
     /**
@@ -270,7 +298,7 @@ public class AutoMiner
     }
 
     /**
-     * Creates a {@link Miner} to query from the provided {@link MinerType}.
+     * Creates a {@link Miner} to query from the provided type.
      *
      * @param minerType The type.
      * @param apiIp     The API ip.
@@ -278,15 +306,15 @@ public class AutoMiner
      *
      * @return The {@link Miner}.
      */
-    private static Optional<Miner> toMiner(
-            final MinerType minerType,
+    private Optional<Miner> toMiner(
+            final String minerType,
             final String apiIp,
             final int apiPort) {
-        return minerType.getFactory().map(factory -> {
+        return this.minerMapping.getMiner(minerType).map(factory -> {
             final Map<String, String> attributes = new HashMap<>();
             attributes.put("apiIp", apiIp);
             attributes.put("apiPort", Integer.toString(apiPort));
-            if (minerType == MinerType.PHOENIX) {
+            if ("phoenix".equals(minerType)) {
                 attributes.put("type", ClaymoreType.ETH.name().toLowerCase());
             }
             return factory.create(attributes);

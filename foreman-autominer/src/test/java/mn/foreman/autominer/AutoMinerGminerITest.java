@@ -1,5 +1,6 @@
 package mn.foreman.autominer;
 
+import mn.foreman.gminer.GminerFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -22,12 +23,18 @@ public class AutoMinerGminerITest
     /** Constructor. */
     public AutoMinerGminerITest() {
         super(
-                new AutoMinerFactory().create(
-                        ImmutableMap.of(
-                                "apiIp",
-                                "127.0.0.1",
-                                "apiPort",
-                                "1234")),
+                new AutoMinerFactory(
+                        new MinerMapping.Builder()
+                                .addMapping(
+                                        "gminer",
+                                        new GminerFactory())
+                                .build())
+                        .create(
+                                ImmutableMap.of(
+                                        "apiIp",
+                                        "127.0.0.1",
+                                        "apiPort",
+                                        "1234")),
                 Arrays.asList(
                         new FakeHttpMinerServer(
                                 1234,

@@ -28,6 +28,13 @@ public interface Configuration {
     String getForemanApiUrl();
 
     /**
+     * Returns the Foreman autominer URL.
+     *
+     * @return The Foreman autominer URL.
+     */
+    String getForemanAutominerUrl();
+
+    /**
      * Returns the Foreman config URL.
      *
      * @return The Foreman config URL.

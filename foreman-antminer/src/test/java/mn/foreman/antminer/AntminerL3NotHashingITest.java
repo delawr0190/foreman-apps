@@ -20,11 +20,9 @@ public class AntminerL3NotHashingITest
     /** Constructor. */
     public AntminerL3NotHashingITest() {
         super(
-                new AntminerFactory()
+                new AntminerFactory(AntminerType.ANTMINER_L3)
                         .create(
                                 ImmutableMap.of(
-                                        "type",
-                                        "antminer_l3",
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",

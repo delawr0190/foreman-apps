@@ -18,10 +18,20 @@ import java.util.Map;
 public class AntminerFactory
         implements MinerFactory {
 
+    /** The miner type. */
+    private final AntminerType type;
+
+    /**
+     * Constructor.
+     *
+     * @param type The miner type.
+     */
+    public AntminerFactory(final AntminerType type) {
+        this.type = type;
+    }
+
     @Override
     public Miner create(final Map<String, String> config) {
-        final AntminerType type =
-                AntminerType.forLabel(config.get("type"));
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))

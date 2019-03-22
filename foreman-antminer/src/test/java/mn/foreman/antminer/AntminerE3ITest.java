@@ -20,11 +20,9 @@ public class AntminerE3ITest
     /** Constructor. */
     public AntminerE3ITest() {
         super(
-                new AntminerFactory()
+                new AntminerFactory(AntminerType.ANTMINER_E3)
                         .create(
                                 ImmutableMap.of(
-                                        "type",
-                                        "antminer_e3",
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",

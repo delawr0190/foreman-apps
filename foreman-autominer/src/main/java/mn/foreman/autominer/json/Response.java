@@ -1,8 +1,6 @@
 package mn.foreman.autominer.json;
 
 
-import mn.foreman.autominer.MinerType;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -95,7 +93,7 @@ public class Response {
 
     /** The GPU miner. */
     @JsonProperty("GPUMiner")
-    public MinerType gpuMiner;
+    public String gpuMiner;
 
     /** The GPU rig group. */
     @JsonProperty("RigGroupGPU")
