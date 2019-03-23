@@ -9,12 +9,12 @@ script: mvn verify --settings .travis.settings.xml -q
 
 deploy:
   - provider: script
-    script: mvn deploy --settings .travis.settings.xml -q
+    script: mvn deploy --settings .travis.settings.xml -DskipTests=true -q
     skip_cleanup: true
     on:
       branch: master
   - provider: script
-    script: mvn deploy --settings .travis.settings.xml -q
+    script: mvn deploy --settings .travis.settings.xml -DskipTests=true -q
     skip_cleanup: true
     on:
       branch: develop
