@@ -80,6 +80,7 @@
         <module>foreman-miniz</module>
         <module>foreman-mkxminer</module>
         <module>foreman-model</module>
+        <module>foreman-moonlander</module>
         <module>foreman-multiminer</module>
         <module>foreman-nanominer</module>
         <module>foreman-nbminer</module>
@@ -233,6 +234,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-moonlander</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

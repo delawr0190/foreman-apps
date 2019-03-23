@@ -78,9 +78,6 @@ public class Asic {
         Validate.notNull(
                 temps,
                 "temps cannot be null");
-        Validate.notEmpty(
-                temps,
-                "temps cannot be empty");
         Validate.notNull(
                 hasErrors,
                 "hasErrors cannot be null");

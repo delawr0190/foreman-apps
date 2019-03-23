@@ -139,7 +139,10 @@ public enum ApiType {
     NBMINER_API(42),
 
     /** miniz. */
-    MINIZ_API(43);
+    MINIZ_API(43),
+
+    /** moonlander. */
+    MOONLANDER_API(44);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

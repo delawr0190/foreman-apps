@@ -30,6 +30,7 @@ import mn.foreman.miniz.MinizFactory;
 import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.moonlander.MoonlanderFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
@@ -488,6 +489,9 @@ public class RemoteConfiguration
                 break;
             case MKXMINER_API:
                 minerFactory = new MkxminerFactory();
+                break;
+            case MOONLANDER_API:
+                minerFactory = new MoonlanderFactory();
                 break;
             case MULTIMINER_API:
                 minerFactory = new MultiminerFactory();
