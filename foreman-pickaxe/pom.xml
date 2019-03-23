@@ -267,11 +267,15 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <configuration>
                     <descriptors>
-                        <descriptor>assembly/assembly.xml</descriptor>
+                        <descriptor>assembly/assembly-min.xml</descriptor>
+                        <descriptor>assembly/assembly-jre.xml</descriptor>
                     </descriptors>
                     <finalName>
                         ${project.artifactId}-${project.version}
                     </finalName>
+                    <tarLongFileMode>
+                        gnu
+                    </tarLongFileMode>
                 </configuration>
                 <executions>
                     <execution>

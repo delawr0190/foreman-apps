@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.UUID;
+import java.util.function.Function;
 
 /** The application entry point. */
 public class Main {
@@ -63,24 +64,50 @@ public class Main {
                             objectMapper,
                             configFile);
 
-            final String pickaxeId = configuration.getPickaxeId();
+            // Add nicehash URL if missing
+            configuration =
+                    updateConfiguration(
+                            configuration,
+                            Configuration::getForemanNicehashUrl,
+                            configuration.getForemanApiUrl(),
+                            configuration.getForemanConfigUrl(),
+                            "https://dashboard.foreman.mn/api/nicehash",
+                            configuration.getForemanAutominerUrl(),
+                            configuration.getApiKey(),
+                            configuration.getClientId(),
+                            configuration.getPickaxeId(),
+                            objectMapper,
+                            configFile);
 
-            if ((pickaxeId == null) || pickaxeId.isEmpty()) {
-                // Auto-generate a pickaxe ID - must be the first run
-                configuration =
-                        new YmlConfiguration(
-                                configuration.getForemanApiUrl(),
-                                configuration.getForemanConfigUrl(),
-                                configuration.getForemanNicehashUrl(),
-                                configuration.getForemanAutominerUrl(),
-                                configuration.getApiKey(),
-                                configuration.getClientId(),
-                                UUID.randomUUID().toString());
-                writeConfiguration(
-                        objectMapper,
-                        configFile,
-                        configuration);
-            }
+            // Add autominer URL if missing
+            configuration =
+                    updateConfiguration(
+                            configuration,
+                            Configuration::getForemanAutominerUrl,
+                            configuration.getForemanApiUrl(),
+                            configuration.getForemanConfigUrl(),
+                            configuration.getForemanNicehashUrl(),
+                            "https://dashboard.foreman.mn/api/autominer",
+                            configuration.getApiKey(),
+                            configuration.getClientId(),
+                            configuration.getPickaxeId(),
+                            objectMapper,
+                            configFile);
+
+            // Add pickaxe ID if missing
+            configuration =
+                    updateConfiguration(
+                            configuration,
+                            Configuration::getPickaxeId,
+                            configuration.getForemanApiUrl(),
+                            configuration.getForemanConfigUrl(),
+                            configuration.getForemanNicehashUrl(),
+                            configuration.getForemanAutominerUrl(),
+                            configuration.getApiKey(),
+                            configuration.getClientId(),
+                            UUID.randomUUID().toString(),
+                            objectMapper,
+                            configFile);
 
             final RunMe runMe = new RunMe(configuration);
             runMe.run();
@@ -107,6 +134,58 @@ public class Main {
         return objectMapper.readValue(
                 configFile,
                 YmlConfiguration.class);
+    }
+
+    /**
+     * Updates the configuration if a value is missing.
+     *
+     * @param configuration The {@link Configuration}.
+     * @param getter        The getter.
+     * @param apiUrl        The API URL.
+     * @param configUrl     The config URL.
+     * @param nicehashUrl   The nicehash URL.
+     * @param autominerUrl  The autominer URL.
+     * @param apiKey        The API key.
+     * @param clientID      The client ID.
+     * @param pickaxeId     The pickaxe ID.
+     * @param objectMapper  The {@link ObjectMapper}.
+     * @param configFile    The config {@link File}.
+     *
+     * @return The updated {@link Configuration}.
+     *
+     * @throws IOException on failure to write.
+     */
+    private static Configuration updateConfiguration(
+            final Configuration configuration,
+            final Function<Configuration, String> getter,
+            final String apiUrl,
+            final String configUrl,
+            final String nicehashUrl,
+            final String autominerUrl,
+            final String apiKey,
+            final String clientID,
+            final String pickaxeId,
+            final ObjectMapper objectMapper,
+            final File configFile)
+            throws IOException {
+        Configuration newConfiguration = configuration;
+        final String value = getter.apply(configuration);
+        if ((value == null) || (value.isEmpty())) {
+            newConfiguration =
+                    new YmlConfiguration(
+                            apiUrl,
+                            configUrl,
+                            nicehashUrl,
+                            autominerUrl,
+                            apiKey,
+                            clientID,
+                            pickaxeId);
+            writeConfiguration(
+                    objectMapper,
+                    configFile,
+                    configuration);
+        }
+        return newConfiguration;
     }
 
     /**

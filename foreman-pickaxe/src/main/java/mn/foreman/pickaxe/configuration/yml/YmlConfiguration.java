@@ -63,9 +63,6 @@ public class YmlConfiguration
                 foremanNicehashUrl,
                 "foremanNicehashUrl cannot be empty");
         Validate.notEmpty(
-                foremanAutominerUrl,
-                "foremanAutominerUrl cannot be empty");
-        Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
         this.foremanApiUrl = foremanApiUrl;
