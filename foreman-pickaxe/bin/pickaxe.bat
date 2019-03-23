@@ -48,10 +48,8 @@ set JVM_COMMAND_LINE=-c "%PICKAXE_HOME%\conf\pickaxe.yml"
 echo Note: to run in the background, install and start as a service
 echo;
 echo To do that:
-echo - run 'service-install_RUN_AS_ADMIN.bat' to install
-echo - run 'service-start_RUN_AS_ADMIN.bat' to start
-echo - run 'service-stop_RUN_AS_ADMIN.bat' to stop
-echo - run 'service-remove_RUN_AS_ADMIN.bat' to uninstall
+echo - run 'service-start.bat' to install and auto-start
+echo - run 'service-stop.bat' to stop
 echo;
 echo Starting pickaxe...(leave this window open)
 %JAVA% %JVM_OPTS% %JVM_PARAMS% -cp "%PICKAXE_HOME%\lib\*" mn.foreman.pickaxe.Main %JVM_COMMAND_LINE%
