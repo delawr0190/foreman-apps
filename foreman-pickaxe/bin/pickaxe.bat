@@ -17,12 +17,12 @@ if exist %JAVA% goto found_java
 rem # No java - was it bundled?
 if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (
     if exist "%PICKAXE_HOME%\bin\support\win64\jre1.8.0_202" (
-	    set JAVA="PICKAXE_HOME%\bin\support\win64\jre1.8.0_202\bin\java.exe"
+	    set JAVA="%PICKAXE_HOME%\bin\support\win64\jre1.8.0_202\bin\java.exe"
 	    goto found_java
     )
 ) else (
     if exist "%PICKAXE_HOME%\bin\support\win32\jre1.8.0_202" (
-	    set JAVA="PICKAXE_HOME%\bin\support\win32\jre1.8.0_202\bin\java.exe"
+	    set JAVA="%PICKAXE_HOME%\bin\support\win32\jre1.8.0_202\bin\java.exe"
 	    goto found_java
     )
 )

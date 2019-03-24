@@ -183,7 +183,7 @@ public class Main {
             writeConfiguration(
                     objectMapper,
                     configFile,
-                    configuration);
+                    newConfiguration);
         }
         return newConfiguration;
     }
