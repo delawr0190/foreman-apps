@@ -71,7 +71,7 @@ public class Gminer_1_34_ITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal(1))
+                                        .setHashRate(new BigDecimal("1.2"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setIndex(0)

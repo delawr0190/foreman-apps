@@ -45,7 +45,7 @@ public class GminerITest
                                                 "      \"cuda_id\": 0,\n" +
                                                 "      \"bus_id\": \"0000:01:00.0\",\n" +
                                                 "      \"name\": \"EVGA GeForce GTX 1070 Ti 8GB\",\n" +
-                                                "      \"speed\": 61,\n" +
+                                                "      \"speed\": 61.1,\n" +
                                                 "      \"accepted_shares\": 0,\n" +
                                                 "      \"rejected_shares\": 0,\n" +
                                                 "      \"temperature\": 52,\n" +
@@ -57,7 +57,7 @@ public class GminerITest
                                                 "      \"cuda_id\": 1,\n" +
                                                 "      \"bus_id\": \"0000:02:00.0\",\n" +
                                                 "      \"name\": \"EVGA GeForce GTX 1070 Ti 8GB\",\n" +
-                                                "      \"speed\": 65,\n" +
+                                                "      \"speed\": 65.1,\n" +
                                                 "      \"accepted_shares\": 1,\n" +
                                                 "      \"rejected_shares\": 0,\n" +
                                                 "      \"temperature\": 48,\n" +
@@ -69,7 +69,7 @@ public class GminerITest
                                                 "      \"cuda_id\": 2,\n" +
                                                 "      \"bus_id\": \"0000:03:00.0\",\n" +
                                                 "      \"name\": \"EVGA GeForce GTX 1070 Ti 8GB\",\n" +
-                                                "      \"speed\": 62,\n" +
+                                                "      \"speed\": 62.1,\n" +
                                                 "      \"accepted_shares\": 2,\n" +
                                                 "      \"rejected_shares\": 0,\n" +
                                                 "      \"temperature\": 52,\n" +
@@ -81,7 +81,7 @@ public class GminerITest
                                                 "      \"cuda_id\": 3,\n" +
                                                 "      \"bus_id\": \"0000:04:00.0\",\n" +
                                                 "      \"name\": \"EVGA GeForce GTX 1070 Ti 8GB\",\n" +
-                                                "      \"speed\": 65,\n" +
+                                                "      \"speed\": 65.1,\n" +
                                                 "      \"accepted_shares\": 2,\n" +
                                                 "      \"rejected_shares\": 0,\n" +
                                                 "      \"temperature\": 51,\n" +
@@ -103,7 +103,7 @@ public class GminerITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal(253))
+                                        .setHashRate(new BigDecimal("253.4"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setIndex(0)

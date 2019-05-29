@@ -92,10 +92,6 @@ public class Gminer
         if (rejectedShares == 0) {
             rejectedShares = stats.totalRejectedShares;
         }
-        final long hashRate =
-                sumDeviceAttribute(
-                        stats.devices,
-                        (result) -> (long) result.speed);
         statsBuilder
                 .addPool(
                         new Pool.Builder()
@@ -111,9 +107,13 @@ public class Gminer
                                         rejectedShares,
                                         0L)
                                 .build());
+
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(new BigDecimal(hashRate));
+                        .setHashRate(stats.devices
+                                .stream()
+                                .map((dev) -> dev.speed)
+                                .reduce(BigDecimal.ZERO, BigDecimal::add));
         stats.devices.forEach(
                 (device) ->
                         addGpu(device, rigBuilder));
