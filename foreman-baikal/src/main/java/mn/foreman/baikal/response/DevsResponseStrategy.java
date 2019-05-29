@@ -75,7 +75,9 @@ public class DevsResponseStrategy
                                         .build());
         asicValues
                 .stream()
-                .map((map) -> map.get("Temperature"))
+                .map((map) -> map.getOrDefault(
+                        "Temperature",
+                        map.get("temperature")))
                 .map(Double::parseDouble)
                 .map(Double::intValue)
                 .forEach(asicBuilder::addTemp);
