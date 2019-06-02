@@ -142,7 +142,10 @@ public enum ApiType {
     MINIZ_API(43),
 
     /** moonlander. */
-    MOONLANDER_API(44);
+    MOONLANDER_API(44),
+
+    /** swarm. */
+    SWARM_API(45);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
