@@ -84,13 +84,14 @@ public class Swarm
      *
      * @throws MinerException on failure to create a {@link Rig}.
      */
-    private static Rig toRig(final Stats stats) throws MinerException {
+    private static Rig toRig(final Stats stats)
+            throws MinerException {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
                         .setHashRate(stats.hsu.toHs(stats.gpuTotal))
                         .addAttribute(
-                                "uptime",
-                                Integer.toString(stats.uptime))
+                                "start_time",
+                                Integer.toString(stats.startTime))
                         .addAttribute(
                                 "algo",
                                 stats.algo);

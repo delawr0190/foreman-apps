@@ -86,7 +86,8 @@ public class SwarmITest
                                                 "        \"58\",\n" +
                                                 "        \"54\"\n" +
                                                 "        ],\n" +
-                                                "\"stratum\": \"stratum+tcp://daggerhashimoto.usa.nicehash.com:3353\"\n" +
+                                                "\"stratum\": \"stratum+tcp://daggerhashimoto.usa.nicehash.com:3353\",\n" +
+                                                "\"start_time\": \"1559511211\"" +
                                                 "}\n"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
@@ -246,8 +247,8 @@ public class SwarmITest
                                                                         .build())
                                                         .build())
                                         .addAttribute(
-                                                "uptime",
-                                                "384")
+                                                "start_time",
+                                                "1559511211")
                                         .addAttribute(
                                                 "algo",
                                                 "x16rt")

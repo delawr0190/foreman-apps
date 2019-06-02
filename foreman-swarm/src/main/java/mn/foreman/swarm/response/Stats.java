@@ -99,6 +99,10 @@ public class Stats {
     @JsonProperty("rejected")
     public int rejected;
 
+    /** The start time. */
+    @JsonProperty("start_time")
+    public int startTime;
+
     /** The stratum. */
     @JsonProperty("stratum")
     public String stratum;
@@ -106,8 +110,4 @@ public class Stats {
     /** The temps. */
     @JsonProperty("temps")
     public List<Integer> temps;
-
-    /** The uptime. */
-    @JsonProperty("uptime")
-    public int uptime;
 }
