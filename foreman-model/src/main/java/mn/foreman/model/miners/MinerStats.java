@@ -2,6 +2,7 @@ package mn.foreman.model.miners;
 
 import mn.foreman.model.AbstractBuilder;
 import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.model.miners.cpu.Cpu;
 import mn.foreman.model.miners.rig.Rig;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -29,6 +30,9 @@ import java.util.List;
  *     ],
  *     "rigs": [
  *       ...
+ *     ],
+ *     "cpus": [
+ *       ...
  *     ]
  *   }
  * </pre>
@@ -43,6 +47,9 @@ public class MinerStats {
 
     /** All of the ASICs. */
     private final List<Asic> asics;
+
+    /** All of the CPUs. */
+    private final List<Cpu> cpus;
 
     /** All of the pools. */
     private final List<Pool> pools;
@@ -63,7 +70,8 @@ public class MinerStats {
             @JsonProperty("apiPort") final int apiPort,
             @JsonProperty("pools") final List<Pool> pools,
             @JsonProperty("asics") final List<Asic> asics,
-            @JsonProperty("rigs") final List<Rig> rigs) {
+            @JsonProperty("rigs") final List<Rig> rigs,
+            @JsonProperty("cpus") final List<Cpu> cpus) {
         Validate.notEmpty(
                 apiIp,
                 "apiIp cannot be empty");
@@ -75,6 +83,7 @@ public class MinerStats {
         this.pools = new ArrayList<>(pools);
         this.asics = new ArrayList<>(asics);
         this.rigs = new ArrayList<>(rigs);
+        this.cpus = new ArrayList<>(cpus);
     }
 
     @Override
@@ -93,6 +102,7 @@ public class MinerStats {
                             .append(this.pools, miner.pools)
                             .append(this.asics, miner.asics)
                             .append(this.rigs, miner.rigs)
+                            .append(this.cpus, miner.cpus)
                             .isEquals();
         }
         return isEqual;
@@ -126,6 +136,15 @@ public class MinerStats {
     }
 
     /**
+     * Returns the CPUs.
+     *
+     * @return The CPUs.
+     */
+    public List<Cpu> getCpus() {
+        return Collections.unmodifiableList(this.cpus);
+    }
+
+    /**
      * Returns the pools.
      *
      * @return The pools.
@@ -151,6 +170,7 @@ public class MinerStats {
                 .append(this.pools)
                 .append(this.asics)
                 .append(this.rigs)
+                .append(this.cpus)
                 .build();
     }
 
@@ -161,14 +181,16 @@ public class MinerStats {
                         "apiPort=%d, " +
                         "pools=%s, " +
                         "asics=%s, " +
-                        "rigs=%s" +
+                        "rigs=%s, " +
+                        "cpus=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.apiIp,
                 this.apiPort,
                 this.pools,
                 this.asics,
-                this.rigs);
+                this.rigs,
+                this.cpus);
     }
 
     /** A builder for creating {@link MinerStats stats}. */
@@ -177,6 +199,9 @@ public class MinerStats {
 
         /** All of the ASICs. */
         private final List<Asic> asics = new LinkedList<>();
+
+        /** All of the cpus. */
+        private final List<Cpu> cpus = new LinkedList<>();
 
         /** All of the pools. */
         private final List<Pool> pools = new LinkedList<>();
@@ -211,6 +236,20 @@ public class MinerStats {
          */
         public Builder addAsics(final List<Asic> asics) {
             asics.forEach(this::addAsic);
+            return this;
+        }
+
+        /**
+         * Adds the provided {@link Cpu}.
+         *
+         * @param cpu The {@link Cpu}.
+         *
+         * @return This builder instance.
+         */
+        public Builder addCpu(final Cpu cpu) {
+            if (cpu != null) {
+                this.cpus.add(cpu);
+            }
             return this;
         }
 
@@ -274,7 +313,8 @@ public class MinerStats {
                     this.apiPort,
                     this.pools,
                     this.asics,
-                    this.rigs);
+                    this.rigs,
+                    this.cpus);
         }
 
         /**

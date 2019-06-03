@@ -6,6 +6,7 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.model.miners.cpu.Cpu;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
@@ -104,6 +105,14 @@ public class MetricsReportTest {
                                         .build())
                         .build();
 
+        final Cpu cpu =
+                new Cpu.Builder()
+                        .setTemp(69)
+                        .setFanSpeed(70)
+                        .setFrequency(new BigDecimal("420"))
+                        .addThread(new BigDecimal("1234"))
+                        .build();
+
         final MinerStats minerStats =
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
@@ -111,6 +120,7 @@ public class MetricsReportTest {
                         .addPool(pool)
                         .addAsic(asic)
                         .addRig(rig)
+                        .addCpu(cpu)
                         .build();
 
         final ZonedDateTime timestamp =
