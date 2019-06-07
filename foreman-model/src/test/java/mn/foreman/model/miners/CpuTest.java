@@ -24,6 +24,7 @@ public class CpuTest {
             throws IOException {
         final Cpu cpu =
                 new Cpu.Builder()
+                        .setName("CPU")
                         .setTemp(69)
                         .setFanSpeed(70)
                         .setFrequency(new BigDecimal("420"))

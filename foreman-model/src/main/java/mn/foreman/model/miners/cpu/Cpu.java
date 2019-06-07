@@ -28,6 +28,9 @@ public class Cpu {
     @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal frequency;
 
+    /** The CPU name. */
+    private final String name;
+
     /** The temp. */
     private final int temp;
 
@@ -37,16 +40,24 @@ public class Cpu {
     /**
      * Constructor.
      *
+     * @param name      The name.
      * @param fanSpeed  The fan speed.
      * @param temp      The temp.
      * @param frequency The frequency.
      * @param threads   The threads.
      */
     private Cpu(
+            @JsonProperty("name") final String name,
             @JsonProperty("fanSpeed") final int fanSpeed,
             @JsonProperty("temp") final int temp,
             @JsonProperty("frequency") final BigDecimal frequency,
             @JsonProperty("threads") final List<BigDecimal> threads) {
+        Validate.notNull(
+                name,
+                "name cannot be null");
+        Validate.notEmpty(
+                name,
+                "name cannot be empty");
         Validate.notNull(
                 frequency,
                 "frequency cannot be null");
@@ -56,6 +67,7 @@ public class Cpu {
         Validate.notEmpty(
                 threads,
                 "threads cannot be empty");
+        this.name = name;
         this.fanSpeed = fanSpeed;
         this.temp = temp;
         this.frequency = frequency;
@@ -70,13 +82,14 @@ public class Cpu {
         } else if (getClass() != other.getClass()) {
             isEqual = false;
         } else {
-            final Cpu asic = (Cpu) other;
+            final Cpu cpu = (Cpu) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.fanSpeed, asic.fanSpeed)
-                            .append(this.temp, asic.temp)
-                            .append(this.frequency, asic.frequency)
-                            .append(this.threads, asic.threads)
+                            .append(this.name, cpu.name)
+                            .append(this.fanSpeed, cpu.fanSpeed)
+                            .append(this.temp, cpu.temp)
+                            .append(this.frequency, cpu.frequency)
+                            .append(this.threads, cpu.threads)
                             .isEquals();
         }
         return isEqual;
@@ -101,6 +114,15 @@ public class Cpu {
     }
 
     /**
+     * Returns the name.
+     *
+     * @return The name.
+     */
+    public String getName() {
+        return this.name;
+    }
+
+    /**
      * Returns the temp.
      *
      * @return The temp.
@@ -121,6 +143,7 @@ public class Cpu {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(this.name)
                 .append(this.fanSpeed)
                 .append(this.temp)
                 .append(this.frequency)
@@ -132,12 +155,14 @@ public class Cpu {
     public String toString() {
         return String.format(
                 "%s [ " +
+                        "name=%s, " +
                         "fanSpeed=%d, " +
                         "temp=%d, " +
                         "frequency=%s, " +
                         "threads=%s" +
                         " ]",
                 getClass().getSimpleName(),
+                this.name,
                 this.fanSpeed,
                 this.temp,
                 this.frequency,
@@ -157,6 +182,9 @@ public class Cpu {
         /** The frequency. */
         private BigDecimal frequency = UNDEFINED_DECIMAL;
 
+        /** The name. */
+        private String name = UNDEFINED_STRING;
+
         /** The temp. */
         private int temp = UNDEFINED_INT;
 
@@ -174,9 +202,22 @@ public class Cpu {
             return this;
         }
 
+        /**
+         * Adds the threads.
+         *
+         * @param threads The threads.
+         *
+         * @return This builder instance.
+         */
+        public Builder addThreads(final List<BigDecimal> threads) {
+            threads.forEach(this::addThread);
+            return this;
+        }
+
         @Override
         public Cpu build() {
             return new Cpu(
+                    this.name,
                     this.fanSpeed,
                     this.temp,
                     this.frequency,
@@ -206,6 +247,18 @@ public class Cpu {
             if (frequency != null) {
                 this.frequency = frequency;
             }
+            return this;
+        }
+
+        /**
+         * Sets the name.
+         *
+         * @param name The name.
+         *
+         * @return This builder instance.
+         */
+        public Builder setName(final String name) {
+            this.name = name;
             return this;
         }
 

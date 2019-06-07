@@ -51,8 +51,8 @@ public enum ApiType {
     /** xmrig */
     XMRIG_API(13),
 
-    /** xmrstak. */
-    XMRSTAK_API(14),
+    /** xmrstak (gpu). */
+    XMRSTAK_GPU_API(14),
 
     /** claymore-eth. */
     CLAYMORE_ETH_API(15),
@@ -145,7 +145,10 @@ public enum ApiType {
     MOONLANDER_API(44),
 
     /** swarm. */
-    SWARM_API(45);
+    SWARM_API(45),
+
+    /** xmrstak (cpu). */
+    XMRATAK_CPU_API(46);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

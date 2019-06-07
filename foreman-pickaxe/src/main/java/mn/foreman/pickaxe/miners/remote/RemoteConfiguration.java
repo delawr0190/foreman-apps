@@ -49,6 +49,7 @@ import mn.foreman.trex.TrexFactory;
 import mn.foreman.whatsminer.WhatsminerFactory;
 import mn.foreman.xmrig.XmrigFactory;
 import mn.foreman.xmrstak.XmrstakFactory;
+import mn.foreman.xmrstak.XmrstakType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -537,9 +538,6 @@ public class RemoteConfiguration
             case XMRIG_API:
                 minerFactory = new XmrigFactory();
                 break;
-            case XMRSTAK_API:
-                minerFactory = new XmrstakFactory();
-                break;
             default:
                 break;
         }
@@ -638,6 +636,11 @@ public class RemoteConfiguration
             case ETHMINER_API:
                 miners.add(toEthminerApi(port, config));
                 break;
+            case XMRSTAK_GPU_API:
+                // Fall through
+            case XMRATAK_CPU_API:
+                miners.add(toXmrstak(port, apiType, config));
+                break;
             default:
                 miners.add(toMiner(port, config, minerFactory));
                 break;
@@ -728,6 +731,49 @@ public class RemoteConfiguration
         return new NiceHashMinerFactory(
                 niceHashConfig.algo,
                 candidatesBuilder.build());
+    }
+
+    /**
+     * Creates an xmrstak {@link Miner} from the config.
+     *
+     * @param port    The port.
+     * @param apiType The {@link ApiType}.
+     * @param config  The config.
+     *
+     * @return The {@link Miner}.
+     */
+    private static Miner toXmrstak(
+            final int port,
+            final ApiType apiType,
+            final MinerConfig config) {
+        final Map<String, String> attributes = new HashMap<>();
+        attributes.put("type", toXmrstakType(apiType));
+        attributes.put("apiIp", config.apiIp);
+        attributes.put("apiPort", Integer.toString(port));
+        return new XmrstakFactory().create(attributes);
+    }
+
+    /**
+     * Converts the {@link ApiType} to an {@link XmrstakType}.
+     *
+     * @param apiType The {@link ApiType}.
+     *
+     * @return The {@link ClaymoreType}.
+     */
+    private static String toXmrstakType(
+            final ApiType apiType) {
+        String type = null;
+        switch (apiType) {
+            case XMRSTAK_GPU_API:
+                type = XmrstakType.GPU.name().toLowerCase();
+                break;
+            case XMRATAK_CPU_API:
+                type = XmrstakType.CPU.name().toLowerCase();
+                break;
+            default:
+                break;
+        }
+        return type;
     }
 
     /**

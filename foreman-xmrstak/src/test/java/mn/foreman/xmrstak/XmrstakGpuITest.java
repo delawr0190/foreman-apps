@@ -14,16 +14,21 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link Xmrstak} against a fake API. */
-public class XmrstakITest
+/** Runs an integration tests using {@link XmrstakGpu} against a fake API. */
+public class XmrstakGpuITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public XmrstakITest() {
+    public XmrstakGpuITest() {
         super(
-                new Xmrstak(
-                        "127.0.0.1",
-                        44444),
+                new XmrstakFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "44444",
+                                "type",
+                                XmrstakType.GPU.name())),
                 new FakeHttpMinerServer(
                         44444,
                         ImmutableMap.of(

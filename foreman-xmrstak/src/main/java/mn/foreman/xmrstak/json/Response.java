@@ -124,7 +124,7 @@ public class Response {
 
         /** The thread rates. */
         @JsonProperty("threads")
-        public List<List<Integer>> threads;
+        public List<List<BigDecimal>> threads;
 
         /** The totals. */
         @JsonProperty("total")

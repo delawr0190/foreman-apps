@@ -14,8 +14,34 @@ public class XmrstakFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
-        return new Xmrstak(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+        final Miner miner;
+
+        final String apiIp = config.get("apiIp");
+        final int apiPort = Integer.parseInt(config.get("apiPort"));
+
+        final XmrstakType type =
+                XmrstakType.valueOf(
+                        config.getOrDefault(
+                                "type",
+                                XmrstakType.GPU.name()).toUpperCase());
+
+        switch (type) {
+            case CPU:
+                miner =
+                        new XmrstakCpu(
+                                apiIp,
+                                apiPort);
+                break;
+            case GPU:
+                // Fall through
+            default:
+                miner =
+                        new XmrstakGpu(
+                                apiIp,
+                                apiPort);
+                break;
+        }
+
+        return miner;
     }
 }
