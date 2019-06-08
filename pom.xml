@@ -64,6 +64,7 @@
         <module>foreman-cgminer</module>
         <module>foreman-chisel</module>
         <module>foreman-claymore</module>
+        <module>foreman-cpuminer</module>
         <module>foreman-dayun</module>
         <module>foreman-dragonmint</module>
         <module>foreman-dstm</module>
@@ -155,6 +156,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-claymore</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-cpuminer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

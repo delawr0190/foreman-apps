@@ -237,6 +237,17 @@ public class Cpu {
         }
 
         /**
+         * Sets the fan speed.
+         *
+         * @param fanSpeed The fan speed.
+         *
+         * @return This builder instance.
+         */
+        public Builder setFanSpeed(final String fanSpeed) {
+            return setFanSpeed((int) Double.parseDouble(fanSpeed));
+        }
+
+        /**
          * Sets the frequency.
          *
          * @param frequency The frequency.
@@ -251,6 +262,17 @@ public class Cpu {
         }
 
         /**
+         * Sets the frequency.
+         *
+         * @param frequency The frequency.
+         *
+         * @return This builder instance.
+         */
+        public Builder setFrequency(final String frequency) {
+            return setFrequency(new BigDecimal(frequency));
+        }
+
+        /**
          * Sets the name.
          *
          * @param name The name.
@@ -260,6 +282,17 @@ public class Cpu {
         public Builder setName(final String name) {
             this.name = name;
             return this;
+        }
+
+        /**
+         * Sets the temp.
+         *
+         * @param temp The temp.
+         *
+         * @return This builder instance.
+         */
+        public Builder setTemp(final String temp) {
+            return setTemp((int) Double.parseDouble(temp));
         }
 
         /**

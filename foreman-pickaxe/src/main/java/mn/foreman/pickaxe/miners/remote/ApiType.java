@@ -148,7 +148,10 @@ public enum ApiType {
     SWARM_API(45),
 
     /** xmrstak (cpu). */
-    XMRATAK_CPU_API(46);
+    XMRSTAK_CPU_API(46),
+
+    /** cpuminer. */
+    CPUMINER_API(47);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

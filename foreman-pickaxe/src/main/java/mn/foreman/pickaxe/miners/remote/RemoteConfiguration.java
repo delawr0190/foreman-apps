@@ -13,6 +13,7 @@ import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.chisel.ChiselMinerDecorator;
 import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.ClaymoreType;
+import mn.foreman.cpuminer.CpuminerFactory;
 import mn.foreman.dayun.DayunFactory;
 import mn.foreman.dragonmint.Dragonmint;
 import mn.foreman.dragonmint.DragonmintFactory;
@@ -441,6 +442,9 @@ public class RemoteConfiguration
             case CLAYMORE_ZEC_API:
                 minerFactory = new ClaymoreFactory();
                 break;
+            case CPUMINER_API:
+                minerFactory = new CpuminerFactory();
+                break;
             case DAYUN_API:
                 minerFactory = new DayunFactory();
                 break;
@@ -537,6 +541,11 @@ public class RemoteConfiguration
                 break;
             case XMRIG_API:
                 minerFactory = new XmrigFactory();
+                break;
+            case XMRSTAK_CPU_API:
+                // Fall through
+            case XMRSTAK_GPU_API:
+                minerFactory = new XmrstakFactory();
                 break;
             default:
                 break;
@@ -638,7 +647,7 @@ public class RemoteConfiguration
                 break;
             case XMRSTAK_GPU_API:
                 // Fall through
-            case XMRATAK_CPU_API:
+            case XMRSTAK_CPU_API:
                 miners.add(toXmrstak(port, apiType, config));
                 break;
             default:
@@ -767,7 +776,7 @@ public class RemoteConfiguration
             case XMRSTAK_GPU_API:
                 type = XmrstakType.GPU.name().toLowerCase();
                 break;
-            case XMRATAK_CPU_API:
+            case XMRSTAK_CPU_API:
                 type = XmrstakType.CPU.name().toLowerCase();
                 break;
             default:
