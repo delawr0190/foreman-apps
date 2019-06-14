@@ -31,7 +31,7 @@ public class SwarmITest
                 new FakeRpcMinerServer(
                         6099,
                         ImmutableMap.of(
-                                "stats",
+                                "stats\n",
                                 new RpcHandler(
                                         "{\n" +
                                                 "\"hsu\":\"khs\"," +
