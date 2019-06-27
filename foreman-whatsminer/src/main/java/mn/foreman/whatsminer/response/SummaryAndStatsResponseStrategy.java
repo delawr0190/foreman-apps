@@ -20,7 +20,8 @@ import java.util.concurrent.atomic.AtomicReference;
  * that will create and add an {@link Asic} to the provided {@link
  * MinerStats.Builder} as metrics are observed from Whatsminer ASIC miners.
  *
- * <p>Implementation note: both the summary and stats responses must be provided
+ * <p>Implementation note: both the summary and stats responses must be
+ * provided
  * to the same instance of this class; both of those responses must be paired
  * together to create an {@link Asic}.</p>
  */
@@ -115,7 +116,7 @@ public class SummaryAndStatsResponseStrategy
                         builder.addTemp(map.get("temp_" + i));
                     }
 
-                    if (!"0".equals(map.get("err_chips"))) {
+                    if (!"0".equals(map.getOrDefault("err_chips", "0"))) {
                         builder.hasErrors(true);
                     }
                 });
