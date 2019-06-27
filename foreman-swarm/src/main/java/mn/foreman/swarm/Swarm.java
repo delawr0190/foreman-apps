@@ -55,7 +55,7 @@ public class Swarm
                 Query.jsonQuery(
                         this.apiIp,
                         this.apiPort,
-                        "stats",
+                        "stats\n",
                         new TypeReference<Stats>() {
                         });
 
