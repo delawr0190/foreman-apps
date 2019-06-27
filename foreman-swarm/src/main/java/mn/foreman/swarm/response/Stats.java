@@ -64,7 +64,8 @@ import java.util.List;
  *       "69",
  *       "58",
  *       "54"
- *     ]
+ *     ],
+ *     "workername": "Donate"
  *   }
  * </pre>
  */
@@ -110,4 +111,8 @@ public class Stats {
     /** The temps. */
     @JsonProperty("temps")
     public List<Integer> temps;
+
+    /** The workername. */
+    @JsonProperty("workername")
+    public String workerName;
 }

@@ -94,7 +94,10 @@ public class Swarm
                                 Integer.toString(stats.startTime))
                         .addAttribute(
                                 "algo",
-                                stats.algo);
+                                stats.algo)
+                        .addAttribute(
+                                "workername",
+                                stats.workerName);
 
         final List<BigDecimal> gpus = stats.gpus;
         final List<Integer> fans = stats.fans;
