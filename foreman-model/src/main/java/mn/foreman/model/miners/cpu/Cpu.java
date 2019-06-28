@@ -280,7 +280,9 @@ public class Cpu {
          * @return This builder instance.
          */
         public Builder setName(final String name) {
-            this.name = name;
+            if (name != null) {
+                this.name = name.trim();
+            }
             return this;
         }
 

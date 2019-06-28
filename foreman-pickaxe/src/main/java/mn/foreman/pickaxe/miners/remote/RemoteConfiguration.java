@@ -25,6 +25,7 @@ import mn.foreman.gminer.GminerFactory;
 import mn.foreman.grinpro.GrinProFactory;
 import mn.foreman.hspminer.HspminerFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
+import mn.foreman.iximiner.IximinerFactory;
 import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.lolminer.LolminerFactory;
 import mn.foreman.miniz.MinizFactory;
@@ -483,6 +484,9 @@ public class RemoteConfiguration
                         new InnosiliconFactory(
                                 toInnosiliconType(
                                         apiType));
+                break;
+            case IXIMINER_API:
+                minerFactory = new IximinerFactory();
                 break;
             case JCEMINER_API:
                 minerFactory = new JceminerFactory();

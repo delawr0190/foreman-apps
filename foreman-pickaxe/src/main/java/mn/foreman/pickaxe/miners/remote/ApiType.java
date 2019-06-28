@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An API type represents a FOREMAN server response that indicates the miner API
+ * An API type represents a FOREMAN server json that indicates the miner API
  * type.
  */
 public enum ApiType {
@@ -151,7 +151,10 @@ public enum ApiType {
     XMRSTAK_CPU_API(46),
 
     /** cpuminer. */
-    CPUMINER_API(47);
+    CPUMINER_API(47),
+
+    /** iximiner. */
+    IXIMINER_API(48);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;
