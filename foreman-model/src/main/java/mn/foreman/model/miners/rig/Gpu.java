@@ -184,6 +184,9 @@ public class Gpu {
     public static class Builder
             extends AbstractBuilder<Gpu> {
 
+        /** The bus separator. */
+        private static final String BUS_SEPARATOR = ":";
+
         /** The bus. */
         private int bus;
 
@@ -234,7 +237,11 @@ public class Gpu {
          */
         public Builder setBus(final String bus) {
             if (bus != null && !bus.isEmpty()) {
-                setBus(Integer.parseInt(bus));
+                if (bus.contains(BUS_SEPARATOR)) {
+                    setBus(Integer.valueOf(bus.split(BUS_SEPARATOR)[0], 16));
+                } else {
+                    setBus(Integer.parseInt(bus));
+                }
             }
             return this;
         }
@@ -298,7 +305,9 @@ public class Gpu {
          */
         public Builder setName(final String name) {
             if (name != null) {
-                this.name = name.trim();
+                this.name = name
+                        .trim()
+                        .replace("Advanced Micro Devices, Inc.", "AMD");
             }
             return this;
         }

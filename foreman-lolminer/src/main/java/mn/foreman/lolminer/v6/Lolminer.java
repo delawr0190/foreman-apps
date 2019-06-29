@@ -101,7 +101,7 @@ public class Lolminer
         rigBuilder.addGpu(
                 new Gpu.Builder()
                         .setIndex(gpu.index)
-                        .setBus(gpu.address.split(":")[0])
+                        .setBus(gpu.address)
                         .setName(gpu.name)
                         .setTemp(0)
                         .setFans(

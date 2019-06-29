@@ -15,11 +15,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link Iximiner} against a fake API. */
-public class IximinerGpuITest
+public class IximinerGpuHexBusITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public IximinerGpuITest() {
+    public IximinerGpuHexBusITest() {
         super(
                 new IximinerFactory().create(
                         ImmutableMap.of(
@@ -36,11 +36,11 @@ public class IximinerGpuITest
                                         "[\n" +
                                                 "  {\n" +
                                                 "    \"name\": \"miner\",\n" +
-                                                "    \"block_height\": 522514,\n" +
-                                                "    \"time_running\": 29231,\n" +
-                                                "    \"total_blocks\": 159,\n" +
-                                                "    \"shares\": 23938,\n" +
-                                                "    \"rejects\": 6884,\n" +
+                                                "    \"block_height\": 571395,\n" +
+                                                "    \"time_running\": 3855,\n" +
+                                                "    \"total_blocks\": 34,\n" +
+                                                "    \"shares\": 3287,\n" +
+                                                "    \"rejects\": 632,\n" +
                                                 "    \"earned\": 0,\n" +
                                                 "    \"hashers\": [\n" +
                                                 "      {\n" +
@@ -48,11 +48,11 @@ public class IximinerGpuITest
                                                 "        \"subtype\": \"OPENCL\",\n" +
                                                 "        \"devices\": [\n" +
                                                 "          {\n" +
-                                                "            \"id\": 0,\n" +
-                                                "            \"bus_id\": \"13:00.0\",\n" +
+                                                "            \"id\": 1,\n" +
+                                                "            \"bus_id\": \"0d:00.0\",\n" +
                                                 "            \"name\": \"Advanced Micro Devices, Inc. - Radeon RX Vega (8GB)\",\n" +
-                                                "            \"intensity\": 88,\n" +
-                                                "            \"hashrate\": 115418\n" +
+                                                "            \"intensity\": 89,\n" +
+                                                "            \"hashrate\": 106823\n" +
                                                 "          }\n" +
                                                 "        ]\n" +
                                                 "      }\n" +
@@ -67,15 +67,15 @@ public class IximinerGpuITest
                                         .setName("not available")
                                         .setPriority(0)
                                         .setStatus(true, true)
-                                        .setCounts(23938, 6884, 0)
+                                        .setCounts(3287, 632, 0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("115418"))
+                                        .setHashRate(new BigDecimal("106823"))
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setIndex(0)
-                                                        .setBus(19)
+                                                        .setIndex(1)
+                                                        .setBus(13)
                                                         .setName("AMD - Radeon RX Vega (8GB)")
                                                         .setTemp(0)
                                                         .setFans(

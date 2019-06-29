@@ -109,7 +109,7 @@ public class Hspminer
         rigBuilder.addGpu(
                 new Gpu.Builder()
                         .setIndex(device.id)
-                        .setBus(device.pci.split(":")[0])
+                        .setBus(device.pci)
                         .setName(device.name)
                         .setTemp(device.temp)
                         .setFans(

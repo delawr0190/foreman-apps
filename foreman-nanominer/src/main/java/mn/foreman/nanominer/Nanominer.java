@@ -114,7 +114,7 @@ public class Nanominer
         rigBuiler.addGpu(
                 new Gpu.Builder()
                         .setIndex(gpuName.split(" ")[1])
-                        .setBus(device.pci.split(":")[0])
+                        .setBus(device.pci)
                         .setName(device.name)
                         .setTemp(device.temp)
                         .setFreqInfo(

@@ -149,7 +149,7 @@ public class Iximiner
         rigBuilder.addGpu(
                 new Gpu.Builder()
                         .setIndex(device.id)
-                        .setBus(device.busId.split(":")[0])
+                        .setBus(device.busId)
                         .setName(device.name)
                         .setTemp(0)
                         .setFans(
