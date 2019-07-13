@@ -71,13 +71,14 @@ public class Main {
                             Configuration::getForemanNicehashUrl,
                             configuration.getForemanApiUrl(),
                             configuration.getForemanConfigUrl(),
-                            "https://dashboard.foreman.mn/api/nicehash",
+                            "https://dashboard.foreman.mn/api/nicehashv2",
                             configuration.getForemanAutominerUrl(),
                             configuration.getApiKey(),
                             configuration.getClientId(),
                             configuration.getPickaxeId(),
                             objectMapper,
-                            configFile);
+                            configFile,
+                            true);
 
             // Add autominer URL if missing
             configuration =
@@ -92,7 +93,8 @@ public class Main {
                             configuration.getClientId(),
                             configuration.getPickaxeId(),
                             objectMapper,
-                            configFile);
+                            configFile,
+                            false);
 
             // Add pickaxe ID if missing
             configuration =
@@ -107,7 +109,8 @@ public class Main {
                             configuration.getClientId(),
                             UUID.randomUUID().toString(),
                             objectMapper,
-                            configFile);
+                            configFile,
+                            false);
 
             final RunMe runMe = new RunMe(configuration);
             runMe.run();
@@ -150,6 +153,7 @@ public class Main {
      * @param pickaxeId     The pickaxe ID.
      * @param objectMapper  The {@link ObjectMapper}.
      * @param configFile    The config {@link File}.
+     * @param forceWrite    Whether or not the value should always be written.
      *
      * @return The updated {@link Configuration}.
      *
@@ -166,11 +170,12 @@ public class Main {
             final String clientID,
             final String pickaxeId,
             final ObjectMapper objectMapper,
-            final File configFile)
+            final File configFile,
+            final boolean forceWrite)
             throws IOException {
         Configuration newConfiguration = configuration;
         final String value = getter.apply(configuration);
-        if ((value == null) || (value.isEmpty())) {
+        if ((value == null) || (value.isEmpty()) || forceWrite) {
             newConfiguration =
                     new YmlConfiguration(
                             apiUrl,

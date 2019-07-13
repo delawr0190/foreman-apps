@@ -36,7 +36,6 @@ import mn.foreman.moonlander.MoonlanderFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
-import mn.foreman.nicehash.AlgorithmCandidates;
 import mn.foreman.nicehash.NiceHashMiner;
 import mn.foreman.nicehash.NiceHashMinerFactory;
 import mn.foreman.optiminer.OptiminerFactory;
@@ -166,15 +165,15 @@ public class RemoteConfiguration
                 });
         LOG.info("Downloaded configuration: {} miners", configs.size());
 
-        final Map<Integer, List<ApiType>> niceHashConfig = new HashMap<>();
+        final List<ApiType> niceHashConfig = new LinkedList<>();
         getConfig(
                 this.nicehashConfigUrl,
                 response -> {
                     try {
-                        niceHashConfig.putAll(
+                        niceHashConfig.addAll(
                                 objectMapper.readValue(
                                         response,
-                                        new TypeReference<Map<Integer, List<ApiType>>>() {
+                                        new TypeReference<List<ApiType>>() {
                                         }));
                     } catch (final IOException ioe) {
                         LOG.warn("Failed to parse response", ioe);
@@ -200,6 +199,38 @@ public class RemoteConfiguration
                 configs,
                 niceHashConfig,
                 amMappings);
+    }
+
+    /**
+     * Adds nicehash candidates to the dest {@link List}.
+     *
+     * @param config     The config.
+     * @param portStart  The port start.
+     * @param candidates The candidates.
+     * @param amMappings The autominer mappings.
+     * @param dest       The destination {@link List}.
+     */
+    private static void addNiceHashCandidates(
+            final MinerConfig config,
+            final int portStart,
+            final List<ApiType> candidates,
+            final Map<String, ApiType> amMappings,
+            final List<Miner> dest) {
+        for (int i = 0; i < 5; i++) {
+            final int port = portStart + i;
+            dest.addAll(
+                    candidates
+                            .stream()
+                            .map(apiType ->
+                                    toMiner(
+                                            apiType,
+                                            port,
+                                            config,
+                                            candidates,
+                                            amMappings))
+                            .flatMap(List::stream)
+                            .collect(Collectors.toList()));
+        }
     }
 
     /**
@@ -251,15 +282,15 @@ public class RemoteConfiguration
     /**
      * Creates an {@link AutoMinerFactory}.
      *
-     * @param minerConfig     The config.
-     * @param niceHashConfigs The nicehash configs.
-     * @param amMappings      The autominer mappings.
+     * @param minerConfig        The config.
+     * @param niceHashCandidates The nicehash configs.
+     * @param amMappings         The autominer mappings.
      *
      * @return The {@link AutoMinerFactory}.
      */
     private static MinerFactory toAutominerFactory(
             final MinerConfig minerConfig,
-            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings) {
         final MinerMapping.Builder mappingBuilder =
                 new MinerMapping.Builder();
@@ -270,7 +301,7 @@ public class RemoteConfiguration
                                 toFactory(
                                         minerConfig,
                                         apiType,
-                                        niceHashConfigs,
+                                        niceHashCandidates,
                                         amMappings).orElseThrow(
                                         () -> new IllegalArgumentException(
                                                 "Invalid api type"))));
@@ -386,10 +417,10 @@ public class RemoteConfiguration
      * Creates a {@link MinerFactory} for the provided configuration
      * parameters.
      *
-     * @param minerConfig     The config.
-     * @param apiType         The type.
-     * @param niceHashConfigs The NiceHash mappings.
-     * @param amMappings      The autominer mappings.
+     * @param minerConfig        The config.
+     * @param apiType            The type.
+     * @param niceHashCandidates The NiceHash candidates.
+     * @param amMappings         The autominer mappings.
      *
      * @return The {@link MinerFactory}.
      */
@@ -397,7 +428,7 @@ public class RemoteConfiguration
     private static Optional<MinerFactory> toFactory(
             final MinerConfig minerConfig,
             final ApiType apiType,
-            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings) {
         MinerFactory minerFactory = null;
         switch (apiType) {
@@ -417,7 +448,7 @@ public class RemoteConfiguration
                 minerFactory =
                         toAutominerFactory(
                                 minerConfig,
-                                niceHashConfigs,
+                                niceHashCandidates,
                                 amMappings);
                 break;
             case AVALON_API:
@@ -516,7 +547,7 @@ public class RemoteConfiguration
                 minerFactory =
                         toNiceHashFactory(
                                 minerConfig,
-                                niceHashConfigs,
+                                niceHashCandidates,
                                 amMappings);
                 break;
             case OPTIMINER_API:
@@ -610,11 +641,11 @@ public class RemoteConfiguration
     /**
      * Converts each {@link MinerConfig} to a {@link Miner}.
      *
-     * @param apiType         The {@link ApiType}.
-     * @param port            The port.
-     * @param config          The {@link MinerConfig}.
-     * @param niceHashConfigs The NiceHash configuration.
-     * @param amMappings      The autominer mappings.
+     * @param apiType            The {@link ApiType}.
+     * @param port               The port.
+     * @param config             The {@link MinerConfig}.
+     * @param niceHashCandidates The NiceHash configuration.
+     * @param amMappings         The autominer mappings.
      *
      * @return The {@link Miner miners}.
      */
@@ -622,7 +653,7 @@ public class RemoteConfiguration
             final ApiType apiType,
             final int port,
             final MinerConfig config,
-            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings) {
         LOG.debug("Adding miner for {}", config);
 
@@ -630,7 +661,7 @@ public class RemoteConfiguration
                 toFactory(
                         config,
                         apiType,
-                        niceHashConfigs,
+                        niceHashCandidates,
                         amMappings)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
@@ -682,15 +713,15 @@ public class RemoteConfiguration
      * Creates a {@link Miner} from every miner in the {@link MinerConfig
      * configs}.
      *
-     * @param configs         The configurations.
-     * @param niceHashConfigs The NiceHash configurations.
-     * @param amMappings      The autominer mappings.
+     * @param configs            The configurations.
+     * @param niceHashCandidates The NiceHash configurations.
+     * @param amMappings         The autominer mappings.
      *
      * @return The {@link Miner miners}.
      */
     private static List<Miner> toMiners(
             final List<MinerConfig> configs,
-            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings) {
         return configs
                 .stream()
@@ -700,7 +731,7 @@ public class RemoteConfiguration
                                 config.apiType,
                                 config.apiPort,
                                 config,
-                                niceHashConfigs,
+                                niceHashCandidates,
                                 amMappings))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
@@ -709,41 +740,35 @@ public class RemoteConfiguration
     /**
      * Creates a {@link NiceHashMiner}.
      *
-     * @param config          The configuration.
-     * @param niceHashConfigs The algorithm mappings.
-     * @param amMappings      The autominer mappings.
+     * @param config             The configuration.
+     * @param niceHashCandidates The nicehash candidates.
+     * @param amMappings         The autominer mappings.
      *
      * @return The new {@link Miner miners}.
      */
     private static MinerFactory toNiceHashFactory(
             final MinerConfig config,
-            final Map<Integer, List<ApiType>> niceHashConfigs,
+            final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings) {
-        final MinerConfig.NiceHashConfig niceHashConfig =
-                config.niceHashConfig;
-        final AlgorithmCandidates.Builder candidatesBuilder =
-                new AlgorithmCandidates.Builder();
-        // Query up to a 5-port range for nicehashlegacy
-        for (int i = 0; i < 5; i++) {
-            final int port = config.apiPort + i;
-            niceHashConfigs.forEach((algoType, apiTypes) ->
-                    apiTypes.stream()
-                            .map(apiType ->
-                                    toMiner(
-                                            apiType,
-                                            port,
-                                            config,
-                                            niceHashConfigs,
-                                            amMappings))
-                            .flatMap(List::stream)
-                            .forEach(m ->
-                                    candidatesBuilder.addCandidate(
-                                            algoType,
-                                            m)));
-        }
-        return new NiceHashMinerFactory(
-                niceHashConfig.algo,
-                candidatesBuilder.build());
+        final List<Miner> candidates = new LinkedList<>();
+
+        // Query up to a 5-port range for nicehash
+        addNiceHashCandidates(
+                config,
+                config.apiPort,
+                niceHashCandidates,
+                amMappings,
+                candidates);
+
+        // Could be misconfigured and failed over to port 5100
+        addNiceHashCandidates(
+                config,
+                5100,
+                niceHashCandidates,
+                amMappings,
+                candidates);
+
+        return new NiceHashMinerFactory(candidates);
     }
 
     /**

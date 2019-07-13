@@ -32,10 +32,6 @@ public class MinerConfig {
     @JsonProperty("chisel")
     public ChiselConfig chisel;
 
-    /** The NiceHash configuration. */
-    @JsonProperty("nicehash")
-    public NiceHashConfig niceHashConfig;
-
     /** The parameters. */
     @JsonProperty("params")
     public List<Param> params;
@@ -71,22 +67,6 @@ public class MinerConfig {
             return String.format("%s [ apiPort=%d ]",
                     getClass().getSimpleName(),
                     this.apiPort);
-        }
-    }
-
-    /** NiceHash configuration. */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class NiceHashConfig {
-
-        /** The algorithm. */
-        @JsonProperty("algo")
-        public int algo;
-
-        @Override
-        public String toString() {
-            return String.format("%s [ algo=%d ]",
-                    getClass().getSimpleName(),
-                    this.algo);
         }
     }
 

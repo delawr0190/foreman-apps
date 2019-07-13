@@ -157,6 +157,35 @@ public class Rig {
         }
 
         /**
+         * Adds the provided attributes.
+         *
+         * @param attributes The attributes to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addAttributes(
+                final List<Map<String, String>> attributes) {
+            if (attributes != null) {
+                attributes.forEach(this::addAttributes);
+            }
+            return this;
+        }
+
+        /**
+         * Adds the provided attributes.
+         *
+         * @param attributes The attributes to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addAttributes(final Map<String, String> attributes) {
+            if (attributes != null) {
+                this.attributes.add(new HashMap<>(attributes));
+            }
+            return this;
+        }
+
+        /**
          * Adds the {@link Gpu}.
          *
          * @param gpu The {@link Gpu}.

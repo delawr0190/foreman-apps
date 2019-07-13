@@ -29,12 +29,12 @@
 
         <dependency>
             <groupId>mn.foreman</groupId>
-            <artifactId>foreman-claymore</artifactId>
+            <artifactId>foreman-bminer</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
-            <artifactId>foreman-ethminer</artifactId>
+            <artifactId>foreman-claymore</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

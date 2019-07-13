@@ -10,6 +10,7 @@ import mn.foreman.model.miners.rig.Rig;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -21,17 +22,14 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class NiceHashMiner
         implements Miner {
 
-    /** The algorithm that's actively being mined. */
-    private final int algo;
-
     /** The API IP. */
     private final String apiIp;
 
     /** The API port. */
     private final int apiPort;
 
-    /** The candidate miners for each algorithm. */
-    private final AlgorithmCandidates candidates;
+    /** The candidate miners. */
+    private final List<Miner> candidates;
 
     /** A lock to prevent multiple threads from discovering at the same time. */
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -44,18 +42,15 @@ public class NiceHashMiner
      *
      * @param apiIp      The API IP.
      * @param apiPort    The API port.
-     * @param algo       The algorithm being mined.
-     * @param candidates The candidates for each algorithm.
+     * @param candidates The candidates.
      */
     NiceHashMiner(
             final String apiIp,
             final int apiPort,
-            final int algo,
-            final AlgorithmCandidates candidates) {
+            final List<Miner> candidates) {
         this.apiIp = apiIp;
         this.apiPort = apiPort;
-        this.algo = algo;
-        this.candidates = candidates;
+        this.candidates = new ArrayList<>(candidates);
     }
 
     @Override
@@ -71,8 +66,6 @@ public class NiceHashMiner
                                     miner.apiIp)
                             .append(this.apiPort,
                                     miner.apiPort)
-                            .append(this.algo,
-                                    miner.algo)
                             .append(this.candidates,
                                     miner.candidates)
                             .isEquals();
@@ -103,15 +96,22 @@ public class NiceHashMiner
                 discover();
             }
 
-            // Rebuild the stats to be the correct port
             if (minerStats != null) {
+                final int foundApiPort = minerStats.getApiPort();
+
+                // Rebuild the stats to be the correct port
                 final MinerStats.Builder builder =
                         new MinerStats.Builder()
                                 .setApiIp(this.apiIp)
                                 .setApiPort(this.apiPort);
                 minerStats.getPools().forEach(builder::addPool);
                 minerStats.getAsics().forEach(builder::addAsic);
-                minerStats.getRigs().forEach(builder::addRig);
+                minerStats.getRigs().forEach(
+                        rig ->
+                                addRig(
+                                        rig,
+                                        builder,
+                                        foundApiPort));
                 minerStats = builder.build();
             }
 
@@ -127,7 +127,6 @@ public class NiceHashMiner
         return new HashCodeBuilder()
                 .append(this.apiIp)
                 .append(this.apiPort)
-                .append(this.algo)
                 .append(this.candidates)
                 .toHashCode();
     }
@@ -135,12 +134,34 @@ public class NiceHashMiner
     @Override
     public String toString() {
         return String.format(
-                "%s [ apiIp=%s, apiPort=%d, algo=%s, candidates=%s ]",
+                "%s [ apiIp=%s, apiPort=%d, candidates=%s ]",
                 getClass().getSimpleName(),
                 this.apiIp,
                 this.apiPort,
-                this.algo,
                 this.candidates);
+    }
+
+    /**
+     * Adds a {@link Rig} to the provided {@link MinerStats.Builder} with an
+     * attribute representing the found api port.
+     *
+     * @param original The original {@link Rig}.
+     * @param builder  The builder.
+     * @param apiPort  The found API port.
+     */
+    private static void addRig(
+            final Rig original,
+            final MinerStats.Builder builder,
+            final int apiPort) {
+        builder.addRig(
+                new Rig.Builder()
+                        .setHashRate(original.getHashRate())
+                        .addGpus(original.getGpus())
+                        .addAttributes(original.getAttributes())
+                        .addAttribute(
+                                "api_port",
+                                Integer.toString(apiPort))
+                        .build());
     }
 
     /**
@@ -149,9 +170,8 @@ public class NiceHashMiner
      * @throws MinerException on failure to find a {@link Miner}.
      */
     private void discover() throws MinerException {
-        final List<Miner> candidates = this.candidates.getForAlgo(this.algo);
-        this.miner = candidates
-                .stream()
+        this.miner = this.candidates
+                .parallelStream()
                 .filter(this::discover)
                 .findFirst()
                 .orElseThrow(

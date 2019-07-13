@@ -1,7 +1,7 @@
 package mn.foreman.nicehash;
 
+import mn.foreman.bminer.BminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
-import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -15,6 +15,7 @@ import mn.foreman.util.rpc.RpcHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /** Runs an integration tests using {@link NiceHashMiner} against a fake API. */
 public class NiceHashITest
@@ -23,30 +24,28 @@ public class NiceHashITest
     /** Constructor. */
     public NiceHashITest() {
         super(
-                new NiceHashMiner(
-                        "127.0.0.1",
-                        4000,
-                        20,
-                        new AlgorithmCandidates.Builder()
-                                .addCandidate(
-                                        20,
-                                        new EthminerFactory().create(
-                                                ImmutableMap.of(
-                                                        "apiIp",
-                                                        "127.0.0.1",
-                                                        "apiPort",
-                                                        "4000")))
-                                .addCandidate(
-                                        20,
-                                        new ClaymoreFactory().create(
-                                                ImmutableMap.of(
-                                                        "apiIp",
-                                                        "127.0.0.1",
-                                                        "apiPort",
-                                                        "4000")))
-                                .build()),
+                new NiceHashMinerFactory(
+                        Arrays.asList(
+                                new BminerFactory().create(
+                                        ImmutableMap.of(
+                                                "apiIp",
+                                                "127.0.0.1",
+                                                "apiPort",
+                                                "4000")),
+                                new ClaymoreFactory().create(
+                                        ImmutableMap.of(
+                                                "apiIp",
+                                                "127.0.0.1",
+                                                "apiPort",
+                                                "4005"))))
+                        .create(
+                                ImmutableMap.of(
+                                        "apiIp",
+                                        "127.0.0.1",
+                                        "apiPort",
+                                        "4000")),
                 new FakeRpcMinerServer(
-                        4000,
+                        4005,
                         ImmutableMap.of(
                                 "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
                                 new RpcHandler(
@@ -208,6 +207,9 @@ public class NiceHashITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "api_port",
+                                                "4005")
                                         .build())
                         .build());
     }
