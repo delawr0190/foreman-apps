@@ -35,6 +35,13 @@ public interface Configuration {
     String getForemanAutominerUrl();
 
     /**
+     * Returns the claymore multipliers URL.
+     *
+     * @return The claymore multipliers URL.
+     */
+    String getForemanClaymoreMultipliersUrl();
+
+    /**
      * Returns the Foreman config URL.
      *
      * @return The Foreman config URL.

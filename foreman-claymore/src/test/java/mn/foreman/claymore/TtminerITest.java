@@ -21,11 +21,17 @@ public class TtminerITest
     /** Constructor. */
     public TtminerITest() {
         super(
-                new Claymore(
-                        "127.0.0.1",
-                        3333,
-                        null,
-                        ClaymoreType.ZEC),
+                new ClaymoreFactory(
+                        new TypeMapping.Builder()
+                                .addMapping(
+                                        "^TT-Miner.*$",
+                                        BigDecimal.ONE)
+                                .build()).create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "3333")),
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(
@@ -189,24 +195,6 @@ public class TtminerITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
-                                        .addAttribute(
-                                                "is_xmr",
-                                                "false")
-                                        .addAttribute(
-                                                "is_zec",
-                                                "false")
-                                        .addAttribute(
-                                                "is_pm",
-                                                "false")
-                                        .addAttribute(
-                                                "is_tt",
-                                                "true")
-                                        .addAttribute(
-                                                "is_ethminer",
-                                                "false")
-                                        .addAttribute(
-                                                "is_clay",
-                                                "false")
                                         .build())
                         .build());
     }

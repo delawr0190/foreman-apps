@@ -73,6 +73,7 @@ public class Main {
                             configuration.getForemanConfigUrl(),
                             "https://dashboard.foreman.mn/api/nicehashv2",
                             configuration.getForemanAutominerUrl(),
+                            configuration.getForemanClaymoreMultipliersUrl(),
                             configuration.getApiKey(),
                             configuration.getClientId(),
                             configuration.getPickaxeId(),
@@ -89,6 +90,24 @@ public class Main {
                             configuration.getForemanConfigUrl(),
                             configuration.getForemanNicehashUrl(),
                             "https://dashboard.foreman.mn/api/autominer",
+                            configuration.getForemanClaymoreMultipliersUrl(),
+                            configuration.getApiKey(),
+                            configuration.getClientId(),
+                            configuration.getPickaxeId(),
+                            objectMapper,
+                            configFile,
+                            false);
+
+            // Add claymore URL if missing
+            configuration =
+                    updateConfiguration(
+                            configuration,
+                            Configuration::getForemanAutominerUrl,
+                            configuration.getForemanApiUrl(),
+                            configuration.getForemanConfigUrl(),
+                            configuration.getForemanNicehashUrl(),
+                            configuration.getForemanAutominerUrl(),
+                            "https://dashboard.foreman.mn/api/claymore",
                             configuration.getApiKey(),
                             configuration.getClientId(),
                             configuration.getPickaxeId(),
@@ -105,6 +124,7 @@ public class Main {
                             configuration.getForemanConfigUrl(),
                             configuration.getForemanNicehashUrl(),
                             configuration.getForemanAutominerUrl(),
+                            configuration.getForemanClaymoreMultipliersUrl(),
                             configuration.getApiKey(),
                             configuration.getClientId(),
                             UUID.randomUUID().toString(),
@@ -142,18 +162,20 @@ public class Main {
     /**
      * Updates the configuration if a value is missing.
      *
-     * @param configuration The {@link Configuration}.
-     * @param getter        The getter.
-     * @param apiUrl        The API URL.
-     * @param configUrl     The config URL.
-     * @param nicehashUrl   The nicehash URL.
-     * @param autominerUrl  The autominer URL.
-     * @param apiKey        The API key.
-     * @param clientID      The client ID.
-     * @param pickaxeId     The pickaxe ID.
-     * @param objectMapper  The {@link ObjectMapper}.
-     * @param configFile    The config {@link File}.
-     * @param forceWrite    Whether or not the value should always be written.
+     * @param configuration         The {@link Configuration}.
+     * @param getter                The getter.
+     * @param apiUrl                The API URL.
+     * @param configUrl             The config URL.
+     * @param nicehashUrl           The nicehash URL.
+     * @param autominerUrl          The autominer URL.
+     * @param claymoreMultiplierUrl The claymore multiplier URL.
+     * @param apiKey                The API key.
+     * @param clientID              The client ID.
+     * @param pickaxeId             The pickaxe ID.
+     * @param objectMapper          The {@link ObjectMapper}.
+     * @param configFile            The config {@link File}.
+     * @param forceWrite            Whether or not the value should always be
+     *                              written.
      *
      * @return The updated {@link Configuration}.
      *
@@ -166,6 +188,7 @@ public class Main {
             final String configUrl,
             final String nicehashUrl,
             final String autominerUrl,
+            final String claymoreMultiplierUrl,
             final String apiKey,
             final String clientID,
             final String pickaxeId,
@@ -182,6 +205,7 @@ public class Main {
                             configUrl,
                             nicehashUrl,
                             autominerUrl,
+                            claymoreMultiplierUrl,
                             apiKey,
                             clientID,
                             pickaxeId);

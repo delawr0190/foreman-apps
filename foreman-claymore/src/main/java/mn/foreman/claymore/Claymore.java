@@ -67,27 +67,27 @@ public class Claymore
     /** The API password. */
     private final String apiPassword;
 
-    /** The claymore type. */
-    private final ClaymoreType claymoreType;
+    /** The type mappings. */
+    private final TypeMapping typeMapping;
 
     /**
      * Constructor.
      *
-     * @param apiIp        The API IP.
-     * @param apiPort      The API port.
-     * @param apiPassword  The API password.
-     * @param claymoreType The claymore type.
+     * @param apiIp       The API IP.
+     * @param apiPort     The API port.
+     * @param apiPassword The API password.
+     * @param typeMapping The type mappings.
      */
     Claymore(
             final String apiIp,
             final int apiPort,
             final String apiPassword,
-            final ClaymoreType claymoreType) {
+            final TypeMapping typeMapping) {
         super(
                 apiIp,
                 apiPort);
         this.apiPassword = apiPassword;
-        this.claymoreType = claymoreType;
+        this.typeMapping = typeMapping;
     }
 
     @Override
@@ -141,7 +141,6 @@ public class Claymore
                 numGpus,
                 temps,
                 fans,
-                this.claymoreType,
                 statsBuilder);
         addRig(
                 results.get(0),
@@ -149,7 +148,6 @@ public class Claymore
                 numGpus,
                 temps,
                 fans,
-                this.claymoreType,
                 statsBuilder);
     }
 
@@ -160,22 +158,22 @@ public class Claymore
         final Claymore otherClaymore = (Claymore) other;
         equalsBuilder
                 .append(this.apiPassword, otherClaymore.apiPassword)
-                .append(this.claymoreType, otherClaymore.claymoreType);
+                .append(this.typeMapping, otherClaymore.typeMapping);
     }
 
     @Override
     protected void addToHashCode(final HashCodeBuilder hashCodeBuilder) {
         hashCodeBuilder
                 .append(this.apiPassword)
-                .append(this.claymoreType);
+                .append(this.typeMapping);
     }
 
     @Override
     protected String addToString() {
         return String.format(
-                ", apiPassword=%s, type=%s",
+                ", apiPassword=%s, types=%s",
                 this.apiPassword,
-                this.claymoreType);
+                this.typeMapping);
     }
 
     /**
@@ -208,61 +206,48 @@ public class Claymore
     }
 
     /**
+     * Converts the provided {@link String} to an int.
+     *
+     * @param value The value to convert.
+     *
+     * @return The int.
+     */
+    private static int toInt(final String value) {
+        if (!"off".equals(value)) {
+            return Integer.parseInt(value);
+        }
+        return 0;
+    }
+
+    /**
      * Adds a {@link Rig} using the provided parameters.
      *
-     * @param identifier   The identifier.
-     * @param hashRate     The hash rate.
-     * @param numGpus      The number of GPUs.
-     * @param temps        The temperatures.
-     * @param fans         The fans.
-     * @param claymoreType The claymore type.
-     * @param builder      The builder to update.
+     * @param identifier The identifier.
+     * @param hashRate   The hash rate.
+     * @param numGpus    The number of GPUs.
+     * @param temps      The temperatures.
+     * @param fans       The fans.
+     * @param builder    The builder to update.
+     *
+     * @throws MinerException on failure to identify the Claymore type.
      */
-    private static void addRig(
+    private void addRig(
             final String identifier,
             final String hashRate,
             final int numGpus,
             final List<String> temps,
             final List<String> fans,
-            final ClaymoreType claymoreType,
-            final MinerStats.Builder builder) {
-        final BigDecimal realHashRate =
-                toHashRate(
-                        hashRate,
-                        claymoreType);
-        if (realHashRate.compareTo(BigDecimal.ZERO) > 0) {
-            final boolean isXmr = identifier.contains("XMR");
-            final boolean isZec = identifier.contains("ZEC");
-            final boolean isPm = identifier.contains("PM");
-            final boolean isTt = identifier.contains("TT-Miner");
-            final boolean isEthminer = identifier.contains("ethminer");
-            final boolean isClay =
-                    !isXmr &&
-                            !isZec &&
-                            !isPm &&
-                            !isTt &&
-                            !isEthminer;
+            final MinerStats.Builder builder) throws MinerException {
+        final BigDecimal multiplier =
+                this.typeMapping.getMultiplierFor(identifier)
+                        .orElseThrow(() ->
+                                new MinerException("Unknown claymore type"));
+        final BigDecimal baseHashRate =
+                new BigDecimal(hashRate).multiply(multiplier);
+        if (baseHashRate.compareTo(BigDecimal.ZERO) > 0) {
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
-                            .setHashRate(realHashRate)
-                            .addAttribute(
-                                    "is_xmr",
-                                    Boolean.toString(isXmr))
-                            .addAttribute(
-                                    "is_zec",
-                                    Boolean.toString(isZec))
-                            .addAttribute(
-                                    "is_pm",
-                                    Boolean.toString(isPm))
-                            .addAttribute(
-                                    "is_tt",
-                                    Boolean.toString(isTt))
-                            .addAttribute(
-                                    "is_ethminer",
-                                    Boolean.toString(isEthminer))
-                            .addAttribute(
-                                    "is_clay",
-                                    Boolean.toString(isClay));
+                            .setHashRate(baseHashRate);
             for (int i = 0; i < numGpus; i++) {
                 rigBuilder
                         .addGpu(
@@ -288,34 +273,6 @@ public class Claymore
             }
             builder.addRig(rigBuilder.build());
         }
-    }
-
-    /**
-     * Converts the hash rate to the desired type in Hs.
-     *
-     * @param hashRate     The ETH rate.
-     * @param claymoreType The claymore type.
-     *
-     * @return The hash rate.
-     */
-    private static BigDecimal toHashRate(
-            final String hashRate,
-            final ClaymoreType claymoreType) {
-        return new BigDecimal(hashRate).multiply(claymoreType.getMultiplier());
-    }
-
-    /**
-     * Converts the provided {@link String} to an int.
-     *
-     * @param value The value to convert.
-     *
-     * @return The int.
-     */
-    private static int toInt(final String value) {
-        if (!"off".equals(value)) {
-            return Integer.parseInt(value);
-        }
-        return 0;
     }
 
     /**

@@ -21,11 +21,17 @@ public class ClaymoreEthPascITest
     /** Constructor. */
     public ClaymoreEthPascITest() {
         super(
-                new Claymore(
-                        "127.0.0.1",
-                        3333,
-                        null,
-                        ClaymoreType.ETH),
+                new ClaymoreFactory(
+                        new TypeMapping.Builder()
+                                .addMapping(
+                                        "^(?!PM.*$).* - ETH$",
+                                        new BigDecimal(1000))
+                                .build()).create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "3333")),
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(
@@ -196,24 +202,6 @@ public class ClaymoreEthPascITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
-                                        .addAttribute(
-                                                "is_xmr",
-                                                "false")
-                                        .addAttribute(
-                                                "is_zec",
-                                                "false")
-                                        .addAttribute(
-                                                "is_pm",
-                                                "false")
-                                        .addAttribute(
-                                                "is_tt",
-                                                "false")
-                                        .addAttribute(
-                                                "is_ethminer",
-                                                "false")
-                                        .addAttribute(
-                                                "is_clay",
-                                                "true")
                                         .build())
                         .addRig(
                                 new Rig.Builder()
@@ -362,24 +350,6 @@ public class ClaymoreEthPascITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
-                                        .addAttribute(
-                                                "is_xmr",
-                                                "false")
-                                        .addAttribute(
-                                                "is_zec",
-                                                "false")
-                                        .addAttribute(
-                                                "is_pm",
-                                                "false")
-                                        .addAttribute(
-                                                "is_tt",
-                                                "false")
-                                        .addAttribute(
-                                                "is_ethminer",
-                                                "false")
-                                        .addAttribute(
-                                                "is_clay",
-                                                "true")
                                         .build())
                         .build());
     }

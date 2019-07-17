@@ -2,6 +2,7 @@ package mn.foreman.nicehash;
 
 import mn.foreman.bminer.BminerFactory;
 import mn.foreman.claymore.ClaymoreFactory;
+import mn.foreman.claymore.TypeMapping;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -32,12 +33,18 @@ public class NiceHashMinerITest
                                                 "127.0.0.1",
                                                 "apiPort",
                                                 "4000")),
-                                new ClaymoreFactory().create(
-                                        ImmutableMap.of(
-                                                "apiIp",
-                                                "127.0.0.1",
-                                                "apiPort",
-                                                "4005"))))
+                                new ClaymoreFactory(
+                                        new TypeMapping.Builder()
+                                                .addMapping(
+                                                        "^(?!PM.*$).* - ETH$",
+                                                        new BigDecimal(1000))
+                                                .build())
+                                        .create(
+                                                ImmutableMap.of(
+                                                        "apiIp",
+                                                        "127.0.0.1",
+                                                        "apiPort",
+                                                        "4005"))))
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",
@@ -207,24 +214,6 @@ public class NiceHashMinerITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
-                                        .addAttribute(
-                                                "is_xmr",
-                                                "false")
-                                        .addAttribute(
-                                                "is_zec",
-                                                "false")
-                                        .addAttribute(
-                                                "is_pm",
-                                                "false")
-                                        .addAttribute(
-                                                "is_tt",
-                                                "false")
-                                        .addAttribute(
-                                                "is_ethminer",
-                                                "false")
-                                        .addAttribute(
-                                                "is_clay",
-                                                "true")
                                         .addAttribute(
                                                 "api_port",
                                                 "4005")

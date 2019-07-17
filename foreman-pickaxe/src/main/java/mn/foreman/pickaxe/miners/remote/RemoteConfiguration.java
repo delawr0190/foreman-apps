@@ -12,7 +12,7 @@ import mn.foreman.castxmr.CastxmrFactory;
 import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.chisel.ChiselMinerDecorator;
 import mn.foreman.claymore.ClaymoreFactory;
-import mn.foreman.claymore.ClaymoreType;
+import mn.foreman.claymore.TypeMapping;
 import mn.foreman.cpuminer.CpuminerFactory;
 import mn.foreman.dayun.DayunFactory;
 import mn.foreman.dragonmint.Dragonmint;
@@ -63,6 +63,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.*;
@@ -93,6 +94,9 @@ public class RemoteConfiguration
     /** The API key. */
     private final String apiKey;
 
+    /** The claymore mapping URL. */
+    private final String claymoreMappingUrl;
+
     /** The config URL. */
     private final String configUrl;
 
@@ -102,15 +106,17 @@ public class RemoteConfiguration
     /**
      * Constructor.
      *
-     * @param configUrl         The config URL.
-     * @param nicehashConfigUrl The nicehash config URL.
-     * @param amMappingUrl      The autominer mapping URL.
-     * @param apiKey            The API key.
+     * @param configUrl          The config URL.
+     * @param nicehashConfigUrl  The nicehash config URL.
+     * @param amMappingUrl       The autominer mapping URL.
+     * @param claymoreMappingUrl The claymore mapping URL.
+     * @param apiKey             The API key.
      */
     public RemoteConfiguration(
             final String configUrl,
             final String nicehashConfigUrl,
             final String amMappingUrl,
+            final String claymoreMappingUrl,
             final String apiKey) {
         Validate.notNull(
                 configUrl,
@@ -131,6 +137,12 @@ public class RemoteConfiguration
                 amMappingUrl,
                 "amMappingUrl cannot be empty");
         Validate.notNull(
+                claymoreMappingUrl,
+                "claymoreMappingUrl cannot be null");
+        Validate.notEmpty(
+                claymoreMappingUrl,
+                "claymoreMappingUrl cannot be empty");
+        Validate.notNull(
                 apiKey,
                 "apiKey cannot be null");
         Validate.notEmpty(
@@ -139,6 +151,7 @@ public class RemoteConfiguration
         this.configUrl = configUrl;
         this.nicehashConfigUrl = nicehashConfigUrl;
         this.amMappingUrl = amMappingUrl;
+        this.claymoreMappingUrl = claymoreMappingUrl;
         this.apiKey = apiKey;
     }
 
@@ -195,26 +208,48 @@ public class RemoteConfiguration
                     }
                 });
 
+        final Map<String, BigDecimal> claymoreMultipliers = new HashMap<>();
+        getConfig(
+                this.claymoreMappingUrl,
+                response -> {
+                    try {
+                        claymoreMultipliers.putAll(
+                                objectMapper.readValue(
+                                        response,
+                                        new TypeReference<Map<String, BigDecimal>>() {
+                                        }));
+                    } catch (final IOException ioe) {
+                        LOG.warn("Failed to parse response", ioe);
+                    }
+                });
+
+        final TypeMapping.Builder typeMappingBuilder =
+                new TypeMapping.Builder();
+        claymoreMultipliers.forEach(typeMappingBuilder::addMapping);
+
         return toMiners(
                 configs,
                 niceHashConfig,
-                amMappings);
+                amMappings,
+                typeMappingBuilder.build());
     }
 
     /**
      * Adds nicehash candidates to the dest {@link List}.
      *
-     * @param config     The config.
-     * @param portStart  The port start.
-     * @param candidates The candidates.
-     * @param amMappings The autominer mappings.
-     * @param dest       The destination {@link List}.
+     * @param config           The config.
+     * @param portStart        The port start.
+     * @param candidates       The candidates.
+     * @param amMappings       The autominer mappings.
+     * @param claymoreMappings The claymore mappings.
+     * @param dest             The destination {@link List}.
      */
     private static void addNiceHashCandidates(
             final MinerConfig config,
             final int portStart,
             final List<ApiType> candidates,
             final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMappings,
             final List<Miner> dest) {
         for (int i = 0; i < 5; i++) {
             final int port = portStart + i;
@@ -227,7 +262,8 @@ public class RemoteConfiguration
                                             port,
                                             config,
                                             candidates,
-                                            amMappings))
+                                            amMappings,
+                                            claymoreMappings))
                             .flatMap(List::stream)
                             .collect(Collectors.toList()));
         }
@@ -285,13 +321,15 @@ public class RemoteConfiguration
      * @param minerConfig        The config.
      * @param niceHashCandidates The nicehash configs.
      * @param amMappings         The autominer mappings.
+     * @param claymoreMappings   The claymore mappings.
      *
      * @return The {@link AutoMinerFactory}.
      */
     private static MinerFactory toAutominerFactory(
             final MinerConfig minerConfig,
             final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings) {
+            final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMappings) {
         final MinerMapping.Builder mappingBuilder =
                 new MinerMapping.Builder();
         amMappings.forEach(
@@ -302,7 +340,8 @@ public class RemoteConfiguration
                                         minerConfig,
                                         apiType,
                                         niceHashCandidates,
-                                        amMappings).orElseThrow(
+                                        amMappings,
+                                        claymoreMappings).orElseThrow(
                                         () -> new IllegalArgumentException(
                                                 "Invalid api type"))));
         return new AutoMinerFactory(mappingBuilder.build());
@@ -311,18 +350,17 @@ public class RemoteConfiguration
     /**
      * Creates a claymore {@link Miner} from the config.
      *
-     * @param port    The port.
-     * @param apiType The {@link ApiType}.
-     * @param config  The config.
+     * @param port         The port.
+     * @param config       The config.
+     * @param minerFactory The factory.
      *
      * @return The {@link Miner}.
      */
     private static Miner toClaymore(
             final int port,
-            final ApiType apiType,
-            final MinerConfig config) {
+            final MinerConfig config,
+            final MinerFactory minerFactory) {
         final Map<String, String> attributes = new HashMap<>();
-        attributes.put("type", toClaymoreType(apiType));
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(port));
         findParam(
@@ -332,43 +370,22 @@ public class RemoteConfiguration
                         attributes.put(
                                 "apiPassword",
                                 password.value));
-        return new ClaymoreFactory().create(attributes);
-    }
-
-    /**
-     * Converts the {@link ApiType} to a {@link ClaymoreType}.
-     *
-     * @param apiType The {@link ApiType}.
-     *
-     * @return The {@link ClaymoreType}.
-     */
-    private static String toClaymoreType(
-            final ApiType apiType) {
-        String type = null;
-        switch (apiType) {
-            case CLAYMORE_ETH_API:
-                type = ClaymoreType.ETH.name().toLowerCase();
-                break;
-            case CLAYMORE_ZEC_API:
-                type = ClaymoreType.ZEC.name().toLowerCase();
-                break;
-            default:
-                break;
-        }
-        return type;
+        return minerFactory.create(attributes);
     }
 
     /**
      * Creates a {@link Dragonmint} miner from the configuration.
      *
-     * @param port   The port.
-     * @param config The config.
+     * @param port         The port.
+     * @param config       The config.
+     * @param minerFactory The factory.
      *
      * @return The {@link Miner}.
      */
     private static Miner toDragonmintApi(
             final int port,
-            final MinerConfig config) {
+            final MinerConfig config,
+            final MinerFactory minerFactory) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(port));
@@ -386,31 +403,7 @@ public class RemoteConfiguration
                         attributes.put(
                                 "password",
                                 password.value));
-        return new DragonmintFactory().create(attributes);
-    }
-
-    /**
-     * Creates an ethminer {@link Miner} from the config.
-     *
-     * @param port   The port.
-     * @param config The config.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toEthminerApi(
-            final int port,
-            final MinerConfig config) {
-        final Map<String, String> attributes = new HashMap<>();
-        attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(port));
-        findParam(
-                "apiPassword",
-                config.params).ifPresent(
-                (password) ->
-                        attributes.put(
-                                "apiPassword",
-                                password.value));
-        return new EthminerFactory().create(attributes);
+        return minerFactory.create(attributes);
     }
 
     /**
@@ -421,6 +414,7 @@ public class RemoteConfiguration
      * @param apiType            The type.
      * @param niceHashCandidates The NiceHash candidates.
      * @param amMappings         The autominer mappings.
+     * @param claymoreMappings   The claymore mappings.
      *
      * @return The {@link MinerFactory}.
      */
@@ -429,7 +423,8 @@ public class RemoteConfiguration
             final MinerConfig minerConfig,
             final ApiType apiType,
             final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings) {
+            final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMappings) {
         MinerFactory minerFactory = null;
         switch (apiType) {
             case ANTMINER_HS_API:
@@ -449,7 +444,8 @@ public class RemoteConfiguration
                         toAutominerFactory(
                                 minerConfig,
                                 niceHashCandidates,
-                                amMappings);
+                                amMappings,
+                                claymoreMappings);
                 break;
             case AVALON_API:
                 minerFactory = new AvalonFactory();
@@ -472,7 +468,9 @@ public class RemoteConfiguration
             case CLAYMORE_ETH_API:
                 // Fall through
             case CLAYMORE_ZEC_API:
-                minerFactory = new ClaymoreFactory();
+                minerFactory =
+                        new ClaymoreFactory(
+                                claymoreMappings);
                 break;
             case CPUMINER_API:
                 minerFactory = new CpuminerFactory();
@@ -548,7 +546,8 @@ public class RemoteConfiguration
                         toNiceHashFactory(
                                 minerConfig,
                                 niceHashCandidates,
-                                amMappings);
+                                amMappings,
+                                claymoreMappings);
                 break;
             case OPTIMINER_API:
                 minerFactory = new OptiminerFactory();
@@ -641,11 +640,12 @@ public class RemoteConfiguration
     /**
      * Converts each {@link MinerConfig} to a {@link Miner}.
      *
-     * @param apiType            The {@link ApiType}.
-     * @param port               The port.
-     * @param config             The {@link MinerConfig}.
-     * @param niceHashCandidates The NiceHash configuration.
-     * @param amMappings         The autominer mappings.
+     * @param apiType             The {@link ApiType}.
+     * @param port                The port.
+     * @param config              The {@link MinerConfig}.
+     * @param niceHashCandidates  The NiceHash configuration.
+     * @param amMappings          The autominer mappings.
+     * @param claymoreMultipliers The claymore multipliers.
      *
      * @return The {@link Miner miners}.
      */
@@ -654,7 +654,8 @@ public class RemoteConfiguration
             final int port,
             final MinerConfig config,
             final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings) {
+            final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMultipliers) {
         LOG.debug("Adding miner for {}", config);
 
         final MinerFactory minerFactory =
@@ -662,28 +663,28 @@ public class RemoteConfiguration
                         config,
                         apiType,
                         niceHashCandidates,
-                        amMappings)
+                        amMappings,
+                        claymoreMultipliers)
                         .orElseThrow(
                                 () -> new IllegalArgumentException(
                                         "Unknown api type"));
 
         final List<Miner> miners = new LinkedList<>();
         switch (apiType) {
+            case ETHMINER_API:
+                // Fall through
             case CLAYMORE_ETH_API:
                 // Fall through
             case CLAYMORE_ZEC_API:
-                miners.add(toClaymore(port, apiType, config));
+                miners.add(toClaymore(port, config, minerFactory));
                 break;
             case DRAGONMINT_API:
-                miners.add(toDragonmintApi(port, config));
-                break;
-            case ETHMINER_API:
-                miners.add(toEthminerApi(port, config));
+                miners.add(toDragonmintApi(port, config, minerFactory));
                 break;
             case XMRSTAK_GPU_API:
                 // Fall through
             case XMRSTAK_CPU_API:
-                miners.add(toXmrstak(port, apiType, config));
+                miners.add(toXmrstak(port, apiType, config, minerFactory));
                 break;
             default:
                 miners.add(toMiner(port, config, minerFactory));
@@ -713,16 +714,18 @@ public class RemoteConfiguration
      * Creates a {@link Miner} from every miner in the {@link MinerConfig
      * configs}.
      *
-     * @param configs            The configurations.
-     * @param niceHashCandidates The NiceHash configurations.
-     * @param amMappings         The autominer mappings.
+     * @param configs             The configurations.
+     * @param niceHashCandidates  The NiceHash configurations.
+     * @param amMappings          The autominer mappings.
+     * @param claymoreMultipliers The claymore multipliers.
      *
      * @return The {@link Miner miners}.
      */
     private static List<Miner> toMiners(
             final List<MinerConfig> configs,
             final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings) {
+            final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMultipliers) {
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
@@ -732,7 +735,8 @@ public class RemoteConfiguration
                                 config.apiPort,
                                 config,
                                 niceHashCandidates,
-                                amMappings))
+                                amMappings,
+                                claymoreMultipliers))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
@@ -743,13 +747,15 @@ public class RemoteConfiguration
      * @param config             The configuration.
      * @param niceHashCandidates The nicehash candidates.
      * @param amMappings         The autominer mappings.
+     * @param claymoreMappings   The claymore mappings.
      *
      * @return The new {@link Miner miners}.
      */
     private static MinerFactory toNiceHashFactory(
             final MinerConfig config,
             final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings) {
+            final Map<String, ApiType> amMappings,
+            final TypeMapping claymoreMappings) {
         final List<Miner> candidates = new LinkedList<>();
 
         // Query up to a 5-port range for nicehash
@@ -758,6 +764,7 @@ public class RemoteConfiguration
                 config.apiPort,
                 niceHashCandidates,
                 amMappings,
+                claymoreMappings,
                 candidates);
 
         // Could be misconfigured and failed over to port 5100
@@ -766,6 +773,7 @@ public class RemoteConfiguration
                 5100,
                 niceHashCandidates,
                 amMappings,
+                claymoreMappings,
                 candidates);
 
         return new NiceHashMinerFactory(candidates);
@@ -774,21 +782,23 @@ public class RemoteConfiguration
     /**
      * Creates an xmrstak {@link Miner} from the config.
      *
-     * @param port    The port.
-     * @param apiType The {@link ApiType}.
-     * @param config  The config.
+     * @param port         The port.
+     * @param apiType      The {@link ApiType}.
+     * @param config       The config.
+     * @param minerFactory The factory.
      *
      * @return The {@link Miner}.
      */
     private static Miner toXmrstak(
             final int port,
             final ApiType apiType,
-            final MinerConfig config) {
+            final MinerConfig config,
+            final MinerFactory minerFactory) {
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("type", toXmrstakType(apiType));
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(port));
-        return new XmrstakFactory().create(attributes);
+        return minerFactory.create(attributes);
     }
 
     /**
@@ -796,7 +806,7 @@ public class RemoteConfiguration
      *
      * @param apiType The {@link ApiType}.
      *
-     * @return The {@link ClaymoreType}.
+     * @return The {@link XmrstakType}.
      */
     private static String toXmrstakType(
             final ApiType apiType) {

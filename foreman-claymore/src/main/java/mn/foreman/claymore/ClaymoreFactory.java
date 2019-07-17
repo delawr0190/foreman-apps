@@ -12,15 +12,24 @@ import java.util.Map;
 public class ClaymoreFactory
         implements MinerFactory {
 
+    /** The mappings. */
+    private final TypeMapping typeMapping;
+
+    /**
+     * Constructor.
+     *
+     * @param typeMapping The mappings.
+     */
+    public ClaymoreFactory(final TypeMapping typeMapping) {
+        this.typeMapping = typeMapping;
+    }
+
     @Override
     public Miner create(final Map<String, String> config) {
         return new Claymore(
                 config.get("apiIp"),
                 Integer.parseInt(config.get("apiPort")),
                 config.get("apiPassword"),
-                ClaymoreType.valueOf(
-                        config.getOrDefault(
-                                "type",
-                                ClaymoreType.ETH.name()).toUpperCase()));
+                this.typeMapping);
     }
 }

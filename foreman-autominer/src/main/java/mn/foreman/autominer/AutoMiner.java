@@ -1,7 +1,6 @@
 package mn.foreman.autominer;
 
 import mn.foreman.autominer.json.Response;
-import mn.foreman.claymore.ClaymoreType;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.Miner;
@@ -314,9 +313,6 @@ public class AutoMiner
             final Map<String, String> attributes = new HashMap<>();
             attributes.put("apiIp", apiIp);
             attributes.put("apiPort", Integer.toString(apiPort));
-            if ("phoenix".equals(minerType)) {
-                attributes.put("type", ClaymoreType.ETH.name().toLowerCase());
-            }
             return factory.create(attributes);
         });
     }
