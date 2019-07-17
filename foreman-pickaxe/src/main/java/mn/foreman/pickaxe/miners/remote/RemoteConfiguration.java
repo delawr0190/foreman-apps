@@ -854,7 +854,10 @@ public class RemoteConfiguration
                  final BufferedReader reader =
                          new BufferedReader(
                                  inputStreamReader)) {
-                responseStrategy.accept(IOUtils.toString(reader));
+                final String response =
+                        IOUtils.toString(reader);
+                LOG.debug("Received response: {}", response);
+                responseStrategy.accept(response);
             }
         } else {
             LOG.warn("Failed to obtain a configuration from {}: {}",
