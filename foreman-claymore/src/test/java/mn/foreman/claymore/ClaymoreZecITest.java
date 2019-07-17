@@ -24,7 +24,7 @@ public class ClaymoreZecITest
                 new ClaymoreFactory(
                         new TypeMapping.Builder()
                                 .addMapping(
-                                        "^.* - ZEC",
+                                        "^.* - ZEC$",
                                         BigDecimal.ONE)
                                 .build()).create(
                         ImmutableMap.of(
