@@ -136,6 +136,7 @@ public class Claymore
                 new String[]{shares[0], shares[2]},
                 statsBuilder);
         addRig(
+                results.get(0),
                 ethHashRate,
                 numGpus,
                 temps,
@@ -143,6 +144,7 @@ public class Claymore
                 this.claymoreType,
                 statsBuilder);
         addRig(
+                results.get(0),
                 dcrHashRate,
                 numGpus,
                 temps,
@@ -208,6 +210,7 @@ public class Claymore
     /**
      * Adds a {@link Rig} using the provided parameters.
      *
+     * @param identifier   The identifier.
      * @param hashRate     The hash rate.
      * @param numGpus      The number of GPUs.
      * @param temps        The temperatures.
@@ -216,6 +219,7 @@ public class Claymore
      * @param builder      The builder to update.
      */
     private static void addRig(
+            final String identifier,
             final String hashRate,
             final int numGpus,
             final List<String> temps,
@@ -227,9 +231,38 @@ public class Claymore
                         hashRate,
                         claymoreType);
         if (realHashRate.compareTo(BigDecimal.ZERO) > 0) {
+            final boolean isXmr = identifier.contains("XMR");
+            final boolean isZec = identifier.contains("ZEC");
+            final boolean isPm = identifier.contains("PM");
+            final boolean isTt = identifier.contains("TT-Miner");
+            final boolean isEthminer = identifier.contains("ethminer");
+            final boolean isClay =
+                    !isXmr &&
+                            !isZec &&
+                            !isPm &&
+                            !isTt &&
+                            !isEthminer;
             final Rig.Builder rigBuilder =
                     new Rig.Builder()
-                            .setHashRate(realHashRate);
+                            .setHashRate(realHashRate)
+                            .addAttribute(
+                                    "is_xmr",
+                                    Boolean.toString(isXmr))
+                            .addAttribute(
+                                    "is_zec",
+                                    Boolean.toString(isZec))
+                            .addAttribute(
+                                    "is_pm",
+                                    Boolean.toString(isPm))
+                            .addAttribute(
+                                    "is_tt",
+                                    Boolean.toString(isTt))
+                            .addAttribute(
+                                    "is_ethminer",
+                                    Boolean.toString(isEthminer))
+                            .addAttribute(
+                                    "is_clay",
+                                    Boolean.toString(isClay));
             for (int i = 0; i < numGpus; i++) {
                 rigBuilder
                         .addGpu(

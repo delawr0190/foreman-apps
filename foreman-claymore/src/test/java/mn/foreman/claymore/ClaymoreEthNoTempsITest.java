@@ -79,6 +79,24 @@ public class ClaymoreEthNoTempsITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "is_xmr",
+                                                "false")
+                                        .addAttribute(
+                                                "is_zec",
+                                                "false")
+                                        .addAttribute(
+                                                "is_pm",
+                                                "false")
+                                        .addAttribute(
+                                                "is_tt",
+                                                "false")
+                                        .addAttribute(
+                                                "is_ethminer",
+                                                "false")
+                                        .addAttribute(
+                                                "is_clay",
+                                                "true")
                                         .build())
                         .build());
     }

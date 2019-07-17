@@ -1,7 +1,5 @@
-package mn.foreman.nicehash;
+package mn.foreman.claymore;
 
-import mn.foreman.bminer.BminerFactory;
-import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -15,44 +13,28 @@ import mn.foreman.util.rpc.RpcHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
 
-/** Runs an integration tests using {@link NiceHashMiner} against a fake API. */
-public class NiceHashITest
+/** Runs an integration tests using {@link Claymore} against a fake API. */
+public class TtminerITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public NiceHashITest() {
+    public TtminerITest() {
         super(
-                new NiceHashMinerFactory(
-                        Arrays.asList(
-                                new BminerFactory().create(
-                                        ImmutableMap.of(
-                                                "apiIp",
-                                                "127.0.0.1",
-                                                "apiPort",
-                                                "4000")),
-                                new ClaymoreFactory().create(
-                                        ImmutableMap.of(
-                                                "apiIp",
-                                                "127.0.0.1",
-                                                "apiPort",
-                                                "4005"))))
-                        .create(
-                                ImmutableMap.of(
-                                        "apiIp",
-                                        "127.0.0.1",
-                                        "apiPort",
-                                        "4000")),
+                new Claymore(
+                        "127.0.0.1",
+                        3333,
+                        null,
+                        ClaymoreType.ZEC),
                 new FakeRpcMinerServer(
-                        4005,
+                        3333,
                         ImmutableMap.of(
                                 "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
                                 new RpcHandler(
-                                        "{\"id\": 0, \"error\": null, \"result\": [\"11.8 - ETH\", \"0\", \"235321;2;0\", \"29482;29474;29427;29477;29523;29523;29533;28878\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"60;60;56;56;57;57;57;57;58;58;59;58;57;57;58;58\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"]}"))),
+                                        "{\"id\": 0, \"error\": null, \"result\": [\"TT-Miner/2.2.5\", \"0\", \"235321;2;0\", \"29482;29474;29427;29477;29523;29523;29533;28878\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"60;60;56;56;57;57;57;57;58;58;59;58;57;57;58;58\", \"eth-eu1.nanopool.org:9999\", \"0;0;0;0\"]}"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
-                        .setApiPort(4000)
+                        .setApiPort(3333)
                         .addPool(
                                 new Pool.Builder()
                                         .setName("eth-eu1.nanopool.org:9999")
@@ -62,7 +44,7 @@ public class NiceHashITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("235321000"))
+                                        .setHashRate(new BigDecimal("235321"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
@@ -208,8 +190,23 @@ public class NiceHashITest
                                                                         .build())
                                                         .build())
                                         .addAttribute(
-                                                "api_port",
-                                                "4005")
+                                                "is_xmr",
+                                                "false")
+                                        .addAttribute(
+                                                "is_zec",
+                                                "false")
+                                        .addAttribute(
+                                                "is_pm",
+                                                "false")
+                                        .addAttribute(
+                                                "is_tt",
+                                                "true")
+                                        .addAttribute(
+                                                "is_ethminer",
+                                                "false")
+                                        .addAttribute(
+                                                "is_clay",
+                                                "false")
                                         .build())
                         .build());
     }

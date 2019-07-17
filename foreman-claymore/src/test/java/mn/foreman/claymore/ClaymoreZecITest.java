@@ -63,6 +63,24 @@ public class ClaymoreZecITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "is_xmr",
+                                                "false")
+                                        .addAttribute(
+                                                "is_zec",
+                                                "true")
+                                        .addAttribute(
+                                                "is_pm",
+                                                "false")
+                                        .addAttribute(
+                                                "is_tt",
+                                                "false")
+                                        .addAttribute(
+                                                "is_ethminer",
+                                                "false")
+                                        .addAttribute(
+                                                "is_clay",
+                                                "false")
                                         .build())
                         .build());
     }
