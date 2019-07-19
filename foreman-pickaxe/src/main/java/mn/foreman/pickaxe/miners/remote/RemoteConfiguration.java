@@ -767,15 +767,6 @@ public class RemoteConfiguration
                 claymoreMappings,
                 candidates);
 
-        // Could be misconfigured and failed over to port 5100
-        addNiceHashCandidates(
-                config,
-                5100,
-                niceHashCandidates,
-                amMappings,
-                claymoreMappings,
-                candidates);
-
         return new NiceHashMinerFactory(candidates);
     }
 
