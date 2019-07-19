@@ -86,6 +86,10 @@ public class Response {
         @JsonProperty("bus_id")
         public int busId;
 
+        /** The GPU compute error count. */
+        @JsonProperty("compute_errors")
+        public int computeErrors;
+
         /** The core clock. */
         @JsonProperty("core_clock")
         public int coreClock;

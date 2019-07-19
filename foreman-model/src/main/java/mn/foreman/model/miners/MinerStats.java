@@ -318,6 +318,27 @@ public class MinerStats {
         }
 
         /**
+         * Returns the current pools.
+         *
+         * @return The {@link Pool pools}.
+         */
+        public List<Pool> getPools() {
+            return Collections.unmodifiableList(this.pools);
+        }
+
+        /**
+         * Sets the {@link Pool pools}.
+         *
+         * @param pools The {@link Pool pools}.
+         *
+         * @return This builder instance.
+         */
+        public Builder setPools(final List<Pool> pools) {
+            this.pools.clear();
+            return addPools(pools);
+        }
+
+        /**
          * Sets the API IP.
          *
          * @param apiIp The API IP.

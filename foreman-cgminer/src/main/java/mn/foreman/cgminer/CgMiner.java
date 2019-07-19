@@ -18,10 +18,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -50,18 +50,8 @@ public class CgMiner
     /** The connection timeout units. */
     private final TimeUnit connectTimeoutUnits;
 
-    /**
-     * A {@link Map} of every {@link CgMinerRequest} to a {@link
-     * ResponsePatchingStrategy} to sanitize the JSON.
-     */
-    private final Map<CgMinerRequest, ResponsePatchingStrategy>
-            patchingStrategies;
-
-    /**
-     * A {@link Map} of every {@link CgMinerRequest} to send and the {@link
-     * ResponseStrategy} to use for each.
-     */
-    private final Map<CgMinerRequest, ResponseStrategy> requests;
+    /** The requests. */
+    private final List<Request> requests;
 
     /**
      * Constructor.
@@ -72,8 +62,7 @@ public class CgMiner
         super(
                 builder.apiIp,
                 Integer.parseInt(builder.apiPort));
-        this.requests = new HashMap<>(builder.requests);
-        this.patchingStrategies = new HashMap<>(builder.patchingStrategies);
+        this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
     }
@@ -82,12 +71,13 @@ public class CgMiner
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        for (final Map.Entry<CgMinerRequest, ResponseStrategy> entry :
-                this.requests.entrySet()) {
-            final CgMinerRequest request = entry.getKey();
-            final CgMinerResponse response = query(request);
+        for (final Request request : this.requests) {
+            final CgMinerResponse response =
+                    query(
+                            request.request,
+                            request.patchingStrategy);
 
-            final ResponseStrategy strategy = entry.getValue();
+            final ResponseStrategy strategy = request.responseStrategy;
             strategy.processResponse(
                     statsBuilder,
                     response);
@@ -171,14 +161,16 @@ public class CgMiner
      * <p>This function also waits and reads the entire response until the
      * socket is closed.</p>
      *
-     * @param request The request to send.
+     * @param request          The request to send.
+     * @param patchingStrategy The patching strategy.
      *
      * @return The {@link CgMinerResponse}.
      *
      * @throws MinerException on failure to query.
      */
     private CgMinerResponse query(
-            final CgMinerRequest request)
+            final CgMinerRequest request,
+            final ResponsePatchingStrategy patchingStrategy)
             throws MinerException {
         CgMinerResponse response = null;
 
@@ -214,7 +206,7 @@ public class CgMiner
                     responseString =
                             patchJson(
                                     responseString,
-                                    this.patchingStrategies.get(request));
+                                    patchingStrategy);
                     final Map<String, List<Map<String, String>>> responseMap =
                             objectMapper.readValue(
                                     responseString,
@@ -259,19 +251,8 @@ public class CgMiner
         /** The connection timeout units. */
         private TimeUnit connectTimeoutUnits = TimeUnit.SECONDS;
 
-        /**
-         * A map of every request to a patching strategy to sanitize the
-         * response.
-         */
-        private Map<CgMinerRequest, ResponsePatchingStrategy>
-                patchingStrategies = new ConcurrentHashMap<>();
-
-        /**
-         * A {@link Map} of each {@link CgMinerRequest} to the {@link
-         * ResponseStrategy} to use for processing the response.
-         */
-        private Map<CgMinerRequest, ResponseStrategy> requests =
-                new ConcurrentHashMap<>();
+        /** The requests. */
+        private List<Request> requests = new LinkedList<>();
 
         /**
          * Adds the strategy to use for the provided request to be performed.
@@ -304,8 +285,11 @@ public class CgMiner
                 final CgMinerRequest request,
                 final ResponseStrategy responseStrategy,
                 final ResponsePatchingStrategy patchingStrategy) {
-            this.requests.put(request, responseStrategy);
-            this.patchingStrategies.put(request, patchingStrategy);
+            this.requests.add(
+                    new Request(
+                            request,
+                            patchingStrategy,
+                            responseStrategy));
             return this;
         }
 
@@ -364,6 +348,35 @@ public class CgMiner
             this.connectTimeout = connectTimeout;
             this.connectTimeoutUnits = connectTimeoutUnits;
             return this;
+        }
+    }
+
+    /** A {@link Request}. */
+    private static class Request {
+
+        /** The {@link ResponsePatchingStrategy}. */
+        private final ResponsePatchingStrategy patchingStrategy;
+
+        /** The {@link CgMinerRequest request}. */
+        private final CgMinerRequest request;
+
+        /** The {@link ResponseStrategy}. */
+        private final ResponseStrategy responseStrategy;
+
+        /**
+         * Constructor.
+         *
+         * @param request          The request.
+         * @param patchingStrategy The patching strategy.
+         * @param responseStrategy The response strategy.
+         */
+        Request(
+                final CgMinerRequest request,
+                final ResponsePatchingStrategy patchingStrategy,
+                final ResponseStrategy responseStrategy) {
+            this.request = request;
+            this.patchingStrategy = patchingStrategy;
+            this.responseStrategy = responseStrategy;
         }
     }
 }

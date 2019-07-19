@@ -7,6 +7,8 @@ import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.sgminer.response.DevsResponseStrategy;
+import mn.foreman.sgminer.response.ResponseStrategyImpl;
+import mn.foreman.sgminer.response.SgminerResponseStrategy;
 
 import java.util.Map;
 
@@ -19,19 +21,23 @@ public class SgminerFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
+        final SgminerResponseStrategy responseStrategy =
+                new ResponseStrategyImpl(
+                        new PoolsResponseStrategy(),
+                        new DevsResponseStrategy());
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
                 .addRequest(
                         new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        new PoolsResponseStrategy())
-                .addRequest(
-                        new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.DEVS)
                                 .build(),
-                        new DevsResponseStrategy())
+                        responseStrategy::processDevs)
+                .addRequest(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.POOLS)
+                                .build(),
+                        responseStrategy::processPools)
                 .build();
     }
 }

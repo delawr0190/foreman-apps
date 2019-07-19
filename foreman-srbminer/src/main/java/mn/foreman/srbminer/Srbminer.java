@@ -63,6 +63,7 @@ public class Srbminer
         addPool(
                 statsBuilder,
                 response.pool,
+                getComputeErrors(response),
                 response.shares);
         addRig(
                 statsBuilder,
@@ -73,13 +74,15 @@ public class Srbminer
     /**
      * Adds a pool to the provided builder.
      *
-     * @param builder The builder.
-     * @param pool    The pool.
-     * @param shares  The shares.
+     * @param builder       The builder.
+     * @param pool          The pool.
+     * @param computeErrors The total number of GPU compute errors.
+     * @param shares        The shares.
      */
     private static void addPool(
             final MinerStats.Builder builder,
             final Response.Pool pool,
+            final int computeErrors,
             final Response.Shares shares) {
         builder.addPool(
                 new Pool.Builder()
@@ -90,7 +93,7 @@ public class Srbminer
                                 pool.uptime > 0)
                         .setCounts(
                                 shares.accepted,
-                                shares.rejected,
+                                shares.rejected + computeErrors,
                                 0)
                         .build());
     }
@@ -130,5 +133,19 @@ public class Srbminer
                             .build());
         }
         builder.addRig(rigBuilder.build());
+    }
+
+    /**
+     * Aggregates the total number of GPU compute errors.
+     *
+     * @param response The {@link Response} to parse.
+     *
+     * @return The total number of GPU compute errors.
+     */
+    private static int getComputeErrors(final Response response) {
+        return response.devices
+                .stream()
+                .mapToInt(device -> device.computeErrors)
+                .sum();
     }
 }

@@ -16,11 +16,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class TeamredminerITest
+public class TeamRedMinerITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public TeamredminerITest() {
+    public TeamRedMinerITest() {
         super(
                 new SgminerFactory()
                         .create(
