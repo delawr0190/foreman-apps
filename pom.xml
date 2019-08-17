@@ -39,6 +39,7 @@
         <easymock.version>3.5.1</easymock.version>
         <guava.version>23.5-jre</guava.version>
         <jackson.version>2.9.9</jackson.version>
+        <jackson-databind.version>2.9.9.2</jackson-databind.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
@@ -381,7 +382,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackson.version}</version>
+                <version>${jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
