@@ -113,7 +113,7 @@ public class ChiselMinerDecorator
         } catch (final MinerException me) {
             // Don't let a failed chisel response prevent basic metrics from
             // going to the dashboard
-            LOG.warn("Exception occurred while querying chisel - ignoring",
+            LOG.info("Exception occurred while querying chisel - ignoring",
                     me);
         }
         return minerStats;
