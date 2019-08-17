@@ -1,6 +1,5 @@
 language: java
 jdk:
-  - oraclejdk8
   - openjdk8
 
 install: mvn install --settings .travis.settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
