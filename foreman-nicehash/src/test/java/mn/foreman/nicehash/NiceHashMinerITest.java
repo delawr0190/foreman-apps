@@ -44,6 +44,18 @@ public class NiceHashMinerITest
                                                         "apiIp",
                                                         "127.0.0.1",
                                                         "apiPort",
+                                                        "4001")),
+                                new ClaymoreFactory(
+                                        new TypeMapping.Builder()
+                                                .addMapping(
+                                                        "^(?!PM.*$).* - ETH$",
+                                                        new BigDecimal(1000))
+                                                .build())
+                                        .create(
+                                                ImmutableMap.of(
+                                                        "apiIp",
+                                                        "127.0.0.1",
+                                                        "apiPort",
                                                         "4005"))))
                         .create(
                                 ImmutableMap.of(
