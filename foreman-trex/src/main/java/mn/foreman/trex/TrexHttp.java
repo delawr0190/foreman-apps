@@ -13,6 +13,7 @@ import mn.foreman.trex.json.Summary;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * <h1>Overview</h1>
@@ -120,7 +121,7 @@ public class TrexHttp
                         .setIndex(gpu.deviceId)
                         .setBus(0)
                         .setName(
-                                gpu.name != null
+                                ((gpu.name != null) && (!StringUtils.isBlank(gpu.name)))
                                         ? gpu.name
                                         : "GPU " + gpu.deviceId)
                         .setTemp(gpu.temperature)
