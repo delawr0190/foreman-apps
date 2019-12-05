@@ -1,5 +1,6 @@
 package mn.foreman.srbminer.json;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -64,6 +65,7 @@ public class Response {
 
     /** The devices. */
     @JsonProperty("devices")
+    @JsonAlias("gpu_devices")
     public List<Device> devices;
 
     /** The current hash rate. */
@@ -135,10 +137,6 @@ public class Response {
         /** The total accepted. */
         @JsonProperty("accepted")
         public int accepted;
-
-        /** The total stale. */
-        @JsonProperty("accepted_stale")
-        public int acceptedStale;
 
         /** The total rejected. */
         @JsonProperty("rejected")

@@ -84,9 +84,6 @@ public class ResponseTest {
                 shares.accepted);
         assertEquals(
                 0,
-                shares.acceptedStale);
-        assertEquals(
-                0,
                 shares.rejected);
 
         final List<Response.Device> devices = response.devices;
