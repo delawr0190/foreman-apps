@@ -46,6 +46,11 @@ public enum AntminerType
             // Already in GHs
             BigDecimal.ONE),
 
+    /** An Antminer S17. */
+    ANTMINER_S17(
+            "antminer_s17",
+            BigDecimal.ONE),
+
     /** An Antminer T9. */
     ANTMINER_T9(
             "antminer_t9",
