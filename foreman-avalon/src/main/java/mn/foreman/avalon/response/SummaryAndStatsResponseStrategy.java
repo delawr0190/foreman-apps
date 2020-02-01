@@ -145,7 +145,21 @@ public class SummaryAndStatsResponseStrategy
                 .filter(entry -> "SUMMARY".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .flatMap(List::stream)
-                .anyMatch(map -> map.containsKey("MHS 5s"));
+                .anyMatch(map -> map.containsKey("Found Blocks"));
+    }
+
+    /**
+     * Gets the hash rate from the provided stats.
+     *
+     * @param values The values.
+     *
+     * @return The hash rate.
+     */
+    private static BigDecimal toHashRate(final Map<String, String> values) {
+        return new BigDecimal(
+                values.getOrDefault(
+                        "MHS 5s",
+                        values.getOrDefault("MHS 30s", "0")));
     }
 
     /**
@@ -226,16 +240,16 @@ public class SummaryAndStatsResponseStrategy
                 .filter(entry -> "SUMMARY".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .flatMap(List::stream)
-                .filter(map -> map.containsKey("MHS 5s"))
+                .filter(map ->
+                        map.containsKey("MHS 5s") ||
+                                map.containsKey("MHS 30s"))
                 .forEach(map -> {
                     final Asic.Builder builder =
                             this.builderReference.get();
                     builder
                             .setHashRate(
-                                    new BigDecimal(map.get("MHS 5s"))
-                                            .multiply(
-                                                    new BigDecimal(
-                                                            Math.pow(1000, 2))));
+                                    toHashRate(map).multiply(
+                                            BigDecimal.valueOf(Math.pow(1000, 2))));
                 });
 
         this.sawSummary.set(true);

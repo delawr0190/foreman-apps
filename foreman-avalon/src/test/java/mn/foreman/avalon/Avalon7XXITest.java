@@ -328,7 +328,7 @@ public class Avalon7XXITest
                                         .build())
                         .addAsic(
                                 new Asic.Builder()
-                                        .setHashRate(new BigDecimal("52126282150000.00"))
+                                        .setHashRate(new BigDecimal("52126282150000.000"))
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(10)
