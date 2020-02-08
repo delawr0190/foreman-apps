@@ -9,13 +9,14 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.xmrig.old.XmrigOld;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
 /**
- * Runs an integration tests using {@link Xmrig}, but WildRig, against a fake
+ * Runs an integration tests using {@link XmrigOld}, but WildRig, against a fake
  * API.
  */
 public class WildRigITest
@@ -24,7 +25,7 @@ public class WildRigITest
     /** Constructor. */
     public WildRigITest() {
         super(
-                new Xmrig(
+                new XmrigOld(
                         "127.0.0.1",
                         44444),
                 new FakeHttpMinerServer(

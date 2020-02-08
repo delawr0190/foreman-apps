@@ -9,25 +9,29 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.xmrig.old.XmrigOld;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
 /**
- * Runs an integration tests using {@link Xmrig} against a fake API.
+ * Runs an integration tests using {@link XmrigOld} against a fake API.
  *
  * This tests xmrig-nvidia.
  */
-public class XmrigNvidiaITest
+public class XmrigOldNvidiaITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public XmrigNvidiaITest() {
+    public XmrigOldNvidiaITest() {
         super(
-                new Xmrig(
-                        "127.0.0.1",
-                        8080),
+                new XmrigFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "8080")),
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(

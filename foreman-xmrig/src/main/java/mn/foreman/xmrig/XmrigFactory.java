@@ -1,7 +1,10 @@
 package mn.foreman.xmrig;
 
+import mn.foreman.model.AlternatingMiner;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.xmrig.current.XmrigNew;
+import mn.foreman.xmrig.old.XmrigOld;
 
 import java.util.Map;
 
@@ -14,8 +17,18 @@ public class XmrigFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
-        return new Xmrig(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+        final String apiIp = config.get("apiIp");
+        final int apiPort = Integer.parseInt(config.get("apiPort"));
+        return new AlternatingMiner(
+                apiIp,
+                apiPort,
+                // Check the old API first - provides enriched metrics for
+                // older miners
+                new XmrigOld(
+                        apiIp,
+                        apiPort),
+                new XmrigNew(
+                        apiIp,
+                        apiPort));
     }
 }

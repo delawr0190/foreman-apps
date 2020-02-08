@@ -1,4 +1,4 @@
-package mn.foreman.xmrig.json;
+package mn.foreman.xmrig.old.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;

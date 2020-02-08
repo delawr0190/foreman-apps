@@ -1,4 +1,4 @@
-package mn.foreman.xmrig;
+package mn.foreman.xmrig.current;
 
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
@@ -10,16 +10,14 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
-import mn.foreman.xmrig.json.Response;
+import mn.foreman.xmrig.current.json.Summary;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.util.List;
 
 /**
  * <h1>Overview</h1>
  *
- * An {@link Xmrig} represents a remote xmrig instance.
+ * An {@link XmrigNew} represents a remote xmrig instance.
  *
  * <p>This class relies on the xmrig-api being enabled and configured to allow
  * the server that this application is running on to access it.  If this
@@ -29,27 +27,10 @@ import java.util.List;
  * <p>This class currently queries:</p>
  *
  * <ul>
- * <li>http://{@link #apiIp}:{@link #apiPort}/</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/1/summary</li>
  * </ul>
  *
  * <h1>Limitations</h1>
- *
- * <h2>xmrig-nvidia</h2>
- *
- * <p>GPU bus is not reported.  Therefore, it isn't exposed to Foreman.</p>
- *
- * <h2>xmrig-amd</h2>
- *
- * <p>The API for xmrig-amd is very limited.  Therefore, the GPUs that are
- * reported contain almost no information.</p>
- *
- * <p>The GPUs are reported with no information so that Foreman, at the very
- * least, can report the number of GPUs that were successfully identified in the
- * rig.</p>
- *
- * <p>If additional AMD support isn't exposed via the API, an alternative
- * program will be provided by Foreman to provide a REST interface that will
- * query and provide temp, freq, and fan metrics from the native APIs.</p>
  *
  * <h2>Pools</h2>
  *
@@ -59,7 +40,7 @@ import java.util.List;
  * reported.  They are, however, most likely included in the rejected
  * shares.</p>
  */
-public class Xmrig
+public class XmrigNew
         extends AbstractMiner {
 
     /**
@@ -68,7 +49,7 @@ public class Xmrig
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    Xmrig(
+    public XmrigNew(
             final String apiIp,
             final int apiPort) {
         super(
@@ -79,51 +60,19 @@ public class Xmrig
     @Override
     public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
-        final Response response =
+        final Summary summary =
                 Query.restQuery(
                         this.apiIp,
                         this.apiPort,
-                        "/",
-                        new TypeReference<Response>() {
+                        "/1/summary",
+                        new TypeReference<Summary>() {
                         });
         addPool(
-                response,
+                summary,
                 statsBuilder);
         addRig(
-                response,
+                summary,
                 statsBuilder);
-    }
-
-    /**
-     * Adds a {@link Gpu} to the provided {@link Rig.Builder builder}.
-     *
-     * @param health     The {@link Response.Health}.
-     * @param index      The index.
-     * @param rigBuilder The builder.
-     */
-    private void addGpuFromHealth(
-            final Response.Health health,
-            final int index,
-            final Rig.Builder rigBuilder) {
-        rigBuilder.addGpu(
-                new Gpu.Builder()
-                        .setName(health.name)
-                        .setIndex(index)
-                        // No bus in API
-                        .setBus(0)
-                        .setTemp(health.temp)
-                        .setFans(
-                                new FanInfo.Builder()
-                                        .setCount(1)
-                                        .addSpeed(health.fan)
-                                        .setSpeedUnits("%")
-                                        .build())
-                        .setFreqInfo(
-                                new FreqInfo.Builder()
-                                        .setFreq(health.clock)
-                                        .setMemFreq(health.memClock)
-                                        .build())
-                        .build());
     }
 
     /**
@@ -160,49 +109,16 @@ public class Xmrig
     }
 
     /**
-     * Adds a {@link Gpu} to the provided {@link Rig.Builder builder}.
+     * Adds a {@link Pool} from the {@link Summary}.
      *
-     * @param healths    The threads.
-     * @param rigBuilder The builder.
-     */
-    private void addGpusFromHealths(
-            final List<Response.Health> healths,
-            final Rig.Builder rigBuilder) {
-        for (int i = 0; i < healths.size(); i++) {
-            addGpuFromHealth(
-                    healths.get(i),
-                    i,
-                    rigBuilder);
-        }
-    }
-
-    /**
-     * Adds a {@link Gpu} to the provided {@link Rig.Builder builder}.
-     *
-     * @param threads    The threads.
-     * @param rigBuilder The builder.
-     */
-    private void addGpusFromThreads(
-            final List<List<Integer>> threads,
-            final Rig.Builder rigBuilder) {
-        for (int i = 0; i < threads.size(); i++) {
-            addGpuFromThread(
-                    i,
-                    rigBuilder);
-        }
-    }
-
-    /**
-     * Adds a {@link Pool} from the {@link Response}.
-     *
-     * @param response     The {@link Response}.
+     * @param summary      The {@link Summary}.
      * @param statsBuilder The {@link MinerStats.Builder builder} to update.
      */
     private void addPool(
-            final Response response,
+            final Summary summary,
             final MinerStats.Builder statsBuilder) {
-        final Response.Connection connection = response.connection;
-        final Response.Results results = response.results;
+        final Summary.Connection connection = summary.connection;
+        final Summary.Results results = summary.results;
         statsBuilder
                 .addPool(
                         new Pool.Builder()
@@ -219,24 +135,20 @@ public class Xmrig
     }
 
     /**
-     * Adds a {@link Rig} from the {@link Response}.
+     * Adds a {@link Rig} from the {@link Summary}.
      *
-     * @param response     The {@link Response}.
+     * @param summary      The {@link Summary}.
      * @param statsBuilder The {@link MinerStats.Builder builder} to update.
      */
     private void addRig(
-            final Response response,
+            final Summary summary,
             final MinerStats.Builder statsBuilder) {
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(response.hashrate.totals.get(0));
-        if (response.health != null) {
-            addGpusFromHealths(
-                    response.health,
-                    rigBuilder);
-        } else {
-            addGpusFromThreads(
-                    response.hashrate.threads,
+                        .setHashRate(summary.hashrate.totals.get(0));
+        for (int i = 0; i < summary.hashrate.threads.size(); i++) {
+            addGpuFromThread(
+                    i,
                     rigBuilder);
         }
         statsBuilder.addRig(rigBuilder.build());
