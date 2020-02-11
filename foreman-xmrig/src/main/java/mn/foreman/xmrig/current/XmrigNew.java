@@ -10,9 +10,14 @@ import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.PoolUtils;
+import mn.foreman.xmrig.current.json.Backend;
 import mn.foreman.xmrig.current.json.Summary;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.math.BigDecimal;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * <h1>Overview</h1>
@@ -28,6 +33,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
  *
  * <ul>
  * <li>http://{@link #apiIp}:{@link #apiPort}/1/summary</li>
+ * <li>http://{@link #apiIp}:{@link #apiPort}/2/backends</li>
  * </ul>
  *
  * <h1>Limitations</h1>
@@ -60,6 +66,19 @@ public class XmrigNew
     @Override
     public void addStats(final MinerStats.Builder statsBuilder)
             throws MinerException {
+        addPool(statsBuilder);
+        addRig(statsBuilder);
+    }
+
+    /**
+     * Adds a {@link Pool}.
+     *
+     * @param statsBuilder The {@link MinerStats.Builder builder} to update.
+     *
+     * @throws MinerException on failure to query the miner.
+     */
+    private void addPool(final MinerStats.Builder statsBuilder)
+            throws MinerException {
         final Summary summary =
                 Query.restQuery(
                         this.apiIp,
@@ -67,56 +86,7 @@ public class XmrigNew
                         "/1/summary",
                         new TypeReference<Summary>() {
                         });
-        addPool(
-                summary,
-                statsBuilder);
-        addRig(
-                summary,
-                statsBuilder);
-    }
 
-    /**
-     * Adds a {@link Gpu} to the provided {@link Rig.Builder builder}.
-     *
-     * @param index      The index.
-     * @param rigBuilder The builder.
-     */
-    private void addGpuFromThread(
-            final int index,
-            final Rig.Builder rigBuilder) {
-        rigBuilder
-                .addGpu(
-                        new Gpu.Builder()
-                                .setName("GPU " + index)
-                                .setIndex(index)
-                                // No bus in API
-                                .setBus(0)
-                                // No temp in API
-                                .setTemp(0)
-                                // No fans in API
-                                .setFans(
-                                        new FanInfo.Builder()
-                                                .setCount(0)
-                                                .setSpeedUnits("%")
-                                                .build())
-                                // No freq info in API
-                                .setFreqInfo(
-                                        new FreqInfo.Builder()
-                                                .setFreq(0)
-                                                .setMemFreq(0)
-                                                .build())
-                                .build());
-    }
-
-    /**
-     * Adds a {@link Pool} from the {@link Summary}.
-     *
-     * @param summary      The {@link Summary}.
-     * @param statsBuilder The {@link MinerStats.Builder builder} to update.
-     */
-    private void addPool(
-            final Summary summary,
-            final MinerStats.Builder statsBuilder) {
         final Summary.Connection connection = summary.connection;
         final Summary.Results results = summary.results;
         statsBuilder
@@ -135,22 +105,155 @@ public class XmrigNew
     }
 
     /**
-     * Adds a {@link Rig} from the {@link Summary}.
+     * Adds a {@link Rig}.
      *
-     * @param summary      The {@link Summary}.
      * @param statsBuilder The {@link MinerStats.Builder builder} to update.
+     *
+     * @throws MinerException on failure to query the miner.
      */
-    private void addRig(
-            final Summary summary,
-            final MinerStats.Builder statsBuilder) {
-        final Rig.Builder rigBuilder =
+    private void addRig(final MinerStats.Builder statsBuilder)
+            throws MinerException {
+        final List<Backend> backends =
+                Query.restQuery(
+                        this.apiIp,
+                        this.apiPort,
+                        "/2/backends",
+                        new TypeReference<List<Backend>>() {
+                        });
+
+        final Backend openCl =
+                backends
+                        .stream()
+                        .filter(backend -> "opencl".equals(backend.type))
+                        .findFirst()
+                        .orElseThrow(
+                                () -> new MinerException("Missing OpenCL backend"));
+        final Backend cuda =
+                backends
+                        .stream()
+                        .filter(backend -> "cuda".equals(backend.type))
+                        .findFirst()
+                        .orElseThrow(
+                                () -> new MinerException("Missing Cuda backend"));
+
+        statsBuilder.addRig(
                 new Rig.Builder()
-                        .setHashRate(summary.hashrate.totals.get(0));
-        for (int i = 0; i < summary.hashrate.threads.size(); i++) {
-            addGpuFromThread(
-                    i,
-                    rigBuilder);
+                        .setHashRate(
+                                toHashRate(
+                                        openCl,
+                                        cuda))
+                        .addGpus(
+                                toGpus(
+                                        openCl))
+                        .addGpus(
+                                toGpus(
+                                        cuda))
+                        .build());
+    }
+
+    /**
+     * Converts the provided {@link Thread} to a {@link FanInfo}.
+     *
+     * @param thread The thread.
+     *
+     * @return The new info.
+     */
+    private FanInfo toFanInfo(final Backend.Thread thread) {
+        final FanInfo.Builder builder =
+                new FanInfo.Builder()
+                        .setCount(0)
+                        .setSpeedUnits("%");
+        if (thread.health != null) {
+            builder.setCount(thread.health.fanSpeeds.size());
+            thread.health.fanSpeeds.forEach(builder::addSpeed);
         }
-        statsBuilder.addRig(rigBuilder.build());
+        return builder.build();
+    }
+
+    /**
+     * Converts the provided {@link Thread} to a {@link FreqInfo}.
+     *
+     * @param thread The thread.
+     *
+     * @return The new info.
+     */
+    private FreqInfo toFreqInfo(final Backend.Thread thread) {
+        final FreqInfo.Builder builder =
+                new FreqInfo.Builder()
+                        .setFreq(0)
+                        .setMemFreq(0);
+        if (thread.health != null) {
+            builder.setFreq(thread.health.clock);
+            builder.setMemFreq(thread.health.memory);
+        }
+        return builder.build();
+    }
+
+    /**
+     * Converts the provided {@link Thread} to a {@link Gpu}.
+     *
+     * @param thread The thread.
+     *
+     * @return The new GPU.
+     */
+    private Gpu toGpu(final Backend.Thread thread) {
+        return new Gpu.Builder()
+                .setName(thread.name)
+                .setIndex(thread.index)
+                .setBus(thread.busId)
+                .setTemp(thread.health != null ? thread.health.temperature : 0)
+                .setFans(toFanInfo(thread))
+                .setFreqInfo(toFreqInfo(thread))
+                .build();
+    }
+
+    /**
+     * Converts the {@link Backend} to GPUs.
+     *
+     * @param backend The {@link Backend}.
+     *
+     * @return The new {@link Gpu GPUs}.
+     */
+    private List<Gpu> toGpus(final Backend backend) {
+        final List<Gpu> gpus = new LinkedList<>();
+        if (backend.enabled) {
+            backend.threads
+                    .stream()
+                    .map(this::toGpu)
+                    .forEach(gpus::add);
+        }
+        return gpus;
+    }
+
+    /**
+     * Converts the provided {@link Backend Backends} to a single hash rate.
+     *
+     * @param openCl The OpenCL {@link Backend}.
+     * @param cuda   The Cuda {@link Backend}.
+     *
+     * @return The hash rate.
+     */
+    private BigDecimal toHashRate(
+            final Backend openCl,
+            final Backend cuda) {
+        BigDecimal openClRate = BigDecimal.ZERO;
+        if (openCl.enabled) {
+            openClRate =
+                    openCl.threads
+                            .stream()
+                            .map(thread -> thread.hashrates.get(0))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        BigDecimal cudaRate = BigDecimal.ZERO;
+        if (cuda.enabled) {
+            cudaRate =
+                    cuda.threads
+                            .stream()
+                            .map(thread -> thread.hashrates.get(0))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        return openClRate.add(cudaRate);
     }
 }

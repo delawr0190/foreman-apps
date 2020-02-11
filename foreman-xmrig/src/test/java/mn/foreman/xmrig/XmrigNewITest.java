@@ -106,7 +106,104 @@ public class XmrigNewITest
                                                 "        ]\n" +
                                                 "    },\n" +
                                                 "    \"hugepages\": false\n" +
-                                                "}"))),
+                                                "}"),
+                                "/2/backends",
+                                new HttpHandler(
+                                        "",
+                                        "[\n" +
+                                                "    {\n" +
+                                                "        \"type\": \"cpu\",\n" +
+                                                "        \"enabled\": true,\n" +
+                                                "        \"algo\": \"rx/0\",\n" +
+                                                "        \"profile\": \"rx\",\n" +
+                                                "        \"hw-aes\": true,\n" +
+                                                "        \"priority\": -1,\n" +
+                                                "        \"asm\": \"intel\",\n" +
+                                                "        \"argon2-impl\": null,\n" +
+                                                "        \"hugepages\": [133, 1173],\n" +
+                                                "        \"memory\": 10485760,\n" +
+                                                "        \"hashrate\": [924.59, null, null],\n" +
+                                                "        \"threads\": [\n" +
+                                                "            {\n" +
+                                                "                \"intensity\": 1,\n" +
+                                                "                \"affinity\": 0,\n" +
+                                                "                \"av\": 1,\n" +
+                                                "                \"hashrate\": [193.89, null, null]\n" +
+                                                "            },\n" +
+                                                "            {\n" +
+                                                "                \"intensity\": 1,\n" +
+                                                "                \"affinity\": 2,\n" +
+                                                "                \"av\": 1,\n" +
+                                                "                \"hashrate\": [184.06, null, null]\n" +
+                                                "            },\n" +
+                                                "            {\n" +
+                                                "                \"intensity\": 1,\n" +
+                                                "                \"affinity\": 4,\n" +
+                                                "                \"av\": 1,\n" +
+                                                "                \"hashrate\": [187.47, null, null]\n" +
+                                                "            },\n" +
+                                                "            {\n" +
+                                                "                \"intensity\": 1,\n" +
+                                                "                \"affinity\": 6,\n" +
+                                                "                \"av\": 1,\n" +
+                                                "                \"hashrate\": [179.77, null, null]\n" +
+                                                "            },\n" +
+                                                "            {\n" +
+                                                "                \"intensity\": 1,\n" +
+                                                "                \"affinity\": 8,\n" +
+                                                "                \"av\": 1,\n" +
+                                                "                \"hashrate\": [179.38, null, null]\n" +
+                                                "            }\n" +
+                                                "        ]\n" +
+                                                "    },\n" +
+                                                "    {\n" +
+                                                "        \"type\": \"opencl\",\n" +
+                                                "        \"enabled\": false,\n" +
+                                                "        \"algo\": null,\n" +
+                                                "        \"profile\": null,\n" +
+                                                "        \"platform\": null\n" +
+                                                "    },\n" +
+                                                "    {\n" +
+                                                "        \"type\": \"cuda\",\n" +
+                                                "        \"enabled\": true,\n" +
+                                                "        \"algo\": \"rx/0\",\n" +
+                                                "        \"profile\": \"rx\",\n" +
+                                                "        \"versions\": {\n" +
+                                                "            \"cuda-runtime\": \"10.1\",\n" +
+                                                "            \"cuda-driver\": \"10.1\",\n" +
+                                                "            \"plugin\": \"2.1.0\",\n" +
+                                                "            \"nvml\": \"10.426.00\",\n" +
+                                                "            \"driver\": \"426.00\"\n" +
+                                                "        },\n" +
+                                                "        \"hashrate\": [161.95, null, null],\n" +
+                                                "        \"threads\": [\n" +
+                                                "            {\n" +
+                                                "                \"index\": 0,\n" +
+                                                "                \"threads\": 32,\n" +
+                                                "                \"blocks\": 12,\n" +
+                                                "                \"bfactor\": 8,\n" +
+                                                "                \"bsleep\": 25,\n" +
+                                                "                \"affinity\": -1,\n" +
+                                                "                \"dataset_host\": false,\n" +
+                                                "                \"hashrate\": [161.95, null, null],\n" +
+                                                "                \"name\": \"GeForce GTX 1050 Ti\",\n" +
+                                                "                \"bus_id\": \"01:00.0\",\n" +
+                                                "                \"smx\": 6,\n" +
+                                                "                \"arch\": 61,\n" +
+                                                "                \"global_mem\": 4294967296,\n" +
+                                                "                \"clock\": 1620,\n" +
+                                                "                \"memory_clock\": 3504,\n" +
+                                                "                \"health\": {\n" +
+                                                "                    \"temperature\": 48,\n" +
+                                                "                    \"power\": 0,\n" +
+                                                "                    \"clock\": 1784,\n" +
+                                                "                    \"mem_clock\": 2504,\n" +
+                                                "                    \"fan_speed\": []\n" +
+                                                "                }\n" +
+                                                "            }\n" +
+                                                "        ]\n" +
+                                                "    }\n" +
+                                                "]"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
                         .setApiPort(8080)
@@ -122,10 +219,10 @@ public class XmrigNewITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("899.09"))
+                                        .setHashRate(new BigDecimal("161.95"))
                                         .addGpu(
                                                 new Gpu.Builder()
-                                                        .setBus(0)
+                                                        .setBus(1)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(0)
@@ -133,97 +230,12 @@ public class XmrigNewITest
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
+                                                                        .setFreq(1784)
+                                                                        .setMemFreq(2504)
                                                                         .build())
                                                         .setIndex(0)
-                                                        .setName("GPU 0")
-                                                        .setTemp(0)
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(0)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
-                                                                        .build())
-                                                        .setIndex(1)
-                                                        .setName("GPU 1")
-                                                        .setTemp(0)
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(0)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
-                                                                        .build())
-                                                        .setIndex(2)
-                                                        .setName("GPU 2")
-                                                        .setTemp(0)
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(0)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
-                                                                        .build())
-                                                        .setIndex(3)
-                                                        .setName("GPU 3")
-                                                        .setTemp(0)
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(0)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
-                                                                        .build())
-                                                        .setIndex(4)
-                                                        .setName("GPU 4")
-                                                        .setTemp(0)
-                                                        .build())
-                                        .addGpu(
-                                                new Gpu.Builder()
-                                                        .setBus(0)
-                                                        .setFans(
-                                                                new FanInfo.Builder()
-                                                                        .setCount(0)
-                                                                        .setSpeedUnits("%")
-                                                                        .build())
-                                                        .setFreqInfo(
-                                                                new FreqInfo.Builder()
-                                                                        .setFreq(0)
-                                                                        .setMemFreq(0)
-                                                                        .build())
-                                                        .setIndex(5)
-                                                        .setName("GPU 5")
-                                                        .setTemp(0)
+                                                        .setName("GeForce GTX 1050 Ti")
+                                                        .setTemp(48)
                                                         .build())
                                         .build())
                         .build());
