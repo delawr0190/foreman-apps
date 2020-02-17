@@ -44,10 +44,14 @@ public class ChiselMinerDecoratorTest {
         final Pool mockPool = createMock(Pool.class);
         replay(mockPool);
 
+        final String gpu1Name = "GeForce GTX 1070 Ti";
         final Gpu mockGpu1 = createMock(Gpu.class);
+        expect(mockGpu1.getName()).andReturn("GPU 0");
         replay(mockGpu1);
 
+        final String gpu2Name = "GeForce GTX 1080 Ti";
         final Gpu mockGpu2 = createMock(Gpu.class);
+        expect(mockGpu2.getName()).andReturn("GPU 1");
         replay(mockGpu2);
 
         final BigDecimal hashRate = BigDecimal.TEN;
@@ -59,7 +63,7 @@ public class ChiselMinerDecoratorTest {
                 .andReturn(
                         Arrays.asList(
                                 mockGpu1,
-                                mockGpu2));
+                                mockGpu2)).atLeastOnce();
         replay(mockRig);
 
         final MinerStats mockStats = createMock(MinerStats.class);
@@ -94,7 +98,7 @@ public class ChiselMinerDecoratorTest {
                                                      "  {\n" +
                                                      "    \"id\": 0,\n" +
                                                      "    \"busId\": 1,\n" +
-                                                     "    \"name\": \"GeForce GTX 1070 Ti\",\n" +
+                                                     "    \"name\": \"" + gpu1Name + "\",\n" +
                                                      "    \"temp\": 67,\n" +
                                                      "    \"fan\": 99,\n" +
                                                      "    \"clocks\": {\n" +
@@ -109,7 +113,7 @@ public class ChiselMinerDecoratorTest {
                                                      "  {\n" +
                                                      "    \"id\": 1,\n" +
                                                      "    \"busId\": 3,\n" +
-                                                     "    \"name\": \"GeForce GTX 1080 Ti\",\n" +
+                                                     "    \"name\": \"" + gpu2Name + "\",\n" +
                                                      "    \"temp\": 69,\n" +
                                                      "    \"fan\": 75,\n" +
                                                      "    \"clocks\": {\n" +
@@ -156,7 +160,7 @@ public class ChiselMinerDecoratorTest {
                     actualGpus.get(0),
                     0,
                     1,
-                    "GeForce GTX 1070 Ti",
+                    gpu1Name,
                     67,
                     99,
                     1234,
@@ -165,7 +169,7 @@ public class ChiselMinerDecoratorTest {
                     actualGpus.get(1),
                     1,
                     3,
-                    "GeForce GTX 1080 Ti",
+                    gpu2Name,
                     69,
                     75,
                     5678,
@@ -207,6 +211,161 @@ public class ChiselMinerDecoratorTest {
 
         verify(mockMiner);
         verify(mockStats);
+    }
+
+    /**
+     * Verifies that GPUs returned by chisel that aren't used are trimmed.
+     *
+     * @throws Exception on failure to query.
+     */
+    @Test
+    public void testGpuTrimming()
+            throws Exception {
+        final int chiselPort = 42069;
+
+        final String apiIp = "127.0.0.1";
+        final int apiPort = 420;
+
+        final Pool mockPool = createMock(Pool.class);
+        replay(mockPool);
+
+        final String gpuName = "GeForce GTX 1070 Ti";
+        final Gpu mockGpu = createMock(Gpu.class);
+        expect(mockGpu.getName()).andReturn(gpuName).atLeastOnce();
+        replay(mockGpu);
+
+        final BigDecimal hashRate = BigDecimal.TEN;
+
+        final Rig mockRig = createMock(Rig.class);
+        expect(mockRig.getHashRate())
+                .andReturn(hashRate);
+        expect(mockRig.getGpus())
+                .andReturn(
+                        Collections.singletonList(
+                                mockGpu)).atLeastOnce();
+        replay(mockRig);
+
+        final MinerStats mockStats = createMock(MinerStats.class);
+        expect(mockStats.getApiIp())
+                .andReturn(apiIp);
+        expect(mockStats.getApiPort())
+                .andReturn(apiPort);
+        expect(mockStats.getPools())
+                .andReturn(Collections.singletonList(mockPool));
+        expect(mockStats.getRigs())
+                .andReturn(Collections.singletonList(mockRig));
+        replay(mockStats);
+
+        final Miner mockMiner = createMock(Miner.class);
+        expect(mockMiner.getStats()).andReturn(mockStats);
+        replay(mockMiner);
+
+        final Miner chiselMiner =
+                new ChiselMinerDecorator(
+                        apiIp,
+                        chiselPort,
+                        mockMiner);
+
+        try (final FakeMinerServer fakeChisel =
+                     new FakeHttpMinerServer(
+                             chiselPort,
+                             ImmutableMap.of(
+                                     "/stats",
+                                     new HttpHandler(
+                                             "",
+                                             "[\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 0,\n" +
+                                                     "    \"busId\": 1,\n" +
+                                                     "    \"name\": \"" + gpuName + "\",\n" +
+                                                     "    \"temp\": 67,\n" +
+                                                     "    \"fan\": 99,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 1234,\n" +
+                                                     "      \"memory\": 5678\n" +
+                                                     "    },\n" +
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  },\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 1,\n" +
+                                                     "    \"busId\": 3,\n" +
+                                                     "    \"name\": \"my gpu\",\n" +
+                                                     "    \"temp\": 69,\n" +
+                                                     "    \"fan\": 75,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 5678,\n" +
+                                                     "      \"memory\": 1234\n" +
+                                                     "    },\n" +
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  },\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 2,\n" +
+                                                     "    \"busId\": 2,\n" +
+                                                     "    \"name\": \"unused\",\n" +
+                                                     "    \"temp\": 1,\n" +
+                                                     "    \"fan\": 2,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 3,\n" +
+                                                     "      \"memory\": 4\n" +
+                                                     "    },\n" +
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  }\n" +
+                                                     "]")))) {
+            fakeChisel.start();
+
+            final MinerStats actualStats =
+                    chiselMiner.getStats();
+            assertEquals(
+                    apiIp,
+                    actualStats.getApiIp());
+            assertEquals(
+                    apiPort,
+                    actualStats.getApiPort());
+            assertEquals(
+                    Collections.singletonList(mockPool),
+                    actualStats.getPools());
+            assertTrue(
+                    actualStats.getAsics().isEmpty());
+            final List<Rig> actualRigs =
+                    actualStats.getRigs();
+            assertEquals(
+                    1,
+                    actualRigs.size());
+            final Rig actualRig =
+                    actualRigs.get(0);
+            assertEquals(
+                    hashRate,
+                    actualRig.getHashRate());
+            final List<Gpu> actualGpus =
+                    actualRig.getGpus();
+            assertEquals(
+                    1,
+                    actualGpus.size());
+            assertGpuEquals(
+                    actualGpus.get(0),
+                    0,
+                    1,
+                    gpuName,
+                    67,
+                    99,
+                    1234,
+                    5678);
+        }
+
+        verify(mockMiner);
+        verify(mockStats);
+        verify(mockRig);
+        verify(mockGpu);
+        verify(mockPool);
     }
 
     /**

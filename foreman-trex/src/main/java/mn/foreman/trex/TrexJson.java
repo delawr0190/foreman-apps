@@ -1,6 +1,5 @@
 package mn.foreman.trex;
 
-import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -12,15 +11,14 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.trex.json.Summary;
 import mn.foreman.util.PoolUtils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 
 /**
  * <h1>Overview</h1>
  *
- * A {@link TrexHttp} represents a remote t-rex instance.
+ * A {@link TrexJson} represents a remote t-rex instance.
  *
- * <p>This class relies on the trex-http-api being enabled and configured to
+ * <p>This class relies on the trex api being enabled and configured to
  * allow the server that this application is running on to access it.  If this
  * application is running on the rig server, only localhost connections need to
  * be allowed.</p>
@@ -28,11 +26,8 @@ import org.apache.commons.lang3.StringUtils;
  * <p>The t-rex API, at the time of this writing, was very new and lacked
  * detailed information outside of basic pool statistics and hash rate.</p>
  *
- * <p>This class currently queries:</p>
- *
- * <pre>
- *     GET /summary
- * </pre>
+ * <p>This class currently queries either the HTTP API endpoint or the
+ * telnet endpoint depending on the {@link ApiStrategy} that's provided.</p>
  *
  * <h1>Limitations</h1>
  *
@@ -48,21 +43,27 @@ import org.apache.commons.lang3.StringUtils;
  * <p>Stale shares are not directly reported.  They are most likely included in
  * the reported rejected shares.</p>
  */
-public class TrexHttp
+public class TrexJson
         extends AbstractMiner {
+
+    /** The strategy to use for obtaining a {@link Summary} from trex. */
+    private final ApiStrategy apiStrategy;
 
     /**
      * Constructor.
      *
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
+     * @param apiIp       The API IP.
+     * @param apiPort     The API port.
+     * @param apiStrategy The API strategy.
      */
-    TrexHttp(
+    TrexJson(
             final String apiIp,
-            final int apiPort) {
+            final int apiPort,
+            final ApiStrategy apiStrategy) {
         super(
                 apiIp,
                 apiPort);
+        this.apiStrategy = apiStrategy;
     }
 
     @Override
@@ -70,12 +71,9 @@ public class TrexHttp
             throws MinerException {
         try {
             final Summary summary =
-                    Query.restQuery(
+                    this.apiStrategy.getSummary(
                             this.apiIp,
-                            this.apiPort,
-                            "/summary",
-                            new TypeReference<Summary>() {
-                            });
+                            this.apiPort);
             statsBuilder.addPool(
                     new Pool.Builder()
                             .setName(

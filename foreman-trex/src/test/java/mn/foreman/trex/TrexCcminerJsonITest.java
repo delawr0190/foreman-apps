@@ -15,11 +15,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link TrexJson} against a fake API. */
-public class TrexCcminerITest
+public class TrexCcminerJsonITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public TrexCcminerITest() {
+    public TrexCcminerJsonITest() {
         super(
                 new TrexFactory().create(
                         ImmutableMap.of(
@@ -32,26 +32,26 @@ public class TrexCcminerITest
                         ImmutableMap.of(
                                 "summary",
                                 new RpcHandler(
-                                        "NAME=t-rex;VER=0.9.2;API=3.1;ALGO=x16r;GPUS=1;KHS=5798.28;SOLV=0;ACC=5;REJ=0;DIFF=82589.499837;UPTIME=45;TS=1551674517|"))),
+                                        "{\"accepted_count\":0,\"active_pool\":{\"difficulty\":256.0,\"ping\":0,\"retries\":0,\"url\":\"stratum+tcp://rvn.2miners.com:6060\",\"user\":\"RBX1G6nYDMHVtyaZiQWySMZw1Bb2DEDpT8.rig0\"},\"algorithm\":\"x16rv2\",\"api\":\"3.1\",\"build_date\":\"Oct 12 2019 08:42:59\",\"cuda\":\"10.0\",\"description\":\"T-Rex NVIDIA GPU miner\",\"difficulty\":354972.44650609588,\"gpu_total\":1,\"gpus\":[{\"device_id\":0,\"gpu_id\":0,\"gpu_user_id\":0,\"hashrate\":6488370,\"hashrate_day\":0,\"hashrate_hour\":0,\"hashrate_instant\":6596933,\"hashrate_minute\":6488370,\"intensity\":20.0,\"name\":\"GeForce GTX 1050 Ti\",\"temperature\":53,\"vendor\":\"NVIDIA\"}],\"hashrate\":6488370,\"hashrate_day\":0,\"hashrate_hour\":0,\"hashrate_minute\":6488370,\"name\":\"t-rex\",\"os\":\"win\",\"rejected_count\":0,\"revision\":\"ad1aa7ca3433\",\"sharerate\":0.0,\"sharerate_average\":0.0,\"solved_count\":0,\"success\":1,\"ts\":1581878303,\"uptime\":3,\"version\":\"0.14.6\",\"watchdog_stat\":{\"built_in\":true,\"startup_ts\":1581878298021741,\"total_restarts\":0,\"uptime\":5,\"wd_version\":\"0.14.6\"}}"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
                         .setApiPort(4068)
                         .addPool(
                                 new Pool.Builder()
-                                        .setName("no.pool.reported:1234")
+                                        .setName("rvn.2miners.com:6060")
                                         .setPriority(0)
                                         .setStatus(true, true)
-                                        .setCounts(5, 0, 0)
+                                        .setCounts(0, 0, 0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("5798280.00"))
+                                        .setHashRate(new BigDecimal("6488370"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setIndex(0)
                                                         .setBus(0)
-                                                        .setName("GPU 0")
-                                                        .setTemp(0)
+                                                        .setName("GeForce GTX 1050 Ti")
+                                                        .setTemp(53)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(0)

@@ -16,6 +16,8 @@ import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -220,13 +222,76 @@ public class ChiselMinerDecorator
         minerStats
                 .getRigs()
                 .stream()
-                .map(rig ->
-                        enrichRig(
-                                rig,
-                                gpus))
+                .map(rig -> {
+                    List<GpuInfo> trimmed = gpus;
+                    final List<Gpu> rigGpus = rig.getGpus();
+                    if (hasNamedGpus(rigGpus)) {
+                        trimmed =
+                                trimMismatch(
+                                        gpus,
+                                        rigGpus);
+                    }
+                    return enrichRig(
+                            rig,
+                            trimmed);
+                })
                 .collect(Collectors.toList())
                 .forEach(newStatsBuilder::addRig);
 
         return newStatsBuilder.build();
+    }
+
+    /**
+     * Returns whehter or not the GPUs that have been provided are named (not
+     * filled in with 'GPU #'.
+     *
+     * @param gpus The GPUs to examine.
+     *
+     * @return Whether or not there are named GPUs.
+     */
+    private static boolean hasNamedGpus(final List<Gpu> gpus) {
+        return gpus
+                .stream()
+                .anyMatch(gpu -> !gpu.getName().contains("GPU"));
+    }
+
+    /**
+     * Removes GPUs from the chisel response that aren't actively being used.
+     *
+     * @param infos The GPUs from chisel.
+     * @param gpus  The GPUs being used.
+     *
+     * @return The set of GPUs that are being used.
+     */
+    private static List<GpuInfo> trimMismatch(
+            final List<GpuInfo> infos,
+            final List<Gpu> gpus) {
+        final List<String> observedNames =
+                gpus
+                        .stream()
+                        .map(Gpu::getName)
+                        .collect(Collectors.toList());
+        final List<String> actualNames =
+                infos
+                        .stream()
+                        .map(info -> info.name)
+                        .collect(Collectors.toList());
+
+        // Skip the GPUs that aren't being used
+        final List<String> namesToUse = new LinkedList<>();
+        for (final String actualName : actualNames) {
+            if (observedNames.contains(actualName)) {
+                namesToUse.add(actualName);
+            }
+        }
+
+        final List<GpuInfo> infosToUse = new ArrayList<>(namesToUse.size());
+        for (final GpuInfo info : infos) {
+            if (namesToUse.contains(info.name)) {
+                infosToUse.add(info);
+            }
+        }
+
+        return infosToUse;
     }
 }

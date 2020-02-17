@@ -20,9 +20,14 @@ public class TrexFactory
         return new AlternatingMiner(
                 apiIp,
                 apiPort,
-                new TrexHttp(
+                new TrexJson(
                         apiIp,
-                        apiPort),
+                        apiPort,
+                        new HttpApiStrategy()),
+                new TrexJson(
+                        apiIp,
+                        apiPort,
+                        new TelnetJsonStrategy()),
                 new TrexCcminer(
                         apiIp,
                         apiPort));

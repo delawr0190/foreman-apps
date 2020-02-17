@@ -3,6 +3,9 @@ package mn.foreman.model;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * An {@link AlternatingMiner} provides a {@link Miner} implementation that will
  * evaluate two possible {@link Miner miners} for metrics.
@@ -10,11 +13,8 @@ import mn.foreman.model.miners.MinerStats;
 public class AlternatingMiner
         extends AbstractMiner {
 
-    /** The first candidate. */
-    private final Miner candidate1;
-
-    /** The second candidate. */
-    private final Miner candidate2;
+    /** The candidates. */
+    private final List<Miner> candidates;
 
     /**
      * Constructor.
@@ -25,29 +25,34 @@ public class AlternatingMiner
     public AlternatingMiner(
             final String apiIp,
             final int apiPort,
-            final Miner candidate1,
-            final Miner candidate2) {
+            final Miner... candidates) {
         super(
                 apiIp,
                 apiPort);
-        this.candidate1 = candidate1;
-        this.candidate2 = candidate2;
+        this.candidates = Arrays.asList(candidates);
     }
 
     @Override
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        MinerStats minerStats;
-        try {
-            minerStats = this.candidate1.getStats();
-        } catch (final MinerException me) {
-            minerStats = this.candidate2.getStats();
+        MinerStats minerStats = null;
+        for (final Miner candidate : this.candidates) {
+            try {
+                minerStats = candidate.getStats();
+                break;
+            } catch (final MinerException me) {
+                // Skip
+            }
         }
 
-        statsBuilder
-                .addPools(minerStats.getPools())
-                .addAsics(minerStats.getAsics())
-                .addRigs(minerStats.getRigs());
+        if (minerStats != null) {
+            statsBuilder
+                    .addPools(minerStats.getPools())
+                    .addAsics(minerStats.getAsics())
+                    .addRigs(minerStats.getRigs());
+        } else {
+            throw new MinerException("Failed to find a valid candidate");
+        }
     }
 }

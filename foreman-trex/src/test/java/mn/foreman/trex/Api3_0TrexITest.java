@@ -14,7 +14,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link TrexHttp} against a fake API. */
+/** Runs an integration tests using {@link TrexJson} against a fake API. */
 public class Api3_0TrexITest
         extends AbstractApiITest {
 
