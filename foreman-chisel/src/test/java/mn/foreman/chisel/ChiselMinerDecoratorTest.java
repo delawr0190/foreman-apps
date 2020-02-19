@@ -396,7 +396,8 @@ public class ChiselMinerDecoratorTest {
         replay(mockFreq);
 
         final Gpu mockGpu = createMock(Gpu.class);
-        expect(mockGpu.getName()).andReturn("NVIDIA GeForce GTX 1070 Ti").atLeastOnce();
+        expect(mockGpu.getName())
+                .andReturn("NVIDIA GeForce GTX 1070 Ti 8GB").atLeastOnce();
         replay(mockGpu);
 
         final BigDecimal hashRate = BigDecimal.TEN;

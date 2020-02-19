@@ -280,8 +280,10 @@ public class ChiselMinerDecorator
         // Skip the GPUs that aren't being used
         final List<String> namesToUse = new LinkedList<>();
         for (final String actualName : actualNames) {
-            if (observedNames.contains(actualName)) {
-                namesToUse.add(actualName);
+            for (final String observedName : observedNames) {
+                if (observedName.contains(actualName)) {
+                    namesToUse.add(actualName);
+                }
             }
         }
 
