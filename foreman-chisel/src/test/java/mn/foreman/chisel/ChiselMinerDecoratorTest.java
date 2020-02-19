@@ -369,6 +369,141 @@ public class ChiselMinerDecoratorTest {
     }
 
     /**
+     * Verifies that GPUs returned by chisel that aren't used are trimmed.
+     *
+     * @throws Exception on failure to query.
+     */
+    @Test
+    public void testGpuTrimmingNonStandardNaming()
+            throws Exception {
+        final int chiselPort = 42069;
+
+        final String apiIp = "127.0.0.1";
+        final int apiPort = 420;
+
+        final Pool mockPool = createMock(Pool.class);
+        replay(mockPool);
+
+        final FanInfo mockFans = createMock(FanInfo.class);
+        expect(mockFans.getCount()).andReturn(1);
+        expect(mockFans.getSpeeds()).andReturn(Collections.singletonList(3));
+        expect(mockFans.getSpeedUnits()).andReturn("%");
+        replay(mockFans);
+
+        final FreqInfo mockFreq = createMock(FreqInfo.class);
+        expect(mockFreq.getFreq()).andReturn(4);
+        expect(mockFreq.getMemFreq()).andReturn(5);
+        replay(mockFreq);
+
+        final Gpu mockGpu = createMock(Gpu.class);
+        expect(mockGpu.getName()).andReturn("NVIDIA GeForce GTX 1070 Ti").atLeastOnce();
+        replay(mockGpu);
+
+        final BigDecimal hashRate = BigDecimal.TEN;
+
+        final Rig mockRig = createMock(Rig.class);
+        expect(mockRig.getHashRate())
+                .andReturn(hashRate);
+        expect(mockRig.getGpus())
+                .andReturn(
+                        Collections.singletonList(
+                                mockGpu)).atLeastOnce();
+        replay(mockRig);
+
+        final MinerStats mockStats = createMock(MinerStats.class);
+        expect(mockStats.getApiIp())
+                .andReturn(apiIp);
+        expect(mockStats.getApiPort())
+                .andReturn(apiPort);
+        expect(mockStats.getPools())
+                .andReturn(Collections.singletonList(mockPool));
+        expect(mockStats.getRigs())
+                .andReturn(Collections.singletonList(mockRig));
+        replay(mockStats);
+
+        final Miner mockMiner = createMock(Miner.class);
+        expect(mockMiner.getStats()).andReturn(mockStats);
+        replay(mockMiner);
+
+        final Miner chiselMiner =
+                new ChiselMinerDecorator(
+                        apiIp,
+                        chiselPort,
+                        mockMiner);
+
+        try (final FakeMinerServer fakeChisel =
+                     new FakeHttpMinerServer(
+                             chiselPort,
+                             ImmutableMap.of(
+                                     "/stats",
+                                     new HttpHandler(
+                                             "",
+                                             "[\n" +
+                                                     "  {\n" +
+                                                     "    \"id\": 0,\n" +
+                                                     "    \"busId\": 1,\n" +
+                                                     "    \"name\": \"GeForce GTX 1070 Ti\",\n" +
+                                                     "    \"temp\": 67,\n" +
+                                                     "    \"fan\": 99,\n" +
+                                                     "    \"clocks\": {\n" +
+                                                     "      \"core\": 1234,\n" +
+                                                     "      \"memory\": 5678\n" +
+                                                     "    },\n" +
+                                                     "    \"processes\": [\n" +
+                                                     "      \"ethminer\",\n" +
+                                                     "      \"something else\"\n" +
+                                                     "    ]\n" +
+                                                     "  }\n" +
+                                                     "]")))) {
+            fakeChisel.start();
+
+            final MinerStats actualStats =
+                    chiselMiner.getStats();
+            assertEquals(
+                    apiIp,
+                    actualStats.getApiIp());
+            assertEquals(
+                    apiPort,
+                    actualStats.getApiPort());
+            assertEquals(
+                    Collections.singletonList(mockPool),
+                    actualStats.getPools());
+            assertTrue(
+                    actualStats.getAsics().isEmpty());
+            final List<Rig> actualRigs =
+                    actualStats.getRigs();
+            assertEquals(
+                    1,
+                    actualRigs.size());
+            final Rig actualRig =
+                    actualRigs.get(0);
+            assertEquals(
+                    hashRate,
+                    actualRig.getHashRate());
+            final List<Gpu> actualGpus =
+                    actualRig.getGpus();
+            assertEquals(
+                    1,
+                    actualGpus.size());
+            assertGpuEquals(
+                    actualGpus.get(0),
+                    0,
+                    1,
+                    "GeForce GTX 1070 Ti",
+                    67,
+                    99,
+                    1234,
+                    5678);
+        }
+
+        verify(mockMiner);
+        verify(mockStats);
+        verify(mockRig);
+        verify(mockGpu);
+        verify(mockPool);
+    }
+
+    /**
      * Verifies that the {@link Gpu} matches the expected values.
      *
      * @param gpu       The {@link Gpu}.

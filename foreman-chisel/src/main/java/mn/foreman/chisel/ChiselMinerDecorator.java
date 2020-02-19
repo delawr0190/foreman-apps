@@ -292,6 +292,13 @@ public class ChiselMinerDecorator
             }
         }
 
+        if (infosToUse.isEmpty()) {
+            // All of the GPUs were named, but their naming didn't match the
+            // smi standard naming convention - just return back what was
+            // provided
+            infosToUse.addAll(infos);
+        }
+
         return infosToUse;
     }
 }
