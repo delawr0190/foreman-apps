@@ -54,6 +54,10 @@ public class Response {
     @JsonProperty("GPUs")
     public List<Gpu> gpus;
 
+    /** The mining object. */
+    @JsonProperty("Mining")
+    public Mining mining;
+
     /** The session. */
     @JsonProperty("Session")
     public Session session;
@@ -77,6 +81,19 @@ public class Response {
         /** The name. */
         @JsonProperty("Name")
         public String name;
+    }
+
+    /** A model representation of the mining object. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Mining {
+
+        /** The algorithm being mined. */
+        @JsonProperty("Algorithm")
+        public String algorithm;
+
+        /** The coin being mined. */
+        @JsonProperty("Coin")
+        public String coin;
     }
 
     /** A model representation of a session. */

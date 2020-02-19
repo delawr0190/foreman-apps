@@ -170,6 +170,9 @@ public class TeamRedMiner_0_3_10_ITest
                                                                         .setMemFreq("1500")
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "phi2")
                                         .build())
                         .build());
     }

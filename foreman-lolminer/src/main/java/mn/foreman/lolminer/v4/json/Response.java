@@ -39,6 +39,14 @@ import java.math.BigDecimal;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Response {
 
+    /** The algorithm being mined. */
+    @JsonProperty("Algorithm")
+    public String algorithm;
+
+    /** The coin being mined. */
+    @JsonProperty("Coin")
+    public String coin;
+
     /** GPU 0. */
     @JsonProperty("GPU0")
     public Gpu gpu0;

@@ -159,6 +159,12 @@ public class BminerITest
                                                                         .setMemFreq(5005)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "ethash")
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "blake2s")
                                         .build())
                         .build());
     }

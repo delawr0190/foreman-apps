@@ -79,6 +79,10 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Stat {
 
+    /** The algorithm. */
+    @JsonProperty("algorithm")
+    public String algorithm;
+
     /** The devices. */
     @JsonProperty("devices")
     public List<Device> devices;

@@ -89,7 +89,9 @@ public class Gminer_1_34_ITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
-
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "Equihash 150,5 \"Beam-PoW\"")
                                         .build())
                         .build());
     }

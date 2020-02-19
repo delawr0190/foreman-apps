@@ -394,6 +394,9 @@ public class BminerCuckooITest
                                                                         .setMemFreq(5508)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "aeternity")
                                         .build())
                         .build());
     }

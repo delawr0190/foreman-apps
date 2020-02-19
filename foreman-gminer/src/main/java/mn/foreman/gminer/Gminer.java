@@ -114,6 +114,11 @@ public class Gminer
                                 .stream()
                                 .map((dev) -> dev.speed)
                                 .reduce(BigDecimal.ZERO, BigDecimal::add));
+        if (stats.algorithm != null && !stats.algorithm.isEmpty()) {
+            rigBuilder.addAttribute(
+                    "gpu_algo",
+                    stats.algorithm);
+        }
         stats.devices.forEach(
                 (device) ->
                         addGpu(device, rigBuilder));

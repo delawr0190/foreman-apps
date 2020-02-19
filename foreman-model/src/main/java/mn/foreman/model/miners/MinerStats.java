@@ -339,6 +339,27 @@ public class MinerStats {
         }
 
         /**
+         * Returns the current rigs.
+         *
+         * @return The {@link Rig rigs}.
+         */
+        public List<Rig> getRigs() {
+            return Collections.unmodifiableList(this.rigs);
+        }
+
+        /**
+         * Sets the {@link Rig rigs}.
+         *
+         * @param rigs The {@link Rig rigs}.
+         *
+         * @return This builder instance.
+         */
+        public Builder setRigs(final List<Rig> rigs) {
+            this.rigs.clear();
+            return addRigs(rigs);
+        }
+
+        /**
          * Sets the API IP.
          *
          * @param apiIp The API IP.

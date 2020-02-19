@@ -24,6 +24,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Solver {
 
+    /** The algorithm. */
+    @JsonProperty("algorithm")
+    public String algorithm;
+
     /** The speed info. */
     @JsonProperty("speed_info")
     public SpeedInfo speedInfo;

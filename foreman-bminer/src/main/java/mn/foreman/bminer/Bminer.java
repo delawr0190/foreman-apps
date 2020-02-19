@@ -19,10 +19,7 @@ import mn.foreman.util.PoolUtils;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.math.BigDecimal;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <h1>Overview</h1>
@@ -196,6 +193,9 @@ public class Bminer
                         new TypeReference<
                                 mn.foreman.bminer.json.solver.Devices>() {
                         });
+
+        final Set<String> algorithms = new HashSet<>();
+
         final Map<String, Solvers> solversMap = devices.devices;
         if (solversMap != null) {
             solversMap
@@ -203,10 +203,14 @@ public class Bminer
                     .stream()
                     .map(solvers -> solvers.solvers)
                     .flatMap(List::stream)
-                    .forEach(solver ->
-                            hashRates.add(
-                                    solver.speedInfo.hashRate));
+                    .forEach(solver -> {
+                        algorithms.add(solver.algorithm);
+                        hashRates.add(
+                                solver.speedInfo.hashRate);
+                    });
         }
+
+        algorithms.forEach(algo -> rigBuilder.addAttribute("gpu_algo", algo));
 
         rigBuilder.setHashRate(
                 new BigDecimal(

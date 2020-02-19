@@ -95,6 +95,12 @@ public class Lolminer0_6ITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "Equihash 210/9")
+                                        .addAttribute(
+                                                "coin",
+                                                "AION")
                                         .build())
                         .build());
     }

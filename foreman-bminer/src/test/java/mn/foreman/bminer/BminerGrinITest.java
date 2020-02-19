@@ -498,6 +498,9 @@ public class BminerGrinITest
                                                                         .setMemFreq(4100)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "cuckaroo29")
                                         .build())
                         .build());
     }

@@ -5,6 +5,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
+import mn.foreman.model.miners.rig.Rig;
 
 import java.util.List;
 import java.util.Map;
@@ -19,11 +20,17 @@ import java.util.stream.Collectors;
 public class ResponseStrategyImpl
         implements SgminerResponseStrategy {
 
+    /** An unknown algorithm. */
+    private static final String UNKNOWN_ALGORITHM = "";
+
     /** The {@link CgMinerCommand#DEVS} strategy. */
     private final ResponseStrategy devsResponseStrategy;
 
     /** The {@link CgMinerCommand#POOLS} strategy. */
     private final ResponseStrategy poolResponseStrategy;
+
+    /** The algorithm. */
+    private String algorithm = UNKNOWN_ALGORITHM;
 
     /** The hardware errors. */
     private int hardwareErrors = 0;
@@ -60,15 +67,60 @@ public class ResponseStrategyImpl
         this.devsResponseStrategy.processResponse(
                 builder,
                 response);
+        enrichStats(builder);
     }
 
     @Override
     public void processPools(
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
+        if (isTrm(response)) {
+            this.algorithm =
+                    response.getValues()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> entry.getKey().equals("POOLS"))
+                            .map(Map.Entry::getValue)
+                            .flatMap(List::stream)
+                            .filter(map -> map.containsKey("Algorithm"))
+                            .map(map -> map.get("Algorithm"))
+                            .findFirst()
+                            .orElse(UNKNOWN_ALGORITHM);
+        }
         this.poolResponseStrategy.processResponse(
                 builder,
                 response);
+        enrichStats(builder);
+    }
+
+    /**
+     * Checks to see if the {@link CgMinerResponse response} is from
+     * TeamRedMiner.
+     *
+     * @param response The response.
+     *
+     * @return Whether or not TRM.
+     */
+    private static boolean isTrm(final CgMinerResponse response) {
+        return response.getStatus()
+                .stream()
+                .anyMatch(map ->
+                        map
+                                .getOrDefault("Description", "N/A")
+                                .contains("TeamRedMiner"));
+    }
+
+    /**
+     * Enriches the stats with values that have been found.
+     *
+     * @param builder The stats to enrich.
+     */
+    private void enrichStats(final MinerStats.Builder builder) {
+        builder.setRigs(
+                builder.getRigs()
+                        .stream()
+                        .map(this::toRig)
+                        .collect(Collectors.toList()));
         builder.setPools(
                 builder.getPools()
                         .stream()
@@ -88,19 +140,24 @@ public class ResponseStrategyImpl
     }
 
     /**
-     * Checks to see if the {@link CgMinerResponse response} is from
-     * TeamRedMiner.
+     * Enriches the {@link Rig} with the algorithm, if one was found.
      *
-     * @param response The response.
+     * @param rig The {@link Rig}.
      *
-     * @return Whether or not TRM.
+     * @return The enriched {@link Rig}.
      */
-    private static boolean isTrm(final CgMinerResponse response) {
-        return response.getStatus()
-                .stream()
-                .anyMatch(map ->
-                        map
-                                .getOrDefault("Description", "N/A")
-                                .contains("TeamRedMiner"));
+    private Rig toRig(final Rig rig) {
+        final Rig.Builder builder =
+                new Rig.Builder()
+                        .setHashRate(rig.getHashRate())
+                        .addGpus(rig.getGpus())
+                        .addAttributes(rig.getAttributes());
+        if (this.algorithm != null &&
+                !UNKNOWN_ALGORITHM.equals(this.algorithm)) {
+            builder.addAttribute(
+                    "gpu_algo",
+                    this.algorithm);
+        }
+        return builder.build();
     }
 }

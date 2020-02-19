@@ -171,6 +171,9 @@ public class TeamRedMinerITest
                                                                         .setMemFreq("1500")
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "cnv8")
                                         .build())
                         .build());
     }

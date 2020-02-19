@@ -101,6 +101,12 @@ public class Lolminer0_4ITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "Equihash 144.5")
+                                        .addAttribute(
+                                                "coin",
+                                                "BitcoinZ (BTCZ)")
                                         .build())
                         .build());
     }

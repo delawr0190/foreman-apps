@@ -81,7 +81,13 @@ public class Lolminer
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(response.session.hashRate);
+                        .setHashRate(response.session.hashRate)
+                        .addAttribute(
+                                "gpu_algo",
+                                response.mining.algorithm)
+                        .addAttribute(
+                                "coin",
+                                response.mining.coin);
 
         // Add the GPUs
         response.gpus.forEach(gpu -> addGpu(gpu, rigBuilder));

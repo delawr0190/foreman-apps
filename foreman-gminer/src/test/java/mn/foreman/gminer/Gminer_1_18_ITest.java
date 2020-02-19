@@ -84,6 +84,9 @@ public class Gminer_1_18_ITest
                                                                         .setMemFreq(0)
                                                                         .build())
                                                         .build())
+                                        .addAttribute(
+                                                "gpu_algo",
+                                                "Equihash 210,9 \"AION0PoW\"")
                                         .build())
                         .build());
     }

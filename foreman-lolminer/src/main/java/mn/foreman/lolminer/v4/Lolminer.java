@@ -93,7 +93,13 @@ public class Lolminer
 
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(response.totalSpeed);
+                        .setHashRate(response.totalSpeed)
+                        .addAttribute(
+                                "gpu_algo",
+                                response.algorithm)
+                        .addAttribute(
+                                "coin",
+                                response.coin);
 
         int index = 0;
         addGpu(
