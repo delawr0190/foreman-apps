@@ -9,109 +9,33 @@ import java.util.List;
  * The following model provides a model of a response from ethminer:
  *
  * <pre>
- *     {"id":0,"jsonrpc":"2.0","method":"miner_getstathr"}
+ *     {"id":0,"jsonrpc":"2.0","method":"miner_getstat1"}
  * </pre>
  *
  * <p>The expected format of that response is:</p>
  *
  * <pre>
  * {
- *   "id": 1,
+ *   "id": 0,
  *   "jsonrpc": "2.0",
- *   "result": {
- *     "ethhashrate": 73056881,
- *     "ethhashrates": [
- *       14681287,
- *       14506510,
- *       14681287,
- *       14506510,
- *       0,
- *       14681287
- *     ],
- *     "ethinvalid": 0,
- *     "ethpoolsw": 0,
- *     "ethrejected": 0,
- *     "ethshares": 64,
- *     "fanpercentages": [
- *       90,
- *       90,
- *       90,
- *       90,
- *       100,
- *       90
- *     ],
- *     "pooladdrs": "eu1.ethermine.org:4444",
- *     "powerusages": [
- *       0.0,
- *       0.0,
- *       0.0,
- *       0.0,
- *       0.0,
- *       0.0
- *     ],
- *     "runtime": "59",
- *     "temperatures": [
- *       53,
- *       50,
- *       56,
- *       58,
- *       68,
- *       60
- *     ],
- *     "ispaused": [
- *       false,
- *       false,
- *       false,
- *       false,
- *       true,
- *       false
- *     ],
- *     "version": "ethminer-0.16.0.dev0+commit.41639944"
- *   }
+ *   "result": [
+ *     "0.19.0-beta.0+nhfix",
+ *     "4",
+ *     "266708;13;0",
+ *     "23117;23100;19731;22266;21328;23708;23559;23766;22556;20847;20973;21756",
+ *     "0;0;0",
+ *     "off;off;off;off;off;off;off;off;off;off;off;off",
+ *     "49;100;56;100;56;100;57;100;56;100;51;100;51;100;50;85;59;0;54;95;52;100;52;100",
+ *     "asia.ethash-hub.miningpoolhub.com:17020",
+ *     "0;0;0;0"
+ *   ]
  * }
  * </pre>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Response {
 
-    /** The result. */
+    /** The results. */
     @JsonProperty("result")
-    public Result result;
-
-    /** A model object representing the result object. */
-    @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class Result {
-
-        /** The total hash rate. */
-        @JsonProperty("ethhashrate")
-        public int ethHashRate;
-
-        /** The ETH invalid shares. */
-        @JsonProperty("ethinvalid")
-        public int ethInvalid;
-
-        /** The ETH rejected shares. */
-        @JsonProperty("ethrejected")
-        public int ethRejected;
-
-        /** The ETH shares. */
-        @JsonProperty("ethshares")
-        public int ethShares;
-
-        /** The fan percentages. */
-        @JsonProperty("fanpercentages")
-        public List<Integer> fanPercentages;
-
-        /** The pool address. */
-        @JsonProperty("pooladdrs")
-        public String poolAddress;
-
-        /** The total runtime (minutes). */
-        @JsonProperty("runtime")
-        public String runtime;
-
-        /** The GPU temperatures. */
-        @JsonProperty("temperatures")
-        public List<Integer> temperatures;
-    }
+    public List<String> result;
 }

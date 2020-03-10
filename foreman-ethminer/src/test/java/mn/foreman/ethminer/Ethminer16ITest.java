@@ -15,11 +15,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link Ethminer} against a fake API. */
-public class EthminerITest
+public class Ethminer16ITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public EthminerITest() {
+    public Ethminer16ITest() {
         super(
                 new Ethminer(
                         "127.0.0.1",
@@ -28,8 +28,22 @@ public class EthminerITest
                 new FakeRpcMinerServer(
                         3333,
                         ImmutableMap.of(
-                                "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstathr\"}\n",
-                                new RpcHandler("{\"id\":1,\"jsonrpc\":\"2.0\",\"result\":{\"ethhashrate\":73056881,\"ethhashrates\":[14681287,14506510,14681287,14506510,0,14681287],\"ethinvalid\":0,\"ethpoolsw\":0,\"ethrejected\":0,\"ethshares\":64,\"fanpercentages\":[90,90,90,90,100,90],\"pooladdrs\":\"eu1.ethermine.org:4444\",\"powerusages\":[0.0,0.0,0.0,0.0,0.0,0.0],\"runtime\":\"59\",\"temperatures\":[53,50,56,58,68,60],\"ispaused\":[false,false,false,true,false],\"version\": \"ethminer-0.16.0.dev0+commit.41639944\"}}"))),
+                                "{\"id\":1,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
+                                new RpcHandler("{\n" +
+                                        "  \"id\": 1,\n" +
+                                        "  \"jsonrpc\": \"2.0\",\n" +
+                                        "  \"result\": [\n" +
+                                        "    \"ethminer-0.16.0.dev0+commit.41639944\",\n" +
+                                        "    \"48\",\n" +
+                                        "    \"87221;54;0\",\n" +
+                                        "    \"14683;14508;14508;14508;14508;14508\",\n" +
+                                        "    \"0;0;0\",\n" +
+                                        "    \"off;off;off;off;off;off\",\n" +
+                                        "    \"53;90;50;90;56;90;58;90;61;90;60;90\",\n" +
+                                        "    \"eu1.ethermine.org:4444\",\n" +
+                                        "    \"0;0;0;0\"\n" +
+                                        "  ]\n" +
+                                        "}"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)
@@ -38,11 +52,11 @@ public class EthminerITest
                                         .setName("eu1.ethermine.org:4444")
                                         .setStatus(true, true)
                                         .setPriority(0)
-                                        .setCounts(64, 0, 0)
+                                        .setCounts(54, 0, 0)
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(new BigDecimal("73056881"))
+                                        .setHashRate(new BigDecimal("87221000"))
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
@@ -120,11 +134,11 @@ public class EthminerITest
                                                         .setName("GPU 4")
                                                         .setIndex(4)
                                                         .setBus("0")
-                                                        .setTemp(68)
+                                                        .setTemp(61)
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
-                                                                        .addSpeed(100)
+                                                                        .addSpeed(90)
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .setFreqInfo(

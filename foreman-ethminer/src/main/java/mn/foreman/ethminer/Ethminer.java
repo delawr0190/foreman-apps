@@ -17,6 +17,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,7 +30,7 @@ import java.util.List;
  * application is running on the rig server, only localhost connections need to
  * be allowed.</p>
  *
- * <p>This class currently queries "miner_getstathr" via JSON RPC.</p>
+ * <p>This class currently queries "miner_getstat1" via JSON RPC.</p>
  *
  * <h1>Limitations</h1>
  *
@@ -77,7 +78,7 @@ public class Ethminer
                         makeCommand(),
                         new TypeReference<Response>() {
                         });
-        final Response.Result result = response.result;
+        final List<String> result = response.result;
         addPool(
                 statsBuilder,
                 result);
@@ -108,33 +109,35 @@ public class Ethminer
     }
 
     /**
-     * Adds the {@link Pool} from the {@link Response.Result}.
+     * Adds the {@link Pool} from the {@link Response}.
      *
      * @param builder The builder.
      * @param result  The result.
      */
     private static void addPool(
             final MinerStats.Builder builder,
-            final Response.Result result) {
+            final List<String> result) {
+        final String shares = result.get(2);
+        final String[] splitShares = shares.split(";");
         builder
                 .addPool(
                         new Pool.Builder()
                                 .setName(
                                         PoolUtils.sanitizeUrl(
-                                                result.poolAddress))
+                                                result.get(7)))
                                 .setStatus(
                                         true,
-                                        (Integer.parseInt(result.runtime) > 0))
+                                        true)
                                 .setPriority(0)
                                 .setCounts(
-                                        result.ethShares,
-                                        result.ethRejected,
-                                        result.ethInvalid)
+                                        splitShares[1],
+                                        splitShares[2],
+                                        "0")
                                 .build());
     }
 
     /**
-     * Adds the {@link Rig} from the {@link Response.Result}.
+     * Adds the {@link Rig} from the {@link Response}.
      *
      * @param builder The builder.
      * @param result  The result.
@@ -143,13 +146,24 @@ public class Ethminer
      */
     private static void addRig(
             final MinerStats.Builder builder,
-            final Response.Result result)
+            final List<String> result)
             throws MinerException {
+        final String[] shares = result.get(2).split(";");
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(new BigDecimal(result.ethHashRate));
-        final List<Integer> temperatures = result.temperatures;
-        final List<Integer> fans = result.fanPercentages;
+                        .setHashRate(
+                                new BigDecimal(shares[0])
+                                        .multiply(BigDecimal.valueOf(1000)));
+        final String[] tempAndFans = result.get(6).split(";");
+        final List<Integer> temperatures = new LinkedList<>();
+        final List<Integer> fans = new LinkedList<>();
+        for (int i = 0; i < tempAndFans.length; i++) {
+            if (i % 2 == 0) {
+                temperatures.add(Integer.parseInt(tempAndFans[i]));
+            } else {
+                fans.add(Integer.parseInt(tempAndFans[i]));
+            }
+        }
         if (temperatures.size() == fans.size()) {
             for (int i = 0; i < temperatures.size(); i++) {
                 rigBuilder
@@ -194,7 +208,7 @@ public class Ethminer
                 "{\"id\":%d,\"jsonrpc\":\"%s\",\"method\":\"%s\"%s}\n",
                 1,
                 "2.0",
-                "miner_getstathr",
+                "miner_getstat1",
                 (this.apiPassword != null && !this.apiPassword.isEmpty())
                         ? password
                         : "");
