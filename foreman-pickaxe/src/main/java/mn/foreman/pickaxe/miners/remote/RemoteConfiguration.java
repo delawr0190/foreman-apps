@@ -86,7 +86,7 @@ public class RemoteConfiguration
 
     /** How long to wait on socket operations before disconnecting. */
     private static final int SOCKET_TIMEOUT =
-            (int) TimeUnit.SECONDS.toMillis(10);
+            (int) TimeUnit.SECONDS.toMillis(60);
 
     /** The autominer mapping URL. */
     private final String amMappingUrl;
