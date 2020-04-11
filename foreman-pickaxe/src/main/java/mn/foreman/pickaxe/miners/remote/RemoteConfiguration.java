@@ -1,5 +1,6 @@
 package mn.foreman.pickaxe.miners.remote;
 
+import mn.foreman.aixin.AixinFactory;
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.antminer.AntminerType;
 import mn.foreman.autominer.AutoMinerFactory;
@@ -427,6 +428,9 @@ public class RemoteConfiguration
             final TypeMapping claymoreMappings) {
         MinerFactory minerFactory = null;
         switch (apiType) {
+            case AIXIN_API:
+                minerFactory = new AixinFactory();
+                break;
             case ANTMINER_HS_API:
                 // Fall through
             case ANTMINER_KHS_API:

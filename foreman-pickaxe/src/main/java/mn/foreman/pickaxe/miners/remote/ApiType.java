@@ -154,7 +154,10 @@ public enum ApiType {
     CPUMINER_API(47),
 
     /** iximiner. */
-    IXIMINER_API(48);
+    IXIMINER_API(48),
+
+    /** aixin. */
+    AIXIN_API(49);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

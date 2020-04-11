@@ -19,6 +19,10 @@
     <dependencies>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-aixin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-antminer</artifactId>
         </dependency>
         <dependency>

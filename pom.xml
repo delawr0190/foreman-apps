@@ -54,6 +54,7 @@
     </properties>
 
     <modules>
+        <module>foreman-aixin</module>
         <module>foreman-antminer</module>
         <module>foreman-autominer</module>
         <module>foreman-avalon</module>
@@ -105,6 +106,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- Our libraries -->
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-aixin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-antminer</artifactId>
