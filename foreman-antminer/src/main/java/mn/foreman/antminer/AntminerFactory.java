@@ -9,6 +9,7 @@ import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 /**
@@ -18,16 +19,16 @@ import java.util.Map;
 public class AntminerFactory
         implements MinerFactory {
 
-    /** The miner type. */
-    private final AntminerType type;
+    /** The hash rate multiplier. */
+    private final BigDecimal multiplier;
 
     /**
      * Constructor.
      *
-     * @param type The miner type.
+     * @param multiplier The hash rate multiplier.
      */
-    public AntminerFactory(final AntminerType type) {
-        this.type = type;
+    public AntminerFactory(final BigDecimal multiplier) {
+        this.multiplier = multiplier;
     }
 
     @Override
@@ -47,11 +48,11 @@ public class AntminerFactory
                         new RateMultiplyingDecorator(
                                 "STATS",
                                 "GHS av",
-                                type.getMultiplier(),
+                                this.multiplier,
                                 new RateMultiplyingDecorator(
                                         "STATS",
                                         "GHS 5s",
-                                        type.getMultiplier(),
+                                        this.multiplier,
                                         new StatsResponseStrategy())))
                 .build();
     }

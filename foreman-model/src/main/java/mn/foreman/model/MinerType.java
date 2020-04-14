@@ -7,9 +7,44 @@ package mn.foreman.model;
 public interface MinerType {
 
     /**
+     * Returns the category.
+     *
+     * @return The category.
+     */
+    Category getCategory();
+
+    /**
      * Returns the label.
      *
      * @return The label.
      */
-    String getLabel();
+    String getName();
+
+    /** A {@link Category} represents a Foreman dashboard miner category. */
+    enum Category {
+
+        /** The ASIC category. */
+        ASIC("ASIC");
+
+        /** The category name. */
+        private final String name;
+
+        /**
+         * Constructor.
+         *
+         * @param name The category name.
+         */
+        Category(final String name) {
+            this.name = name;
+        }
+
+        /**
+         * Returns the category name.
+         *
+         * @return The category name.
+         */
+        public String getName() {
+            return this.name;
+        }
+    }
 }

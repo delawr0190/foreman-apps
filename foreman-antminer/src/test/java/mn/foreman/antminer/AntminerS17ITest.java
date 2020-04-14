@@ -20,7 +20,7 @@ public class AntminerS17ITest
     /** Constructor. */
     public AntminerS17ITest() {
         super(
-                new AntminerFactory(AntminerType.ANTMINER_S17)
+                new AntminerFactory(BigDecimal.ONE)
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",

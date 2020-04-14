@@ -2,7 +2,6 @@ package mn.foreman.pickaxe.miners.remote;
 
 import mn.foreman.aixin.AixinFactory;
 import mn.foreman.antminer.AntminerFactory;
-import mn.foreman.antminer.AntminerType;
 import mn.foreman.autominer.AutoMinerFactory;
 import mn.foreman.autominer.MinerMapping;
 import mn.foreman.avalon.AvalonFactory;
@@ -288,35 +287,6 @@ public class RemoteConfiguration
     }
 
     /**
-     * Converts the type to an {@link AntminerType}.
-     *
-     * @param apiType The {@link ApiType}.
-     *
-     * @return The {@link AntminerType}.
-     */
-    private static AntminerType toAntminerType(
-            final ApiType apiType) {
-        AntminerType type = null;
-        switch (apiType) {
-            case ANTMINER_HS_API:
-                type = AntminerType.ANTMINER_B3;
-                break;
-            case ANTMINER_KHS_API:
-                type = AntminerType.ANTMINER_Z9;
-                break;
-            case ANTMINER_MHS_API:
-                type = AntminerType.ANTMINER_L3;
-                break;
-            case ANTMINER_GHS_API:
-                type = AntminerType.ANTMINER_S9;
-                break;
-            default:
-                break;
-        }
-        return type;
-    }
-
-    /**
      * Creates an {@link AutoMinerFactory}.
      *
      * @param minerConfig        The config.
@@ -432,16 +402,24 @@ public class RemoteConfiguration
                 minerFactory = new AixinFactory();
                 break;
             case ANTMINER_HS_API:
-                // Fall through
+                minerFactory =
+                        new AntminerFactory(
+                                new BigDecimal(0.000000001));
+                break;
             case ANTMINER_KHS_API:
-                // Fall through
+                minerFactory =
+                        new AntminerFactory(
+                                new BigDecimal(0.000001));
+                break;
             case ANTMINER_MHS_API:
-                // Fall through
+                minerFactory =
+                        new AntminerFactory(
+                                new BigDecimal(0.001));
+                break;
             case ANTMINER_GHS_API:
                 minerFactory =
                         new AntminerFactory(
-                                toAntminerType(
-                                        apiType));
+                                BigDecimal.ONE);
                 break;
             case AUTOMINER_API:
                 minerFactory =
