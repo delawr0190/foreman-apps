@@ -43,6 +43,7 @@
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
+        <lombok.version>1.18.12</lombok.version>
         <netty.version>4.1.42.Final</netty.version>
         <slf.version>1.7.25</slf.version>
 
@@ -382,6 +383,11 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
 
             <!-- JSON -->

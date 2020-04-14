@@ -14,6 +14,13 @@ public interface MinerType {
     Category getCategory();
 
     /**
+     * Returns the dashboard ID.
+     *
+     * @return The dashboard ID.
+     */
+    int getId();
+
+    /**
      * Returns the label.
      *
      * @return The label.
