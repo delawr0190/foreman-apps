@@ -10,24 +10,17 @@ public enum AixinType
         implements MinerType {
 
     /** An A1. */
-    AIXIN_A1("Aixin A1", 0);
+    AIXIN_A1(0);
 
     /** The ID. */
     private final int id;
 
-    /** The miner name. */
-    private final String name;
-
     /**
      * Constructor.
      *
-     * @param name The miner name.
-     * @param id   The ID.
+     * @param id The ID.
      */
-    AixinType(
-            final String name,
-            final int id) {
-        this.name = name;
+    AixinType(final int id) {
         this.id = id;
     }
 
@@ -39,10 +32,5 @@ public enum AixinType
     @Override
     public int getId() {
         return this.id;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 }

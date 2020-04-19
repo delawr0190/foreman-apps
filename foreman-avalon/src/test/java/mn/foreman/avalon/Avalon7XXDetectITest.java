@@ -1,82 +1,27 @@
 package mn.foreman.avalon;
 
-import mn.foreman.cgminer.CgMiner;
-import mn.foreman.model.miners.FanInfo;
-import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.Pool;
-import mn.foreman.model.miners.asic.Asic;
-import mn.foreman.util.AbstractApiITest;
+import mn.foreman.cgminer.CgMinerDetectionStrategy;
+import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.Detection;
+import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.math.BigDecimal;
-
-/** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class Avalon7XXITest
-        extends AbstractApiITest {
+/** Tests dection of an Avalon 7XX. */
+public class Avalon7XXDetectITest
+        extends AbstractDetectITest {
 
     /** Constructor. */
-    public Avalon7XXITest() {
+    public Avalon7XXDetectITest() {
         super(
-                new AvalonFactory()
-                        .create(
-                                ImmutableMap.of(
-                                        "apiIp",
-                                        "127.0.0.1",
-                                        "apiPort",
-                                        "4028")),
-                new FakeRpcMinerServer(
+                new CgMinerDetectionStrategy(
+                        CgMinerCommand.STATS,
+                        new AvalonTypeFactory()),
+                () -> new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(
-                                "{\"command\":\"summary\"}",
-                                new RpcHandler(
-                                        "{\n" +
-                                                "  \"STATUS\": [\n" +
-                                                "    {\n" +
-                                                "      \"STATUS\": \"S\",\n" +
-                                                "      \"When\": 1487889040,\n" +
-                                                "      \"Code\": 11,\n" +
-                                                "      \"Msg\": \"Summary\",\n" +
-                                                "      \"Description\": \"cgminer 4.10.0\"\n" +
-                                                "    }\n" +
-                                                "  ],\n" +
-                                                "  \"SUMMARY\": [\n" +
-                                                "    {\n" +
-                                                "      \"Elapsed\": 118,\n" +
-                                                "      \"MHS av\": 47071128.8,\n" +
-                                                "      \"MHS 5s\": 52126282.15,\n" +
-                                                "      \"MHS 1m\": 42592214.65,\n" +
-                                                "      \"MHS 5m\": 15441333.8,\n" +
-                                                "      \"MHS 15m\": 5789185.8,\n" +
-                                                "      \"Found Blocks\": 0,\n" +
-                                                "      \"Getworks\": 8,\n" +
-                                                "      \"Accepted\": 19,\n" +
-                                                "      \"Rejected\": 1,\n" +
-                                                "      \"Hardware Errors\": 3,\n" +
-                                                "      \"Utility\": 9.69,\n" +
-                                                "      \"Discarded\": 62,\n" +
-                                                "      \"Stale\": 0,\n" +
-                                                "      \"Get Failures\": 0,\n" +
-                                                "      \"Local Work\": 5367,\n" +
-                                                "      \"Remote Failures\": 0,\n" +
-                                                "      \"Network Blocks\": 1,\n" +
-                                                "      \"Total MH\": 5537208847,\n" +
-                                                "      \"Work Utility\": 675309.63,\n" +
-                                                "      \"Difficulty Accepted\": 819200,\n" +
-                                                "      \"Difficulty Rejected\": 32768,\n" +
-                                                "      \"Difficulty Stale\": 0,\n" +
-                                                "      \"Best Share\": 1548937,\n" +
-                                                "      \"Device Hardware%\": 0.0002,\n" +
-                                                "      \"Device Rejected%\": 2.4749,\n" +
-                                                "      \"Pool Rejected%\": 3.8462,\n" +
-                                                "      \"Pool Stale%\": 0,\n" +
-                                                "      \"Last getwork\": 1487889038\n" +
-                                                "    }\n" +
-                                                "  ],\n" +
-                                                "  \"id\": 1\n" +
-                                                "}"),
                                 "{\"command\":\"stats\"}",
                                 new RpcHandler(
                                         "{\n" +
@@ -208,163 +153,11 @@ public class Avalon7XXITest
                                                 "    }\n" +
                                                 "  ],\n" +
                                                 "  \"id\": 1\n" +
-                                                "}"),
-                                "{\"command\":\"pools\"}",
-                                new RpcHandler(
-                                        "{\n" +
-                                                "  \"STATUS\": [\n" +
-                                                "    {\n" +
-                                                "      \"STATUS\": \"S\",\n" +
-                                                "      \"When\": 1487889040,\n" +
-                                                "      \"Code\": 7,\n" +
-                                                "      \"Msg\": \"2 Pool(s)\",\n" +
-                                                "      \"Description\": \"cgminer 4.10.0\"\n" +
-                                                "    }\n" +
-                                                "  ],\n" +
-                                                "  \"POOLS\": [\n" +
-                                                "    {\n" +
-                                                "      \"POOL\": 0,\n" +
-                                                "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:3333\",\n" +
-                                                "      \"Status\": \"Alive\",\n" +
-                                                "      \"Priority\": 0,\n" +
-                                                "      \"Quota\": 1,\n" +
-                                                "      \"Long Poll\": \"N\",\n" +
-                                                "      \"Getworks\": 5,\n" +
-                                                "      \"Accepted\": 19,\n" +
-                                                "      \"Rejected\": 1,\n" +
-                                                "      \"Works\": 2663,\n" +
-                                                "      \"Discarded\": 62,\n" +
-                                                "      \"Stale\": 0,\n" +
-                                                "      \"Get Failures\": 0,\n" +
-                                                "      \"Remote Failures\": 0,\n" +
-                                                "      \"User\": \"Yop yop\",\n" +
-                                                "      \"Last Share Time\": 1487889012,\n" +
-                                                "      \"Diff1 Shares\": 1329000,\n" +
-                                                "      \"Proxy Type\": \"\",\n" +
-                                                "      \"Proxy\": \"\",\n" +
-                                                "      \"Difficulty Accepted\": 819200,\n" +
-                                                "      \"Difficulty Rejected\": 32768,\n" +
-                                                "      \"Difficulty Stale\": 0,\n" +
-                                                "      \"Last Share Difficulty\": 131072,\n" +
-                                                "      \"Work Difficulty\": 131072,\n" +
-                                                "      \"Has Stratum\": true,\n" +
-                                                "      \"Stratum Active\": true,\n" +
-                                                "      \"Stratum URL\": \"stratum.antpool.com\",\n" +
-                                                "      \"Stratum Difficulty\": 131072,\n" +
-                                                "      \"Has GBT\": false,\n" +
-                                                "      \"Best Share\": 1548937,\n" +
-                                                "      \"Pool Rejected%\": 3.8462,\n" +
-                                                "      \"Pool Stale%\": 0,\n" +
-                                                "      \"Bad Work\": 0,\n" +
-                                                "      \"Current Block Height\": 556495,\n" +
-                                                "      \"Current Block Version\": 536870912\n" +
-                                                "    },\n" +
-                                                "    {\n" +
-                                                "      \"POOL\": 1,\n" +
-                                                "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:443\",\n" +
-                                                "      \"Status\": \"Alive\",\n" +
-                                                "      \"Priority\": 1,\n" +
-                                                "      \"Quota\": 1,\n" +
-                                                "      \"Long Poll\": \"N\",\n" +
-                                                "      \"Getworks\": 3,\n" +
-                                                "      \"Accepted\": 0,\n" +
-                                                "      \"Rejected\": 0,\n" +
-                                                "      \"Works\": 0,\n" +
-                                                "      \"Discarded\": 0,\n" +
-                                                "      \"Stale\": 0,\n" +
-                                                "      \"Get Failures\": 0,\n" +
-                                                "      \"Remote Failures\": 0,\n" +
-                                                "      \"User\": \"Yop yop\",\n" +
-                                                "      \"Last Share Time\": 0,\n" +
-                                                "      \"Diff1 Shares\": 0,\n" +
-                                                "      \"Proxy Type\": \"\",\n" +
-                                                "      \"Proxy\": \"\",\n" +
-                                                "      \"Difficulty Accepted\": 0,\n" +
-                                                "      \"Difficulty Rejected\": 0,\n" +
-                                                "      \"Difficulty Stale\": 0,\n" +
-                                                "      \"Last Share Difficulty\": 0,\n" +
-                                                "      \"Work Difficulty\": 0,\n" +
-                                                "      \"Has Stratum\": true,\n" +
-                                                "      \"Stratum Active\": false,\n" +
-                                                "      \"Stratum URL\": \"\",\n" +
-                                                "      \"Stratum Difficulty\": 0,\n" +
-                                                "      \"Has GBT\": false,\n" +
-                                                "      \"Best Share\": 0,\n" +
-                                                "      \"Pool Rejected%\": 0,\n" +
-                                                "      \"Pool Stale%\": 0,\n" +
-                                                "      \"Bad Work\": 0,\n" +
-                                                "      \"Current Block Height\": 0,\n" +
-                                                "      \"Current Block Version\": 536870912\n" +
-                                                "    }\n" +
-                                                "  ],\n" +
-                                                "  \"id\": 1\n" +
                                                 "}"))),
-                new MinerStats.Builder()
-                        .setApiIp("127.0.0.1")
-                        .setApiPort(4028)
-                        .addPool(
-                                new Pool.Builder()
-                                        .setName("stratum.antpool.com:3333")
-                                        .setPriority(0)
-                                        .setStatus(
-                                                true,
-                                                true)
-                                        .setCounts(
-                                                19,
-                                                1,
-                                                0)
-                                        .build())
-                        .addPool(
-                                new Pool.Builder()
-                                        .setName("stratum.antpool.com:443")
-                                        .setPriority(1)
-                                        .setStatus(
-                                                true,
-                                                true)
-                                        .setCounts(
-                                                0,
-                                                0,
-                                                0)
-                                        .build())
-                        .addAsic(
-                                new Asic.Builder()
-                                        .setHashRate(new BigDecimal("52126282150000.000"))
-                                        .setFanInfo(
-                                                new FanInfo.Builder()
-                                                        .setCount(10)
-                                                        .addSpeed(36)
-                                                        .addSpeed(16)
-                                                        .addSpeed(38)
-                                                        .addSpeed(36)
-                                                        .addSpeed(34)
-                                                        .addSpeed(54)
-                                                        .addSpeed(61)
-                                                        .addSpeed(33)
-                                                        .addSpeed(28)
-                                                        .addSpeed(44)
-                                                        .setSpeedUnits("%")
-                                                        .build())
-                                        .addTemp(38)
-                                        .addTemp(89)
-                                        .addTemp(38)
-                                        .addTemp(80)
-                                        .addTemp(43)
-                                        .addTemp(92)
-                                        .addTemp(40)
-                                        .addTemp(87)
-                                        .addTemp(37)
-                                        .addTemp(88)
-                                        .addTemp(38)
-                                        .addTemp(84)
-                                        .addTemp(38)
-                                        .addTemp(89)
-                                        .addTemp(40)
-                                        .addTemp(87)
-                                        .addTemp(42)
-                                        .addTemp(90)
-                                        .addTemp(37)
-                                        .addTemp(78)
-                                        .build())
+                Detection.builder()
+                        .minerType(AvalonType.AVALON_741)
+                        .ipAddress("127.0.0.1")
+                        .port(4028)
                         .build());
     }
 }

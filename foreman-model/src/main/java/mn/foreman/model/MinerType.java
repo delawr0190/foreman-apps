@@ -20,13 +20,6 @@ public interface MinerType {
      */
     int getId();
 
-    /**
-     * Returns the label.
-     *
-     * @return The label.
-     */
-    String getName();
-
     /** A {@link Category} represents a Foreman dashboard miner category. */
     enum Category {
 

@@ -330,7 +330,7 @@ public class CgMiner
          * @return This builder instance.
          */
         public Builder setApiPort(final int apiPort) {
-            this.apiIp = Integer.toString(apiPort);
+            this.apiPort = Integer.toString(apiPort);
             return this;
         }
 

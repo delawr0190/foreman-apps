@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class Avalon10XXITest
+public class Avalon10XXStatsITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public Avalon10XXITest() {
+    public Avalon10XXStatsITest() {
         super(
                 new AvalonFactory()
                         .create(

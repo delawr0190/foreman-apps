@@ -65,7 +65,7 @@ public enum AntminerType
     ANTMINER_Z11("Antminer Z11", 0),
 
     /** The BraiinsOS Antminer S9. */
-    BRAIINS_S9("braiins-am1-s9", "Antminer S9", 0);
+    BRAIINS_S9("braiins-am1-s9", 0);
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, AntminerType> TYPE_MAP =
@@ -83,35 +83,17 @@ public enum AntminerType
     /** The miner identifier. */
     private final String identifier;
 
-    /** The miner name. */
-    private final String name;
-
     /**
      * Constructor.
      *
      * @param identifier The identifier.
-     * @param name       The miner name.
      * @param id         The ID.
      */
     AntminerType(
             final String identifier,
-            final String name,
             final int id) {
         this.identifier = identifier;
-        this.name = name;
         this.id = id;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param name    The miner name.
-     * @param minerId The miner ID.
-     */
-    AntminerType(
-            final String name,
-            final int minerId) {
-        this(name, name, minerId);
     }
 
     /**
@@ -140,10 +122,5 @@ public enum AntminerType
     @Override
     public int getId() {
         return this.id;
-    }
-
-    @Override
-    public String getName() {
-        return this.name;
     }
 }
