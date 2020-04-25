@@ -163,32 +163,27 @@ public class ScanStrategy
                             port,
                             Collections.emptyMap());
             LOG.debug("Scanning {}:{}", ip, port);
+
+            final Map<String, Object> update = new HashMap<>();
+            update.put("found", miners.size());
+            update.put("scanned", i + 1);
+            update.put("remaining", stop - i);
+
             if (detectionOpt.isPresent()) {
-                final Detection detection =
-                        detectionOpt.get();
-
-                final Object miner = toMiner(detection);
+                final Object miner = toMiner(detectionOpt.get());
                 miners.add(miner);
-
-                foremanApi
-                        .pickaxe()
-                        .commandUpdate(
-                                CommandUpdate
-                                        .builder()
-                                        .command("scan")
-                                        .update(
-                                                ImmutableMap.of(
-                                                        "miner",
-                                                        miner,
-                                                        "found",
-                                                        miners.size(),
-                                                        "scanned",
-                                                        i + 1,
-                                                        "remaining",
-                                                        stop - i))
-                                        .build(),
-                                id);
+                update.put("miner", miner);
             }
+
+            foremanApi
+                    .pickaxe()
+                    .commandUpdate(
+                            CommandUpdate
+                                    .builder()
+                                    .command("scan")
+                                    .update(update)
+                                    .build(),
+                            id);
         }
 
         builder.result(
