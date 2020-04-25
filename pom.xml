@@ -56,6 +56,7 @@
 
     <modules>
         <module>foreman-aixin</module>
+        <module>foreman-api</module>
         <module>foreman-antminer</module>
         <module>foreman-autominer</module>
         <module>foreman-avalon</module>
@@ -110,6 +111,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-aixin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

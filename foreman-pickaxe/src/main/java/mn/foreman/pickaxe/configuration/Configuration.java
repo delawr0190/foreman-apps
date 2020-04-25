@@ -21,44 +21,16 @@ public interface Configuration {
     String getClientId();
 
     /**
-     * Returns the Foreman API URL.
-     *
-     * @return The Foreman API URL.
-     */
-    String getForemanApiUrl();
-
-    /**
-     * Returns the Foreman autominer URL.
-     *
-     * @return The Foreman autominer URL.
-     */
-    String getForemanAutominerUrl();
-
-    /**
-     * Returns the claymore multipliers URL.
-     *
-     * @return The claymore multipliers URL.
-     */
-    String getForemanClaymoreMultipliersUrl();
-
-    /**
-     * Returns the Foreman config URL.
-     *
-     * @return The Foreman config URL.
-     */
-    String getForemanConfigUrl();
-
-    /**
-     * Returns the Foreman nicehash URL.
-     *
-     * @return The Foreman nicehash URL.
-     */
-    String getForemanNicehashUrl();
-
-    /**
      * Returns the pickaxe ID.
      *
      * @return The pickaxe ID.
      */
     String getPickaxeId();
+
+    /**
+     * Whether or not command and control is enabled.
+     *
+     * @return Whether or not command and control is enabled.
+     */
+    boolean isControl();
 }

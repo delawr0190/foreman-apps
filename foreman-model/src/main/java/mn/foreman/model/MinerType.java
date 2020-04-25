@@ -18,7 +18,7 @@ public interface MinerType {
      *
      * @return The dashboard ID.
      */
-    int getId();
+    String getSlug();
 
     /** A {@link Category} represents a Foreman dashboard miner category. */
     enum Category {

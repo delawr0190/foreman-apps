@@ -10,18 +10,18 @@ public enum AixinType
         implements MinerType {
 
     /** An A1. */
-    AIXIN_A1(0);
+    AIXIN_A1("aixin-a1");
 
-    /** The ID. */
-    private final int id;
+    /** The slug. */
+    private final String slug;
 
     /**
      * Constructor.
      *
-     * @param id The ID.
+     * @param slug The slug.
      */
-    AixinType(final int id) {
-        this.id = id;
+    AixinType(final String slug) {
+        this.slug = slug;
     }
 
     @Override
@@ -30,7 +30,7 @@ public enum AixinType
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSlug() {
+        return this.slug;
     }
 }

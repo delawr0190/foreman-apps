@@ -10,40 +10,49 @@
         <version>2.33.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>foreman-dragonmint</artifactId>
+    <artifactId>foreman-api</artifactId>
     <version>2.33.0-SNAPSHOT</version>
-    <name>foreman: foreman-dragonmint</name>
+    <name>foreman: foreman-api</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>mn.foreman</groupId>
-            <artifactId>foreman-io</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mn.foreman</groupId>
             <artifactId>foreman-model</artifactId>
         </dependency>
+
         <dependency>
-            <groupId>mn.foreman</groupId>
-            <artifactId>foreman-util</artifactId>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
         </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-        </dependency>
 
         <dependency>
-            <groupId>mn.foreman</groupId>
-            <artifactId>foreman-util</artifactId>
-            <scope>test</scope>
-            <classifier>tests</classifier>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jdk8</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.datatype</groupId>
+            <artifactId>jackson-datatype-jsr310</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

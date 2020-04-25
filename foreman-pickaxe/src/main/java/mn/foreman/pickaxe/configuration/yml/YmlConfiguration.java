@@ -19,20 +19,8 @@ public class YmlConfiguration
     /** The client ID. */
     private final String clientId;
 
-    /** The Foreman API URL. */
-    private final String foremanApiUrl;
-
-    /** The Foreman autominer API URL. */
-    private final String foremanAutominerUrl;
-
-    /** The claymore multipliers URL. */
-    private final String foremanClaymoreMultipliersUrl;
-
-    /** The Foreman config API URL. */
-    private final String foremanConfigUrl;
-
-    /** The Foreman nicehash API URL. */
-    private final String foremanNicehashUrl;
+    /** Whether or not command and control is enabled. */
+    private final boolean control;
 
     /** The pickaxe identifier. */
     private final String pickaxeId;
@@ -40,41 +28,23 @@ public class YmlConfiguration
     /**
      * Constructor.
      *
-     * @param foremanApiUrl                 The Foreman API URL.
-     * @param foremanConfigUrl              The Foreman config URL.
-     * @param foremanNicehashUrl            The Foreman nicehash URL.
-     * @param foremanAutominerUrl           The Foreman autominer URL.
-     * @param foremanClaymoreMultipliersUrl The claymore multipliers URL.
-     * @param apiKey                        The API key.
-     * @param clientId                      The client ID.
-     * @param pickaxeId                     The pickaxe ID.
+     * @param apiKey    The API key.
+     * @param clientId  The client ID.
+     * @param pickaxeId The pickaxe ID.
+     * @param control   Whether or not command and control is enabled.
      */
     public YmlConfiguration(
-            @JsonProperty("foremanApiUrl") final String foremanApiUrl,
-            @JsonProperty("foremanConfigUrl") final String foremanConfigUrl,
-            @JsonProperty("foremanNicehashUrl") final String foremanNicehashUrl,
-            @JsonProperty("foremanAutominerUrl") final String foremanAutominerUrl,
-            @JsonProperty("foremanClaymoreMultipliersUrl") final String foremanClaymoreMultipliersUrl,
             @JsonProperty("apiKey") final String apiKey,
             @JsonProperty("clientId") final String clientId,
-            @JsonProperty("pickaxeId") final String pickaxeId) {
-        Validate.notEmpty(
-                foremanApiUrl,
-                "foremanApiUrl cannot be empty");
-        Validate.notEmpty(
-                foremanConfigUrl,
-                "foremanConfigUrl cannot be empty");
+            @JsonProperty("pickaxeId") final String pickaxeId,
+            @JsonProperty("control") final boolean control) {
         Validate.notEmpty(
                 apiKey,
                 "apiKey cannot be empty");
-        this.foremanApiUrl = foremanApiUrl;
-        this.foremanConfigUrl = foremanConfigUrl;
-        this.foremanNicehashUrl = foremanNicehashUrl;
-        this.foremanAutominerUrl = foremanAutominerUrl;
-        this.foremanClaymoreMultipliersUrl = foremanClaymoreMultipliersUrl;
         this.apiKey = apiKey;
         this.clientId = clientId;
         this.pickaxeId = pickaxeId;
+        this.control = control;
     }
 
     @Override
@@ -88,32 +58,12 @@ public class YmlConfiguration
     }
 
     @Override
-    public String getForemanApiUrl() {
-        return this.foremanApiUrl;
-    }
-
-    @Override
-    public String getForemanAutominerUrl() {
-        return this.foremanAutominerUrl;
-    }
-
-    @Override
-    public String getForemanClaymoreMultipliersUrl() {
-        return foremanClaymoreMultipliersUrl;
-    }
-
-    @Override
-    public String getForemanConfigUrl() {
-        return this.foremanConfigUrl;
-    }
-
-    @Override
-    public String getForemanNicehashUrl() {
-        return this.foremanNicehashUrl;
-    }
-
-    @Override
     public String getPickaxeId() {
         return this.pickaxeId;
+    }
+
+    @Override
+    public boolean isControl() {
+        return this.control;
     }
 }

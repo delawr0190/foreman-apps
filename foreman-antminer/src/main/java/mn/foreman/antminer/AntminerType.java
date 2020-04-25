@@ -11,61 +11,61 @@ public enum AntminerType
         implements MinerType {
 
     /** The Antminer A3. */
-    ANTMINER_A3("Antminer A3", 0),
+    ANTMINER_A3("Antminer A3", "antminer-a3"),
 
     /** The Antminer B3. */
-    ANTMINER_B3("Antminer B3", 0),
+    ANTMINER_B3("Antminer B3", "antminer-b3"),
 
     /** The Antminer B7. */
-    ANTMINER_B7("Antminer B7", 0),
+    ANTMINER_B7("Antminer B7", "antminer-b7"),
 
     /** The Antminer D3. */
-    ANTMINER_D3("Antminer D3", 0),
+    ANTMINER_D3("Antminer D3", "antminer-d3"),
 
     /** The Antminer DR3. */
-    ANTMINER_DR3("Antminer DR3", 0),
+    ANTMINER_DR3("Antminer DR3", "antminer-dr3"),
 
     /** The Antminer DR5. */
-    ANTMINER_DR5("Antminer DR5", 0),
+    ANTMINER_DR5("Antminer DR5", "antminer-dr5"),
 
     /** The Antminer E3. */
-    ANTMINER_E3("Antminer E3", 0),
+    ANTMINER_E3("Antminer E3", "antminer-e3"),
 
     /** The Antminer L3. */
-    ANTMINER_L3("Antminer L3", 0),
+    ANTMINER_L3("Antminer L3", "antminer-l3"),
 
     /** The Antminer S7. */
-    ANTMINER_S7("Antminer S7", 0),
+    ANTMINER_S7("Antminer S7", "antminer-s7"),
 
     /** The Antminer S9. */
-    ANTMINER_S9("Antminer S9", 0),
+    ANTMINER_S9("Antminer S9", "antminer-s9"),
 
     /** The Antminer S15. */
-    ANTMINER_S15("Antminer S15", 0),
+    ANTMINER_S15("Antminer S15", "antminer-s15"),
 
     /** The Antminer S17. */
-    ANTMINER_S17("Antminer S17", 0),
+    ANTMINER_S17("Antminer S17", "antminer-s17"),
 
     /** The Antminer T9. */
-    ANTMINER_T9("Antminer T9", 0),
+    ANTMINER_T9("Antminer T9", "antminer-t9"),
 
     /** The Antminer T15. */
-    ANTMINER_T15("Antminer T15", 0),
+    ANTMINER_T15("Antminer T15", "antminer-t15"),
 
     /** The Antminer T17. */
-    ANTMINER_T17("Antminer T17", 0),
+    ANTMINER_T17("Antminer T17", "antminer-t17"),
 
     /** The Antminer X3. */
-    ANTMINER_X3("Antminer X3", 0),
+    ANTMINER_X3("Antminer X3", "antminer-x3"),
 
     /** The Antminer Z9. */
-    ANTMINER_Z9("Antminer Z9", 0),
+    ANTMINER_Z9("Antminer Z9", "antminer-z9"),
 
     /** The Antminer Z11. */
-    ANTMINER_Z11("Antminer Z11", 0),
+    ANTMINER_Z11("Antminer Z11", "antminer-z11"),
 
     /** The BraiinsOS Antminer S9. */
-    BRAIINS_S9("braiins-am1-s9", 0);
+    BRAIINS_S9("braiins-am1-s9", "antminer-s9");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, AntminerType> TYPE_MAP =
@@ -77,23 +77,23 @@ public enum AntminerType
         }
     }
 
-    /** The miner ID associated with the miner in Foreman. */
-    private final int id;
-
     /** The miner identifier. */
     private final String identifier;
+
+    /** The miner ID associated with the miner in Foreman. */
+    private final String slug;
 
     /**
      * Constructor.
      *
      * @param identifier The identifier.
-     * @param id         The ID.
+     * @param slug       The slug.
      */
     AntminerType(
             final String identifier,
-            final int id) {
+            final String slug) {
         this.identifier = identifier;
-        this.id = id;
+        this.slug = slug;
     }
 
     /**
@@ -120,7 +120,7 @@ public enum AntminerType
     }
 
     @Override
-    public int getId() {
-        return this.id;
+    public String getSlug() {
+        return this.slug;
     }
 }

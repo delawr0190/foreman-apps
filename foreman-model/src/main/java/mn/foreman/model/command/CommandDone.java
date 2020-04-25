@@ -1,5 +1,7 @@
 package mn.foreman.model.command;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.Data;
@@ -21,4 +23,14 @@ public class CommandDone {
     /** The result. */
     @JsonProperty("result")
     private final Map<String, Object> result;
+
+    /** The response. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Response {
+
+        /** The command status. */
+        @JsonProperty("status")
+        public String status;
+    }
 }

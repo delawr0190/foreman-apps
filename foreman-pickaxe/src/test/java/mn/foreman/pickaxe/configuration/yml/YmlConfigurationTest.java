@@ -30,21 +30,6 @@ public class YmlConfigurationTest {
                 "nicebro",
                 configuration.getApiKey());
         assertEquals(
-                "http://localhost:80",
-                configuration.getForemanApiUrl());
-        assertEquals(
-                "http://127.0.0.1:8080",
-                configuration.getForemanConfigUrl());
-        assertEquals(
-                "http://127.0.0.1:8081",
-                configuration.getForemanNicehashUrl());
-        assertEquals(
-                "http://127.0.0.1:8082",
-                configuration.getForemanAutominerUrl());
-        assertEquals(
-                "http://127.0.0.1:8083",
-                configuration.getForemanClaymoreMultipliersUrl());
-        assertEquals(
                 "cafebabe",
                 configuration.getPickaxeId());
     }
@@ -63,21 +48,6 @@ public class YmlConfigurationTest {
         assertEquals(
                 "nicebro",
                 configuration.getApiKey());
-        assertEquals(
-                "http://localhost:80",
-                configuration.getForemanApiUrl());
-        assertEquals(
-                "http://127.0.0.1:8080",
-                configuration.getForemanConfigUrl());
-        assertEquals(
-                "http://127.0.0.1:8081",
-                configuration.getForemanNicehashUrl());
-        assertEquals(
-                "http://127.0.0.1:8082",
-                configuration.getForemanAutominerUrl());
-        assertEquals(
-                "http://127.0.0.1:8083",
-                configuration.getForemanClaymoreMultipliersUrl());
         assertNull(
                 configuration.getPickaxeId());
     }

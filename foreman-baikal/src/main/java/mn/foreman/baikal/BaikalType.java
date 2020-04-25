@@ -1,4 +1,4 @@
-package mn.foreman.avalon;
+package mn.foreman.baikal;
 
 import mn.foreman.model.MinerType;
 
@@ -7,39 +7,21 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * An {@link AvalonType} provides a {@link MinerType} implementation that
- * contains all of the known Avalon types.
+ * A {@link BaikalType} provides a {@link MinerType} implementation that
+ * contains all of the known Baikal types.
  */
-public enum AvalonType
+public enum BaikalType
         implements MinerType {
 
-    /** The Avalon 741. */
-    AVALON_741("Ver[741", "avalonminer-741"),
-
-    /** The Avalon 842. */
-    AVALON_821("Ver[821", "avalonminer-821"),
-
-    /** The Avalon 841. */
-    AVALON_841("Ver[841", "avalonminer-841"),
-
-    /** The Avalon 851. */
-    AVALON_851("Ver[851", "avalonminer-851"),
-
-    /** The Avalon 911. */
-    AVALON_911("Ver[911", "avalonminer-911"),
-
-    /** The Avalon 921. */
-    AVALON_921("Ver[921", "avalonminer-921"),
-
-    /** The Avalon 1047. */
-    AVALON_1047("Ver[1047", "avalonminer-1047");
+    /** A Baikal. */
+    BAIKAL("BKLU", "baikal-bk-n+");
 
     /** All of the types, by string, mapped to their type. */
-    private static final Map<String, AvalonType> TYPE_MAP =
+    private static final Map<String, BaikalType> TYPE_MAP =
             new ConcurrentHashMap<>();
 
     static {
-        for (final AvalonType asicType : values()) {
+        for (final BaikalType asicType : values()) {
             TYPE_MAP.put(asicType.identifier, asicType);
         }
     }
@@ -56,7 +38,7 @@ public enum AvalonType
      * @param identifier The identifier.
      * @param slug       The slug.
      */
-    AvalonType(
+    BaikalType(
             final String identifier,
             final String slug) {
         this.identifier = identifier;
@@ -64,13 +46,13 @@ public enum AvalonType
     }
 
     /**
-     * Converts the provided model to an {@link AvalonType}.
+     * Converts the provided model to a {@link BaikalType}.
      *
      * @param identifier The ID.
      *
-     * @return The corresponding {@link AvalonType}.
+     * @return The corresponding {@link BaikalType}.
      */
-    public static Optional<AvalonType> forIdentifier(final String identifier) {
+    public static Optional<BaikalType> forIdentifier(final String identifier) {
         if (identifier != null && !identifier.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()
