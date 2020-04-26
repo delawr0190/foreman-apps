@@ -1,31 +1,29 @@
 package mn.foreman.dragonmint;
 
-import mn.foreman.model.miners.FanInfo;
-import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.Pool;
-import mn.foreman.model.miners.asic.Asic;
-import mn.foreman.util.AbstractApiITest;
+import mn.foreman.model.Detection;
+import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.math.BigDecimal;
-
-/** Runs an integration tests using {@link Dragonmint} against a fake API. */
-public class DragonmintITest
-        extends AbstractApiITest {
+/** Tests detection of a Dragonmint. */
+public class DragonmintDetectITest
+        extends AbstractDetectITest {
 
     /** Constructor. */
-    public DragonmintITest() {
+    public DragonmintDetectITest() {
         super(
-                new Dragonmint(
-                        "127.0.0.1",
-                        8080,
+                new DragonmintDetectionStrategy(),
+                "127.0.0.1",
+                8888,
+                ImmutableMap.of(
                         "username",
+                        "username",
+                        "password",
                         "password"),
-                new FakeHttpMinerServer(
-                        8080,
+                () -> new FakeHttpMinerServer(
+                        8888,
                         ImmutableMap.of(
                                 "/api/summary",
                                 new HttpHandler(
@@ -205,46 +203,16 @@ public class DragonmintITest
                                                 "  \"tuning\": false,\n" +
                                                 "  \"hashrates\": []\n" +
                                                 "}"))),
-                new MinerStats.Builder()
-                        .setApiIp("127.0.0.1")
-                        .setApiPort(8080)
-                        .addPool(
-                                new Pool.Builder()
-                                        .setName("us-east.stratum.slushpool.com:3333")
-                                        .setPriority(0)
-                                        .setStatus(
-                                                true,
-                                                true)
-                                        .setCounts(
-                                                1030,
-                                                6,
-                                                0)
-                                        .build())
-                        .addPool(
-                                new Pool.Builder()
-                                        .setName("pool.ckpool.org:3333")
-                                        .setPriority(1)
-                                        .setStatus(
-                                                true,
-                                                true)
-                                        .setCounts(
-                                                0,
-                                                0,
-                                                0)
-                                        .build())
-                        .addAsic(
-                                new Asic.Builder()
-                                        .setHashRate(new BigDecimal("14075555300000.00"))
-                                        .setFanInfo(
-                                                new FanInfo.Builder()
-                                                        .setCount(1)
-                                                        .addSpeed(59)
-                                                        .setSpeedUnits("%")
-                                                        .build())
-                                        .addTemp(72)
-                                        .addTemp(67)
-                                        .addTemp(67)
-                                        .build())
+                Detection.builder()
+                        .minerType(DragonmintType.DRAGONMINT_T1)
+                        .ipAddress("127.0.0.1")
+                        .port(8888)
+                        .parameters(
+                                ImmutableMap.of(
+                                        "username",
+                                        "username",
+                                        "password",
+                                        "password"))
                         .build());
     }
 }

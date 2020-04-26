@@ -36,6 +36,7 @@ import java.util.List;
 public class Dragonmint
         extends AbstractMiner {
 
+
     /** The API password. */
     private final String password;
 

@@ -90,9 +90,13 @@ public class CgMinerDetectionStrategy
                                     new CgMinerRequest.Builder()
                                             .setCommand(this.command)
                                             .build(),
-                                    (builder, response) ->
-                                            responseValues.putAll(
-                                                    response.getValues()),
+                                    (builder, response) -> {
+                                        responseValues.putAll(
+                                                response.getValues());
+                                        responseValues.put(
+                                                "STATUS",
+                                                response.getStatus());
+                                    },
                                     this.patchingStrategy)
                             .build();
 

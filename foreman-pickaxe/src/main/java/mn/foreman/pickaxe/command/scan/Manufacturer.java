@@ -5,12 +5,14 @@ import mn.foreman.antminer.AntminerTypeFactory;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
+import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.NullPatchingStrategy;
-import mn.foreman.cgminer.ResponsePatchingStrategy;
-import mn.foreman.cgminer.TypeFactory;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
+import mn.foreman.dragonmint.DragonmintDetectionStrategy;
+import mn.foreman.model.DetectionStrategy;
+import mn.foreman.spondoolies.SpondooliesTypeFactory;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -22,44 +24,63 @@ public enum Manufacturer {
     /** Aixin. */
     AIXIN(
             "aixin",
-            CgMinerCommand.DEVS,
-            new AixinTypeFactory(),
-            new NullPatchingStrategy()),
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.DEVS,
+                    new AixinTypeFactory(),
+                    new NullPatchingStrategy())),
 
     /** Antminer. */
     ANTMINER(
             "antminer",
-            CgMinerCommand.VERSION,
-            new AntminerTypeFactory(),
-            new NullPatchingStrategy()),
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.VERSION,
+                    new AntminerTypeFactory(),
+                    new NullPatchingStrategy())),
 
     /** Avalon. */
     AVALON(
             "avalon",
-            CgMinerCommand.STATS,
-            new AvalonTypeFactory(),
-            new NullPatchingStrategy()),
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.STATS,
+                    new AvalonTypeFactory(),
+                    new NullPatchingStrategy())),
 
     /** Baikal. */
     BAIKAL(
             "baikal",
-            CgMinerCommand.DEVS,
-            new BaikalTypeFactory(),
-            new NullPatchingStrategy()),
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.DEVS,
+                    new BaikalTypeFactory(),
+                    new NullPatchingStrategy())),
 
     /** Blackminer. */
     BLACKMINER(
             "blackminer",
-            CgMinerCommand.VERSION,
-            new BlackminerTypeFactory(),
-            new NullPatchingStrategy()),
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.VERSION,
+                    new BlackminerTypeFactory(),
+                    new NullPatchingStrategy())),
 
     /** Dayun. */
     DAYUN(
             "dayun",
-            CgMinerCommand.STATS,
-            new DayunTypeFactory(),
-            new StatsPatchingStrategy());
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.STATS,
+                    new DayunTypeFactory(),
+                    new StatsPatchingStrategy())),
+
+    /** Dragonmint. */
+    DRAGONMINT(
+            "dragonmint",
+            new DragonmintDetectionStrategy()),
+
+    /** Spondoolies. */
+    SPONDOOLIES(
+            "spondoolies",
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.SUMMARY,
+                    new SpondooliesTypeFactory(),
+                    new NullPatchingStrategy()));
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =
@@ -73,35 +94,23 @@ public enum Manufacturer {
         }
     }
 
-    /** The command to run against cgminer. */
-    private final CgMinerCommand command;
+    /** The strategy for detecting. */
+    private final DetectionStrategy detectionStrategy;
 
     /** The name. */
     private final String name;
 
-    /** The patching strategy. */
-    private final ResponsePatchingStrategy patchingStrategy;
-
-    /** The factory to use for making types. */
-    private final TypeFactory typeFactory;
-
     /**
      * Constructor.
      *
-     * @param name             The name.
-     * @param command          The command.
-     * @param typeFactory      The type factory.
-     * @param patchingStrategy The patching strategy.
+     * @param name              The name.
+     * @param detectionStrategy The strategy for detecting.
      */
     Manufacturer(
             final String name,
-            final CgMinerCommand command,
-            final TypeFactory typeFactory,
-            final ResponsePatchingStrategy patchingStrategy) {
+            final DetectionStrategy detectionStrategy) {
         this.name = name;
-        this.command = command;
-        this.typeFactory = typeFactory;
-        this.patchingStrategy = patchingStrategy;
+        this.detectionStrategy = detectionStrategy;
     }
 
     /**
@@ -116,12 +125,12 @@ public enum Manufacturer {
     }
 
     /**
-     * Returns the command.
+     * Returns the strategy.
      *
-     * @return The command.
+     * @return The strategy.
      */
-    public CgMinerCommand getCommand() {
-        return this.command;
+    public DetectionStrategy getDetectionStrategy() {
+        return this.detectionStrategy;
     }
 
     /**
@@ -131,23 +140,5 @@ public enum Manufacturer {
      */
     public String getName() {
         return this.name;
-    }
-
-    /**
-     * Returns the patching strategy.
-     *
-     * @return The patching strategy.
-     */
-    public ResponsePatchingStrategy getPatchingStrategy() {
-        return this.patchingStrategy;
-    }
-
-    /**
-     * Returns the factory.
-     *
-     * @return The factory.
-     */
-    public TypeFactory getTypeFactory() {
-        return this.typeFactory;
     }
 }

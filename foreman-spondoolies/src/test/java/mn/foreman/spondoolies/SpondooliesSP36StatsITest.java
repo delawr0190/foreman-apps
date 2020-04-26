@@ -14,11 +14,11 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class SpondooliesSP36ITest
+public class SpondooliesSP36StatsITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public SpondooliesSP36ITest() {
+    public SpondooliesSP36StatsITest() {
         super(
                 new SpondooliesFactory().create(
                         ImmutableMap.of(

@@ -1,7 +1,6 @@
 package mn.foreman.pickaxe.command.scan;
 
 import mn.foreman.api.ForemanApi;
-import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MinerType;
@@ -124,10 +123,7 @@ public class ScanStrategy
                     start,
                     stop,
                     port,
-                    new CgMinerDetectionStrategy(
-                            manufacturerType.getCommand(),
-                            manufacturerType.getTypeFactory(),
-                            manufacturerType.getPatchingStrategy()),
+                    manufacturerType.getDetectionStrategy(),
                     builder);
         }
     }
