@@ -1,4 +1,4 @@
-package mn.foreman.dayun;
+package mn.foreman.hyperbit;
 
 import mn.foreman.model.MinerType;
 
@@ -7,21 +7,21 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A {@link DayunType} provides a {@link MinerType} implementation that
- * contains all of the known Dayun types.
+ * A {@link HyperbitType} provides a {@link MinerType} implementation that
+ * contains all of the known Hyperbit types.
  */
-public enum DayunType
+public enum HyperbitType
         implements MinerType {
 
-    /** The Dayun Zig Z1. */
-    DAYUN_ZIG_Z1("lyra2rev20", "dayun-zig-z1");
+    /** The Hyperbit BW L21. */
+    BW_L21("ttyS1", "hyperbit-bw-l21");
 
     /** All of the types, by string, mapped to their type. */
-    private static final Map<String, DayunType> TYPE_MAP =
+    private static final Map<String, HyperbitType> TYPE_MAP =
             new ConcurrentHashMap<>();
 
     static {
-        for (final DayunType asicType : values()) {
+        for (final HyperbitType asicType : values()) {
             TYPE_MAP.put(asicType.identifier, asicType);
         }
     }
@@ -38,7 +38,7 @@ public enum DayunType
      * @param identifier The identifier.
      * @param slug       The slug.
      */
-    DayunType(
+    HyperbitType(
             final String identifier,
             final String slug) {
         this.identifier = identifier;
@@ -46,13 +46,13 @@ public enum DayunType
     }
 
     /**
-     * Converts the provided model to an {@link DayunType}.
+     * Converts the provided model to an {@link HyperbitType}.
      *
      * @param identifier The ID.
      *
-     * @return The corresponding {@link DayunType}.
+     * @return The corresponding {@link HyperbitType}.
      */
-    public static Optional<DayunType> forIdentifier(final String identifier) {
+    public static Optional<HyperbitType> forIdentifier(final String identifier) {
         if (identifier != null && !identifier.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()

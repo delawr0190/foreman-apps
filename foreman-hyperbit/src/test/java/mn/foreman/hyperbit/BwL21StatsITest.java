@@ -1,4 +1,4 @@
-package mn.foreman.baikal;
+package mn.foreman.hyperbit;
 
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.model.miners.FanInfo;
@@ -20,7 +20,7 @@ public class BwL21StatsITest
     /** Constructor. */
     public BwL21StatsITest() {
         super(
-                new BaikalFactory()
+                new HyperbitFactory()
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",

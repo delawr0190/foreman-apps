@@ -1,4 +1,4 @@
-package mn.foreman.moonlander.response;
+package mn.foreman.futurebit.response;
 
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 /**
  * A {@link DevsResponseStrategy} provides a {@link ResponseStrategy}
  * implementation that's capable of parsing a {@link CgMinerCommand#DEVS}
- * response from a moonlander.
+ * response from a futurebit.
  */
 public class DevsResponseStrategy
         implements ResponseStrategy {

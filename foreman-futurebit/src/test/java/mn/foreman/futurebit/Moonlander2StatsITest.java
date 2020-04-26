@@ -1,4 +1,4 @@
-package mn.foreman.moonlander;
+package mn.foreman.futurebit;
 
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.model.miners.FanInfo;
@@ -14,13 +14,13 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class Moonlander2ITest
+public class Moonlander2StatsITest
         extends AbstractApiITest {
 
     /** Constructor. */
-    public Moonlander2ITest() {
+    public Moonlander2StatsITest() {
         super(
-                new MoonlanderFactory()
+                new FutureBitFactory()
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",

@@ -141,8 +141,8 @@ public enum ApiType {
     /** miniz. */
     MINIZ_API(43),
 
-    /** moonlander. */
-    MOONLANDER_API(44),
+    /** futurebit. */
+    FUTUREBIT_API(44),
 
     /** swarm. */
     SWARM_API(45),
@@ -157,7 +157,10 @@ public enum ApiType {
     IXIMINER_API(48),
 
     /** aixin. */
-    AIXIN_API(49);
+    AIXIN_API(49),
+
+    /** hyperbit. */
+    HYPERBIT_API(50);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

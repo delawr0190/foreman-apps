@@ -99,6 +99,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-futurebit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-gminer</artifactId>
         </dependency>
         <dependency>
@@ -108,6 +112,10 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-hspminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-hyperbit</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
@@ -136,10 +144,6 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>mn.foreman</groupId>
-            <artifactId>foreman-moonlander</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>

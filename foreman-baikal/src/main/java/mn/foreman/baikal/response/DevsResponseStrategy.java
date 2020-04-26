@@ -28,6 +28,18 @@ public class DevsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(DevsResponseStrategy.class);
 
+    /** The temperature key. */
+    private final String temperatureKey;
+
+    /**
+     * Constructor.
+     *
+     * @param temperatureKey The temperature key.
+     */
+    public DevsResponseStrategy(final String temperatureKey) {
+        this.temperatureKey = temperatureKey;
+    }
+
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
@@ -49,39 +61,6 @@ public class DevsResponseStrategy
         } else {
             LOG.debug("Received an empty response");
         }
-    }
-
-    /**
-     * Adds all of the ASICs from the provided values.
-     *
-     * @param values       The values.
-     * @param statsBuilder The builder.
-     */
-    private static void addAsic(
-            final List<Map<String, String>> values,
-            final MinerStats.Builder statsBuilder) {
-        final List<Map<String, String>> asicValues =
-                values
-                        .stream()
-                        .filter((map) -> map.containsKey("ASC"))
-                        .collect(Collectors.toList());
-        final Asic.Builder asicBuilder =
-                new Asic.Builder()
-                        .setHashRate(toRate(asicValues))
-                        .setFanInfo(
-                                new FanInfo.Builder()
-                                        .setCount(0)
-                                        .setSpeedUnits("%")
-                                        .build());
-        asicValues
-                .stream()
-                .map((map) -> map.getOrDefault(
-                        "Temperature",
-                        map.get("temperature")))
-                .map(Double::parseDouble)
-                .map(Double::intValue)
-                .forEach(asicBuilder::addTemp);
-        statsBuilder.addAsic(asicBuilder.build());
     }
 
     /**
@@ -114,5 +93,36 @@ public class DevsResponseStrategy
                         value.multiply(
                                 new BigDecimal(1000 * 1000)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Adds all of the ASICs from the provided values.
+     *
+     * @param values       The values.
+     * @param statsBuilder The builder.
+     */
+    private void addAsic(
+            final List<Map<String, String>> values,
+            final MinerStats.Builder statsBuilder) {
+        final List<Map<String, String>> asicValues =
+                values
+                        .stream()
+                        .filter((map) -> map.containsKey("ASC"))
+                        .collect(Collectors.toList());
+        final Asic.Builder asicBuilder =
+                new Asic.Builder()
+                        .setHashRate(toRate(asicValues))
+                        .setFanInfo(
+                                new FanInfo.Builder()
+                                        .setCount(0)
+                                        .setSpeedUnits("%")
+                                        .build());
+        asicValues
+                .stream()
+                .map(map -> map.get(this.temperatureKey))
+                .map(Double::parseDouble)
+                .map(Double::intValue)
+                .forEach(asicBuilder::addTemp);
+        statsBuilder.addAsic(asicBuilder.build());
     }
 }

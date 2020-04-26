@@ -6,13 +6,15 @@ import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
-import mn.foreman.cgminer.NullPatchingStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.DragonmintDetectionStrategy;
+import mn.foreman.futurebit.FutureBitTypeFactory;
+import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
+import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,40 +28,35 @@ public enum Manufacturer {
             "aixin",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
-                    new AixinTypeFactory(),
-                    new NullPatchingStrategy())),
+                    new AixinTypeFactory())),
 
     /** Antminer. */
     ANTMINER(
             "antminer",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
-                    new AntminerTypeFactory(),
-                    new NullPatchingStrategy())),
+                    new AntminerTypeFactory())),
 
     /** Avalon. */
     AVALON(
             "avalon",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.STATS,
-                    new AvalonTypeFactory(),
-                    new NullPatchingStrategy())),
+                    new AvalonTypeFactory())),
 
     /** Baikal. */
     BAIKAL(
             "baikal",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
-                    new BaikalTypeFactory(),
-                    new NullPatchingStrategy())),
+                    new BaikalTypeFactory())),
 
     /** Blackminer. */
     BLACKMINER(
             "blackminer",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
-                    new BlackminerTypeFactory(),
-                    new NullPatchingStrategy())),
+                    new BlackminerTypeFactory())),
 
     /** Dayun. */
     DAYUN(
@@ -74,13 +71,32 @@ public enum Manufacturer {
             "dragonmint",
             new DragonmintDetectionStrategy()),
 
+    /** FutureBit. */
+    FUTUREBIT(
+            "futurebit",
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.DEVS,
+                    new FutureBitTypeFactory())),
+
+    /** HyperBit. */
+    HYPERBIT(
+            "hyperbit",
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.DEVS,
+                    new HyperbitTypeFactory())),
+
     /** Spondoolies. */
     SPONDOOLIES(
             "spondoolies",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.SUMMARY,
-                    new SpondooliesTypeFactory(),
-                    new NullPatchingStrategy()));
+                    new SpondooliesTypeFactory())),
+
+    WHATSMINER(
+            "whatsminer",
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.STATS,
+                    new WhatsminerTypeFactory()));
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =

@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 import java.nio.charset.Charset;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
-public class M3ITest
+public class M3StatsITest
         extends AbstractApiITest {
 
     /**
@@ -25,7 +25,7 @@ public class M3ITest
      *
      * @throws IOException on failure to read stats file.
      */
-    public M3ITest()
+    public M3StatsITest()
             throws IOException {
         super(
                 new WhatsminerFactory().create(
@@ -43,7 +43,7 @@ public class M3ITest
                                 "{\"command\":\"stats\"}",
                                 new RpcHandler(
                                         IOUtils.toString(
-                                                M3ITest.class.getResourceAsStream(
+                                                M3StatsITest.class.getResourceAsStream(
                                                         "/m3.stats.json"),
                                                 Charset.defaultCharset())),
                                 "{\"command\":\"pools\"}",

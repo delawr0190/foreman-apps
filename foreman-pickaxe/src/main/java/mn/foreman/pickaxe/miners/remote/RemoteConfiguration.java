@@ -21,9 +21,11 @@ import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
+import mn.foreman.futurebit.FutureBitFactory;
 import mn.foreman.gminer.GminerFactory;
 import mn.foreman.grinpro.GrinProFactory;
 import mn.foreman.hspminer.HspminerFactory;
+import mn.foreman.hyperbit.HyperbitFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.iximiner.IximinerFactory;
 import mn.foreman.jceminer.JceminerFactory;
@@ -32,7 +34,6 @@ import mn.foreman.miniz.MinizFactory;
 import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
-import mn.foreman.moonlander.MoonlanderFactory;
 import mn.foreman.multiminer.MultiminerFactory;
 import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
@@ -484,6 +485,9 @@ public class RemoteConfiguration
             case HSPMINER_API:
                 minerFactory = new HspminerFactory();
                 break;
+            case HYPERBIT_API:
+                minerFactory = new HyperbitFactory();
+                break;
             case INNOSILICON_HS_API:
                 // Fall through
             case INNOSILICON_KHS_API:
@@ -511,8 +515,8 @@ public class RemoteConfiguration
             case MKXMINER_API:
                 minerFactory = new MkxminerFactory();
                 break;
-            case MOONLANDER_API:
-                minerFactory = new MoonlanderFactory();
+            case FUTUREBIT_API:
+                minerFactory = new FutureBitFactory();
                 break;
             case MULTIMINER_API:
                 minerFactory = new MultiminerFactory();

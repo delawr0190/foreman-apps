@@ -1,10 +1,10 @@
-package mn.foreman.baikal;
+package mn.foreman.futurebit;
 
-import mn.foreman.baikal.response.DevsResponseStrategy;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.futurebit.response.DevsResponseStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -12,9 +12,9 @@ import java.util.Map;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
- * a {@link Miner} that will query a Baikal.
+ * a {@link Miner} that will query a futurebit.
  */
-public class BaikalFactory
+public class FutureBitFactory
         implements MinerFactory {
 
     @Override
@@ -31,7 +31,7 @@ public class BaikalFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.DEVS)
                                 .build(),
-                        new DevsResponseStrategy("Temperature"))
+                        new DevsResponseStrategy())
                 .build();
     }
 }
