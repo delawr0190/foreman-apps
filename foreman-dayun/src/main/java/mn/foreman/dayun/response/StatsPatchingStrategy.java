@@ -40,6 +40,8 @@ public class StatsPatchingStrategy
 
         final Map<String, Object> stats = response.get("STATS").get(0);
         final Map<String, String> sanitizedStats = new HashMap<>();
+        sanitizedStats.put("ID",
+                stats.get("ID").toString());
         sanitizedStats.put("MHS 30S",
                 stats.get("MHS 30S").toString());
         sanitizedStats.put("MHS 5m",
@@ -53,13 +55,21 @@ public class StatsPatchingStrategy
         sanitizedStats.put("Temperature Core",
                 stats.get("Temperature Core").toString());
         sanitizedStats.put("CH1 Temp",
-                ((Map<String, String>) stats.get("CH1")).get("Temperature"));
+                String.valueOf(
+                        ((Map<String, Object>) stats.get("CH1"))
+                                .get("Temperature")));
         sanitizedStats.put("CH2 Temp",
-                ((Map<String, String>) stats.get("CH2")).get("Temperature"));
+                String.valueOf(
+                        ((Map<String, Object>) stats.get("CH2"))
+                                .get("Temperature")));
         sanitizedStats.put("CH3 Temp",
-                ((Map<String, String>) stats.get("CH3")).get("Temperature"));
+                String.valueOf(
+                        ((Map<String, Object>) stats.get("CH3"))
+                                .get("Temperature")));
         sanitizedStats.put("CH4 Temp",
-                ((Map<String, String>) stats.get("CH4")).get("Temperature"));
+                String.valueOf(
+                        ((Map<String, Object>) stats.get("CH4"))
+                                .get("Temperature")));
 
         sanitized.put("STATS", Collections.singletonList(sanitizedStats));
 

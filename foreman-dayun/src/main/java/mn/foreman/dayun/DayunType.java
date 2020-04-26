@@ -1,4 +1,4 @@
-package mn.foreman.baikal;
+package mn.foreman.dayun;
 
 import mn.foreman.model.MinerType;
 
@@ -7,21 +7,21 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A {@link BaikalType} provides a {@link MinerType} implementation that
- * contains all of the known Baikal types.
+ * An {@link DayunType} provides a {@link MinerType} implementation that
+ * contains all of the known Dayun types.
  */
-public enum BaikalType
+public enum DayunType
         implements MinerType {
 
-    /** A Baikal. */
-    BAIKAL("BKLU", "baikal-bk-x");
+    /** The Dayun Zig Z1. */
+    DAYUN_ZIG_Z1("lyra2rev20", "dayun-zig-z1");
 
     /** All of the types, by string, mapped to their type. */
-    private static final Map<String, BaikalType> TYPE_MAP =
+    private static final Map<String, DayunType> TYPE_MAP =
             new ConcurrentHashMap<>();
 
     static {
-        for (final BaikalType asicType : values()) {
+        for (final DayunType asicType : values()) {
             TYPE_MAP.put(asicType.identifier, asicType);
         }
     }
@@ -38,7 +38,7 @@ public enum BaikalType
      * @param identifier The identifier.
      * @param slug       The slug.
      */
-    BaikalType(
+    DayunType(
             final String identifier,
             final String slug) {
         this.identifier = identifier;
@@ -46,13 +46,13 @@ public enum BaikalType
     }
 
     /**
-     * Converts the provided model to a {@link BaikalType}.
+     * Converts the provided model to an {@link DayunType}.
      *
      * @param identifier The ID.
      *
-     * @return The corresponding {@link BaikalType}.
+     * @return The corresponding {@link DayunType}.
      */
-    public static Optional<BaikalType> forIdentifier(final String identifier) {
+    public static Optional<DayunType> forIdentifier(final String identifier) {
         if (identifier != null && !identifier.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()

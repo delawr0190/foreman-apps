@@ -32,8 +32,28 @@ public class CgMinerDetectionStrategy
     /** The command to run. */
     private final CgMinerCommand command;
 
+    /** The response strategy. */
+    private final ResponsePatchingStrategy patchingStrategy;
+
     /** The factory to use for converting to a {@link MinerType}. */
     private final TypeFactory typeFactory;
+
+    /**
+     * Constructor.
+     *
+     * @param command          The command.
+     * @param typeFactory      The factory for converting to a {@link
+     *                         MinerType}.
+     * @param patchingStrategy The patching strategy.
+     */
+    public CgMinerDetectionStrategy(
+            final CgMinerCommand command,
+            final TypeFactory typeFactory,
+            final ResponsePatchingStrategy patchingStrategy) {
+        this.command = command;
+        this.typeFactory = typeFactory;
+        this.patchingStrategy = patchingStrategy;
+    }
 
     /**
      * Constructor.
@@ -44,8 +64,10 @@ public class CgMinerDetectionStrategy
     public CgMinerDetectionStrategy(
             final CgMinerCommand command,
             final TypeFactory typeFactory) {
-        this.command = command;
-        this.typeFactory = typeFactory;
+        this(
+                command,
+                typeFactory,
+                new NullPatchingStrategy());
     }
 
     @Override
@@ -70,7 +92,8 @@ public class CgMinerDetectionStrategy
                                             .build(),
                                     (builder, response) ->
                                             responseValues.putAll(
-                                                    response.getValues()))
+                                                    response.getValues()),
+                                    this.patchingStrategy)
                             .build();
 
             // Attempt to query the miner for stats.  If there's a response,

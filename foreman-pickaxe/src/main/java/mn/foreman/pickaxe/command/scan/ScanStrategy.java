@@ -126,7 +126,8 @@ public class ScanStrategy
                     port,
                     new CgMinerDetectionStrategy(
                             manufacturerType.getCommand(),
-                            manufacturerType.getTypeFactory()),
+                            manufacturerType.getTypeFactory(),
+                            manufacturerType.getPatchingStrategy()),
                     builder);
         }
     }
