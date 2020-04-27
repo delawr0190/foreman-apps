@@ -6,6 +6,7 @@ import mn.foreman.cgminer.RateMultiplyingDecorator;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.innosilicon.response.StatsResponseStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 

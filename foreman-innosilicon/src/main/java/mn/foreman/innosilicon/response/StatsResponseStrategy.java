@@ -1,4 +1,4 @@
-package mn.foreman.innosilicon;
+package mn.foreman.innosilicon.response;
 
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;

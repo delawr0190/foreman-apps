@@ -12,6 +12,7 @@ import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.DragonmintDetectionStrategy;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
+import mn.foreman.innosilicon.InnosiliconDetectionStrategy;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
@@ -85,6 +86,11 @@ public enum Manufacturer {
                     CgMinerCommand.DEVS,
                     new HyperbitTypeFactory())),
 
+    /** Innosilicon. */
+    INNOSILICON(
+            "innosilicon",
+            new InnosiliconDetectionStrategy()),
+
     /** Spondoolies. */
     SPONDOOLIES(
             "spondoolies",
@@ -137,7 +143,7 @@ public enum Manufacturer {
      * @return The {@link Manufacturer}.
      */
     public static Optional<Manufacturer> fromName(final String name) {
-        return Optional.ofNullable(TYPES.get(name));
+        return Optional.ofNullable(TYPES.get(name.toLowerCase()));
     }
 
     /**
