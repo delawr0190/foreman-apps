@@ -16,9 +16,6 @@ public enum AntminerType
     /** Antminer B3. */
     ANTMINER_B3("Antminer B3", "antminer-b3"),
 
-    /** Antminer B3 (old firmware). */
-    ANTMINER_B3_ALT("Antminer ", "antminer-b3"),
-
     /** Antminer B7. */
     ANTMINER_B7("Antminer B7", "antminer-b7"),
 
