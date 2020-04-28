@@ -10,9 +10,10 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.DragonmintDetectionStrategy;
+import mn.foreman.dragonmint.DragonmintType;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
-import mn.foreman.innosilicon.InnosiliconDetectionStrategy;
+import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
@@ -70,7 +71,9 @@ public enum Manufacturer {
     /** Dragonmint. */
     DRAGONMINT(
             "dragonmint",
-            new DragonmintDetectionStrategy()),
+            new DragonmintDetectionStrategy<>(
+                    DragonmintType::forType,
+                    "DragonMint")),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -89,7 +92,9 @@ public enum Manufacturer {
     /** Innosilicon. */
     INNOSILICON(
             "innosilicon",
-            new InnosiliconDetectionStrategy()),
+            new DragonmintDetectionStrategy<>(
+                    InnosiliconType::forType,
+                    "Innosilicon")),
 
     /** Spondoolies. */
     SPONDOOLIES(

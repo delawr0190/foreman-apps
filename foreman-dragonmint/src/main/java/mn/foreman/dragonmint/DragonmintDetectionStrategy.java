@@ -14,18 +14,40 @@ import org.slf4j.LoggerFactory;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * A {@link DragonmintDetectionStrategy} provides a {@link DetectionStrategy}
  * for querying dragonmint instances and identifying the {@link MinerType}
  * that's running.
+ *
+ * @param <T> The miner type.
  */
-public class DragonmintDetectionStrategy
+public class DragonmintDetectionStrategy<T extends MinerType>
         implements DetectionStrategy {
 
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(DragonmintDetectionStrategy.class);
+
+    /** Type mapper. */
+    private final Function<String, Optional<T>> mapper;
+
+    /** The real miner name. */
+    private final String name;
+
+    /**
+     * Constructor.
+     *
+     * @param mapper The type mapper.
+     * @param name   The name.
+     */
+    public DragonmintDetectionStrategy(
+            final Function<String, Optional<T>> mapper,
+            final String name) {
+        this.mapper = mapper;
+        this.name = name;
+    }
 
     @Override
     public Optional<Detection> detect(
@@ -45,8 +67,8 @@ public class DragonmintDetectionStrategy
                             },
                             1,
                             TimeUnit.SECONDS);
-            final Optional<DragonmintType> type =
-                    DragonmintType.forType(
+            final Optional<T> type =
+                    this.mapper.apply(
                             overview.type);
             if (type.isPresent()) {
                 detection =
@@ -58,7 +80,10 @@ public class DragonmintDetectionStrategy
                                 .build();
             }
         } catch (final MinerException me) {
-            LOG.debug("No Dragonmint found on {}:{}", ip, port);
+            LOG.debug("No {} found on {}:{}",
+                    this.name,
+                    ip,
+                    port);
         }
         return Optional.ofNullable(detection);
     }

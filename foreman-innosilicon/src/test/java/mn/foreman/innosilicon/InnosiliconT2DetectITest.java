@@ -1,5 +1,6 @@
 package mn.foreman.innosilicon;
 
+import mn.foreman.dragonmint.DragonmintDetectionStrategy;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -14,7 +15,9 @@ public class InnosiliconT2DetectITest
     /** Constructor. */
     public InnosiliconT2DetectITest() {
         super(
-                new InnosiliconDetectionStrategy(),
+                new DragonmintDetectionStrategy<>(
+                        InnosiliconType::forType,
+                        "Innosilicon"),
                 "127.0.0.1",
                 8888,
                 ImmutableMap.of(

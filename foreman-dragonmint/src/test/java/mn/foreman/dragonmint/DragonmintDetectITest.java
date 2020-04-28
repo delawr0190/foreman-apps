@@ -14,7 +14,9 @@ public class DragonmintDetectITest
     /** Constructor. */
     public DragonmintDetectITest() {
         super(
-                new DragonmintDetectionStrategy(),
+                new DragonmintDetectionStrategy<>(
+                        DragonmintType::forType,
+                        "DragonMint"),
                 "127.0.0.1",
                 8888,
                 ImmutableMap.of(
