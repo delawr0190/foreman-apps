@@ -1,4 +1,4 @@
-package mn.foreman.innosilicon.json;
+package mn.foreman.dragonmint.json;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

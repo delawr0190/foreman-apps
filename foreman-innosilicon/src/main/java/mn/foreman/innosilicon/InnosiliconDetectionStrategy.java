@@ -1,6 +1,6 @@
 package mn.foreman.innosilicon;
 
-import mn.foreman.innosilicon.json.Overview;
+import mn.foreman.dragonmint.json.Overview;
 import mn.foreman.io.Query;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;

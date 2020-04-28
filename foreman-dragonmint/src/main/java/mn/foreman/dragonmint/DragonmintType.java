@@ -13,11 +13,14 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum DragonmintType
         implements MinerType {
 
-    /** The Dragonmint T1. */
-    DRAGONMINT_T1("DT1", "dragonmint-t1"),
+    /** Dragonmint T1. */
+    DRAGONMINT_T1("t1", "dragonmint-t1"),
 
-    /** The Dragonmint B52. */
-    DRAGONMINT_B52("DB52", "dragonmint-b52");
+    /** Dragonmint B29. */
+    DRAGONMINT_B29("b29", "dragonmint-b29"),
+
+    /** Dragonmint B52. */
+    DRAGONMINT_B52("b52", "dragonmint-b52");
 
     /** All of the types, by indicator, mapped to their type. */
     private static final Map<String, DragonmintType> TYPE_MAP =
@@ -51,15 +54,16 @@ public enum DragonmintType
     /**
      * Converts the provided model to an {@link DragonmintType}.
      *
-     * @param model The model.
+     * @param type The type.
      *
      * @return The corresponding {@link DragonmintType}.
      */
-    public static Optional<DragonmintType> forModel(final String model) {
-        if (model != null && !model.isEmpty()) {
+    public static Optional<DragonmintType> forType(final String type) {
+        if (type != null && !type.isEmpty()) {
+            final String lowerType = type.toLowerCase();
             return TYPE_MAP.entrySet()
                     .stream()
-                    .filter(entry -> model.startsWith(entry.getKey()))
+                    .filter(entry -> lowerType.equals(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst();
         }
