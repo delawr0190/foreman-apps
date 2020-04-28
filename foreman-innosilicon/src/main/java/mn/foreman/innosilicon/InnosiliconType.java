@@ -19,6 +19,9 @@ public enum InnosiliconType
     /** Innosilicon T3+pro. */
     T3PB("t3+b", "innosilicon-t3+pro"),
 
+    /** Innosilicon T3A. */
+    T3A("t3a", "innosilicon-t3a"),
+
     /** Innosilicon T3+. */
     T3P("t3+", "innosilicon-t3+"),
 
