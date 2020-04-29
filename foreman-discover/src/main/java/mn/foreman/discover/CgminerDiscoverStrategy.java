@@ -48,30 +48,40 @@ public class CgminerDiscoverStrategy
                             .builder()
                             .query(query);
 
-            final ApiRequest request =
-                    new ApiRequestImpl(
-                            ip,
-                            port,
-                            query);
-            final Connection connection =
-                    ConnectionFactory.createJsonConnection(
-                            request,
-                            1,
-                            TimeUnit.SECONDS);
-            connection.query();
+            try {
+                final ApiRequest request =
+                        new ApiRequestImpl(
+                                ip,
+                                port,
+                                query);
+                final Connection connection =
+                        ConnectionFactory.createJsonConnection(
+                                request,
+                                1,
+                                TimeUnit.SECONDS);
+                connection.query();
 
-            if (request.waitForCompletion(
-                    10,
-                    TimeUnit.SECONDS)) {
-                builder
-                        .success(true)
-                        .response(request.getResponse());
-            } else {
-                LOG.info("Failed to connect to {}:{}", ip, port);
+                if (request.waitForCompletion(
+                        10,
+                        TimeUnit.SECONDS)) {
+                    final String response = request.getResponse();
+                    builder
+                            .success(true)
+                            .response(response != null ? response : "");
+                } else {
+                    LOG.info("Failed to connect to {}:{}", ip, port);
+                    builder
+                            .success(false)
+                            .response("");
+                }
+            } catch (final Exception e) {
+                LOG.info("Exception occurred while querying", e);
                 builder
                         .success(false)
                         .response("");
             }
+
+            discoveries.add(builder.build());
         }
 
         return discoveries;

@@ -2,6 +2,10 @@ package mn.foreman.discover;
 
 import java.util.List;
 
+/**
+ * A {@link DiscoverStrategy} provides a mechanism for discovering a miner,
+ * which includes capturing API responses in a raw format.
+ */
 public interface DiscoverStrategy {
 
     /**
