@@ -1,5 +1,6 @@
 package mn.foreman.pickaxe.command;
 
+import mn.foreman.pickaxe.command.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.scan.ScanStrategy;
 
 import java.util.Optional;
@@ -8,6 +9,11 @@ import java.util.concurrent.ConcurrentMap;
 
 /** All of the known commands. */
 public enum Command {
+
+    /** Discover an unknown miner. */
+    DISCOVER(
+            "discover",
+            new DiscoverStrategy()),
 
     /** Scan for miners. */
     SCAN(

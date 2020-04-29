@@ -70,6 +70,7 @@
         <module>foreman-claymore</module>
         <module>foreman-cpuminer</module>
         <module>foreman-dayun</module>
+        <module>foreman-discover</module>
         <module>foreman-dragonmint</module>
         <module>foreman-dstm</module>
         <module>foreman-ethminer</module>
@@ -182,6 +183,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dayun</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-discover</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -15,6 +15,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
+import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
+
 /** Scans the provided subnet and start/stop for miners. */
 public class ScanStrategy
         implements CommandStrategy {
@@ -51,21 +53,6 @@ public class ScanStrategy
             default:
                 break;
         }
-    }
-
-    /**
-     * Gets a key from the provided map, returning an empty string if not
-     * found.
-     *
-     * @param args The map to inspect.
-     * @param key  The key.
-     *
-     * @return The value.
-     */
-    private static String safeGet(
-            final Map<String, String> args,
-            final String key) {
-        return args.getOrDefault(key, "").toLowerCase();
     }
 
     /**
