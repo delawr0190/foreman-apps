@@ -15,6 +15,7 @@ import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.obelisk.ObeliskDetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
@@ -95,6 +96,11 @@ public enum Manufacturer {
             new DragonmintDetectionStrategy<>(
                     InnosiliconType::forType,
                     "Innosilicon")),
+
+    /** Obelisk. */
+    OBELISK(
+            "obelisk",
+            new ObeliskDetectionStrategy<>()),
 
     /** Spondoolies. */
     SPONDOOLIES(

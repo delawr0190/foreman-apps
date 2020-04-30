@@ -160,7 +160,10 @@ public enum ApiType {
     AIXIN_API(49),
 
     /** hyperbit. */
-    HYPERBIT_API(50);
+    HYPERBIT_API(50),
+
+    /** obelisk. */
+    OBELISK_API(51);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

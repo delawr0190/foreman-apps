@@ -74,6 +74,7 @@ public class FanInfo {
                     new EqualsBuilder()
                             .append(this.count, fanInfo.count)
                             .append(this.speeds, fanInfo.speeds)
+                            .append(this.speedUnits, fanInfo.speedUnits)
                             .isEquals();
         }
         return isEqual;
@@ -111,16 +112,18 @@ public class FanInfo {
         return new HashCodeBuilder()
                 .append(this.count)
                 .append(this.speeds)
+                .append(this.speedUnits)
                 .hashCode();
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ count=%s, speeds=%s ]",
+                "%s [ count=%s, speeds=%s, units=%s ]",
                 getClass().getSimpleName(),
                 this.count,
-                this.speeds);
+                this.speeds,
+                this.speedUnits);
     }
 
     /** A builder for creating {@link FanInfo speed infos}. */

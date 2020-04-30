@@ -1,6 +1,7 @@
 package mn.foreman.io;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -27,6 +28,13 @@ public interface ApiRequest {
 
     /** Marks the request as completed. */
     void completed();
+
+    /**
+     * Returns the content.
+     *
+     * @return The content.
+     */
+    Optional<String> getContent();
 
     /**
      * Returns the IP.

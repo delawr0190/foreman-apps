@@ -39,6 +39,7 @@ import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
 import mn.foreman.nicehash.NiceHashMiner;
 import mn.foreman.nicehash.NiceHashMinerFactory;
+import mn.foreman.obelisk.ObeliskFactory;
 import mn.foreman.optiminer.OptiminerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
@@ -534,6 +535,9 @@ public class RemoteConfiguration
                                 niceHashCandidates,
                                 amMappings,
                                 claymoreMappings);
+                break;
+            case OBELISK_API:
+                minerFactory = new ObeliskFactory();
                 break;
             case OPTIMINER_API:
                 minerFactory = new OptiminerFactory();

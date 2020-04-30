@@ -93,6 +93,7 @@
         <module>foreman-nanominer</module>
         <module>foreman-nbminer</module>
         <module>foreman-nicehash</module>
+        <module>foreman-obelisk</module>
         <module>foreman-optiminer</module>
         <module>foreman-pickaxe</module>
         <module>foreman-rhminer</module>
@@ -298,6 +299,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-nicehash</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-obelisk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

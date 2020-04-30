@@ -5,6 +5,7 @@ import org.apache.commons.lang3.Validate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -17,6 +18,9 @@ public class ApiRequestImpl
 
     /** The completion latch. */
     private final CountDownLatch completedLatch = new CountDownLatch(1);
+
+    /** The content. */
+    private final String content;
 
     /** The IP. */
     private final String ip;
@@ -40,12 +44,14 @@ public class ApiRequestImpl
      * @param port       The port.
      * @param request    The request.
      * @param properties The properties.
+     * @param content    The content.
      */
     public ApiRequestImpl(
             final String ip,
             final int port,
             final String request,
-            final Map<String, String> properties) {
+            final Map<String, String> properties,
+            final String content) {
         Validate.notNull(
                 ip,
                 "IP cannot be null");
@@ -62,6 +68,28 @@ public class ApiRequestImpl
         this.port = port;
         this.request = request;
         this.properties = new HashMap<>(properties);
+        this.content = content;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param ip         The IP.
+     * @param port       The port.
+     * @param request    The request.
+     * @param properties The properties.
+     */
+    public ApiRequestImpl(
+            final String ip,
+            final int port,
+            final String request,
+            final Map<String, String> properties) {
+        this(
+                ip,
+                port,
+                request,
+                properties,
+                null);
     }
 
     /**
@@ -85,6 +113,11 @@ public class ApiRequestImpl
     @Override
     public void completed() {
         this.completedLatch.countDown();
+    }
+
+    @Override
+    public Optional<String> getContent() {
+        return Optional.ofNullable(this.content);
     }
 
     @Override

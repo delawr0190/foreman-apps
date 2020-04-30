@@ -1,10 +1,14 @@
 package mn.foreman.io;
 
 import org.apache.commons.lang3.Validate;
+import org.apache.http.Header;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -12,11 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * A {@link RestConnection} provides a connection to a remote miner instance.
@@ -39,6 +44,9 @@ public class RestConnection
     /** The connection timeout units. */
     private final TimeUnit connectionTimeoutUnits;
 
+    /** The header callback. */
+    private final Consumer<Header[]> headerCallback;
+
     /** The method. */
     private final String method;
 
@@ -56,13 +64,15 @@ public class RestConnection
      * @param request             The request.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param headerCallback      The header callback.
      */
     RestConnection(
             final String url,
             final String method,
             final ApiRequest request,
             final int connectTimeout,
-            final TimeUnit connectTimeoutUnits) {
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<Header[]> headerCallback) {
         Validate.notEmpty(
                 url,
                 "url cannot be empty");
@@ -83,6 +93,7 @@ public class RestConnection
         this.request = request;
         this.connectionTimeout = connectTimeout;
         this.connectionTimeoutUnits = connectTimeoutUnits;
+        this.headerCallback = headerCallback;
     }
 
     @Override
@@ -102,21 +113,8 @@ public class RestConnection
                              .setDefaultRequestConfig(requestConfig)
                              .build()) {
             final HttpRequestBase httpRequest =
-                    new HttpRequestBase() {
-                        @Override
-                        public String getMethod() {
-                            return method;
-                        }
+                    toRequest();
 
-                        @Override
-                        public URI getURI() {
-                            try {
-                                return new URI(url);
-                            } catch (final URISyntaxException use) {
-                                return super.getURI();
-                            }
-                        }
-                    };
             for (final Map.Entry<String, String> property :
                     this.request.getProperties().entrySet()) {
                 httpRequest.setHeader(
@@ -135,8 +133,11 @@ public class RestConnection
                             this.url,
                             statusCode);
                 }
-                request.setResponse(
-                        EntityUtils.toString(httpResponse.getEntity()));
+                this.headerCallback.accept(
+                        httpResponse.getAllHeaders());
+                this.request.setResponse(
+                        EntityUtils.toString(
+                                httpResponse.getEntity()));
             } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while querying", ioe);
             }
@@ -144,6 +145,36 @@ public class RestConnection
             LOG.warn("Exception occurred while querying", ioe);
         }
 
-        request.completed();
+        this.request.completed();
+    }
+
+    /**
+     * Creates a request with the desired configuration based on the {@link
+     * #method}.
+     *
+     * @return The reqiest.
+     *
+     * @throws UnsupportedEncodingException if an unsupported encoding is
+     *                                      encountered.
+     */
+    private HttpRequestBase toRequest()
+            throws UnsupportedEncodingException {
+        final HttpRequestBase requestBase;
+        switch (this.method) {
+            case "POST":
+                final HttpPost post = new HttpPost(this.url);
+                final Optional<String> content =
+                        this.request.getContent();
+                if (content.isPresent()) {
+                    post.setEntity(new StringEntity(content.get()));
+                }
+                requestBase = post;
+                break;
+            case "GET":
+            default:
+                requestBase = new HttpGet(this.url);
+                break;
+        }
+        return requestBase;
     }
 }

@@ -86,7 +86,7 @@ public class RhminerCpuAndGpuITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(0)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()

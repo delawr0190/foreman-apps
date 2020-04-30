@@ -130,7 +130,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3690)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -148,7 +148,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3691)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -166,7 +166,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3692)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -184,7 +184,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3693)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -202,7 +202,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3694)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -220,7 +220,7 @@ public class CastxmrITest
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
                                                                         .addSpeed(3695)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()

@@ -52,7 +52,7 @@ public class MultiminerITest
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(0)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()
@@ -69,7 +69,7 @@ public class MultiminerITest
                                                         .setFans(
                                                                 new FanInfo.Builder()
                                                                         .setCount(0)
-                                                                        .setSpeedUnits("%")
+                                                                        .setSpeedUnits("RPM")
                                                                         .build())
                                                         .setFreqInfo(
                                                                 new FreqInfo.Builder()

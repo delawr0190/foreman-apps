@@ -7,9 +7,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
+import org.apache.http.Header;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * A {@link ConnectionFactory} provides a factory to creating {@link Connection
@@ -138,6 +140,36 @@ public class ConnectionFactory {
      * @param method              The method.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param headerCallback      The header callback.
+     *
+     * @return The new {@link Connection}.
+     */
+    public static Connection createRestConnection(
+            final ApiRequest request,
+            final String method,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<Header[]> headerCallback) {
+        return new RestConnection(
+                String.format(
+                        "http://%s:%d%s",
+                        request.getIp(),
+                        request.getPort(),
+                        request.getRequest()),
+                method,
+                request,
+                connectTimeout,
+                connectTimeoutUnits,
+                headerCallback);
+    }
+
+    /**
+     * Creates a {@link Connection} to a miner that has a REST interface.
+     *
+     * @param request             The request.
+     * @param method              The method.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      *
      * @return The new {@link Connection}.
      */
@@ -155,6 +187,9 @@ public class ConnectionFactory {
                 method,
                 request,
                 connectTimeout,
-                connectTimeoutUnits);
+                connectTimeoutUnits,
+                headers -> {
+                    // Do nothing
+                });
     }
 }
