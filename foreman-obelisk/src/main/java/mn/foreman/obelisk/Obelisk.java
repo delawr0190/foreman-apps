@@ -264,6 +264,7 @@ public class Obelisk
                     "/api/logout",
                     false,
                     Object.class);
+            this.sessionId = null;
         }
     }
 
