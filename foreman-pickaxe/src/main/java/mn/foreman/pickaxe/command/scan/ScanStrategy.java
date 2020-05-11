@@ -150,7 +150,7 @@ public class ScanStrategy
 
             final Map<String, Object> update = new HashMap<>();
             update.put("found", miners.size());
-            update.put("scanned", i + 1);
+            update.put("scanned", (i - start) + 1);
             update.put("remaining", stop - i);
 
             if (detectionOpt.isPresent()) {

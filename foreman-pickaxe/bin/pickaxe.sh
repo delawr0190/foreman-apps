@@ -26,6 +26,7 @@ setup_java() {
     JVM_PARAMS="-Dlogback.configurationFile=$PICKAXE_HOME/etc/logback.xml"
     JVM_PARAMS+=" -DLOG_LOCATION=$PICKAXE_HOME/logs"
     JVM_PARAMS+=" -Dio.netty.tryReflectionSetAccessible=false"
+    [[ ! -z "${FOREMAN_BASE_URL}" ]] && JVM_PARAMS+=" -DFOREMAN_BASE_URL=${FOREMAN_BASE_URL}"
 
     # JVM command line arguments
     JVM_COMMAND_LINE="-c $PICKAXE_HOME/conf/pickaxe.yml"

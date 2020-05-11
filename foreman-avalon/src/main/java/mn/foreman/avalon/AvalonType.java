@@ -38,7 +38,13 @@ public enum AvalonType
     AVALON_1047("Ver[1047", "avalonminer-1047"),
 
     /** Avalon 1066. */
-    AVALON_1066("Ver[1066", "avalonminer-1066");
+    AVALON_1066("Ver[1066", "avalonminer-1066"),
+
+    /** Avalon 1146. */
+    AVALON_1146("Ver[1146", "avalonminer-1146"),
+
+    /** Avalon 1166. */
+    AVALON_1166("Ver[1166", "avalonminer-1166");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, AvalonType> TYPE_MAP =

@@ -3,6 +3,7 @@ package mn.foreman.model;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /** A {@link Detection} represents a fully identified miner. */
@@ -16,9 +17,10 @@ public class Detection {
     /** The type. */
     private final MinerType minerType;
 
-    /** The parameters. */
-    private final Map<String, String> parameters;
-
     /** The port. */
     private final int port;
+
+    /** The parameters. */
+    @Builder.Default
+    private Map<String, String> parameters = new HashMap<>();
 }
