@@ -22,5 +22,5 @@ public class Detection {
 
     /** The parameters. */
     @Builder.Default
-    private Map<String, String> parameters = new HashMap<>();
+    private Map<String, Object> parameters = new HashMap<>();
 }

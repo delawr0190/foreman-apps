@@ -53,7 +53,7 @@ public class DragonmintDetectionStrategy<T extends MinerType>
     public Optional<Detection> detect(
             final String ip,
             final int port,
-            final Map<String, String> args) {
+            final Map<String, Object> args) {
         Detection detection = null;
         try {
             final Overview overview =
@@ -61,8 +61,8 @@ public class DragonmintDetectionStrategy<T extends MinerType>
                             ip,
                             port,
                             "/api/overview",
-                            args.getOrDefault("username", ""),
-                            args.getOrDefault("password", ""),
+                            (String) args.getOrDefault("username", ""),
+                            (String) args.getOrDefault("password", ""),
                             new TypeReference<Overview>() {
                             },
                             1,

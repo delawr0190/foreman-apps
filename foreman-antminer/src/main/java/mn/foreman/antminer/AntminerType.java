@@ -71,7 +71,10 @@ public enum AntminerType
     MINECENTER_S9("Minecenter S9", "antminer-s9"),
 
     /** Antminer S19. */
-    ANTMINER_S19("Antminer S19", "antminer-s19");
+    ANTMINER_S19("Antminer S19", "antminer-s19"),
+
+    /** Antminer Z15. */
+    ANTMINER_Z15("Antminer Z15", "antminer-z15");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, AntminerType> TYPE_MAP =

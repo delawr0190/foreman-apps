@@ -30,7 +30,7 @@ public class ScanStrategy
             final CommandStart command,
             final ForemanApi foremanApi,
             final CommandDone.CommandDoneBuilder builder) {
-        final Map<String, String> args = command.args;
+        final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
         final String subnet = safeGet(args, "subnet");
@@ -99,7 +99,7 @@ public class ScanStrategy
             final int start,
             final int stop,
             final int port,
-            final Map<String, String> args,
+            final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder) {
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
@@ -140,7 +140,7 @@ public class ScanStrategy
             final int start,
             final int stop,
             final int port,
-            final Map<String, String> args,
+            final Map<String, Object> args,
             final DetectionStrategy detectionStrategy,
             final CommandDone.CommandDoneBuilder builder) {
         final List<Object> miners = new LinkedList<>();

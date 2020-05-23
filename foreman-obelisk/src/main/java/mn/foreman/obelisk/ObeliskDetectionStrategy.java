@@ -32,7 +32,7 @@ public class ObeliskDetectionStrategy<T extends MinerType>
     public Optional<Detection> detect(
             final String ip,
             final int port,
-            final Map<String, String> args) {
+            final Map<String, Object> args) {
         Detection detection = null;
         try {
             final Info info =

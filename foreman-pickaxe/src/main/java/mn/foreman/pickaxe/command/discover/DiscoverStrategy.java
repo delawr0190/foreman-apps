@@ -26,7 +26,7 @@ public class DiscoverStrategy
             final CommandStart command,
             final ForemanApi foremanApi,
             final CommandDone.CommandDoneBuilder builder) {
-        final Map<String, String> args = command.args;
+        final Map<String, Object> args = command.args;
 
         final Optional<DiscoverType> typeOptional =
                 DiscoverType.forType(

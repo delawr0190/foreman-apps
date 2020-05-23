@@ -74,7 +74,7 @@ public class CgMinerDetectionStrategy
     public Optional<Detection> detect(
             final String ip,
             final int port,
-            final Map<String, String> args) {
+            final Map<String, Object> args) {
         Detection detection = null;
         try {
             final Map<String, List<Map<String, String>>> responseValues =

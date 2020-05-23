@@ -15,7 +15,7 @@ public class CommandStart {
 
     /** The arguments for the command. */
     @JsonProperty("args")
-    public Map<String, String> args;
+    public Map<String, Object> args;
 
     /** The command. */
     @JsonProperty("command")

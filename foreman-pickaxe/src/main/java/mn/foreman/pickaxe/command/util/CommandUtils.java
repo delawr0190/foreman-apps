@@ -15,8 +15,8 @@ public class CommandUtils {
      * @return The value.
      */
     public static String safeGet(
-            final Map<String, String> args,
+            final Map<String, Object> args,
             final String key) {
-        return args.getOrDefault(key, "").toLowerCase();
+        return ((String) args.getOrDefault(key, "")).toLowerCase();
     }
 }

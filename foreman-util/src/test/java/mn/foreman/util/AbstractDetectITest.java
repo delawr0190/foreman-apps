@@ -24,7 +24,7 @@ public abstract class AbstractDetectITest {
     private static final int DEFAULT_PORT = 4028;
 
     /** The arguments. */
-    private final Map<String, String> args;
+    private final Map<String, Object> args;
 
     /** The expected metrics. */
     private final Detection detection;
@@ -55,7 +55,7 @@ public abstract class AbstractDetectITest {
             final DetectionStrategy detectionStrategy,
             final String ip,
             final int port,
-            final Map<String, String> args,
+            final Map<String, Object> args,
             final Supplier<FakeMinerServer> serverSupplier,
             final Detection detection) {
         this.detectionStrategy = detectionStrategy;

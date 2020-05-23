@@ -22,5 +22,5 @@ public interface DetectionStrategy {
     Optional<Detection> detect(
             String ip,
             int port,
-            Map<String, String> args);
+            Map<String, Object> args);
 }
