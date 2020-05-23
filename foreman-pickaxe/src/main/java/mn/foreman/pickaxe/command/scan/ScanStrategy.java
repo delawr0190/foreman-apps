@@ -48,6 +48,7 @@ public class ScanStrategy
                         start,
                         stop,
                         port,
+                        args,
                         builder);
                 break;
             default:
@@ -87,6 +88,7 @@ public class ScanStrategy
      * @param start        Where to start.
      * @param stop         Where to stop.
      * @param port         The port to inspect.
+     * @param args         The arguments.
      * @param builder      The builder to use for creating the final result.
      */
     private void runAsicScan(
@@ -97,6 +99,7 @@ public class ScanStrategy
             final int start,
             final int stop,
             final int port,
+            final Map<String, String> args,
             final CommandDone.CommandDoneBuilder builder) {
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
@@ -110,6 +113,7 @@ public class ScanStrategy
                     start,
                     stop,
                     port,
+                    args,
                     manufacturerType.getDetectionStrategy(),
                     builder);
         }
@@ -124,6 +128,7 @@ public class ScanStrategy
      * @param start             Where to start.
      * @param stop              Where to stop.
      * @param port              The port to inspect.
+     * @param args              The arguments.
      * @param builder           The builder to use for creating the final
      *                          result.
      * @param detectionStrategy The strategy to use for detecting miners.
@@ -135,6 +140,7 @@ public class ScanStrategy
             final int start,
             final int stop,
             final int port,
+            final Map<String, String> args,
             final DetectionStrategy detectionStrategy,
             final CommandDone.CommandDoneBuilder builder) {
         final List<Object> miners = new LinkedList<>();
@@ -145,7 +151,7 @@ public class ScanStrategy
                     detectionStrategy.detect(
                             ip,
                             port,
-                            Collections.emptyMap());
+                            args);
             LOG.debug("Scanning {}:{}", ip, port);
 
             final Map<String, Object> update = new HashMap<>();
