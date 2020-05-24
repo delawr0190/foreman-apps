@@ -3,6 +3,7 @@ package mn.foreman.pickaxe.command;
 import mn.foreman.api.ForemanApi;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
+import mn.foreman.model.command.DoneStatus;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,12 @@ public class CommandProcessorImpl
                     this.foremanApi
                             .pickaxe()
                             .commandDone(
-                                    builder.build(),
+                                    builder.status(
+                                            CommandDone.Status
+                                                    .builder()
+                                                    .type(DoneStatus.SUCCESS)
+                                                    .build())
+                                            .build(),
                                     start.id);
                 }
             }

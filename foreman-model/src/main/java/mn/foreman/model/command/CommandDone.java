@@ -24,6 +24,10 @@ public class CommandDone {
     @JsonProperty("result")
     private final Map<String, Object> result;
 
+    /** The status code. */
+    @JsonProperty("status")
+    private final Status status;
+
     /** The response. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -32,5 +36,19 @@ public class CommandDone {
         /** The command status. */
         @JsonProperty("status")
         public String status;
+    }
+
+    /** The status. */
+    @Data
+    @Builder
+    public static class Status {
+
+        /** The message. */
+        @JsonProperty("message")
+        public String message;
+
+        /** The type. */
+        @JsonProperty("type")
+        public DoneStatus type;
     }
 }
