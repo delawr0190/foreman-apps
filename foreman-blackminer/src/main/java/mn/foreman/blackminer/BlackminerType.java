@@ -62,14 +62,22 @@ public enum BlackminerType
      * @return The corresponding {@link BlackminerType}.
      */
     public static Optional<BlackminerType> forModel(final String model) {
+        Optional<BlackminerType> type = Optional.empty();
         if (model != null && !model.isEmpty()) {
-            return TYPE_MAP.entrySet()
-                    .stream()
-                    .filter(entry -> model.equalsIgnoreCase(entry.getKey()))
-                    .map(Map.Entry::getValue)
-                    .findFirst();
+            type =
+                    TYPE_MAP.entrySet()
+                            .stream()
+                            .filter(entry -> model.equalsIgnoreCase(entry.getKey()))
+                            .map(Map.Entry::getValue)
+                            .findFirst();
+            if (!type.isPresent()) {
+                // See if just an F1 will work - better to keep things working
+                if (model.startsWith(BLACKMINER_F1.name)) {
+                    type = Optional.of(BLACKMINER_F1);
+                }
+            }
         }
-        return Optional.empty();
+        return type;
     }
 
     @Override
