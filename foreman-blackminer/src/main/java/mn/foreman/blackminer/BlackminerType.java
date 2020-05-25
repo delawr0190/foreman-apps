@@ -13,8 +13,17 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum BlackminerType
         implements MinerType {
 
-    /** The Blackminer F1. */
-    BLACKMINER_F1("Blackminer F1", "blackminer-f1");
+    /** Blackminer F1. */
+    BLACKMINER_F1("Blackminer F1", "blackminer-f1"),
+
+    /** Blackminer F1+. */
+    BLACKMINER_F1P("Blackminer F1+", "blackminer-f1+"),
+
+    /** Blackminer F1-single. */
+    BLACKMINER_F1_SINGLE("Blackminer F1-single", "blackminer-f1-single"),
+
+    /** Blackminer F1-ULTRA. */
+    BLACKMINER_F1_ULTRA("Blackminer F1-ULTRA", "blackminer-f1-ultra");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, BlackminerType> TYPE_MAP =
@@ -56,7 +65,7 @@ public enum BlackminerType
         if (model != null && !model.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()
-                    .filter(entry -> model.startsWith(entry.getKey()))
+                    .filter(entry -> model.equalsIgnoreCase(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst();
         }
