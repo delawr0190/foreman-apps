@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -124,9 +125,21 @@ public class SummaryAndStatsResponseStrategy
                     builder.setFanInfo(fanBuilder.build());
 
                     // Temps
-                    for (int i = 1; i <= Integer.parseInt(map.get("temp_num"));
-                         i++) {
+                    final int numTemps = Integer.parseInt(map.get("temp_num"));
+
+                    // Add sensors first
+                    for (int i = 1; i <= numTemps; i++) {
                         builder.addTemp(map.get("temp" + i));
+                    }
+                    // Add chip temps last
+                    for (int i = 0; i <= numTemps; i++) {
+                        Arrays.stream(map
+                                .getOrDefault("chipTemp" + i, "")
+                                .split(" "))
+                                .map(temp -> temp.replace("[", ""))
+                                .map(temp -> temp.replace("]", ""))
+                                .map(temp -> temp.replace(",", ""))
+                                .forEach(builder::addTemp);
                     }
                 });
 

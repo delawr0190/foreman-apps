@@ -78,6 +78,18 @@ public class BlackminerF1UltraStatsITest
                                                         .build())
                                         .addTemp(52)
                                         .addTemp(52)
+                                        .addTemp(65)
+                                        .addTemp(64)
+                                        .addTemp(62)
+                                        .addTemp(62)
+                                        .addTemp(67)
+                                        .addTemp(69)
+                                        .addTemp(69)
+                                        .addTemp(64)
+                                        .addTemp(63)
+                                        .addTemp(61)
+                                        .addTemp(67)
+                                        .addTemp(71)
                                         .build())
                         .build());
     }
