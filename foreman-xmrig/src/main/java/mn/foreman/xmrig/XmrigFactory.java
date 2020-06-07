@@ -29,6 +29,7 @@ public class XmrigFactory
                         apiPort),
                 new XmrigNew(
                         apiIp,
-                        apiPort));
+                        apiPort,
+                        config.get("accessToken")));
     }
 }

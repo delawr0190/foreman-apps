@@ -41,7 +41,7 @@ public class AlternatingMiner
             try {
                 minerStats = candidate.getStats();
                 break;
-            } catch (final MinerException me) {
+            } catch (final Exception e) {
                 // Skip
             }
         }

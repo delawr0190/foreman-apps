@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /** Provides utility methods for querying APIs. */
@@ -170,6 +171,49 @@ public class Query {
     /**
      * Utility method to perform a query against a REST API.
      *
+     * @param apiIp                  The API IP.
+     * @param apiPort                The API port.
+     * @param uri                    The URI.
+     * @param username               The username.
+     * @param password               The password.
+     * @param type                   The response class.
+     * @param <T>                    The response type.
+     * @param connectionTimeout      The timeout.
+     * @param connectionTimeoutUnits The units.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String username,
+            final String password,
+            final TypeReference<T> type,
+            final int connectionTimeout,
+            final TimeUnit connectionTimeoutUnits)
+            throws MinerException {
+        final String auth =
+                Base64.getEncoder().encodeToString(
+                        (username + ":" + password).getBytes());
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                ImmutableMap.of(
+                        "Authorization",
+                        "Basic " + auth),
+                "POST",
+                type,
+                connectionTimeout,
+                connectionTimeoutUnits);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
      * @param apiIp    The API IP.
      * @param apiPort  The API port.
      * @param uri      The URI.
@@ -238,8 +282,8 @@ public class Query {
      * @param apiIp               The API IP.
      * @param apiPort             The API port.
      * @param uri                 The URI.
-     * @param username            The username.
-     * @param password            The password.
+     * @param headers             The headers.
+     * @param command             The command.
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
@@ -253,28 +297,23 @@ public class Query {
             final String apiIp,
             final int apiPort,
             final String uri,
-            final String username,
-            final String password,
+            final Map<String, String> headers,
+            final String command,
             final TypeReference<T> type,
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits)
             throws MinerException {
-        final String auth =
-                Base64.getEncoder().encodeToString(
-                        (username + ":" + password).getBytes());
         final ApiRequest request =
                 new ApiRequestImpl(
                         apiIp,
                         apiPort,
                         uri,
-                        ImmutableMap.of(
-                                "Authorization",
-                                "Basic " + auth));
+                        headers);
 
         final Connection connection =
                 ConnectionFactory.createRestConnection(
                         request,
-                        "POST",
+                        command,
                         connectTimeout,
                         connectTimeoutUnits);
         connection.query();
@@ -356,6 +395,44 @@ public class Query {
 
         return query(
                 request,
+                type,
+                connectTimeout,
+                connectTimeoutUnits);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param uri                 The URI.
+     * @param token               The token.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQueryBearer(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String token,
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits)
+            throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                ImmutableMap.of(
+                        "Authorization",
+                        "Bearer " + token),
+                "GET",
                 type,
                 connectTimeout,
                 connectTimeoutUnits);

@@ -128,16 +128,17 @@ public class RestConnection
                         httpResponse
                                 .getStatusLine()
                                 .getStatusCode();
-                if (statusCode != HttpStatus.SC_OK) {
+                if (statusCode == HttpStatus.SC_OK) {
+                    this.headerCallback.accept(
+                            httpResponse.getAllHeaders());
+                    this.request.setResponse(
+                            EntityUtils.toString(
+                                    httpResponse.getEntity()));
+                } else {
                     LOG.warn("Received a bad response from {}: code({})",
                             this.url,
                             statusCode);
                 }
-                this.headerCallback.accept(
-                        httpResponse.getAllHeaders());
-                this.request.setResponse(
-                        EntityUtils.toString(
-                                httpResponse.getEntity()));
             } catch (final IOException ioe) {
                 LOG.warn("Exception occurred while querying", ioe);
             }

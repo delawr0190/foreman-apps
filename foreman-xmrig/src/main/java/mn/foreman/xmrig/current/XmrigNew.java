@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import java.math.BigDecimal;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -49,18 +50,24 @@ import java.util.List;
 public class XmrigNew
         extends AbstractMiner {
 
+    /** The access token. */
+    private final String accessToken;
+
     /**
      * Constructor.
      *
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
+     * @param apiIp       The API IP.
+     * @param apiPort     The API port.
+     * @param accessToken The access token.
      */
     public XmrigNew(
             final String apiIp,
-            final int apiPort) {
+            final int apiPort,
+            final String accessToken) {
         super(
                 apiIp,
                 apiPort);
+        this.accessToken = accessToken;
     }
 
     @Override
@@ -80,9 +87,7 @@ public class XmrigNew
     private void addPool(final MinerStats.Builder statsBuilder)
             throws MinerException {
         final Summary summary =
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
+                query(
                         "/1/summary",
                         new TypeReference<Summary>() {
                         });
@@ -114,9 +119,7 @@ public class XmrigNew
     private void addRig(final MinerStats.Builder statsBuilder)
             throws MinerException {
         final List<Backend> backends =
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
+                query(
                         "/2/backends",
                         new TypeReference<List<Backend>>() {
                         });
@@ -149,6 +152,36 @@ public class XmrigNew
                                 toGpus(
                                         cuda))
                         .build());
+    }
+
+    /**
+     * Queries the miner API.
+     *
+     * @param uri The URI.
+     * @param <T> The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to communicate.
+     */
+    private <T> T query(
+            final String uri,
+            final TypeReference<T> typeReference) throws MinerException {
+        if (this.accessToken != null && !this.accessToken.isEmpty()) {
+            return Query.restQueryBearer(
+                    this.apiIp,
+                    this.apiPort,
+                    uri,
+                    this.accessToken,
+                    typeReference,
+                    2,
+                    TimeUnit.SECONDS);
+        }
+        return Query.restQuery(
+                this.apiIp,
+                this.apiPort,
+                uri,
+                typeReference);
     }
 
     /**
