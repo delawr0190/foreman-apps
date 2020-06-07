@@ -74,6 +74,10 @@ public class Response {
         @JsonProperty("PCIE_Address")
         public String address;
 
+        /** The fan speed. */
+        @JsonProperty("Fan Speed (%)")
+        public int fanSpeed;
+
         /** The index. */
         @JsonProperty("Index")
         public int index;
@@ -81,6 +85,10 @@ public class Response {
         /** The name. */
         @JsonProperty("Name")
         public String name;
+
+        /** The temperature. */
+        @JsonProperty("Temps (deg C)")
+        public int temp;
     }
 
     /** A model representation of the mining object. */

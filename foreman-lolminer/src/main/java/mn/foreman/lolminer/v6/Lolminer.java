@@ -104,22 +104,30 @@ public class Lolminer
     private static void addGpu(
             final Response.Gpu gpu,
             final Rig.Builder rigBuilder) {
-        rigBuilder.addGpu(
+        final Gpu.Builder gpuBuilder =
                 new Gpu.Builder()
                         .setIndex(gpu.index)
                         .setBus(gpu.address)
                         .setName(gpu.name)
-                        .setTemp(0)
-                        .setFans(
-                                new FanInfo.Builder()
-                                        .setCount(0)
-                                        .setSpeedUnits("%")
-                                        .build())
+                        .setTemp(gpu.temp)
                         .setFreqInfo(
                                 new FreqInfo.Builder()
                                         .setFreq(0)
                                         .setMemFreq(0)
-                                        .build())
-                        .build());
+                                        .build());
+        final FanInfo.Builder fanBuilder =
+                new FanInfo.Builder();
+        if (gpu.fanSpeed > 0) {
+            fanBuilder
+                    .setCount(1)
+                    .addSpeed(gpu.fanSpeed)
+                    .setSpeedUnits("%");
+        } else {
+            fanBuilder
+                    .setCount(0)
+                    .setSpeedUnits("%");
+        }
+        gpuBuilder.setFans(fanBuilder.build());
+        rigBuilder.addGpu(gpuBuilder.build());
     }
 }
