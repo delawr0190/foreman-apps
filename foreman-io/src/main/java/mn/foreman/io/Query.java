@@ -6,12 +6,18 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 /** Provides utility methods for querying APIs. */
 public class Query {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(Query.class);
 
     /**
      * Constructor.
@@ -382,6 +388,8 @@ public class Query {
                     new ObjectMapper()
                             .registerModule(new JavaTimeModule());
             try {
+                final String responseJson = request.getResponse();
+                LOG.debug("Received API response: {}", responseJson);
                 response =
                         objectMapper.readValue(
                                 request.getResponse(),
