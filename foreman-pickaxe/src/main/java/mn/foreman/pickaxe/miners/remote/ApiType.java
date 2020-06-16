@@ -163,7 +163,10 @@ public enum ApiType {
     HYPERBIT_API(50),
 
     /** obelisk. */
-    OBELISK_API(51);
+    OBELISK_API(51),
+
+    /** strongu. */
+    STRONGU_API(52);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

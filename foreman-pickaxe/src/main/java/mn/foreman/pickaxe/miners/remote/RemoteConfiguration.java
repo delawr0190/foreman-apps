@@ -47,6 +47,7 @@ import mn.foreman.rhminer.RhminerFactory;
 import mn.foreman.sgminer.SgminerFactory;
 import mn.foreman.spondoolies.SpondooliesFactory;
 import mn.foreman.srbminer.SrbminerFactory;
+import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.swarm.SwarmFactory;
 import mn.foreman.trex.TrexFactory;
 import mn.foreman.whatsminer.WhatsminerFactory;
@@ -553,6 +554,9 @@ public class RemoteConfiguration
                 break;
             case SRBMINER_API:
                 minerFactory = new SrbminerFactory();
+                break;
+            case STRONGU_API:
+                minerFactory = new StrongUFactory();
                 break;
             case SWARM_API:
                 minerFactory = new SwarmFactory();

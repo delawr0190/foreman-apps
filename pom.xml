@@ -100,6 +100,7 @@
         <module>foreman-sgminer</module>
         <module>foreman-spondoolies</module>
         <module>foreman-srbminer</module>
+        <module>foreman-strongu</module>
         <module>foreman-swarm</module>
         <module>foreman-trex</module>
         <module>foreman-util</module>
@@ -329,6 +330,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-srbminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-strongu</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

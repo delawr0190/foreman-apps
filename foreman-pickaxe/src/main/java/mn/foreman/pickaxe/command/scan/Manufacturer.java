@@ -17,6 +17,7 @@ import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
+import mn.foreman.strongu.StrongUTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
 import java.util.Optional;
@@ -108,6 +109,13 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.SUMMARY,
                     new SpondooliesTypeFactory())),
+
+    /** StrongU. */
+    STRONGU(
+            "strongu",
+            new CgMinerDetectionStrategy(
+                    CgMinerCommand.DEVS,
+                    new StrongUTypeFactory())),
 
     WHATSMINER(
             "whatsminer",

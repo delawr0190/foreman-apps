@@ -191,6 +191,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-strongu</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-swarm</artifactId>
         </dependency>
         <dependency>
