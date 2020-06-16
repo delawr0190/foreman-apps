@@ -77,6 +77,18 @@ public class XmrigNew
         addRig(statsBuilder);
     }
 
+    private static Backend getBackend(
+            final List<Backend> backends,
+            final String slug)
+            throws MinerException {
+        return backends
+                .stream()
+                .filter(backend -> slug.equals(backend.type))
+                .findFirst()
+                .orElseThrow(
+                        () -> new MinerException("Missing " + slug + " backend"));
+    }
+
     /**
      * Adds a {@link Pool}.
      *
@@ -124,25 +136,24 @@ public class XmrigNew
                         new TypeReference<List<Backend>>() {
                         });
 
+        final Backend cpu =
+                getBackend(
+                        backends,
+                        "cpu");
         final Backend openCl =
-                backends
-                        .stream()
-                        .filter(backend -> "opencl".equals(backend.type))
-                        .findFirst()
-                        .orElseThrow(
-                                () -> new MinerException("Missing OpenCL backend"));
+                getBackend(
+                        backends,
+                        "opencl");
         final Backend cuda =
-                backends
-                        .stream()
-                        .filter(backend -> "cuda".equals(backend.type))
-                        .findFirst()
-                        .orElseThrow(
-                                () -> new MinerException("Missing Cuda backend"));
+                getBackend(
+                        backends,
+                        "cuda");
 
         statsBuilder.addRig(
                 new Rig.Builder()
                         .setHashRate(
                                 toHashRate(
+                                        cpu,
                                         openCl,
                                         cuda))
                         .addGpus(
@@ -261,12 +272,14 @@ public class XmrigNew
     /**
      * Converts the provided {@link Backend Backends} to a single hash rate.
      *
+     * @param cpu    The CPU {@link Backend}.
      * @param openCl The OpenCL {@link Backend}.
      * @param cuda   The Cuda {@link Backend}.
      *
      * @return The hash rate.
      */
     private BigDecimal toHashRate(
+            final Backend cpu,
             final Backend openCl,
             final Backend cuda) {
         BigDecimal openClRate = BigDecimal.ZERO;
@@ -287,6 +300,17 @@ public class XmrigNew
                             .reduce(BigDecimal.ZERO, BigDecimal::add);
         }
 
-        return openClRate.add(cudaRate);
+        // Return the cpu hash rate as a rig rate if no other backends are
+        // being used
+        BigDecimal cpuRate = BigDecimal.ZERO;
+        if (!openCl.enabled && !cuda.enabled && cpu.enabled) {
+            cpuRate =
+                    cpu.threads
+                            .stream()
+                            .map(thread -> thread.hashrates.get(0))
+                            .reduce(BigDecimal.ZERO, BigDecimal::add);
+        }
+
+        return openClRate.add(cudaRate).add(cpuRate);
     }
 }

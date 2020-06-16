@@ -13,11 +13,7 @@ import com.google.common.collect.ImmutableMap;
 import java.math.BigDecimal;
 import java.util.Collections;
 
-/**
- * Runs an integration tests using {@link XmrigNew} against a fake API.
- *
- * This tests xmrig-amd.
- */
+/** Runs an integration tests using {@link XmrigNew} against a fake API. */
 public class Xmrig5_11_1CpuMiningITest
         extends AbstractApiITest {
 
@@ -199,7 +195,7 @@ public class Xmrig5_11_1CpuMiningITest
                                         .build())
                         .addRig(
                                 new Rig.Builder()
-                                        .setHashRate(BigDecimal.ZERO)
+                                        .setHashRate(new BigDecimal("1104.87"))
                                         .build())
                         .build());
     }
