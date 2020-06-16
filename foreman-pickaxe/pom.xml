@@ -155,6 +155,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-multminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-nanominer</artifactId>
         </dependency>
         <dependency>

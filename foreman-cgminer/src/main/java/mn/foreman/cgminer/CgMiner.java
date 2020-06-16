@@ -12,6 +12,7 @@ import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -85,6 +86,20 @@ public class CgMiner
     }
 
     /**
+     * Creates a new mapper.
+     *
+     * @return The new mapper.
+     */
+    private static ObjectMapper createMapper() {
+        final ObjectMapper objectMapper =
+                new ObjectMapper();
+        objectMapper.configure(
+                JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
+                true);
+        return objectMapper;
+    }
+
+    /**
      * Fixes invalid JSON formatting present in some forks of cgminer.
      *
      * @param json             The JSON to patch.
@@ -114,7 +129,7 @@ public class CgMiner
         try {
             // Remove id
             final ObjectMapper objectMapper =
-                    new ObjectMapper();
+                    createMapper();
             final Map<String, Object> parsed =
                     objectMapper.readValue(
                             goodJson,
@@ -175,7 +190,7 @@ public class CgMiner
         CgMinerResponse response = null;
 
         try {
-            final ObjectMapper objectMapper = new ObjectMapper();
+            final ObjectMapper objectMapper = createMapper();
 
             final String message =
                     objectMapper.writeValueAsString(request);

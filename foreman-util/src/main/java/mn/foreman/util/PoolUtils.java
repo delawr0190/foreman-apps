@@ -24,6 +24,14 @@ public class PoolUtils {
         if ((url != null) && !url.isEmpty()) {
             sanitized = url;
 
+            // Trim padding
+            sanitized = sanitized.trim();
+
+            // Remove anything in the front
+            if (sanitized.contains(" ")) {
+                sanitized = sanitized.split(" ")[1];
+            }
+
             // Trim the protocol
             if (sanitized.contains("://")) {
                 sanitized = sanitized.split("://")[1];

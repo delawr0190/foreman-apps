@@ -35,6 +35,7 @@ import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.multiminer.MultiminerFactory;
+import mn.foreman.multminer.MultMinerFactory;
 import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
 import mn.foreman.nicehash.NiceHashMiner;
@@ -522,6 +523,9 @@ public class RemoteConfiguration
                 break;
             case MULTIMINER_API:
                 minerFactory = new MultiminerFactory();
+                break;
+            case MULTMINER_API:
+                minerFactory = new MultMinerFactory();
                 break;
             case NANOMINER_API:
                 minerFactory = new NanominerFactory();

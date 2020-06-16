@@ -8,6 +8,7 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -30,11 +31,36 @@ public class HttpHandler
     /** The request headers. */
     private final Map<String, String> requestHeaders;
 
+    /** The request parameters. */
+    private final String requestParameters;
+
     /** The response to return. */
     private final String response;
 
     /** The response headers. */
     private final Map<String, String> responseHeaders;
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest   The expected request.
+     * @param requestHeaders    The request headers.
+     * @param requestParameters The request parameters.
+     * @param response          The response.
+     * @param responseHeaders   The response headers.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final Map<String, String> requestHeaders,
+            final String requestParameters,
+            final String response,
+            final Map<String, String> responseHeaders) {
+        this.expectedRequest = expectedRequest;
+        this.requestHeaders = new HashMap<>(requestHeaders);
+        this.requestParameters = requestParameters;
+        this.response = response;
+        this.responseHeaders = new HashMap<>(responseHeaders);
+    }
 
     /**
      * Constructor.
@@ -48,10 +74,12 @@ public class HttpHandler
             final Map<String, String> requestHeaders,
             final String response,
             final Map<String, String> responseHeaders) {
-        this.expectedRequest = expectedRequest;
-        this.requestHeaders = new HashMap<>(requestHeaders);
-        this.response = response;
-        this.responseHeaders = new HashMap<>(responseHeaders);
+        this(
+                expectedRequest,
+                requestHeaders,
+                null,
+                response,
+                responseHeaders);
     }
 
     /**
@@ -73,17 +101,7 @@ public class HttpHandler
     @Override
     public void handle(
             final HttpExchange exchange) throws IOException {
-        final byte[] requestBytes =
-                IOUtils.toByteArray(
-                        exchange.getRequestBody());
-
-        this.matched.set(
-                Arrays.equals(
-                        requestBytes,
-                        this.expectedRequest.getBytes()) &&
-                        matchedHeaders(
-                                exchange.getRequestHeaders(),
-                                this.requestHeaders));
+        this.matched.set(didMatch(exchange));
 
         if (!this.responseHeaders.isEmpty()) {
             addResponseHeaders(
@@ -142,5 +160,24 @@ public class HttpHandler
             return headerMap.equals(expected);
         }
         return true;
+    }
+
+    private boolean didMatch(final HttpExchange exchange)
+            throws IOException {
+        final byte[] requestBytes =
+                IOUtils.toByteArray(
+                        exchange.getRequestBody());
+        boolean matched =
+                Arrays.equals(
+                        requestBytes,
+                        this.expectedRequest.getBytes()) &&
+                        matchedHeaders(
+                                exchange.getRequestHeaders(),
+                                this.requestHeaders);
+        if (matched && this.requestParameters != null) {
+            final URI uri = exchange.getRequestURI();
+            matched = uri.getQuery().equals(this.requestParameters);
+        }
+        return matched;
     }
 }

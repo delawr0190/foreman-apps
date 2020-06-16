@@ -90,6 +90,7 @@
         <module>foreman-mkxminer</module>
         <module>foreman-model</module>
         <module>foreman-multiminer</module>
+        <module>foreman-multminer</module>
         <module>foreman-nanominer</module>
         <module>foreman-nbminer</module>
         <module>foreman-nicehash</module>
@@ -285,6 +286,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-multiminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-multminer</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

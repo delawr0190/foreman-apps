@@ -166,7 +166,10 @@ public enum ApiType {
     OBELISK_API(51),
 
     /** strongu. */
-    STRONGU_API(52);
+    STRONGU_API(52),
+
+    /** multminer. */
+    MULTMINER_API(53);
 
     /** A mapping of {@link #type} to {@link ApiType}. */
     private static final Map<Integer, ApiType> MAPPINGS;

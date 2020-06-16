@@ -153,7 +153,7 @@ public class SummaryAndDevsResponseStrategy
                                                     new BigDecimal(
                                                             Math.pow(
                                                                     1000,
-                                                                    3))))
+                                                                    2))))
                             .setFanInfo(fanBuilder.build());
                 });
 
