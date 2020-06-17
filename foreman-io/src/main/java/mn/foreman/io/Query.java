@@ -6,12 +6,33 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableMap;
+import org.apache.http.HttpHost;
+import org.apache.http.HttpRequest;
+import org.apache.http.NameValuePair;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.AuthCache;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.DigestScheme;
+import org.apache.http.impl.client.BasicAuthCache;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Base64;
-import java.util.Map;
+import java.net.URI;
+import java.net.URL;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /** Provides utility methods for querying APIs. */
 public class Query {
@@ -96,6 +117,76 @@ public class Query {
         }
 
         return response;
+    }
+
+    /**
+     * Performs an HTTP GET operation against an API that requires digest auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The digest auth username.
+     * @param password          The digest auth password.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestGet(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final Consumer<String> responseProcessor)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                false,
+                null,
+                responseProcessor);
+    }
+
+    /**
+     * Performs an HTTP post operation.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param content           The content.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestPost(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final Consumer<String> responseProcessor)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                true,
+                content,
+                responseProcessor);
     }
 
     /**
@@ -436,6 +527,106 @@ public class Query {
                 type,
                 connectTimeout,
                 connectTimeoutUnits);
+    }
+
+    /**
+     * Runs a digest request.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param isPost            Whether or not the request is a post.
+     * @param content           The content.
+     * @param responseProcessor What to do with the response.
+     *
+     * @throws Exception on failure to connect.
+     */
+    private static void doDigest(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final boolean isPost,
+            final List<Map<String, Object>> content,
+            final Consumer<String> responseProcessor)
+            throws Exception {
+        final URI uri =
+                new URI(
+                        "http",
+                        null,
+                        host,
+                        port,
+                        path,
+                        null,
+                        null);
+        final URL url = uri.toURL();
+
+        final HttpHost targetHost =
+                new HttpHost(
+                        url.getHost(),
+                        url.getPort(),
+                        url.getProtocol());
+
+        final CredentialsProvider credsProvider =
+                new BasicCredentialsProvider();
+        credsProvider.setCredentials(
+                AuthScope.ANY,
+                new UsernamePasswordCredentials(
+                        username,
+                        password));
+        final AuthCache authCache = new BasicAuthCache();
+        final DigestScheme digestScheme = new DigestScheme();
+        digestScheme.overrideParamter(
+                "realm",
+                realm);
+        digestScheme.overrideParamter(
+                "nonce",
+                UUID
+                        .randomUUID()
+                        .toString()
+                        .replace("-", ""));
+        authCache.put(targetHost, digestScheme);
+
+        final CloseableHttpClient httpClient =
+                HttpClients
+                        .custom()
+                        .setDefaultCredentialsProvider(credsProvider)
+                        .build();
+        final HttpClientContext context = HttpClientContext.create();
+        context.setAuthCache(authCache);
+
+        final HttpRequest httpRequest;
+        if (!isPost) {
+            httpRequest = new HttpGet(url.getPath());
+        } else {
+            final HttpPost httpPost = new HttpPost(url.getPath());
+            if (content != null) {
+                final List<NameValuePair> params = new ArrayList<>();
+                content.forEach(entry ->
+                        params.add(
+                                new BasicNameValuePair(
+                                        entry.get("key").toString(),
+                                        entry.get("value").toString())));
+                httpPost.setEntity(new UrlEncodedFormEntity(params));
+            }
+            httpRequest = httpPost;
+        }
+
+        try (final CloseableHttpResponse response =
+                     httpClient.execute(
+                             targetHost,
+                             httpRequest,
+                             context)) {
+            final String responseBody =
+                    EntityUtils.toString(response.getEntity());
+            LOG.debug("Received digest API response: {}", responseBody);
+            responseProcessor.accept(responseBody);
+        }
     }
 
     /**

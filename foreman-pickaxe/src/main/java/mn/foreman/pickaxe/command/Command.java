@@ -1,7 +1,8 @@
 package mn.foreman.pickaxe.command;
 
-import mn.foreman.pickaxe.command.discover.DiscoverStrategy;
-import mn.foreman.pickaxe.command.scan.ScanStrategy;
+import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
+import mn.foreman.pickaxe.command.asic.pools.ChangePoolsStrategy;
+import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +19,12 @@ public enum Command {
     /** Scan for miners. */
     SCAN(
             "scan",
-            new ScanStrategy());
+            new ScanStrategy()),
+
+    /** Change pools. */
+    CHANGE_POOLS(
+            "change-pools",
+            new ChangePoolsStrategy());
 
     /** All of the known commands. */
     private static final ConcurrentMap<String, Command> TYPES =

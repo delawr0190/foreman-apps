@@ -1,6 +1,7 @@
-package mn.foreman.pickaxe.command.scan;
+package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.aixin.AixinTypeFactory;
+import mn.foreman.antminer.AntminerChangePoolsStrategy;
 import mn.foreman.antminer.AntminerTypeFactory;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
@@ -14,7 +15,9 @@ import mn.foreman.dragonmint.DragonmintType;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.InnosiliconType;
+import mn.foreman.model.ChangePoolsStrategy;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.NullChangePoolsStrategy;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
@@ -40,7 +43,8 @@ public enum Manufacturer {
             "antminer",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
-                    new AntminerTypeFactory())),
+                    new AntminerTypeFactory()),
+            new AntminerChangePoolsStrategy()),
 
     /** Avalon. */
     AVALON(
@@ -141,6 +145,9 @@ public enum Manufacturer {
         }
     }
 
+    /** The strategy for changing pools. */
+    private final ChangePoolsStrategy changePoolsStrategy;
+
     /** The strategy for detecting. */
     private final DetectionStrategy detectionStrategy;
 
@@ -156,8 +163,26 @@ public enum Manufacturer {
     Manufacturer(
             final String name,
             final DetectionStrategy detectionStrategy) {
+        this(
+                name,
+                detectionStrategy,
+                new NullChangePoolsStrategy());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name                The name.
+     * @param detectionStrategy   The strategy for detecting.
+     * @param changePoolsStrategy The strategy for changing pools.
+     */
+    Manufacturer(
+            final String name,
+            final DetectionStrategy detectionStrategy,
+            final ChangePoolsStrategy changePoolsStrategy) {
         this.name = name;
         this.detectionStrategy = detectionStrategy;
+        this.changePoolsStrategy = changePoolsStrategy;
     }
 
     /**
@@ -169,6 +194,15 @@ public enum Manufacturer {
      */
     public static Optional<Manufacturer> fromName(final String name) {
         return Optional.ofNullable(TYPES.get(name.toLowerCase()));
+    }
+
+    /**
+     * Returns the strategy for changing pools.
+     *
+     * @return The strategy for changing pools.
+     */
+    public ChangePoolsStrategy getChangePoolsStrategy() {
+        return this.changePoolsStrategy;
     }
 
     /**

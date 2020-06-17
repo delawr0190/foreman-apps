@@ -1,4 +1,4 @@
-package mn.foreman.pickaxe.command.discover;
+package mn.foreman.pickaxe.command.asic.discover;
 
 import mn.foreman.discover.CgminerDiscoverStrategy;
 import mn.foreman.discover.DiscoverStrategy;

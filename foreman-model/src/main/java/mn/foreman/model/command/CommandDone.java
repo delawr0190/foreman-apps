@@ -43,6 +43,10 @@ public class CommandDone {
     @Builder
     public static class Status {
 
+        /** A detailed message. */
+        @JsonProperty("details")
+        public String details;
+
         /** The message. */
         @JsonProperty("message")
         public String message;

@@ -1,4 +1,4 @@
-package mn.foreman.pickaxe.command.scan;
+package mn.foreman.pickaxe.command.asic.scan;
 
 import mn.foreman.api.ForemanApi;
 import mn.foreman.model.Detection;
@@ -7,7 +7,9 @@ import mn.foreman.model.MinerType;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.command.CommandUpdate;
+import mn.foreman.model.command.DoneStatus;
 import mn.foreman.pickaxe.command.CommandStrategy;
+import mn.foreman.pickaxe.command.asic.Manufacturer;
 
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -176,9 +178,15 @@ public class ScanStrategy
                             id);
         }
 
-        builder.result(
-                ImmutableMap.of(
-                        "miners",
-                        miners));
+        builder
+                .result(
+                        ImmutableMap.of(
+                                "miners",
+                                miners))
+                .status(
+                        CommandDone.Status
+                                .builder()
+                                .type(DoneStatus.SUCCESS)
+                                .build());
     }
 }

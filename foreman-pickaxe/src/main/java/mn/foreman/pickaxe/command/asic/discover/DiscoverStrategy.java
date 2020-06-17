@@ -1,9 +1,10 @@
-package mn.foreman.pickaxe.command.discover;
+package mn.foreman.pickaxe.command.asic.discover;
 
 import mn.foreman.api.ForemanApi;
 import mn.foreman.discover.Discovery;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
+import mn.foreman.model.command.DoneStatus;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;
@@ -52,10 +53,16 @@ public class DiscoverStrategy
                     discoverStrategy.discover(
                             ip,
                             Integer.parseInt(port));
-            builder.result(
-                    ImmutableMap.of(
-                            "discoveries",
-                            discoveries));
+            builder
+                    .result(
+                            ImmutableMap.of(
+                                    "discoveries",
+                                    discoveries))
+                    .status(
+                            CommandDone.Status
+                                    .builder()
+                                    .type(DoneStatus.SUCCESS)
+                                    .build());
         }
     }
 }
