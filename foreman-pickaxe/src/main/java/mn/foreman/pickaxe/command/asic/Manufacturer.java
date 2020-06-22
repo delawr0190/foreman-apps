@@ -2,14 +2,17 @@ package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.aixin.AixinTypeFactory;
 import mn.foreman.antminer.AntminerChangePoolsStrategy;
+import mn.foreman.antminer.AntminerConfValue;
 import mn.foreman.antminer.AntminerTypeFactory;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
+import mn.foreman.blackminer.BlackminerConfValue;
 import mn.foreman.blackminer.BlackminerTypeFactory;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
+import mn.foreman.dragonmint.DragonmintChangePoolsStrategy;
 import mn.foreman.dragonmint.DragonmintDetectionStrategy;
 import mn.foreman.dragonmint.DragonmintType;
 import mn.foreman.futurebit.FutureBitTypeFactory;
@@ -18,12 +21,16 @@ import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.ChangePoolsStrategy;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.NullChangePoolsStrategy;
+import mn.foreman.multminer.MultMinerChangePoolsStrategy;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
+import mn.foreman.obelisk.ObeliskChangePoolsStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
+import mn.foreman.strongu.StrongUConfValue;
 import mn.foreman.strongu.StrongUTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -44,7 +51,23 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
                     new AntminerTypeFactory()),
-            new AntminerChangePoolsStrategy()),
+            new AntminerChangePoolsStrategy(
+                    "antMiner Configuration",
+                    Arrays.asList(
+                            AntminerConfValue.POOL_1_URL,
+                            AntminerConfValue.POOL_1_USER,
+                            AntminerConfValue.POOL_1_PASS,
+                            AntminerConfValue.POOL_2_URL,
+                            AntminerConfValue.POOL_2_USER,
+                            AntminerConfValue.POOL_2_PASS,
+                            AntminerConfValue.POOL_3_URL,
+                            AntminerConfValue.POOL_3_USER,
+                            AntminerConfValue.POOL_3_PASS,
+                            AntminerConfValue.NO_BEEPER,
+                            AntminerConfValue.NO_TEMP_OVER_CTRL,
+                            AntminerConfValue.FAN_CTRL,
+                            AntminerConfValue.FAN_PWM,
+                            AntminerConfValue.FREQ))),
 
     /** Avalon. */
     AVALON(
@@ -65,7 +88,25 @@ public enum Manufacturer {
             "blackminer",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
-                    new BlackminerTypeFactory())),
+                    new BlackminerTypeFactory()),
+            new AntminerChangePoolsStrategy(
+                    "blackMiner Configuration",
+                    Arrays.asList(
+                            BlackminerConfValue.POOL_1_URL,
+                            BlackminerConfValue.POOL_1_USER,
+                            BlackminerConfValue.POOL_1_PASS,
+                            BlackminerConfValue.POOL_2_URL,
+                            BlackminerConfValue.POOL_2_USER,
+                            BlackminerConfValue.POOL_2_PASS,
+                            BlackminerConfValue.POOL_3_URL,
+                            BlackminerConfValue.POOL_3_USER,
+                            BlackminerConfValue.POOL_3_PASS,
+                            BlackminerConfValue.NO_BEEPER,
+                            BlackminerConfValue.NO_TEMP_OVER_CTRL,
+                            BlackminerConfValue.FAN_CTRL,
+                            BlackminerConfValue.FAN_PWM,
+                            BlackminerConfValue.FREQ,
+                            BlackminerConfValue.COIN_TYPE))),
 
     /** Dayun. */
     DAYUN(
@@ -80,7 +121,8 @@ public enum Manufacturer {
             "dragonmint",
             new DragonmintDetectionStrategy<>(
                     DragonmintType::forType,
-                    "DragonMint")),
+                    "DragonMint"),
+            new DragonmintChangePoolsStrategy()),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -101,17 +143,20 @@ public enum Manufacturer {
             "innosilicon",
             new DragonmintDetectionStrategy<>(
                     InnosiliconType::forType,
-                    "Innosilicon")),
+                    "Innosilicon"),
+            new DragonmintChangePoolsStrategy()),
 
     /** MultMiner. */
     MULTMINER(
             "multminer",
-            new MultMinerDetectionStrategy()),
+            new MultMinerDetectionStrategy(),
+            new MultMinerChangePoolsStrategy()),
 
     /** Obelisk. */
     OBELISK(
             "obelisk",
-            new ObeliskDetectionStrategy<>()),
+            new ObeliskDetectionStrategy<>(),
+            new ObeliskChangePoolsStrategy()),
 
     /** Spondoolies. */
     SPONDOOLIES(
@@ -125,8 +170,32 @@ public enum Manufacturer {
             "strongu",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
-                    new StrongUTypeFactory())),
+                    new StrongUTypeFactory()),
+            new AntminerChangePoolsStrategy(
+                    "stuMiner Configuration",
+                    Arrays.asList(
+                            StrongUConfValue.POOL_1_URL,
+                            StrongUConfValue.POOL_1_USER,
+                            StrongUConfValue.POOL_1_PASS,
+                            StrongUConfValue.POOL_2_URL,
+                            StrongUConfValue.POOL_2_USER,
+                            StrongUConfValue.POOL_2_PASS,
+                            StrongUConfValue.POOL_3_URL,
+                            StrongUConfValue.POOL_3_USER,
+                            StrongUConfValue.POOL_3_PASS,
+                            StrongUConfValue.NO_BEEPER,
+                            StrongUConfValue.NO_TEMP_OVER_CTRL,
+                            StrongUConfValue.FAN_PWM,
+                            StrongUConfValue.FREQ_1,
+                            StrongUConfValue.FREQ_2,
+                            StrongUConfValue.FREQ_3,
+                            StrongUConfValue.FREQ_4,
+                            StrongUConfValue.WORK_VOLT,
+                            StrongUConfValue.START_VOLT,
+                            StrongUConfValue.PLL_START,
+                            StrongUConfValue.PLL_STEP))),
 
+    /** Whatsminer. */
     WHATSMINER(
             "whatsminer",
             new CgMinerDetectionStrategy(

@@ -11,6 +11,7 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Predicate;
 
 /**
  * A {@link HttpHandler} provides a {@link Handler} implementation that will
@@ -34,11 +35,39 @@ public class HttpHandler
     /** The request parameters. */
     private final String requestParameters;
 
+    /** The validator to use for requests. */
+    private final Predicate<HttpExchange> requestValidator;
+
     /** The response to return. */
     private final String response;
 
     /** The response headers. */
     private final Map<String, String> responseHeaders;
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest   The expected request.
+     * @param requestHeaders    The request headers.
+     * @param requestParameters The request parameters.
+     * @param response          The response.
+     * @param responseHeaders   The response headers.
+     * @param requestValidator  The validator for requests.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final Map<String, String> requestHeaders,
+            final String requestParameters,
+            final String response,
+            final Map<String, String> responseHeaders,
+            final Predicate<HttpExchange> requestValidator) {
+        this.expectedRequest = expectedRequest;
+        this.requestHeaders = new HashMap<>(requestHeaders);
+        this.requestParameters = requestParameters;
+        this.response = response;
+        this.responseHeaders = new HashMap<>(responseHeaders);
+        this.requestValidator = requestValidator;
+    }
 
     /**
      * Constructor.
@@ -55,11 +84,37 @@ public class HttpHandler
             final String requestParameters,
             final String response,
             final Map<String, String> responseHeaders) {
-        this.expectedRequest = expectedRequest;
-        this.requestHeaders = new HashMap<>(requestHeaders);
-        this.requestParameters = requestParameters;
-        this.response = response;
-        this.responseHeaders = new HashMap<>(responseHeaders);
+        this(
+                expectedRequest,
+                requestHeaders,
+                requestParameters,
+                response,
+                responseHeaders,
+                exchange -> true);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest  The expected request.
+     * @param requestHeaders   The request headers.
+     * @param response         The response.
+     * @param responseHeaders  The response headers.
+     * @param requestValidator The request validator.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final Map<String, String> requestHeaders,
+            final String response,
+            final Map<String, String> responseHeaders,
+            final Predicate<HttpExchange> requestValidator) {
+        this(
+                expectedRequest,
+                requestHeaders,
+                null,
+                response,
+                responseHeaders,
+                requestValidator);
     }
 
     /**
@@ -80,6 +135,25 @@ public class HttpHandler
                 null,
                 response,
                 responseHeaders);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest  The expected request.
+     * @param response         The response.
+     * @param requestValidator The validator for requests.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final String response,
+            final Predicate<HttpExchange> requestValidator) {
+        this(
+                expectedRequest,
+                Collections.emptyMap(),
+                response,
+                Collections.emptyMap(),
+                requestValidator);
     }
 
     /**
@@ -162,6 +236,15 @@ public class HttpHandler
         return true;
     }
 
+    /**
+     * Whether or not there was a match.
+     *
+     * @param exchange The exchange.
+     *
+     * @return Whether or not there was a match.
+     *
+     * @throws IOException on failure to query.
+     */
     private boolean didMatch(final HttpExchange exchange)
             throws IOException {
         final byte[] requestBytes =
@@ -177,6 +260,9 @@ public class HttpHandler
         if (matched && this.requestParameters != null) {
             final URI uri = exchange.getRequestURI();
             matched = uri.getQuery().equals(this.requestParameters);
+        }
+        if (matched) {
+            matched = this.requestValidator.test(exchange);
         }
         return matched;
     }

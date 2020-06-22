@@ -1,6 +1,6 @@
 package mn.foreman.obelisk;
 
-import mn.foreman.io.*;
+import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -12,19 +12,11 @@ import mn.foreman.obelisk.json.Info;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.http.Header;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -42,9 +34,6 @@ public class Obelisk
 
     /** The API username. */
     private final String username;
-
-    /** The session ID. */
-    private String sessionId;
 
     /**
      * Constructor.
@@ -233,155 +222,25 @@ public class Obelisk
             final ObeliskGen gen,
             final MinerStats.Builder statsBuilder)
             throws Exception {
-        try {
-            // Login first
-            query(
-                    "/api/login",
-                    true,
-                    Object.class);
-
-            // Get the dashboard stats
-            final Optional<Dashboard> dashboardOptional =
-                    query(
-                            "/api/status/dashboard",
-                            false,
-                            Dashboard.class);
-            if (dashboardOptional.isPresent()) {
-                final Dashboard dashboard = dashboardOptional.get();
-                addAsics(
-                        statsBuilder,
-                        dashboard,
-                        gen);
-                addPools(
-                        statsBuilder,
-                        dashboard);
-            } else {
-                throw new MinerException("Failed to obtain dashboard status");
-            }
-        } finally {
-            // Logout
-            query(
-                    "/api/logout",
-                    false,
-                    Object.class);
-            this.sessionId = null;
-        }
-    }
-
-    /**
-     * Processes all of the obelisk response headers.
-     *
-     * @param headers The Obelisk response headers.
-     */
-    private void processHeaders(final Map<String, String> headers) {
-        // Update the session cookie
-        for (final Map.Entry<String, String> entry : headers.entrySet()) {
-            if ("set-cookie".equals(entry.getKey().toLowerCase())) {
-                final String cookie = entry.getValue();
-                if (cookie.contains("sessionid")) {
-                    this.sessionId =
-                            cookie
-                                    .split(";")[0]
-                                    .replace("sessionid=", "");
-                }
-            }
-        }
-    }
-
-    /**
-     * Queries an Obelisk.
-     *
-     * @param uri     The API URI.
-     * @param isLogin Whether or not the request is a login attempt.
-     * @param clazz   The class of the response.
-     * @param <T>     The response type.
-     *
-     * @return The response, if present.
-     *
-     * @throws IOException    on failure to parse JSON.
-     * @throws MinerException on failure to communicate with the miner.
-     */
-    private <T> Optional<T> query(
-            final String uri,
-            final boolean isLogin,
-            final Class<T> clazz)
-            throws
-            IOException,
-            MinerException {
-        T result = null;
-
-        final ObjectMapper objectMapper =
-                new ObjectMapper();
-
-        final String json;
-        if (isLogin) {
-            // Only include username and password on login
-            final Map<String, String> content =
-                    ImmutableMap.of(
-                            "username",
-                            username,
-                            "password",
-                            password);
-            json = objectMapper.writeValueAsString(content);
-        } else {
-            json = null;
-        }
-
-        final ApiRequest apiRequest =
-                new ApiRequestImpl(
-                        this.apiIp,
-                        this.apiPort,
-                        uri,
-                        toCookies(),
-                        json);
-
-        final Map<String, String> headerMap = new HashMap<>();
-
-        final Connection connection =
-                ConnectionFactory.createRestConnection(
-                        apiRequest,
-                        "POST",
-                        5,
-                        TimeUnit.SECONDS,
-                        headers -> {
-                            for (final Header header : headers) {
-                                headerMap.put(
-                                        header.getName(),
-                                        header.getValue());
-                            }
-                        });
-        connection.query();
-
-        if (apiRequest.waitForCompletion(
-                5,
-                TimeUnit.SECONDS)) {
-            processHeaders(headerMap);
-            final String response = apiRequest.getResponse();
-            if (response != null && !response.isEmpty()) {
-                result =
-                        objectMapper.readValue(
-                                response,
-                                clazz);
-            }
-        } else {
-            throw new MinerException("Failed to obtain response from obelisk");
-        }
-
-        if (isLogin && this.sessionId == null) {
-            throw new MinerException("Failed to login to obelisk");
-        }
-
-        return Optional.ofNullable(result);
-    }
-
-    /**
-     * Creates an HTTP cookie map.
-     *
-     * @return The cookies.
-     */
-    private Map<String, String> toCookies() {
-        return this.sessionId != null
-                ? ImmutableMap.of("Cookie", "sessionid=" + this.sessionId)
-                : Collections.emptyMap();
+        ObeliskQuery.runSessionQuery(
+                ObeliskQuery.Context
+                        .<Dashboard>builder()
+                        .apiIp(this.apiIp)
+                        .apiPort(this.apiPort)
+                        .uri("/api/status/dashboard")
+                        .method("GET")
+                        .username(this.username)
+                        .password(this.password)
+                        .responseClass(Dashboard.class)
+                        .responseCallback(dashboard -> {
+                            addAsics(
+                                    statsBuilder,
+                                    dashboard,
+                                    gen);
+                            addPools(
+                                    statsBuilder,
+                                    dashboard);
+                        })
+                        .build());
     }
 }

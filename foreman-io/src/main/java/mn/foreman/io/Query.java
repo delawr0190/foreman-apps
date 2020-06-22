@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableMap;
 import org.apache.http.HttpHost;
 import org.apache.http.HttpRequest;
 import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
@@ -18,6 +19,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.DigestScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
@@ -28,10 +30,13 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /** Provides utility methods for querying APIs. */
@@ -139,7 +144,7 @@ public class Query {
             final String path,
             final String username,
             final String password,
-            final Consumer<String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         doDigest(
                 host,
@@ -175,7 +180,7 @@ public class Query {
             final String username,
             final String password,
             final List<Map<String, Object>> content,
-            final Consumer<String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         doDigest(
                 host,
@@ -257,6 +262,36 @@ public class Query {
                 type,
                 connectTimeout,
                 connectTimeoutUnits);
+    }
+
+    /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param content           The content.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure.
+     */
+    public static void post(
+            final String host,
+            final int port,
+            final String path,
+            final List<Map<String, Object>> content,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                null,
+                path,
+                null,
+                null,
+                true,
+                content,
+                responseProcessor);
     }
 
     /**
@@ -492,6 +527,85 @@ public class Query {
     }
 
     /**
+     * Performs a rest query with basic auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param content           The content.
+     * @param responseProcessor The processor for responses.
+     *
+     * @throws IOException        on failure.
+     * @throws URISyntaxException on failure.
+     */
+    public static void restQuery(
+            final String host,
+            final int port,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final Consumer<String> responseProcessor) throws IOException, URISyntaxException {
+        final URI uri =
+                new URI(
+                        "http",
+                        null,
+                        host,
+                        port,
+                        path,
+                        null,
+                        null);
+        final URL url = uri.toURL();
+
+        final HttpHost targetHost =
+                new HttpHost(
+                        url.getHost(),
+                        url.getPort(),
+                        url.getProtocol());
+
+        final CredentialsProvider provider = new BasicCredentialsProvider();
+        final UsernamePasswordCredentials credentials =
+                new UsernamePasswordCredentials(
+                        username,
+                        password);
+        provider.setCredentials(
+                AuthScope.ANY,
+                credentials);
+
+        final AuthCache authCache = new BasicAuthCache();
+        authCache.put(targetHost, new BasicScheme());
+
+        final HttpClientContext context = HttpClientContext.create();
+        context.setCredentialsProvider(provider);
+        context.setAuthCache(authCache);
+
+        final CloseableHttpClient httpClient =
+                HttpClients.createDefault();
+
+        final HttpPost httpRequest = new HttpPost(url.getPath());
+        final List<NameValuePair> params = new ArrayList<>();
+        content.forEach(entry ->
+                params.add(
+                        new BasicNameValuePair(
+                                entry.get("key").toString(),
+                                entry.get("value").toString())));
+        httpRequest.setEntity(new UrlEncodedFormEntity(params));
+
+        try (final CloseableHttpResponse response =
+                     httpClient.execute(
+                             targetHost,
+                             httpRequest,
+                             context)) {
+            final String responseBody =
+                    EntityUtils.toString(response.getEntity());
+            LOG.debug("Received API response: {}", responseBody);
+            responseProcessor.accept(responseBody);
+        }
+    }
+
+    /**
      * Utility method to perform a query against a REST API.
      *
      * @param apiIp               The API IP.
@@ -553,7 +667,7 @@ public class Query {
             final String password,
             final boolean isPost,
             final List<Map<String, Object>> content,
-            final Consumer<String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         final URI uri =
                 new URI(
@@ -572,33 +686,39 @@ public class Query {
                         url.getPort(),
                         url.getProtocol());
 
-        final CredentialsProvider credsProvider =
-                new BasicCredentialsProvider();
-        credsProvider.setCredentials(
-                AuthScope.ANY,
-                new UsernamePasswordCredentials(
-                        username,
-                        password));
-        final AuthCache authCache = new BasicAuthCache();
-        final DigestScheme digestScheme = new DigestScheme();
-        digestScheme.overrideParamter(
-                "realm",
-                realm);
-        digestScheme.overrideParamter(
-                "nonce",
-                UUID
-                        .randomUUID()
-                        .toString()
-                        .replace("-", ""));
-        authCache.put(targetHost, digestScheme);
-
-        final CloseableHttpClient httpClient =
-                HttpClients
-                        .custom()
-                        .setDefaultCredentialsProvider(credsProvider)
-                        .build();
+        final CloseableHttpClient httpClient;
         final HttpClientContext context = HttpClientContext.create();
-        context.setAuthCache(authCache);
+
+        if (realm != null && username != null) {
+            final CredentialsProvider credsProvider =
+                    new BasicCredentialsProvider();
+            credsProvider.setCredentials(
+                    AuthScope.ANY,
+                    new UsernamePasswordCredentials(
+                            username,
+                            password));
+            final AuthCache authCache = new BasicAuthCache();
+            final DigestScheme digestScheme = new DigestScheme();
+            digestScheme.overrideParamter(
+                    "realm",
+                    realm);
+            digestScheme.overrideParamter(
+                    "nonce",
+                    UUID
+                            .randomUUID()
+                            .toString()
+                            .replace("-", ""));
+            authCache.put(targetHost, digestScheme);
+
+            httpClient =
+                    HttpClients
+                            .custom()
+                            .setDefaultCredentialsProvider(credsProvider)
+                            .build();
+            context.setAuthCache(authCache);
+        } else {
+            httpClient = HttpClients.createDefault();
+        }
 
         final HttpRequest httpRequest;
         if (!isPost) {
@@ -622,10 +742,14 @@ public class Query {
                              targetHost,
                              httpRequest,
                              context)) {
+            final StatusLine statusLine =
+                    response.getStatusLine();
             final String responseBody =
                     EntityUtils.toString(response.getEntity());
             LOG.debug("Received digest API response: {}", responseBody);
-            responseProcessor.accept(responseBody);
+            responseProcessor.accept(
+                    statusLine.getStatusCode(),
+                    responseBody);
         }
     }
 
