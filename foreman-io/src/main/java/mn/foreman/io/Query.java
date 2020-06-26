@@ -6,10 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableMap;
-import org.apache.http.HttpHost;
-import org.apache.http.HttpRequest;
-import org.apache.http.NameValuePair;
-import org.apache.http.StatusLine;
+import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
@@ -733,7 +730,10 @@ public class Query {
                                         entry.get("key").toString(),
                                         entry.get("value").toString())));
                 LOG.debug("Params for POST: {}", params);
-                httpPost.setEntity(new UrlEncodedFormEntity(params));
+
+                final HttpEntity entity = new UrlEncodedFormEntity(params);
+                LOG.debug("Entity: {}", entity);
+                httpPost.setEntity(entity);
             }
             httpRequest = httpPost;
         }
