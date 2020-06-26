@@ -732,10 +732,13 @@ public class Query {
                                 new BasicNameValuePair(
                                         entry.get("key").toString(),
                                         entry.get("value").toString())));
+                LOG.debug("Params for POST: {}", params);
                 httpPost.setEntity(new UrlEncodedFormEntity(params));
             }
             httpRequest = httpPost;
         }
+
+        LOG.debug("Sending request: {}", httpRequest);
 
         try (final CloseableHttpResponse response =
                      httpClient.execute(

@@ -1,7 +1,6 @@
-package mn.foreman.pickaxe.command.asic.pools;
+package mn.foreman.pickaxe.command.asic.reboot;
 
 import mn.foreman.api.ForemanApi;
-import mn.foreman.model.Pool;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.command.DoneStatus;
@@ -14,20 +13,18 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 
-/** Changes pools for the provided miner. */
-public class ChangePoolsStrategy
+/** A {@link CommandStrategy} that will perform a miner reboot. */
+public class RebootStrategy
         implements CommandStrategy {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(ChangePoolsStrategy.class);
+            LoggerFactory.getLogger(RebootStrategy.class);
 
     @Override
     public void runCommand(
@@ -39,14 +36,12 @@ public class ChangePoolsStrategy
         final String type = safeGet(args, "type");
         final String ip = safeGet(args, "ip");
         final String port = safeGet(args, "port");
-        final List<Pool> pools = toPools(args);
 
         switch (type) {
             case "asic":
-                runAsicChangePools(
+                runAsicReboot(
                         ip,
                         port,
-                        pools,
                         args,
                         builder);
                 break;
@@ -56,40 +51,16 @@ public class ChangePoolsStrategy
     }
 
     /**
-     * Converts the provided command args to a list of new pools.
-     *
-     * @param args The arguments to inspect.
-     *
-     * @return The new pools.
-     */
-    @SuppressWarnings("unchecked")
-    private static List<Pool> toPools(final Map<String, Object> args) {
-        final List<Map<String, String>> pools =
-                (List<Map<String, String>>) args.get("pools");
-        return pools
-                .stream()
-                .map(pool -> Pool
-                        .builder()
-                        .url(pool.getOrDefault("url", ""))
-                        .username(pool.getOrDefault("user", ""))
-                        .password(pool.getOrDefault("pass", ""))
-                        .build())
-                .collect(Collectors.toList());
-    }
-
-    /**
-     * Changes the pools on an ASIC.
+     * Reboots ASICs.
      *
      * @param ip      The ip.
      * @param port    The port.
-     * @param pools   The pools.
      * @param args    The arguments.
      * @param builder The builder to use for creating the final result.
      */
-    private void runAsicChangePools(
+    private void runAsicReboot(
             final String ip,
             final String port,
-            final List<Pool> pools,
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder) {
         final String manufacturer = safeGet(args, "manufacturer");
@@ -98,29 +69,27 @@ public class ChangePoolsStrategy
         if (type.isPresent()) {
             final Manufacturer manufacturerType =
                     type.get();
-            final mn.foreman.model.ChangePoolsStrategy strategy =
-                    manufacturerType.getChangePoolsStrategy();
+            final mn.foreman.model.RebootStrategy strategy =
+                    manufacturerType.getRebootStrategy();
 
-            LOG.info("Changing pools of {} ({}:{}) to {}",
+            LOG.info("Rebooting {} ({}:{})",
                     manufacturer,
                     ip,
-                    port,
-                    pools);
+                    port);
 
             try {
-                if (strategy.change(
+                if (strategy.reboot(
                         ip,
                         Integer.parseInt(port),
-                        args,
-                        pools)) {
-                    LOG.info("Pools were changed!");
+                        args)) {
+                    LOG.info("Reboot completed!");
                     builder.status(
                             CommandDone.Status
                                     .builder()
                                     .type(DoneStatus.SUCCESS)
                                     .build());
                 } else {
-                    LOG.warn("Failed to change pools");
+                    LOG.warn("Failed to reboot");
                     builder.status(
                             CommandDone.Status
                                     .builder()

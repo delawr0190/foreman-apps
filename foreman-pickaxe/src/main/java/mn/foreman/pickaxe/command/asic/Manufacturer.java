@@ -3,6 +3,7 @@ package mn.foreman.pickaxe.command.asic;
 import mn.foreman.aixin.AixinTypeFactory;
 import mn.foreman.antminer.AntminerChangePoolsStrategy;
 import mn.foreman.antminer.AntminerConfValue;
+import mn.foreman.antminer.AntminerRebootStrategy;
 import mn.foreman.antminer.AntminerTypeFactory;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
@@ -18,9 +19,7 @@ import mn.foreman.dragonmint.DragonmintType;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.InnosiliconType;
-import mn.foreman.model.ChangePoolsStrategy;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.NullChangePoolsStrategy;
+import mn.foreman.model.*;
 import mn.foreman.multminer.MultMinerChangePoolsStrategy;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.obelisk.ObeliskChangePoolsStrategy;
@@ -67,7 +66,9 @@ public enum Manufacturer {
                             AntminerConfValue.NO_TEMP_OVER_CTRL,
                             AntminerConfValue.FAN_CTRL,
                             AntminerConfValue.FAN_PWM,
-                            AntminerConfValue.FREQ))),
+                            AntminerConfValue.FREQ)),
+            new AntminerRebootStrategy(
+                    "antMiner Configuration")),
 
     /** Avalon. */
     AVALON(
@@ -106,7 +107,8 @@ public enum Manufacturer {
                             BlackminerConfValue.FAN_CTRL,
                             BlackminerConfValue.FAN_PWM,
                             BlackminerConfValue.FREQ,
-                            BlackminerConfValue.COIN_TYPE))),
+                            BlackminerConfValue.COIN_TYPE)),
+            new NullRebootStrategy()),
 
     /** Dayun. */
     DAYUN(
@@ -122,7 +124,8 @@ public enum Manufacturer {
             new DragonmintDetectionStrategy<>(
                     DragonmintType::forType,
                     "DragonMint"),
-            new DragonmintChangePoolsStrategy()),
+            new DragonmintChangePoolsStrategy(),
+            new NullRebootStrategy()),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -144,19 +147,22 @@ public enum Manufacturer {
             new DragonmintDetectionStrategy<>(
                     InnosiliconType::forType,
                     "Innosilicon"),
-            new DragonmintChangePoolsStrategy()),
+            new DragonmintChangePoolsStrategy(),
+            new NullRebootStrategy()),
 
     /** MultMiner. */
     MULTMINER(
             "multminer",
             new MultMinerDetectionStrategy(),
-            new MultMinerChangePoolsStrategy()),
+            new MultMinerChangePoolsStrategy(),
+            new NullRebootStrategy()),
 
     /** Obelisk. */
     OBELISK(
             "obelisk",
             new ObeliskDetectionStrategy<>(),
-            new ObeliskChangePoolsStrategy()),
+            new ObeliskChangePoolsStrategy(),
+            new NullRebootStrategy()),
 
     /** Spondoolies. */
     SPONDOOLIES(
@@ -193,7 +199,8 @@ public enum Manufacturer {
                             StrongUConfValue.WORK_VOLT,
                             StrongUConfValue.START_VOLT,
                             StrongUConfValue.PLL_START,
-                            StrongUConfValue.PLL_STEP))),
+                            StrongUConfValue.PLL_STEP)),
+            new NullRebootStrategy()),
 
     /** Whatsminer. */
     WHATSMINER(
@@ -223,6 +230,9 @@ public enum Manufacturer {
     /** The name. */
     private final String name;
 
+    /** The strategy for rebooting. */
+    private final RebootStrategy rebootStrategy;
+
     /**
      * Constructor.
      *
@@ -235,7 +245,8 @@ public enum Manufacturer {
         this(
                 name,
                 detectionStrategy,
-                new NullChangePoolsStrategy());
+                new NullChangePoolsStrategy(),
+                new NullRebootStrategy());
     }
 
     /**
@@ -244,14 +255,17 @@ public enum Manufacturer {
      * @param name                The name.
      * @param detectionStrategy   The strategy for detecting.
      * @param changePoolsStrategy The strategy for changing pools.
+     * @param rebootStrategy      The strategy for rebooting.
      */
     Manufacturer(
             final String name,
             final DetectionStrategy detectionStrategy,
-            final ChangePoolsStrategy changePoolsStrategy) {
+            final ChangePoolsStrategy changePoolsStrategy,
+            final RebootStrategy rebootStrategy) {
         this.name = name;
         this.detectionStrategy = detectionStrategy;
         this.changePoolsStrategy = changePoolsStrategy;
+        this.rebootStrategy = rebootStrategy;
     }
 
     /**
@@ -290,5 +304,14 @@ public enum Manufacturer {
      */
     public String getName() {
         return this.name;
+    }
+
+    /**
+     * Returns the {@link RebootStrategy}.
+     *
+     * @return The {@link RebootStrategy}.
+     */
+    public RebootStrategy getRebootStrategy() {
+        return this.rebootStrategy;
     }
 }
