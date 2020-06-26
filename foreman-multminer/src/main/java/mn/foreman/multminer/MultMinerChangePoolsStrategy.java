@@ -8,6 +8,8 @@ import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -21,6 +23,10 @@ import java.util.concurrent.atomic.AtomicReference;
 public class MultMinerChangePoolsStrategy
         extends AbstractChangePoolsStrategy {
 
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(MultMinerChangePoolsStrategy.class);
+
     @Override
     protected boolean doChange(
             final String ip,
@@ -31,6 +37,10 @@ public class MultMinerChangePoolsStrategy
         boolean success;
 
         final List<Map<String, Object>> content = new LinkedList<>();
+        add(
+                "act",
+                "pol",
+                content);
         for (int i = 0; i < pools.size(); i++) {
             addPool(
                     pools.get(i),
@@ -43,9 +53,13 @@ public class MultMinerChangePoolsStrategy
             Query.post(
                     ip,
                     port,
-                    "/index.csp?act=pol",
+                    "/index.csp",
                     content,
                     (code, s) -> {
+                        LOG.debug(
+                                "Received {} - response {}",
+                                code,
+                                statusCode);
                         statusCode.set(code);
                     });
             final Integer code = statusCode.get();

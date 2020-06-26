@@ -44,9 +44,9 @@ public class MultMinerChangePoolsITest
                         {
                                 // MultMiner M1
                                 ImmutableMap.of(
-                                        "/index.csp?act=pol",
+                                        "/index.csp",
                                         new HttpHandler(
-                                                "p0url=-o+stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&p0user=-u+my-test-username1&p0pwd=-p+my-test-password1&p1url=-o1+stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&p1user=-u1+my-test-username2&p1pwd=-p1+my-test-password2&p2url=-o2+stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&p2user=-u2+my-test-username3&p2pwd=-p2+my-test-password3",
+                                                "act=pol&p0url=-o+stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&p0user=-u+my-test-username1&p0pwd=-p+my-test-password1&p1url=-o1+stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&p1user=-u1+my-test-username2&p1pwd=-p1+my-test-password2&p2url=-o2+stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&p2user=-u2+my-test-username3&p2pwd=-p2+my-test-password3",
                                                 "ok"))
                         }
                 });
