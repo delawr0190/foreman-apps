@@ -4,6 +4,7 @@ import mn.foreman.antminer.AntminerChangePoolsStrategy;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class BlackminerChangePoolsITest
      * @param handlers The handlers.
      */
     public BlackminerChangePoolsITest(
-            final Map<String, HttpHandler> handlers) {
+            final Map<String, ServerHandler> handlers) {
         super(
                 new AntminerChangePoolsStrategy(
                         "blackMiner Configuration",
@@ -44,10 +45,19 @@ public class BlackminerChangePoolsITest
                                 BlackminerConfValue.FAN_PWM,
                                 BlackminerConfValue.FREQ,
                                 BlackminerConfValue.COIN_TYPE)),
+                DEFAULT_PORT,
+                ImmutableMap.of(
+                        "username",
+                        "my-auth-username",
+                        "password",
+                        "my-auth-password",
+                        "algo",
+                        "my-algo"),
                 () -> new FakeHttpMinerServer(
                         8080,
                         handlers),
-                true);
+                true,
+                DEFAULT_POOLS);
     }
 
     /**
@@ -93,7 +103,7 @@ public class BlackminerChangePoolsITest
                                                         "}"),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
-                                                "_bb_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_bb_pool1user=my-test-username1&_bb_pool1pw=my-test-password1&_bb_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_bb_pool2user=my-test-username2&_bb_pool2pw=my-test-password2&_bb_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_bb_pool3user=my-test-username3&_bb_pool3pw=my-test-password3&_bb_nobeeper=false&_bb_notempoverctrl=false&_bb_fan_customize_switch=false&_bb_fan_customize_value=&_bb_freq=400&_bb_coin_type=tellor",
+                                                "_bb_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_bb_pool1user=my-test-username1&_bb_pool1pw=my-test-password1&_bb_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_bb_pool2user=my-test-username2&_bb_pool2pw=my-test-password2&_bb_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_bb_pool3user=my-test-username3&_bb_pool3pw=my-test-password3&_bb_nobeeper=false&_bb_notempoverctrl=false&_bb_fan_customize_switch=false&_bb_fan_customize_value=&_bb_freq=400&_bb_coin_type=my-algo",
                                                 "ok"))
                         }
                 });

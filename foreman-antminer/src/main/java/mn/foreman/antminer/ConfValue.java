@@ -11,11 +11,13 @@ public interface ConfValue {
     /**
      * Obtains the prop value and adds the appropriate property.
      *
+     * @param parameters The parameters.
      * @param confValues The conf values.
      * @param pools      The pools.
      * @param dest       The destination.
      */
     void getAndSet(
+            Map<String, Object> parameters,
             Map<String, Object> confValues,
             List<Pool> pools,
             List<Map<String, Object>> dest);
@@ -27,11 +29,13 @@ public interface ConfValue {
         /**
          * Obtains the prop value and adds the appropriate property.
          *
+         * @param parameters The parameters.
          * @param confValues The conf values.
          * @param pools      The pools.
          * @param dest       The destination.
          */
         void getAndSet(
+                Map<String, Object> parameters,
                 Map<String, Object> confValues,
                 List<Pool> pools,
                 List<Map<String, Object>> dest);

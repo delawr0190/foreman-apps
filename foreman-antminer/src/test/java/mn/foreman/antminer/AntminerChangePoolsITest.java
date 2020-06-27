@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
 import com.sun.net.httpserver.Headers;
@@ -25,7 +26,7 @@ public class AntminerChangePoolsITest
      * @param handlers The handlers.
      */
     public AntminerChangePoolsITest(
-            final Map<String, HttpHandler> handlers) {
+            final Map<String, ServerHandler> handlers) {
         super(
                 new AntminerChangePoolsStrategy(
                         "antMiner Configuration",

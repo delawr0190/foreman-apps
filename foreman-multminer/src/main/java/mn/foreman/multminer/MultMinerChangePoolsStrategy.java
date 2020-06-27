@@ -14,7 +14,10 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 /**
  * A {@link MultMinerChangePoolsStrategy} provides a {@link ChangePoolsStrategy}
@@ -36,36 +39,46 @@ public class MultMinerChangePoolsStrategy
             throws MinerException {
         boolean success;
 
-        final List<Map<String, Object>> content = new LinkedList<>();
-        add(
-                "act",
-                "pol",
-                content);
-        for (int i = 0; i < pools.size(); i++) {
-            addPool(
-                    pools.get(i),
-                    i,
-                    content);
-        }
+        // First, set the mt value based on the algorithm
+        success =
+                updateMiner(
+                        ip,
+                        port,
+                        content ->
+                                content.add(
+                                        ImmutableMap.of(
+                                                "key",
+                                                "mt",
+                                                "value",
+                                                parameters.get("algo"))),
+                        () -> {
+                            try {
+                                // Initially wait for the miner to start rebooting
+                                TimeUnit.SECONDS.sleep(20);
 
-        try {
-            final AtomicReference<Integer> statusCode = new AtomicReference<>();
-            Query.post(
-                    ip,
-                    port,
-                    "/index.csp",
-                    content,
-                    (code, s) -> {
-                        LOG.debug(
-                                "Received {} - response {}",
-                                code,
-                                statusCode);
-                        statusCode.set(code);
-                    });
-            final Integer code = statusCode.get();
-            success = (code != null && code == HttpStatus.SC_OK);
-        } catch (final Exception e) {
-            throw new MinerException(e);
+                                // Now start checking for miner recovery
+                                return waitForReboot(ip, port);
+                            } catch (final InterruptedException ie) {
+                                LOG.warn("Exception occurred while waiting for reboot",
+                                        ie);
+                                return false;
+                            }
+                        });
+        if (success) {
+            // Then, update the pools
+            success =
+                    updateMiner(
+                            ip,
+                            port,
+                            content -> {
+                                for (int i = 0; i < pools.size(); i++) {
+                                    addPool(
+                                            pools.get(i),
+                                            i,
+                                            content);
+                                }
+                            },
+                            () -> true);
         }
 
         return success;
@@ -128,5 +141,95 @@ public class MultMinerChangePoolsStrategy
                         (index == 0 ? "" : index),
                         pool.getPassword()),
                 dest);
+    }
+
+    /**
+     * Updates the multminer instance, leveraging the provided {@link Consumer}
+     * to add content based on the action that's being performed.
+     *
+     * @param ip           The ip.
+     * @param port         The port.
+     * @param contentAdder The content enricher.
+     * @param delay        The delayer.
+     *
+     * @return Whether or not the update was successful.
+     *
+     * @throws MinerException on failure.
+     */
+    private static boolean updateMiner(
+            final String ip,
+            final int port,
+            final Consumer<List<Map<String, Object>>> contentAdder,
+            final Supplier<Boolean> delay)
+            throws MinerException {
+        boolean success;
+
+        final List<Map<String, Object>> content = new LinkedList<>();
+        add(
+                "act",
+                "pol",
+                content);
+        contentAdder.accept(content);
+
+        try {
+            final AtomicReference<Integer> statusCode = new AtomicReference<>();
+            Query.post(
+                    ip,
+                    port,
+                    "/index.csp",
+                    content,
+                    (code, s) -> {
+                        LOG.debug(
+                                "Received {} - response {}",
+                                code,
+                                statusCode);
+                        statusCode.set(code);
+                    });
+            final Integer code = statusCode.get();
+            success = (code != null && code == HttpStatus.SC_OK);
+        } catch (final Exception e) {
+            throw new MinerException(e);
+        }
+
+        // Wait, if desired, until proceeding
+        return success && delay.get();
+    }
+
+    /**
+     * Waits for a miner reboot to be completed.
+     *
+     * @param ip   The miner ip.
+     * @param port The miner port.
+     *
+     * @return Whether or not the miner rebooted before the deadline.
+     *
+     * @throws InterruptedException on failure to wait.
+     */
+    private static boolean waitForReboot(
+            final String ip,
+            final int port)
+            throws InterruptedException {
+        boolean rebooted = false;
+
+        final MultMiner miner =
+                new MultMiner(
+                        ip,
+                        port);
+
+        long now = System.currentTimeMillis();
+        final long deadlineMillis = now + TimeUnit.MINUTES.toMillis(5);
+        while (now < deadlineMillis) {
+            try {
+                miner.getStats();
+                rebooted = true;
+                break;
+            } catch (final MinerException me) {
+                LOG.debug("Miner hasn't rebooted yet - waiting");
+                TimeUnit.SECONDS.sleep(10);
+            }
+            now = System.currentTimeMillis();
+        }
+
+        return rebooted;
     }
 }

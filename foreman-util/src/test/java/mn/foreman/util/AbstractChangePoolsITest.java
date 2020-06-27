@@ -17,16 +17,8 @@ import static org.junit.Assert.*;
 /** An abstract integration test for testing change pools operations. */
 public abstract class AbstractChangePoolsITest {
 
-    /** The default args. */
-    private static final Map<String, Object> DEFAULT_ARGS =
-            ImmutableMap.of(
-                    "username",
-                    "my-auth-username",
-                    "password",
-                    "my-auth-password");
-
     /** Default expected pools. */
-    private static final List<Pool> DEFAULT_POOLS =
+    protected static final List<Pool> DEFAULT_POOLS =
             Arrays.asList(
                     Pool
                             .builder()
@@ -48,7 +40,15 @@ public abstract class AbstractChangePoolsITest {
                             .build());
 
     /** The default port. */
-    private static final int DEFAULT_PORT = 8080;
+    protected static final int DEFAULT_PORT = 8080;
+
+    /** The default args. */
+    private static final Map<String, Object> DEFAULT_ARGS =
+            ImmutableMap.of(
+                    "username",
+                    "my-auth-username",
+                    "password",
+                    "my-auth-password");
 
     /** The arguments. */
     private final Map<String, Object> args;
