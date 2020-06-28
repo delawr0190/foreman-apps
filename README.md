@@ -1,7 +1,5 @@
 # foreman-apps
 
-foreman-apps contains all of the open-source Java applications that collect and provide cryptocurrency miner metrics to the Foreman dashboard, enabling users to monitor their operations abroad.
-
 ## Status ##
 
 [![Build Status](https://travis-ci.com/delawr0190/foreman-apps.svg?branch=master)](https://travis-ci.com/delawr0190/foreman-apps)
