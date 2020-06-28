@@ -151,13 +151,25 @@ public enum BlackminerConfValue
                     dest)),
 
     /** Coin type. */
-    COIN_TYPE((params, confValues, pools, dest) ->
+    COIN_TYPE((params, confValues, pools, dest) -> {
+        final String newAlgo = (String) params.get("algo");
+        if (newAlgo != null && !newAlgo.isEmpty()) {
+            // Algo was changed
             dest.add(
                     ImmutableMap.of(
                             "key",
                             "_bb_coin_type",
                             "value",
-                            params.get("algo"))));
+                            params.get("algo")));
+        } else {
+            // Copy through the old algorithm
+            ConfValueUtils.addField(
+                    "coin-type",
+                    "_bb_coin_type",
+                    confValues,
+                    dest);
+        }
+    });
 
     /** The setter. */
     private Setter setter;

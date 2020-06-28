@@ -39,31 +39,14 @@ public class MultMinerChangePoolsStrategy
             throws MinerException {
         boolean success;
 
-        // First, set the mt value based on the algorithm
+        // Check and perform an algo update, if needed
         success =
-                updateMiner(
+                conditionallyUpdateAlgo(
                         ip,
                         port,
-                        content ->
-                                content.add(
-                                        ImmutableMap.of(
-                                                "key",
-                                                "mt",
-                                                "value",
-                                                parameters.get("algo"))),
-                        () -> {
-                            try {
-                                // Initially wait for the miner to start rebooting
-                                TimeUnit.SECONDS.sleep(20);
-
-                                // Now start checking for miner recovery
-                                return waitForReboot(ip, port);
-                            } catch (final InterruptedException ie) {
-                                LOG.warn("Exception occurred while waiting for reboot",
-                                        ie);
-                                return false;
-                            }
-                        });
+                        (String) parameters.getOrDefault(
+                                "algo",
+                                ""));
         if (success) {
             // Then, update the pools
             success =
@@ -141,6 +124,63 @@ public class MultMinerChangePoolsStrategy
                         (index == 0 ? "" : index),
                         pool.getPassword()),
                 dest);
+    }
+
+    /**
+     * Updates the miner's algorithm if the algorithm has changed.
+     *
+     * @param ip      The ip.
+     * @param port    The port.
+     * @param newAlgo The new algorithm.
+     *
+     * @return Whether or not the algorithm was successfully updated.
+     *
+     * @throws MinerException on failure.
+     */
+    private static boolean conditionallyUpdateAlgo(
+            final String ip,
+            final int port,
+            final String newAlgo)
+            throws MinerException {
+        boolean success = true;
+        if (hasAlgoChanged(newAlgo)) {
+            success =
+                    updateMiner(
+                            ip,
+                            port,
+                            content ->
+                                    content.add(
+                                            ImmutableMap.of(
+                                                    "key",
+                                                    "mt",
+                                                    "value",
+                                                    newAlgo)),
+                            () -> {
+                                try {
+                                    // Initially wait for the miner to start rebooting
+                                    TimeUnit.SECONDS.sleep(20);
+
+                                    // Now start checking for miner recovery
+                                    return waitForReboot(ip, port);
+                                } catch (final InterruptedException ie) {
+                                    LOG.warn("Exception occurred while waiting for reboot",
+                                            ie);
+                                    return false;
+                                }
+                            });
+        }
+        return success;
+    }
+
+    /**
+     * Checks to see if the algorithm has changed.
+     *
+     * @param newAlgo The new algorithm.
+     *
+     * @return Whether or not the algo has changed.
+     */
+    private static boolean hasAlgoChanged(final String newAlgo) {
+        return newAlgo != null && !newAlgo.isEmpty();
     }
 
     /**
