@@ -711,10 +711,15 @@ public class Query {
                     HttpClients
                             .custom()
                             .setDefaultCredentialsProvider(credsProvider)
+                            .disableAutomaticRetries()
                             .build();
             context.setAuthCache(authCache);
         } else {
-            httpClient = HttpClients.createDefault();
+            httpClient =
+                    HttpClients
+                            .custom()
+                            .disableAutomaticRetries()
+                            .build();
         }
 
         final HttpRequest httpRequest;

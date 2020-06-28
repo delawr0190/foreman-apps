@@ -49,6 +49,7 @@ public class MultMinerChangePoolsStrategy
                                 ""));
         if (success) {
             // Then, update the pools
+            LOG.debug("Updating pools to {}", pools);
             success =
                     updateMiner(
                             ip,
@@ -144,6 +145,7 @@ public class MultMinerChangePoolsStrategy
             throws MinerException {
         boolean success = true;
         if (hasAlgoChanged(newAlgo)) {
+            LOG.debug("Changing algorithm to {}", newAlgo);
             success =
                     updateMiner(
                             ip,
