@@ -49,7 +49,7 @@ public class DragonmintChangePoolsITest
                                 ImmutableMap.of(
                                         "/api/updatePools",
                                         new HttpHandler(
-                                                "Pool1=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&Username1=my-test-username1&Password1=my-test-password1&Pool2=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&Username2=my-test-username2&Password2=my-test-password2&Pool3=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&Username3=my-test-username3&Password3=my-test-password3",
+                                                "Pool1=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&UserName1=my-test-username1&Password1=my-test-password1&Pool2=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&UserName2=my-test-username2&Password2=my-test-password2&Pool3=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&UserName3=my-test-username3&Password3=my-test-password3",
                                                 "{\"success\": true}",
                                                 DragonmintChangePoolsITest::validateBasicAuth))
                         }
