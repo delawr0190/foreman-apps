@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * A {@link SummaryAndStatsResponseStrategy} provides a {@link ResponseStrategy}
@@ -64,6 +65,12 @@ public class SummaryAndStatsResponseStrategy
         } else {
             LOG.warn("Failed to obtain either stats or summary");
         }
+    }
+
+    private static boolean areTempsValid(final List<Integer> temps) {
+        return temps
+                .stream()
+                .allMatch(temp -> temp > 10 && temp < 150);
     }
 
     /**
@@ -133,13 +140,21 @@ public class SummaryAndStatsResponseStrategy
                     }
                     // Add chip temps last
                     for (int i = 0; i <= numTemps; i++) {
-                        Arrays.stream(map
-                                .getOrDefault("chipTemp" + i, "")
-                                .split(" "))
-                                .map(temp -> temp.replace("[", ""))
-                                .map(temp -> temp.replace("]", ""))
-                                .map(temp -> temp.replace(",", ""))
-                                .forEach(builder::addTemp);
+                        final List<Integer> temps =
+                                Arrays.stream(map
+                                        .getOrDefault("chipTemp" + i, "")
+                                        .split(" "))
+                                        .map(temp -> temp.replace("[", ""))
+                                        .map(temp -> temp.replace("]", ""))
+                                        .map(temp -> temp.replace(",", ""))
+                                        .map(String::trim)
+                                        .filter(temp -> !temp.isEmpty())
+                                        .map(Double::valueOf)
+                                        .map(Double::intValue)
+                                        .collect(Collectors.toList());
+                        if (areTempsValid(temps)) {
+                            temps.forEach(builder::addTemp);
+                        }
                     }
                 });
 
