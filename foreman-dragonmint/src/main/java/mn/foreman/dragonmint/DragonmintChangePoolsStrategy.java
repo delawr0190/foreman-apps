@@ -83,7 +83,7 @@ public class DragonmintChangePoolsStrategy
         params.add(
                 ImmutableMap.of(
                         "key",
-                        "Username" + index,
+                        "UserName" + index,
                         "value",
                         pool.getUsername()));
         params.add(

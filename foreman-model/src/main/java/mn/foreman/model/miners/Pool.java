@@ -271,9 +271,9 @@ public class Pool {
                 final String rejected,
                 final String stale) {
             return setCounts(
-                    Long.parseLong(accepted),
-                    Long.parseLong(rejected),
-                    Long.parseLong(stale));
+                    toCount(accepted),
+                    toCount(rejected),
+                    toCount(stale));
         }
 
         /**
@@ -346,6 +346,21 @@ public class Pool {
             this.enabled = enabled;
             this.status = status;
             return this;
+        }
+
+        /**
+         * Safely converts the provided string value to a long.
+         *
+         * @param count The value to convert.
+         *
+         * @return The new value.
+         */
+        private static long toCount(final String count) {
+            try {
+                return Long.parseLong(count);
+            } catch (final NumberFormatException nfe) {
+                return 0;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ import java.util.Map;
  * be leveraged for integration testing.
  */
 public class FakeHttpMinerServer
-        extends AbstractFakeMinerServer<HttpHandler> {
+        extends AbstractFakeMinerServer<ServerHandler> {
 
     /** The server. */
     private HttpServer server;
@@ -26,7 +26,7 @@ public class FakeHttpMinerServer
      */
     public FakeHttpMinerServer(
             final int port,
-            final Map<String, HttpHandler> handlers) {
+            final Map<String, ServerHandler> handlers) {
         super(port, handlers);
     }
 
@@ -42,7 +42,7 @@ public class FakeHttpMinerServer
                     HttpServer.create(
                             new InetSocketAddress(this.port),
                             0);
-            for (final Map.Entry<String, HttpHandler> entry :
+            for (final Map.Entry<String, ServerHandler> entry :
                     this.handlers.entrySet()) {
                 this.server.createContext(entry.getKey(), entry.getValue());
             }

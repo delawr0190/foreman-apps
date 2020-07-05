@@ -125,6 +125,7 @@ public class ChangePoolsStrategy
                             CommandDone.Status
                                     .builder()
                                     .type(DoneStatus.FAILED)
+                                    .message("Failed to change pools")
                                     .build());
                 }
             } catch (final NotAuthenticatedException nae) {

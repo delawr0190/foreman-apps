@@ -4,6 +4,7 @@ import mn.foreman.antminer.AntminerChangePoolsStrategy;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
 import com.sun.net.httpserver.Headers;
@@ -26,7 +27,7 @@ public class StrongUChangePoolsITest
      * @param handlers The handlers.
      */
     public StrongUChangePoolsITest(
-            final Map<String, HttpHandler> handlers) {
+            final Map<String, ServerHandler> handlers) {
         super(
                 new AntminerChangePoolsStrategy(
                         "stuMiner Configuration",

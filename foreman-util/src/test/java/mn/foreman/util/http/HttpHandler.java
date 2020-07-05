@@ -21,7 +21,7 @@ import java.util.function.Predicate;
  * that was received matches the {@link #expectedRequest}.</p>
  */
 public class HttpHandler
-        implements Handler, com.sun.net.httpserver.HttpHandler {
+        implements ServerHandler {
 
     /** The expected request. */
     private final String expectedRequest;

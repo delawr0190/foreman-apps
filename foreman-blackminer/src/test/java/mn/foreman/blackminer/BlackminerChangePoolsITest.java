@@ -4,6 +4,7 @@ import mn.foreman.antminer.AntminerChangePoolsStrategy;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
@@ -21,10 +22,12 @@ public class BlackminerChangePoolsITest
     /**
      * Constructor.
      *
-     * @param handlers The handlers.
+     * @param algoChanged Whether or not the algo was changed.
+     * @param handlers    The handlers.
      */
     public BlackminerChangePoolsITest(
-            final Map<String, HttpHandler> handlers) {
+            final boolean algoChanged,
+            final Map<String, ServerHandler> handlers) {
         super(
                 new AntminerChangePoolsStrategy(
                         "blackMiner Configuration",
@@ -44,10 +47,19 @@ public class BlackminerChangePoolsITest
                                 BlackminerConfValue.FAN_PWM,
                                 BlackminerConfValue.FREQ,
                                 BlackminerConfValue.COIN_TYPE)),
+                DEFAULT_PORT,
+                ImmutableMap.of(
+                        "username",
+                        "my-auth-username",
+                        "password",
+                        "my-auth-password",
+                        "algo",
+                        algoChanged ? "my-algo" : ""),
                 () -> new FakeHttpMinerServer(
                         8080,
                         handlers),
-                true);
+                true,
+                DEFAULT_POOLS);
     }
 
     /**
@@ -60,7 +72,8 @@ public class BlackminerChangePoolsITest
         return Arrays.asList(
                 new Object[][]{
                         {
-                                // Blackminer F1-Ultra
+                                // Blackminer F1-Ultra (no algo change)
+                                false,
                                 ImmutableMap.of(
                                         "/cgi-bin/get_miner_conf.cgi",
                                         new HttpHandler(
@@ -94,6 +107,44 @@ public class BlackminerChangePoolsITest
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_bb_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_bb_pool1user=my-test-username1&_bb_pool1pw=my-test-password1&_bb_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_bb_pool2user=my-test-username2&_bb_pool2pw=my-test-password2&_bb_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_bb_pool3user=my-test-username3&_bb_pool3pw=my-test-password3&_bb_nobeeper=false&_bb_notempoverctrl=false&_bb_fan_customize_switch=false&_bb_fan_customize_value=&_bb_freq=400&_bb_coin_type=tellor",
+                                                "ok"))
+                        },
+                        {
+                                // Blackminer F1-Ultra (algo change)
+                                true,
+                                ImmutableMap.of(
+                                        "/cgi-bin/get_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "{\n" +
+                                                        "\"pools\" : [\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                        "\"user\" : \"xxx\",\n" +
+                                                        "\"pass\" : \"X\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                        "\"user\" : \"xxx\",\n" +
+                                                        "\"pass\" : \"X\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                        "\"user\" : \"xxx\",\n" +
+                                                        "\"pass\" : \"X\"\n" +
+                                                        "}\n" +
+                                                        "]\n" +
+                                                        ",\n" +
+                                                        "\"api-listen\": true,\n" +
+                                                        "\"api-network\": true,\n" +
+                                                        "\"freq\": \"400\",\n" +
+                                                        "\"coin-type\": \"tellor\",\n" +
+                                                        "\"api-groups\": \"A:stats:pools:devs:summary:version\",\n" +
+                                                        "\"api-allow\": \"R:0/0,W:127.0.0.1\"\n" +
+                                                        "}"),
+                                        "/cgi-bin/set_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "_bb_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_bb_pool1user=my-test-username1&_bb_pool1pw=my-test-password1&_bb_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_bb_pool2user=my-test-username2&_bb_pool2pw=my-test-password2&_bb_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_bb_pool3user=my-test-username3&_bb_pool3pw=my-test-password3&_bb_nobeeper=false&_bb_notempoverctrl=false&_bb_fan_customize_switch=false&_bb_fan_customize_value=&_bb_freq=400&_bb_coin_type=my-algo",
                                                 "ok"))
                         }
                 });

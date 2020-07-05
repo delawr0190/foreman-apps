@@ -13,7 +13,7 @@ public enum AntminerConfValue
         implements ConfValue {
 
     /** Pool 1 url. */
-    POOL_1_URL((confValues, pools, dest) ->
+    POOL_1_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%durl",
@@ -23,7 +23,7 @@ public enum AntminerConfValue
                     1)),
 
     /** Pool 1 user. */
-    POOL_1_USER((confValues, pools, dest) ->
+    POOL_1_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%duser",
@@ -33,7 +33,7 @@ public enum AntminerConfValue
                     1)),
 
     /** Pool 1 pass. */
-    POOL_1_PASS((confValues, pools, dest) ->
+    POOL_1_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%dpw",
@@ -43,7 +43,7 @@ public enum AntminerConfValue
                     1)),
 
     /** Pool 2 url. */
-    POOL_2_URL((confValues, pools, dest) ->
+    POOL_2_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%durl",
@@ -53,7 +53,7 @@ public enum AntminerConfValue
                     2)),
 
     /** Pool 2 user. */
-    POOL_2_USER((confValues, pools, dest) ->
+    POOL_2_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%duser",
@@ -63,7 +63,7 @@ public enum AntminerConfValue
                     2)),
 
     /** Pool 2 pass. */
-    POOL_2_PASS((confValues, pools, dest) ->
+    POOL_2_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%dpw",
@@ -73,7 +73,7 @@ public enum AntminerConfValue
                     2)),
 
     /** Pool 3 url. */
-    POOL_3_URL((confValues, pools, dest) ->
+    POOL_3_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%durl",
@@ -83,7 +83,7 @@ public enum AntminerConfValue
                     3)),
 
     /** Pool 3 user. */
-    POOL_3_USER((confValues, pools, dest) ->
+    POOL_3_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%duser",
@@ -93,7 +93,7 @@ public enum AntminerConfValue
                     3)),
 
     /** Pool 3 pass. */
-    POOL_3_PASS((confValues, pools, dest) ->
+    POOL_3_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_ant_pool%dpw",
@@ -103,7 +103,7 @@ public enum AntminerConfValue
                     3)),
 
     /** No beeper. */
-    NO_BEEPER((confValues, pools, dest) ->
+    NO_BEEPER((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "bitmain-nobeeper",
                     "_ant_nobeeper",
@@ -112,7 +112,7 @@ public enum AntminerConfValue
                     dest)),
 
     /** No temp over ctrl. */
-    NO_TEMP_OVER_CTRL((confValues, pools, dest) ->
+    NO_TEMP_OVER_CTRL((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "bitmain-notempoverctrl",
                     "_ant_notempoverctrl",
@@ -121,7 +121,7 @@ public enum AntminerConfValue
                     dest)),
 
     /** Fan ctrl. */
-    FAN_CTRL((confValues, pools, dest) ->
+    FAN_CTRL((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "bitmain-fan-ctrl",
                     "_ant_fan_customize_switch",
@@ -130,7 +130,7 @@ public enum AntminerConfValue
                     dest)),
 
     /** Fan pwm. */
-    FAN_PWM((confValues, pools, dest) ->
+    FAN_PWM((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "bitmain-fan-pwm",
                     "_ant_fan_customize_value",
@@ -138,7 +138,7 @@ public enum AntminerConfValue
                     dest)),
 
     /** Freq. */
-    FREQ((confValues, pools, dest) ->
+    FREQ((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "bitmain-freq",
                     "_ant_freq",
@@ -159,9 +159,10 @@ public enum AntminerConfValue
 
     @Override
     public void getAndSet(
+            final Map<String, Object> parameters,
             final Map<String, Object> confValues,
             final List<Pool> pools,
             final List<Map<String, Object>> dest) {
-        this.setter.getAndSet(confValues, pools, dest);
+        this.setter.getAndSet(parameters, confValues, pools, dest);
     }
 }

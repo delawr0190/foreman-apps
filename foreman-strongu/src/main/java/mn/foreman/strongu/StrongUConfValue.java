@@ -17,7 +17,7 @@ public enum StrongUConfValue
         implements ConfValue {
 
     /** Pool 1 url. */
-    POOL_1_URL((confValues, pools, dest) ->
+    POOL_1_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%durl",
@@ -27,7 +27,7 @@ public enum StrongUConfValue
                     1)),
 
     /** Pool 1 user. */
-    POOL_1_USER((confValues, pools, dest) ->
+    POOL_1_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%duser",
@@ -37,7 +37,7 @@ public enum StrongUConfValue
                     1)),
 
     /** Pool 1 pass. */
-    POOL_1_PASS((confValues, pools, dest) ->
+    POOL_1_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%dpw",
@@ -47,7 +47,7 @@ public enum StrongUConfValue
                     1)),
 
     /** Pool 2 url. */
-    POOL_2_URL((confValues, pools, dest) ->
+    POOL_2_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%durl",
@@ -57,7 +57,7 @@ public enum StrongUConfValue
                     2)),
 
     /** Pool 2 user. */
-    POOL_2_USER((confValues, pools, dest) ->
+    POOL_2_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%duser",
@@ -67,7 +67,7 @@ public enum StrongUConfValue
                     2)),
 
     /** Pool 2 pass. */
-    POOL_2_PASS((confValues, pools, dest) ->
+    POOL_2_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%dpw",
@@ -77,7 +77,7 @@ public enum StrongUConfValue
                     2)),
 
     /** Pool 3 url. */
-    POOL_3_URL((confValues, pools, dest) ->
+    POOL_3_URL((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%durl",
@@ -87,7 +87,7 @@ public enum StrongUConfValue
                     3)),
 
     /** Pool 3 user. */
-    POOL_3_USER((confValues, pools, dest) ->
+    POOL_3_USER((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%duser",
@@ -97,7 +97,7 @@ public enum StrongUConfValue
                     3)),
 
     /** Pool 3 pass. */
-    POOL_3_PASS((confValues, pools, dest) ->
+    POOL_3_PASS((params, confValues, pools, dest) ->
             ConfValueUtils.addPoolField(
                     dest,
                     "_stu_pool%dpw",
@@ -107,7 +107,7 @@ public enum StrongUConfValue
                     3)),
 
     /** No beeper. */
-    NO_BEEPER((confValues, pools, dest) ->
+    NO_BEEPER((params, confValues, pools, dest) ->
             dest.add(
                     ImmutableMap.of(
                             "key",
@@ -116,7 +116,7 @@ public enum StrongUConfValue
                             false))),
 
     /** No temp over ctrl. */
-    NO_TEMP_OVER_CTRL((confValues, pools, dest) ->
+    NO_TEMP_OVER_CTRL((params, confValues, pools, dest) ->
             dest.add(
                     ImmutableMap.of(
                             "key",
@@ -125,7 +125,7 @@ public enum StrongUConfValue
                             false))),
 
     /** Fan pwm. */
-    FAN_PWM((confValues, pools, dest) ->
+    FAN_PWM((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "fan0",
                     "_stu_fan_customize_value",
@@ -133,7 +133,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Freq 1. */
-    FREQ_1((confValues, pools, dest) ->
+    FREQ_1((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pll0",
                     "_stu_freq1",
@@ -141,7 +141,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Freq 2. */
-    FREQ_2((confValues, pools, dest) ->
+    FREQ_2((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pll1",
                     "_stu_freq2",
@@ -149,7 +149,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Freq 3. */
-    FREQ_3((confValues, pools, dest) ->
+    FREQ_3((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pll2",
                     "_stu_freq3",
@@ -157,7 +157,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Freq 4. */
-    FREQ_4((confValues, pools, dest) ->
+    FREQ_4((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pll3",
                     "_stu_freq4",
@@ -165,7 +165,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Work volt. */
-    WORK_VOLT((confValues, pools, dest) ->
+    WORK_VOLT((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "workvolt",
                     "_stu_workvolt",
@@ -173,7 +173,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** Start volt. */
-    START_VOLT((confValues, pools, dest) ->
+    START_VOLT((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "startvol",
                     "_stu_startvol",
@@ -181,7 +181,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** PLL start. */
-    PLL_START((confValues, pools, dest) ->
+    PLL_START((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pllstart",
                     "_stu_pllstart",
@@ -189,7 +189,7 @@ public enum StrongUConfValue
                     dest)),
 
     /** PLL step. */
-    PLL_STEP((confValues, pools, dest) ->
+    PLL_STEP((params, confValues, pools, dest) ->
             ConfValueUtils.addField(
                     "pllstep",
                     "_stu_pllstep",
@@ -210,9 +210,10 @@ public enum StrongUConfValue
 
     @Override
     public void getAndSet(
+            final Map<String, Object> parameters,
             final Map<String, Object> confValues,
             final List<Pool> pools,
             final List<Map<String, Object>> dest) {
-        this.setter.getAndSet(confValues, pools, dest);
+        this.setter.getAndSet(parameters, confValues, pools, dest);
     }
 }

@@ -3,6 +3,7 @@ package mn.foreman.obelisk;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
@@ -24,7 +25,7 @@ public class ObeliskChangePoolsITest
      * @param handlers The handlers.
      */
     public ObeliskChangePoolsITest(
-            final Map<String, HttpHandler> handlers) {
+            final Map<String, ServerHandler> handlers) {
         super(
                 new ObeliskChangePoolsStrategy(),
                 () -> new FakeHttpMinerServer(

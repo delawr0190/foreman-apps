@@ -89,6 +89,7 @@ public class AntminerChangePoolsStrategy
             if (minerConf != null) {
                 success =
                         changeConf(
+                                parameters,
                                 minerConf,
                                 ip,
                                 port,
@@ -112,18 +113,20 @@ public class AntminerChangePoolsStrategy
     /**
      * Changes the configuration.
      *
-     * @param minerConf The conf.
-     * @param ip        The ip.
-     * @param port      The port.
-     * @param username  The username.
-     * @param password  The password.
-     * @param pools     The new pools.
+     * @param parameters The parameters.
+     * @param minerConf  The conf.
+     * @param ip         The ip.
+     * @param port       The port.
+     * @param username   The username.
+     * @param password   The password.
+     * @param pools      The new pools.
      *
      * @return Whether or not the change was successful.
      *
      * @throws Exception on failure to communicate.
      */
     private boolean changeConf(
+            final Map<String, Object> parameters,
             final Map<String, Object> minerConf,
             final String ip,
             final int port,
@@ -135,6 +138,7 @@ public class AntminerChangePoolsStrategy
         this.props.forEach(
                 confValue ->
                         confValue.getAndSet(
+                                parameters,
                                 minerConf,
                                 pools,
                                 content));
