@@ -7,9 +7,6 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.asic.Asic;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
@@ -24,10 +21,6 @@ import java.util.stream.Collectors;
  */
 public class SummaryAndStatsResponseStrategy
         implements ResponseStrategy {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(SummaryAndStatsResponseStrategy.class);
 
     /** The active builder. */
     private final AtomicReference<Asic.Builder> builderReference =
@@ -57,8 +50,6 @@ public class SummaryAndStatsResponseStrategy
                         this.builderReference.get().build());
                 reset();
             }
-        } else {
-            LOG.debug("No ACICs founds");
         }
     }
 
