@@ -6,7 +6,7 @@ import mn.foreman.cgminer.RateMultiplyingDecorator;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
-import mn.foreman.innosilicon.response.StatsResponseStrategy;
+import mn.foreman.innosilicon.response.SummaryAndStatsResponseStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -33,6 +33,8 @@ public class InnosiliconFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
+        final ResponseStrategy responseStrategy =
+                createResponseStrategy(this.apiType);
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -43,15 +45,21 @@ public class InnosiliconFactory
                         new PoolsResponseStrategy())
                 .addRequest(
                         new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.SUMMARY)
+                                .build(),
+                        responseStrategy)
+                .addRequest(
+                        new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        createResponseStrategy(this.apiType))
+                        responseStrategy)
                 .build();
     }
 
     /**
      * Creates a chain of {@link RateMultiplyingDecorator decorators} around the
-     * {@link StatsResponseStrategy} to properly convert all of the ASCIs.
+     * {@link SummaryAndStatsResponseStrategy} to properly convert all of the
+     * ASCIs.
      *
      * @param apiType The type.
      *
@@ -59,16 +67,10 @@ public class InnosiliconFactory
      */
     private static ResponseStrategy createResponseStrategy(
             final ApiType apiType) {
-        ResponseStrategy responseStrategy =
-                new StatsResponseStrategy();
-        for (int i = 0; i < 20; i++) {
-            responseStrategy =
-                    new RateMultiplyingDecorator(
-                            "STATS" + i,
-                            "MHS av",
-                            apiType.getMultiplier(),
-                            responseStrategy);
-        }
-        return responseStrategy;
+        return new RateMultiplyingDecorator(
+                "SUMMARY",
+                "MHS av",
+                apiType.getMultiplier(),
+                new SummaryAndStatsResponseStrategy());
     }
 }
