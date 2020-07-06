@@ -108,7 +108,8 @@ public enum Manufacturer {
                             BlackminerConfValue.FAN_PWM,
                             BlackminerConfValue.FREQ,
                             BlackminerConfValue.COIN_TYPE)),
-            new NullRebootStrategy()),
+            new AntminerRebootStrategy(
+                    "blackMiner Configuration")),
 
     /** Dayun. */
     DAYUN(
@@ -200,7 +201,8 @@ public enum Manufacturer {
                             StrongUConfValue.START_VOLT,
                             StrongUConfValue.PLL_START,
                             StrongUConfValue.PLL_STEP)),
-            new NullRebootStrategy()),
+            new AntminerRebootStrategy(
+                    "stuMiner Configuration")),
 
     /** Whatsminer. */
     WHATSMINER(
