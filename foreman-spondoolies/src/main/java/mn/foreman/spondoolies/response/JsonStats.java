@@ -66,19 +66,19 @@ import java.util.List;
  * </pre>
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-class JsonStats {
+public class JsonStats {
 
     /** The bottom board. */
     @JsonProperty("bottom-board")
-    Board bottomBoard;
+    public Board bottomBoard;
 
     /** The fan speeds. */
     @JsonProperty("fan-speeds")
-    List<Integer> fanSpeeds;
+    public List<Integer> fanSpeeds;
 
     /** The top board. */
     @JsonProperty("top-board")
-    Board topBoard;
+    public Board topBoard;
 
     /** A board model object representation. */
     @JsonIgnoreProperties(ignoreUnknown = true)
@@ -86,18 +86,18 @@ class JsonStats {
 
         /** The front board temp. */
         @JsonProperty("front-temp")
-        int frontTemp;
+        public int frontTemp;
 
         /** The psu temp. */
         @JsonProperty("psu-temp")
-        int psuTemp;
+        public int psuTemp;
 
         /** The rear board temp. */
         @JsonProperty("rear-temp")
-        int rearTemp;
+        public int rearTemp;
 
         /** The number of working asics. */
         @JsonProperty("working-asics")
-        int workingAsics;
+        public int workingAsics;
     }
 }

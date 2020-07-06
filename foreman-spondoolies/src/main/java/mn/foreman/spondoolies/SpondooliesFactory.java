@@ -1,5 +1,6 @@
 package mn.foreman.spondoolies;
 
+import mn.foreman.cgminer.AggregatingResponseStrategy;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.ResponseStrategy;
@@ -7,7 +8,8 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
-import mn.foreman.spondoolies.response.SummaryAndStatsResponseStrategy;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -21,7 +23,19 @@ public class SpondooliesFactory
     @Override
     public Miner create(final Map<String, String> config) {
         final ResponseStrategy responseStrategy =
-                new SummaryAndStatsResponseStrategy();
+                new AggregatingResponseStrategy<>(
+                        ImmutableMap.of(
+                                "SUMMARY",
+                                (values, builder, context) ->
+                                        SpondooliesUtils.updateSummary(
+                                                values,
+                                                builder),
+                                "STATS",
+                                (values, builder, context) ->
+                                        SpondooliesUtils.updateStats(
+                                                values,
+                                                builder)),
+                        () -> null);
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))

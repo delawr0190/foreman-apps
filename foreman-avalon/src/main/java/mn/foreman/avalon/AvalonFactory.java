@@ -1,12 +1,15 @@
 package mn.foreman.avalon;
 
-import mn.foreman.avalon.response.SummaryAndStatsResponseStrategy;
+import mn.foreman.cgminer.AggregatingResponseStrategy;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.PoolsResponseStrategy;
+import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
 
@@ -19,8 +22,20 @@ public class AvalonFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
-        final SummaryAndStatsResponseStrategy responseStrategy =
-                new SummaryAndStatsResponseStrategy();
+        final ResponseStrategy responseStrategy =
+                new AggregatingResponseStrategy<>(
+                        ImmutableMap.of(
+                                "SUMMARY",
+                                (values, builder, context) ->
+                                        AvalonUtils.updateSummary(
+                                                values,
+                                                builder),
+                                "STATS",
+                                (values, builder, context) ->
+                                        AvalonUtils.updateStats(
+                                                values,
+                                                builder)),
+                        () -> null);
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -41,4 +56,6 @@ public class AvalonFactory
                         responseStrategy)
                 .build();
     }
+
+
 }
