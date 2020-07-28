@@ -49,7 +49,7 @@ public class AntminerDetectITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {

@@ -63,10 +63,11 @@ public enum StrongUType
     public static Optional<StrongUType> forModel(final String model) {
         Optional<StrongUType> type = Optional.empty();
         if (model != null && !model.isEmpty()) {
+            final String cleanModel = model.trim().replace("0", "");
             type =
                     TYPE_MAP.entrySet()
                             .stream()
-                            .filter(entry -> model.equalsIgnoreCase(entry.getKey()))
+                            .filter(entry -> cleanModel.equalsIgnoreCase(entry.getKey()))
                             .map(Map.Entry::getValue)
                             .findFirst();
         }
