@@ -6,7 +6,6 @@ import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -57,7 +56,7 @@ public class AntminerChangePoolsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -183,24 +182,15 @@ public class AntminerChangePoolsITest
     }
 
     /**
-     * Validates the digest authentication.
+     * Validates the exchange digest.
      *
-     * @param exchange The exchange to validate.
+     * @param exchange The exchange.
      *
-     * @return Whether or not the auth was valid.
+     * @return Whether or not the digest was validated.
      */
     private static boolean validateDigest(final HttpExchange exchange) {
-        final Headers headers = exchange.getRequestHeaders();
-        return headers
-                .entrySet()
-                .stream()
-                .filter(entry -> "Authorization".equals(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .anyMatch(header -> {
-                    final String headerString = header.get(0);
-                    return headerString.contains(
-                            "realm=\"antMiner Configuration\"") &&
-                            headerString.contains("nonce");
-                });
+        return AntminerTestUtils.validateDigest(
+                exchange,
+                "antMiner Configuration");
     }
 }

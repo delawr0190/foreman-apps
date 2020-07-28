@@ -53,12 +53,12 @@ public class AntminerStatsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {
                                 // Antminer D3
-                                new BigDecimal(0.001),
+                                new BigDecimal("0.001"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -92,7 +92,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("16346640000.00000034028280193609816706157289445400238037109375000000000000"))
+                                                        .setHashRate(new BigDecimal("16346640000.00000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -112,7 +112,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer E3
-                                new BigDecimal(0.001),
+                                new BigDecimal("0.001"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -132,7 +132,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("197300000.00000000410713130172268847672967240214347839355468750000000000"))
+                                                        .setHashRate(new BigDecimal("197300000.00000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -182,7 +182,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer L3
-                                new BigDecimal(0.001),
+                                new BigDecimal("0.001"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -202,7 +202,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("504560000.00000001050326492446629345067776739597320556640625000000000000"))
+                                                        .setHashRate(new BigDecimal("504560000.00000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -224,7 +224,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer L3
-                                new BigDecimal(0.001),
+                                new BigDecimal("0.001"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
