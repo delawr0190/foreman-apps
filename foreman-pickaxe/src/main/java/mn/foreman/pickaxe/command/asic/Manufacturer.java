@@ -15,6 +15,7 @@ import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.DragonmintChangePoolsStrategy;
 import mn.foreman.dragonmint.DragonmintDetectionStrategy;
+import mn.foreman.dragonmint.DragonmintRebootStrategy;
 import mn.foreman.dragonmint.DragonmintType;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
@@ -126,7 +127,7 @@ public enum Manufacturer {
                     DragonmintType::forType,
                     "DragonMint"),
             new DragonmintChangePoolsStrategy(),
-            new NullRebootStrategy()),
+            new DragonmintRebootStrategy()),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -149,7 +150,7 @@ public enum Manufacturer {
                     InnosiliconType::forType,
                     "Innosilicon"),
             new DragonmintChangePoolsStrategy(),
-            new NullRebootStrategy()),
+            new DragonmintRebootStrategy()),
 
     /** MultMiner. */
     MULTMINER(
