@@ -46,6 +46,12 @@ public enum AntminerType
     /** Antminer S17. */
     ANTMINER_S17("Antminer S17", "antminer-s17"),
 
+    /** Antminer S17+. */
+    ANTMINER_S17P("Antminer S17+", "antminer-s17p"),
+
+    /** Antminer S17e. */
+    ANTMINER_S17E("Antminer S17e", "antminer-s17e"),
+
     /** Antminer T9. */
     ANTMINER_T9("Antminer T9", "antminer-t9"),
 
