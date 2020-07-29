@@ -85,6 +85,14 @@ public class AntminerDetectITest
                                 AntminerType.ANTMINER_S17
                         },
                         {
+                                // Antminer S19 Pro
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\": \"S\", \"When\": 1595967398, \"Code\": 22, \"Msg\": \"CGMiner versions\", \"Description\": \"cgminer 1.0.0\"}], \"VERSION\": [{\"BMMiner\": \"1.0.0\", \"API\": \"3.1\", \"Miner\": \"49.0.1.3\", \"CompileTime\": \"Mon Jun  1 20:27:44 CST 2020\", \"Type\": \"Antminer S19 Pro\"}], \"id\": 1}")),
+                                AntminerType.ANTMINER_S19_PRO
+                        },
+                        {
                                 // Antminer Z9 Mini
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
