@@ -736,7 +736,10 @@ public class Query {
                                         entry.get("value").toString())));
                 LOG.debug("Params for POST: {}", params);
 
-                final HttpEntity entity = new UrlEncodedFormEntity(params);
+                final HttpEntity entity =
+                        new UrlEncodedFormEntity(
+                                params,
+                                "UTF-8");
                 LOG.debug("Entity: {}", entity);
                 httpPost.setEntity(entity);
             }

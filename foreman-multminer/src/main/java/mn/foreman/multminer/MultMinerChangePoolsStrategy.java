@@ -1,23 +1,17 @@
 package mn.foreman.multminer;
 
-import mn.foreman.io.Query;
 import mn.foreman.model.AbstractChangePoolsStrategy;
 import mn.foreman.model.ChangePoolsStrategy;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 /**
  * A {@link MultMinerChangePoolsStrategy} provides a {@link ChangePoolsStrategy}
@@ -51,9 +45,10 @@ public class MultMinerChangePoolsStrategy
             // Then, update the pools
             LOG.debug("Updating pools to {}", pools);
             success =
-                    updateMiner(
+                    MultMinerQuery.query(
                             ip,
                             port,
+                            "pol",
                             content -> {
                                 for (int i = 0; i < pools.size(); i++) {
                                     addPool(
@@ -68,24 +63,6 @@ public class MultMinerChangePoolsStrategy
         return success;
     }
 
-    /**
-     * Adds the key and value to the destination.
-     *
-     * @param key   The key.
-     * @param value The value.
-     * @param dest  The destination.
-     */
-    private static void add(
-            final String key,
-            final String value,
-            final List<Map<String, Object>> dest) {
-        dest.add(
-                ImmutableMap.of(
-                        "key",
-                        key,
-                        "value",
-                        value));
-    }
 
     /**
      * Adds the provided pool.
@@ -98,7 +75,7 @@ public class MultMinerChangePoolsStrategy
             final Pool pool,
             final int index,
             final List<Map<String, Object>> dest) {
-        add(
+        MultMinerQuery.add(
                 String.format(
                         "p%durl",
                         index),
@@ -107,7 +84,7 @@ public class MultMinerChangePoolsStrategy
                         (index == 0 ? "" : index),
                         pool.getUrl()),
                 dest);
-        add(
+        MultMinerQuery.add(
                 String.format(
                         "p%duser",
                         index),
@@ -116,7 +93,7 @@ public class MultMinerChangePoolsStrategy
                         (index == 0 ? "" : index),
                         pool.getUsername()),
                 dest);
-        add(
+        MultMinerQuery.add(
                 String.format(
                         "p%dpwd",
                         index),
@@ -147,9 +124,10 @@ public class MultMinerChangePoolsStrategy
         if (hasAlgoChanged(newAlgo)) {
             LOG.debug("Changing algorithm to {}", newAlgo);
             success =
-                    updateMiner(
+                    MultMinerQuery.query(
                             ip,
                             port,
+                            "pol",
                             content ->
                                     content.add(
                                             ImmutableMap.of(
@@ -183,58 +161,6 @@ public class MultMinerChangePoolsStrategy
      */
     private static boolean hasAlgoChanged(final String newAlgo) {
         return newAlgo != null && !newAlgo.isEmpty();
-    }
-
-    /**
-     * Updates the multminer instance, leveraging the provided {@link Consumer}
-     * to add content based on the action that's being performed.
-     *
-     * @param ip           The ip.
-     * @param port         The port.
-     * @param contentAdder The content enricher.
-     * @param delay        The delayer.
-     *
-     * @return Whether or not the update was successful.
-     *
-     * @throws MinerException on failure.
-     */
-    private static boolean updateMiner(
-            final String ip,
-            final int port,
-            final Consumer<List<Map<String, Object>>> contentAdder,
-            final Supplier<Boolean> delay)
-            throws MinerException {
-        boolean success;
-
-        final List<Map<String, Object>> content = new LinkedList<>();
-        add(
-                "act",
-                "pol",
-                content);
-        contentAdder.accept(content);
-
-        try {
-            final AtomicReference<Integer> statusCode = new AtomicReference<>();
-            Query.post(
-                    ip,
-                    port,
-                    "/index.csp",
-                    content,
-                    (code, s) -> {
-                        LOG.debug(
-                                "Received {} - response {}",
-                                code,
-                                statusCode);
-                        statusCode.set(code);
-                    });
-            final Integer code = statusCode.get();
-            success = (code != null && code == HttpStatus.SC_OK);
-        } catch (final Exception e) {
-            throw new MinerException(e);
-        }
-
-        // Wait, if desired, until proceeding
-        return success && delay.get();
     }
 
     /**

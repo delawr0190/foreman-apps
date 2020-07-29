@@ -23,6 +23,7 @@ import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.*;
 import mn.foreman.multminer.MultMinerChangePoolsStrategy;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
+import mn.foreman.multminer.MultMinerRebootStrategy;
 import mn.foreman.obelisk.ObeliskChangePoolsStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
@@ -157,7 +158,7 @@ public enum Manufacturer {
             "multminer",
             new MultMinerDetectionStrategy(),
             new MultMinerChangePoolsStrategy(),
-            new NullRebootStrategy()),
+            new MultMinerRebootStrategy()),
 
     /** Obelisk. */
     OBELISK(
