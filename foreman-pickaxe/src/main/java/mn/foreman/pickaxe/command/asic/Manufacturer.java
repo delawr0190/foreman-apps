@@ -26,6 +26,7 @@ import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.multminer.MultMinerRebootStrategy;
 import mn.foreman.obelisk.ObeliskChangePoolsStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
+import mn.foreman.obelisk.ObeliskRebootStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.strongu.StrongUConfValue;
 import mn.foreman.strongu.StrongUTypeFactory;
@@ -165,7 +166,7 @@ public enum Manufacturer {
             "obelisk",
             new ObeliskDetectionStrategy<>(),
             new ObeliskChangePoolsStrategy(),
-            new NullRebootStrategy()),
+            new ObeliskRebootStrategy()),
 
     /** Spondoolies. */
     SPONDOOLIES(

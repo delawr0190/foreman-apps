@@ -2,6 +2,7 @@ package mn.foreman.pickaxe.command;
 
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.pools.ChangePoolsStrategy;
+import mn.foreman.pickaxe.command.asic.reboot.RebootStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
 import java.util.Optional;
@@ -24,7 +25,12 @@ public enum Command {
     /** Change pools. */
     CHANGE_POOLS(
             "change-pools",
-            new ChangePoolsStrategy());
+            new ChangePoolsStrategy()),
+
+    /** Reboot. */
+    REBOOT(
+            "reboot",
+            new RebootStrategy());
 
     /** All of the known commands. */
     private static final ConcurrentMap<String, Command> TYPES =
