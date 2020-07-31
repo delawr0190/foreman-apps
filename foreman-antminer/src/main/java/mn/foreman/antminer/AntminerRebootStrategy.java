@@ -4,8 +4,6 @@ import mn.foreman.io.Query;
 import mn.foreman.model.RebootStrategy;
 import mn.foreman.model.error.MinerException;
 
-import org.apache.http.HttpStatus;
-
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -53,6 +51,10 @@ public class AntminerRebootStrategy
         }
 
         final Integer code = statusCode.get();
-        return code != null && code == HttpStatus.SC_OK;
+
+        // Can't validate the code because the miner returns status 500, and it
+        // seems like that will most likely change at some point or not be
+        // cross-fork compatible
+        return code != null;
     }
 }

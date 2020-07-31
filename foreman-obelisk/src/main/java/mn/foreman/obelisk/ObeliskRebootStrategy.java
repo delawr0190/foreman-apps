@@ -33,6 +33,7 @@ public class ObeliskRebootStrategy
                             .method("POST")
                             .username(username)
                             .password(password)
+                            .isReboot(true)
                             .build());
         } catch (final Exception e) {
             throw new MinerException(e);

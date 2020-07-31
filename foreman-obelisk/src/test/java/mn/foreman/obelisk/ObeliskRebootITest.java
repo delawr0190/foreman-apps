@@ -34,14 +34,6 @@ public class ObeliskRebootITest
                                                 "Cookie",
                                                 "sessionid=foreman"),
                                         "",
-                                        Collections.emptyMap()),
-                                "/api/logout",
-                                new HttpHandler(
-                                        "",
-                                        ImmutableMap.of(
-                                                "Cookie",
-                                                "sessionid=foreman"),
-                                        "",
                                         Collections.emptyMap()))),
                 true);
     }

@@ -76,14 +76,17 @@ public class ObeliskQuery {
             }
         } finally {
             // Logout
-            query(
-                    context,
-                    "/api/logout",
-                    "POST",
-                    false,
-                    null,
-                    sessionId,
-                    Object.class);
+            if (!context.isReboot()) {
+                // Only attempt to logout if the miner isn't rebooting
+                query(
+                        context,
+                        "/api/logout",
+                        "POST",
+                        false,
+                        null,
+                        sessionId,
+                        Object.class);
+            }
         }
     }
 
@@ -225,6 +228,9 @@ public class ObeliskQuery {
 
         /** Any content to be sent. */
         private final String content;
+
+        /** Whether or not the query is a reboot. */
+        private final boolean isReboot;
 
         /** The method. */
         private final String method;

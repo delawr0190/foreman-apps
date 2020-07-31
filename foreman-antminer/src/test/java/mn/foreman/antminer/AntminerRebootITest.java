@@ -5,6 +5,7 @@ import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.http.HttpStatus;
 
 /** Test rebooting of an Antminer. */
 public class AntminerRebootITest
@@ -23,7 +24,8 @@ public class AntminerRebootITest
                                         "",
                                         exchange -> AntminerTestUtils.validateDigest(
                                                 exchange,
-                                                "antMiner Configuration")))),
+                                                "antMiner Configuration"),
+                                        HttpStatus.SC_INTERNAL_SERVER_ERROR))),
                 true);
     }
 }

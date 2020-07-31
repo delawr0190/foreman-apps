@@ -23,6 +23,9 @@ import java.util.function.Predicate;
 public class HttpHandler
         implements ServerHandler {
 
+    /** The default response code. */
+    private static final int DEFAULT_RESPONSE_CODE = 200;
+
     /** The expected request. */
     private final String expectedRequest;
 
@@ -41,6 +44,9 @@ public class HttpHandler
     /** The response to return. */
     private final String response;
 
+    /** The response code. */
+    private final int responseCode;
+
     /** The response headers. */
     private final Map<String, String> responseHeaders;
 
@@ -53,6 +59,7 @@ public class HttpHandler
      * @param response          The response.
      * @param responseHeaders   The response headers.
      * @param requestValidator  The validator for requests.
+     * @param responseCode      The response code.
      */
     public HttpHandler(
             final String expectedRequest,
@@ -60,13 +67,15 @@ public class HttpHandler
             final String requestParameters,
             final String response,
             final Map<String, String> responseHeaders,
-            final Predicate<HttpExchange> requestValidator) {
+            final Predicate<HttpExchange> requestValidator,
+            final int responseCode) {
         this.expectedRequest = expectedRequest;
         this.requestHeaders = new HashMap<>(requestHeaders);
         this.requestParameters = requestParameters;
         this.response = response;
         this.responseHeaders = new HashMap<>(responseHeaders);
         this.requestValidator = requestValidator;
+        this.responseCode = responseCode;
     }
 
     /**
@@ -90,7 +99,35 @@ public class HttpHandler
                 requestParameters,
                 response,
                 responseHeaders,
-                exchange -> true);
+                exchange -> true,
+                DEFAULT_RESPONSE_CODE);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest  The expected request.
+     * @param requestHeaders   The request headers.
+     * @param response         The response.
+     * @param responseHeaders  The response headers.
+     * @param requestValidator The request validator.
+     * @param responseCode     The response code.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final Map<String, String> requestHeaders,
+            final String response,
+            final Map<String, String> responseHeaders,
+            final Predicate<HttpExchange> requestValidator,
+            final int responseCode) {
+        this(
+                expectedRequest,
+                requestHeaders,
+                null,
+                response,
+                responseHeaders,
+                requestValidator,
+                responseCode);
     }
 
     /**
@@ -114,7 +151,8 @@ public class HttpHandler
                 null,
                 response,
                 responseHeaders,
-                requestValidator);
+                requestValidator,
+                DEFAULT_RESPONSE_CODE);
     }
 
     /**
@@ -135,6 +173,28 @@ public class HttpHandler
                 null,
                 response,
                 responseHeaders);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param expectedRequest  The expected request.
+     * @param response         The response.
+     * @param requestValidator The validator for requests.
+     * @param responseCode     The response code.
+     */
+    public HttpHandler(
+            final String expectedRequest,
+            final String response,
+            final Predicate<HttpExchange> requestValidator,
+            final int responseCode) {
+        this(
+                expectedRequest,
+                Collections.emptyMap(),
+                response,
+                Collections.emptyMap(),
+                requestValidator,
+                responseCode);
     }
 
     /**
@@ -185,7 +245,7 @@ public class HttpHandler
 
         final byte[] response = this.response.getBytes();
         exchange.sendResponseHeaders(
-                200,
+                this.responseCode,
                 response.length);
 
         final OutputStream outputStream =
