@@ -30,7 +30,8 @@ public class RebootStrategy
     public void runCommand(
             final CommandStart command,
             final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
@@ -43,7 +44,8 @@ public class RebootStrategy
                         ip,
                         port,
                         args,
-                        builder);
+                        builder,
+                        callback);
                 break;
             default:
                 break;
@@ -53,16 +55,18 @@ public class RebootStrategy
     /**
      * Reboots ASICs.
      *
-     * @param ip      The ip.
-     * @param port    The port.
-     * @param args    The arguments.
-     * @param builder The builder to use for creating the final result.
+     * @param ip       The ip.
+     * @param port     The port.
+     * @param args     The arguments.
+     * @param builder  The builder to use for creating the final result.
+     * @param callback The completion callback.
      */
     private void runAsicReboot(
             final String ip,
             final String port,
             final Map<String, Object> args,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final String manufacturer = safeGet(args, "manufacturer");
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
@@ -78,43 +82,91 @@ public class RebootStrategy
                     port);
 
             try {
-                if (strategy.reboot(
+                final RebootCallback rebootCallback =
+                        new RebootCallback(
+                                builder,
+                                callback);
+                strategy.reboot(
                         ip,
                         Integer.parseInt(port),
-                        args)) {
-                    LOG.info("Reboot completed!");
-                    builder.status(
-                            CommandDone.Status
-                                    .builder()
-                                    .type(DoneStatus.SUCCESS)
-                                    .build());
-                } else {
-                    LOG.warn("Failed to reboot");
-                    builder.status(
-                            CommandDone.Status
-                                    .builder()
-                                    .type(DoneStatus.FAILED)
-                                    .build());
-                }
+                        args,
+                        rebootCallback);
             } catch (final NotAuthenticatedException nae) {
                 LOG.warn("Failed to authentication with the miner", nae);
-                builder.status(
-                        CommandDone.Status
-                                .builder()
-                                .type(DoneStatus.FAILED)
-                                .message("Failed to authenticate with the miner")
-                                .details(ExceptionUtils.getStackTrace(nae))
+                callback.done(
+                        builder
+                                .status(
+                                        CommandDone.Status
+                                                .builder()
+                                                .type(DoneStatus.FAILED)
+                                                .message("Failed to authenticate with the miner")
+                                                .details(ExceptionUtils.getStackTrace(nae))
+                                                .build())
                                 .build());
             } catch (final MinerException me) {
                 LOG.warn("An unexpected exception occurred", me);
-                builder.status(
-                        CommandDone.Status
-                                .builder()
-                                .type(DoneStatus.FAILED)
-                                .message("An unexpected exception occurred")
-                                .details(ExceptionUtils.getStackTrace(me))
+                callback.done(
+                        builder
+                                .status(
+                                        CommandDone.Status
+                                                .builder()
+                                                .type(DoneStatus.FAILED)
+                                                .message("An unexpected exception occurred")
+                                                .details(ExceptionUtils.getStackTrace(me))
+                                                .build())
                                 .build());
             }
+        }
+    }
+
+    /** A callback for handling async reboot operations. */
+    private static class RebootCallback
+            implements mn.foreman.model.RebootStrategy.Callback {
+
+        /** The done builder. */
+        private final CommandDone.CommandDoneBuilder builder;
+
+        /** The callback. */
+        private final Callback callback;
+
+        /**
+         * Constructor.
+         *
+         * @param builder  The builder.
+         * @param callback The callback.
+         */
+        RebootCallback(
+                final CommandDone.CommandDoneBuilder builder,
+                final Callback callback) {
+            this.builder = builder;
+            this.callback = callback;
+        }
+
+        @Override
+        public void failed(final String message) {
+            LOG.warn("Failed to reboot");
+            this.callback.done(
+                    this.builder
+                            .status(
+                                    CommandDone.Status
+                                            .builder()
+                                            .type(DoneStatus.FAILED)
+                                            .message(message)
+                                            .build())
+                            .build());
+        }
+
+        @Override
+        public void success() {
+            LOG.info("Reboot completed!");
+            this.callback.done(
+                    this.builder
+                            .status(
+                                    CommandDone.Status
+                                            .builder()
+                                            .type(DoneStatus.SUCCESS)
+                                            .build())
+                            .build());
         }
     }
 }

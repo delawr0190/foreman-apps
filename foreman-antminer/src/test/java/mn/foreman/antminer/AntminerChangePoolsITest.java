@@ -1,5 +1,6 @@
 package mn.foreman.antminer;
 
+import mn.foreman.antminer.util.AntminerTestUtils;
 import mn.foreman.util.AbstractChangePoolsITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;

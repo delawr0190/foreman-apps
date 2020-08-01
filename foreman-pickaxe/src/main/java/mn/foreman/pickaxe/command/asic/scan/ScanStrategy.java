@@ -31,7 +31,8 @@ public class ScanStrategy
     public void runCommand(
             final CommandStart command,
             final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
@@ -51,7 +52,8 @@ public class ScanStrategy
                         stop,
                         port,
                         args,
-                        builder);
+                        builder,
+                        callback);
                 break;
             default:
                 break;
@@ -92,6 +94,7 @@ public class ScanStrategy
      * @param port         The port to inspect.
      * @param args         The arguments.
      * @param builder      The builder to use for creating the final result.
+     * @param callback     The callback.
      */
     private void runAsicScan(
             final CommandStart command,
@@ -102,7 +105,8 @@ public class ScanStrategy
             final int stop,
             final int port,
             final Map<String, Object> args,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
         if (type.isPresent()) {
@@ -117,7 +121,8 @@ public class ScanStrategy
                     port,
                     args,
                     manufacturerType.getDetectionStrategy(),
-                    builder);
+                    builder,
+                    callback);
         }
     }
 
@@ -134,6 +139,7 @@ public class ScanStrategy
      * @param builder           The builder to use for creating the final
      *                          result.
      * @param detectionStrategy The strategy to use for detecting miners.
+     * @param callback          The callback.
      */
     private void runScan(
             final ForemanApi foremanApi,
@@ -144,7 +150,8 @@ public class ScanStrategy
             final int port,
             final Map<String, Object> args,
             final DetectionStrategy detectionStrategy,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final List<Object> miners = new LinkedList<>();
 
         for (int i = start; i <= stop; i++) {
@@ -178,15 +185,17 @@ public class ScanStrategy
                             id);
         }
 
-        builder
-                .result(
-                        ImmutableMap.of(
-                                "miners",
-                                miners))
-                .status(
-                        CommandDone.Status
-                                .builder()
-                                .type(DoneStatus.SUCCESS)
-                                .build());
+        callback.done(
+                builder
+                        .result(
+                                ImmutableMap.of(
+                                        "miners",
+                                        miners))
+                        .status(
+                                CommandDone.Status
+                                        .builder()
+                                        .type(DoneStatus.SUCCESS)
+                                        .build())
+                        .build());
     }
 }

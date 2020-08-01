@@ -11,18 +11,33 @@ public interface RebootStrategy {
     /**
      * Reboots the miner.
      *
-     * @param ip         The miner IP.
-     * @param port       The miner port.
-     * @param parameters The parameters.
-     *
-     * @return Whether or not the reboot was successful.
+     * @param ip           The miner IP.
+     * @param port         The miner port.
+     * @param parameters   The parameters.
+     * @param doneCallback A callback for processing the status of the reboot
+     *                     when it's done.
      *
      * @throws NotAuthenticatedException on failure to authenticate
      * @throws MinerException            on unexpected error
      */
-    boolean reboot(
+    void reboot(
             String ip,
             int port,
-            Map<String, Object> parameters)
+            Map<String, Object> parameters,
+            Callback doneCallback)
             throws NotAuthenticatedException, MinerException;
+
+    /** A callback for performing actions once the reboot is done. */
+    interface Callback {
+
+        /**
+         * Completes the callback.
+         *
+         * @param message The message.
+         */
+        void failed(String message);
+
+        /** Completes the callback. */
+        void success();
+    }
 }

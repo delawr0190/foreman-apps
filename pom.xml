@@ -130,6 +130,12 @@
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
+                <artifactId>foreman-antminer</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
                 <artifactId>foreman-autominer</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -197,6 +203,12 @@
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dragonmint</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-dragonmint</artifactId>
+                <version>${project.version}</version>
+                <classifier>tests</classifier>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>

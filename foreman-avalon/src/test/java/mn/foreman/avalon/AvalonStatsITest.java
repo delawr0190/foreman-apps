@@ -6,6 +6,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
+import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
@@ -29,7 +30,7 @@ public class AvalonStatsITest
      * @param expectedStats The expected stats.
      */
     public AvalonStatsITest(
-            final Map<String, RpcHandler> handlers,
+            final Map<String, HandlerInterface> handlers,
             final MinerStats expectedStats) {
         super(
                 new AvalonFactory()

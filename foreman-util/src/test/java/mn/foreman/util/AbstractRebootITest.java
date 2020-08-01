@@ -7,18 +7,24 @@ import mn.foreman.model.error.MinerException;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
 /** An abstract integration test for testing reboot operations. */
 public abstract class AbstractRebootITest {
 
-    /** The default port. */
-    public static final int DEFAULT_PORT = 8080;
+    /** A test thread pool. */
+    protected static final ScheduledThreadPoolExecutor THREAD_POOL =
+            new ScheduledThreadPoolExecutor(1);
 
     /** The default args. */
     private static final Map<String, Object> DEFAULT_ARGS =
@@ -26,7 +32,11 @@ public abstract class AbstractRebootITest {
                     "username",
                     "my-auth-username",
                     "password",
-                    "my-auth-password");
+                    "my-auth-password",
+                    "deadlineMillis",
+                    "20000",
+                    "ip",
+                    "127.0.0.1");
 
     /** The arguments. */
     private final Map<String, Object> args;
@@ -41,47 +51,29 @@ public abstract class AbstractRebootITest {
     private final RebootStrategy rebootStrategy;
 
     /** The fake server supplier. */
-    private final Supplier<FakeMinerServer> serverSupplier;
+    private final List<Supplier<FakeMinerServer>> serverSuppliers;
 
     /**
      * Constructor.
      *
-     * @param rebootStrategy The strategy under test.
-     * @param port           The port.
-     * @param args           The arguments.
-     * @param serverSupplier A {@link Supplier} for making servers.
-     * @param expectedChange Whether or not a change should have occurred.
+     * @param port            The port.
+     * @param apiPort         The api port.
+     * @param rebootStrategy  The strategy under test.
+     * @param serverSuppliers A {@link Supplier} for making servers.
+     * @param expectedChange  Whether or not a change should have occurred.
      */
     public AbstractRebootITest(
-            final RebootStrategy rebootStrategy,
             final int port,
-            final Map<String, Object> args,
-            final Supplier<FakeMinerServer> serverSupplier,
+            final int apiPort,
+            final RebootStrategy rebootStrategy,
+            final List<Supplier<FakeMinerServer>> serverSuppliers,
             final boolean expectedChange) {
         this.rebootStrategy = rebootStrategy;
         this.port = port;
-        this.args = new HashMap<>(args);
-        this.serverSupplier = serverSupplier;
+        this.args = new HashMap<>(DEFAULT_ARGS);
+        this.args.put("apiPort", Integer.toString(apiPort));
+        this.serverSuppliers = new ArrayList<>(serverSuppliers);
         this.expectedChange = expectedChange;
-    }
-
-    /**
-     * Constructor.
-     *
-     * @param rebootStrategy The strategy under test.
-     * @param serverSupplier A {@link Supplier} for making servers.
-     * @param expectedChange Whether or not a change should have occurred.
-     */
-    public AbstractRebootITest(
-            final RebootStrategy rebootStrategy,
-            final Supplier<FakeMinerServer> serverSupplier,
-            final boolean expectedChange) {
-        this(
-                rebootStrategy,
-                DEFAULT_PORT,
-                DEFAULT_ARGS,
-                serverSupplier,
-                expectedChange);
     }
 
     /**
@@ -111,6 +103,31 @@ public abstract class AbstractRebootITest {
     }
 
     /**
+     * Waits for test completion.
+     *
+     * @param completed The completed flag.
+     *
+     * @return Whether or not the test was completed in time.
+     */
+    private static boolean waitForCompletion(final AtomicBoolean completed) {
+        long now = System.currentTimeMillis();
+        final long deadlineInMillis = now + TimeUnit.MINUTES.toMillis(1);
+        while (now < deadlineInMillis) {
+            if (completed.get()) {
+                return true;
+            }
+
+            try {
+                TimeUnit.SECONDS.sleep(5);
+            } catch (final InterruptedException ie) {
+                // Ignore
+            }
+            now = System.currentTimeMillis();
+        }
+        return false;
+    }
+
+    /**
      * Tests finding a {@link Detection}.
      *
      * @param port           The API port to query.
@@ -120,27 +137,62 @@ public abstract class AbstractRebootITest {
             final int port,
             final boolean expectedChange)
             throws Exception {
-        try (final FakeMinerServer fakeMinerServer =
-                     this.serverSupplier.get()) {
-            fakeMinerServer.start();
+        final List<FakeMinerServer> servers =
+                this.serverSuppliers
+                        .stream()
+                        .map(Supplier::get)
+                        .collect(Collectors.toList());
+        try {
+            servers.forEach(FakeMinerServer::start);
             try {
+                final AtomicBoolean completed = new AtomicBoolean(false);
+                final AtomicBoolean status = new AtomicBoolean(false);
+
+                this.rebootStrategy.reboot(
+                        "127.0.0.1",
+                        port,
+                        this.args,
+                        new RebootStrategy.Callback() {
+                            @Override
+                            public void failed(final String message) {
+                                status.set(false);
+                                completed.set(true);
+                            }
+
+                            @Override
+                            public void success() {
+                                status.set(true);
+                                completed.set(true);
+                            }
+                        });
+
+                assertTrue(
+                        waitForCompletion(
+                                completed));
                 assertEquals(
                         expectedChange,
-                        this.rebootStrategy.reboot(
-                                "127.0.0.1",
-                                port,
-                                this.args));
+                        status.get());
             } catch (final MinerException me) {
                 assertFalse(
                         me.getMessage(),
                         expectedChange);
             }
             if (expectedChange) {
-                assertTrue(
-                        fakeMinerServer.waitTillDone(
-                                10,
-                                TimeUnit.SECONDS));
+                servers.forEach(
+                        server ->
+                                assertTrue(
+                                        server.waitTillDone(
+                                                10,
+                                                TimeUnit.SECONDS)));
             }
+        } finally {
+            servers.forEach(server -> {
+                try {
+                    server.close();
+                } catch (final Exception e) {
+                    // Ignore
+                }
+            });
         }
     }
 }

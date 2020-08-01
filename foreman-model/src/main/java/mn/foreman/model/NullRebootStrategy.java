@@ -7,10 +7,11 @@ public class NullRebootStrategy
         implements RebootStrategy {
 
     @Override
-    public boolean reboot(
+    public void reboot(
             final String ip,
             final int port,
-            final Map<String, Object> parameters) {
-        return false;
+            final Map<String, Object> parameters,
+            final Callback callback) {
+        callback.failed("Not supported");
     }
 }

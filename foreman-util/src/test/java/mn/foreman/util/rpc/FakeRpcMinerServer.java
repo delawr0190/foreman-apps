@@ -20,7 +20,7 @@ import java.util.concurrent.Executors;
  * leveraged for integration testing.
  */
 public class FakeRpcMinerServer
-        extends AbstractFakeMinerServer<RpcHandler> {
+        extends AbstractFakeMinerServer<HandlerInterface> {
 
     /** The logger for this class. */
     private static final Logger LOG =
@@ -45,7 +45,7 @@ public class FakeRpcMinerServer
      */
     public FakeRpcMinerServer(
             final int port,
-            final Map<String, RpcHandler> handlers) {
+            final Map<String, HandlerInterface> handlers) {
         super(port, handlers);
     }
 

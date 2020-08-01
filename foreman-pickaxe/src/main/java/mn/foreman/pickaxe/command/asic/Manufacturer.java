@@ -1,41 +1,45 @@
 package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.aixin.AixinTypeFactory;
-import mn.foreman.antminer.AntminerChangePoolsStrategy;
-import mn.foreman.antminer.AntminerConfValue;
-import mn.foreman.antminer.AntminerRebootStrategy;
-import mn.foreman.antminer.AntminerTypeFactory;
+import mn.foreman.antminer.*;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalTypeFactory;
 import mn.foreman.blackminer.BlackminerConfValue;
+import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
-import mn.foreman.dragonmint.DragonmintChangePoolsStrategy;
-import mn.foreman.dragonmint.DragonmintDetectionStrategy;
-import mn.foreman.dragonmint.DragonmintRebootStrategy;
-import mn.foreman.dragonmint.DragonmintType;
+import mn.foreman.dragonmint.*;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
+import mn.foreman.innosilicon.ApiType;
+import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.*;
 import mn.foreman.multminer.MultMinerChangePoolsStrategy;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
+import mn.foreman.multminer.MultMinerFactory;
 import mn.foreman.multminer.MultMinerRebootStrategy;
 import mn.foreman.obelisk.ObeliskChangePoolsStrategy;
 import mn.foreman.obelisk.ObeliskDetectionStrategy;
+import mn.foreman.obelisk.ObeliskFactory;
 import mn.foreman.obelisk.ObeliskRebootStrategy;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.strongu.StrongUConfValue;
+import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.strongu.StrongUTypeFactory;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /** An enumeration containing all of the known manufacturers. */
 public enum Manufacturer {
@@ -70,8 +74,14 @@ public enum Manufacturer {
                             AntminerConfValue.FAN_CTRL,
                             AntminerConfValue.FAN_PWM,
                             AntminerConfValue.FREQ)),
-            new AntminerRebootStrategy(
-                    "antMiner Configuration")),
+            scheduledThreadPoolExecutor ->
+                    new AntminerRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new AntminerFactory(BigDecimal.ONE),
+                            "antMiner Configuration")),
 
     /** Avalon. */
     AVALON(
@@ -111,8 +121,14 @@ public enum Manufacturer {
                             BlackminerConfValue.FAN_PWM,
                             BlackminerConfValue.FREQ,
                             BlackminerConfValue.COIN_TYPE)),
-            new AntminerRebootStrategy(
-                    "blackMiner Configuration")),
+            scheduledThreadPoolExecutor ->
+                    new AntminerRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new BlackminerFactory(),
+                            "blackMiner Configuration")),
 
     /** Dayun. */
     DAYUN(
@@ -129,7 +145,13 @@ public enum Manufacturer {
                     DragonmintType::forType,
                     "DragonMint"),
             new DragonmintChangePoolsStrategy(),
-            new DragonmintRebootStrategy()),
+            scheduledThreadPoolExecutor ->
+                    new DragonmintRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new DragonmintFactory())),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -152,21 +174,39 @@ public enum Manufacturer {
                     InnosiliconType::forType,
                     "Innosilicon"),
             new DragonmintChangePoolsStrategy(),
-            new DragonmintRebootStrategy()),
+            scheduledThreadPoolExecutor ->
+                    new DragonmintRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new InnosiliconFactory(ApiType.HS_API))),
 
     /** MultMiner. */
     MULTMINER(
             "multminer",
             new MultMinerDetectionStrategy(),
             new MultMinerChangePoolsStrategy(),
-            new MultMinerRebootStrategy()),
+            scheduledThreadPoolExecutor ->
+                    new MultMinerRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new MultMinerFactory())),
 
     /** Obelisk. */
     OBELISK(
             "obelisk",
             new ObeliskDetectionStrategy<>(),
             new ObeliskChangePoolsStrategy(),
-            new ObeliskRebootStrategy()),
+            scheduledThreadPoolExecutor ->
+                    new ObeliskRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new ObeliskFactory())),
 
     /** Spondoolies. */
     SPONDOOLIES(
@@ -204,8 +244,14 @@ public enum Manufacturer {
                             StrongUConfValue.START_VOLT,
                             StrongUConfValue.PLL_START,
                             StrongUConfValue.PLL_STEP)),
-            new AntminerRebootStrategy(
-                    "stuMiner Configuration")),
+            scheduledThreadPoolExecutor ->
+                    new AntminerRebootStrategy(
+                            30,
+                            30,
+                            TimeUnit.SECONDS,
+                            scheduledThreadPoolExecutor,
+                            new StrongUFactory(),
+                            "stuMiner Configuration")),
 
     /** Whatsminer. */
     WHATSMINER(
@@ -213,6 +259,13 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.STATS,
                     new WhatsminerTypeFactory()));
+
+    /** The thread pool to use for querying for miner status. */
+    private static final ScheduledThreadPoolExecutor THREAD_POOL =
+            new ScheduledThreadPoolExecutor(
+                    Runtime
+                            .getRuntime()
+                            .availableProcessors());
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =
@@ -236,7 +289,7 @@ public enum Manufacturer {
     private final String name;
 
     /** The strategy for rebooting. */
-    private final RebootStrategy rebootStrategy;
+    private final Function<ScheduledThreadPoolExecutor, RebootStrategy> rebootStrategy;
 
     /**
      * Constructor.
@@ -251,7 +304,7 @@ public enum Manufacturer {
                 name,
                 detectionStrategy,
                 new NullChangePoolsStrategy(),
-                new NullRebootStrategy());
+                executor -> new NullRebootStrategy());
     }
 
     /**
@@ -266,7 +319,7 @@ public enum Manufacturer {
             final String name,
             final DetectionStrategy detectionStrategy,
             final ChangePoolsStrategy changePoolsStrategy,
-            final RebootStrategy rebootStrategy) {
+            final Function<ScheduledThreadPoolExecutor, RebootStrategy> rebootStrategy) {
         this.name = name;
         this.detectionStrategy = detectionStrategy;
         this.changePoolsStrategy = changePoolsStrategy;
@@ -317,6 +370,6 @@ public enum Manufacturer {
      * @return The {@link RebootStrategy}.
      */
     public RebootStrategy getRebootStrategy() {
-        return this.rebootStrategy;
+        return this.rebootStrategy.apply(THREAD_POOL);
     }
 }

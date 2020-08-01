@@ -5,6 +5,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
+import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
@@ -30,7 +31,7 @@ public class WhatsminerDetectITest
      * @param expectedType The expected type.
      */
     public WhatsminerDetectITest(
-            final Map<String, RpcHandler> handlers,
+            final Map<String, HandlerInterface> handlers,
             final WhatsminerType expectedType) {
         super(
                 new CgMinerDetectionStrategy(

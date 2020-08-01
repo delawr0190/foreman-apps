@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * to a client {@link Socket}.
  */
 public class RpcHandler
-        implements Handler {
+        implements HandlerInterface {
 
     /** The logger for this class. */
     private static final Logger LOG =
@@ -46,8 +46,8 @@ public class RpcHandler
      *
      * @param socket The socket.
      */
-    public void process(
-            final Socket socket) {
+    @Override
+    public void process(final Socket socket) {
         try {
             IOUtils.write(
                     this.response.getBytes(),

@@ -63,23 +63,42 @@ public class CommandProcessorImpl
                     .pickaxe()
                     .commandStarted(start)
                     .isPresent()) {
-                try {
-                    command
-                            .getStrategy()
-                            .runCommand(
-                                    start,
-                                    this.foremanApi,
-                                    builder);
-                } finally {
-                    this.foremanApi
-                            .pickaxe()
-                            .commandDone(
-                                    builder.build(),
-                                    start.id);
-                }
+                command
+                        .getStrategy()
+                        .runCommand(
+                                start,
+                                this.foremanApi,
+                                builder,
+                                new CommandCallback(start));
             }
         } catch (final Exception me) {
             LOG.warn("Exception occurred while processing command", me);
+        }
+    }
+
+    /** A callback for when the command is completed. */
+    private class CommandCallback
+            implements CommandStrategy.Callback {
+
+        /** The start command. */
+        private final CommandStart start;
+
+        /**
+         * Constructor.
+         *
+         * @param start The start command.
+         */
+        CommandCallback(final CommandStart start) {
+            this.start = start;
+        }
+
+        @Override
+        public void done(final CommandDone done) {
+            CommandProcessorImpl.this.foremanApi
+                    .pickaxe()
+                    .commandDone(
+                            done,
+                            this.start.id);
         }
     }
 }

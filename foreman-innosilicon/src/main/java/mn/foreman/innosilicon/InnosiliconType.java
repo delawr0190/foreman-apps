@@ -55,6 +55,9 @@ public enum InnosiliconType
     /** Innosilicon A10. */
     A10("a10"),
 
+    /** Innosilicon A10 Pro. */
+    A10P("a10l"),
+
     /** Innosilicon T3-43T. */
     T3("t3"),
 

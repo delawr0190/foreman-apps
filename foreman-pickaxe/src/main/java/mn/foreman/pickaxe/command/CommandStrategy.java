@@ -16,9 +16,22 @@ public interface CommandStrategy {
      * @param start      The command.
      * @param foremanApi The API to use for querying Foreman.
      * @param builder    The builder for done messages.
+     * @param callback   The callback.
      */
     void runCommand(
             CommandStart start,
             ForemanApi foremanApi,
-            CommandDone.CommandDoneBuilder builder);
+            CommandDone.CommandDoneBuilder builder,
+            Callback callback);
+
+    /** Callback for indicated the completion of a command. */
+    interface Callback {
+
+        /**
+         * Completes the command.
+         *
+         * @param done The done.
+         */
+        void done(final CommandDone done);
+    }
 }

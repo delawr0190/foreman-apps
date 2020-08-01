@@ -26,7 +26,8 @@ public class DiscoverStrategy
     public void runCommand(
             final CommandStart command,
             final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final Map<String, Object> args = command.args;
 
         final Optional<DiscoverType> typeOptional =
@@ -53,16 +54,18 @@ public class DiscoverStrategy
                     discoverStrategy.discover(
                             ip,
                             Integer.parseInt(port));
-            builder
-                    .result(
-                            ImmutableMap.of(
-                                    "discoveries",
-                                    discoveries))
-                    .status(
-                            CommandDone.Status
-                                    .builder()
-                                    .type(DoneStatus.SUCCESS)
-                                    .build());
+            callback.done(
+                    builder
+                            .result(
+                                    ImmutableMap.of(
+                                            "discoveries",
+                                            discoveries))
+                            .status(
+                                    CommandDone.Status
+                                            .builder()
+                                            .type(DoneStatus.SUCCESS)
+                                            .build())
+                            .build());
         }
     }
 }

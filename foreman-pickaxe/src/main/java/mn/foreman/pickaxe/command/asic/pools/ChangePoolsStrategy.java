@@ -33,7 +33,8 @@ public class ChangePoolsStrategy
     public void runCommand(
             final CommandStart command,
             final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
@@ -48,7 +49,8 @@ public class ChangePoolsStrategy
                         port,
                         pools,
                         args,
-                        builder);
+                        builder,
+                        callback);
                 break;
             default:
                 break;
@@ -80,18 +82,20 @@ public class ChangePoolsStrategy
     /**
      * Changes the pools on an ASIC.
      *
-     * @param ip      The ip.
-     * @param port    The port.
-     * @param pools   The pools.
-     * @param args    The arguments.
-     * @param builder The builder to use for creating the final result.
+     * @param ip       The ip.
+     * @param port     The port.
+     * @param pools    The pools.
+     * @param args     The arguments.
+     * @param builder  The builder to use for creating the final result.
+     * @param callback The callback.
      */
     private void runAsicChangePools(
             final String ip,
             final String port,
             final List<Pool> pools,
             final Map<String, Object> args,
-            final CommandDone.CommandDoneBuilder builder) {
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
         final String manufacturer = safeGet(args, "manufacturer");
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
@@ -147,6 +151,8 @@ public class ChangePoolsStrategy
                                 .details(ExceptionUtils.getStackTrace(me))
                                 .build());
             }
+
+            callback.done(builder.build());
         }
     }
 }

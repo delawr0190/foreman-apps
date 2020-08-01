@@ -1,4 +1,4 @@
-package mn.foreman.antminer;
+package mn.foreman.antminer.util;
 
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
