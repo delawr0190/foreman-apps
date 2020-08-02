@@ -86,8 +86,7 @@ public abstract class AsyncRebootStrategy
                 parameters)) {
             final long deadlineInMillis =
                     System.currentTimeMillis() +
-                            Long.parseLong(
-                                    (String) parameters.get("deadlineMillis"));
+                            (Integer) parameters.get("deadlineMillis");
             final Map<String, String> newParams =
                     toParams(parameters);
             this.task =
@@ -134,7 +133,7 @@ public abstract class AsyncRebootStrategy
                 "apiIp",
                 (String) params.get("ip"),
                 "apiPort",
-                (String) params.get("apiPort"),
+                ((Integer) params.get("apiPort")).toString(),
                 "username",
                 (String) params.getOrDefault("username", ""),
                 "password",
