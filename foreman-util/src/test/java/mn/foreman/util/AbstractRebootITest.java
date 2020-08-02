@@ -34,7 +34,7 @@ public abstract class AbstractRebootITest {
                     "password",
                     "my-auth-password",
                     "deadlineMillis",
-                    "20000",
+                    20000,
                     "ip",
                     "127.0.0.1");
 
@@ -71,7 +71,7 @@ public abstract class AbstractRebootITest {
         this.rebootStrategy = rebootStrategy;
         this.port = port;
         this.args = new HashMap<>(DEFAULT_ARGS);
-        this.args.put("apiPort", Integer.toString(apiPort));
+        this.args.put("apiPort", apiPort);
         this.serverSuppliers = new ArrayList<>(serverSuppliers);
         this.expectedChange = expectedChange;
     }
