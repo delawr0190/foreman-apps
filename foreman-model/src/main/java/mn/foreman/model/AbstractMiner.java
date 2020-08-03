@@ -65,6 +65,16 @@ public abstract class AbstractMiner
     }
 
     @Override
+    public int getApiPort() {
+        return this.apiPort;
+    }
+
+    @Override
+    public String getIp() {
+        return this.apiIp;
+    }
+
+    @Override
     public MinerID getMinerID() {
         return new SimpleMinerID(
                 this.apiIp,

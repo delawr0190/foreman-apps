@@ -7,6 +7,7 @@ import mn.foreman.model.command.DoneStatus;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
 import mn.foreman.pickaxe.command.CommandStrategy;
+import mn.foreman.pickaxe.command.PostCommandProcessor;
 import mn.foreman.pickaxe.command.asic.Manufacturer;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -26,6 +27,19 @@ public class RebootStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(RebootStrategy.class);
 
+    /** The processor to invoke when a reboot has been completed successfully. */
+    private final PostCommandProcessor postProcessor;
+
+    /**
+     * Constructor.
+     *
+     * @param postProcessor The processor to invoke when a reboot has been
+     *                      completed successfully.
+     */
+    public RebootStrategy(final PostCommandProcessor postProcessor) {
+        this.postProcessor = postProcessor;
+    }
+
     @Override
     public void runCommand(
             final CommandStart command,
@@ -43,6 +57,7 @@ public class RebootStrategy
                 runAsicReboot(
                         ip,
                         port,
+                        command,
                         args,
                         builder,
                         callback);
@@ -57,6 +72,7 @@ public class RebootStrategy
      *
      * @param ip       The ip.
      * @param port     The port.
+     * @param start    The start command.
      * @param args     The arguments.
      * @param builder  The builder to use for creating the final result.
      * @param callback The completion callback.
@@ -64,6 +80,7 @@ public class RebootStrategy
     private void runAsicReboot(
             final String ip,
             final String port,
+            final CommandStart start,
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
@@ -84,8 +101,10 @@ public class RebootStrategy
             try {
                 final RebootCallback rebootCallback =
                         new RebootCallback(
+                                start,
                                 builder,
-                                callback);
+                                callback,
+                                this.postProcessor);
                 strategy.reboot(
                         ip,
                         Integer.parseInt(port),
@@ -129,17 +148,29 @@ public class RebootStrategy
         /** The callback. */
         private final Callback callback;
 
+        /** The process for post command completion. */
+        private final PostCommandProcessor postProcessor;
+
+        /** The start command. */
+        private final CommandStart start;
+
         /**
          * Constructor.
          *
-         * @param builder  The builder.
-         * @param callback The callback.
+         * @param start         The start.
+         * @param builder       The builder.
+         * @param callback      The callback.
+         * @param postProcessor The processor for post command completion.
          */
         RebootCallback(
+                final CommandStart start,
                 final CommandDone.CommandDoneBuilder builder,
-                final Callback callback) {
+                final Callback callback,
+                final PostCommandProcessor postProcessor) {
+            this.start = start;
             this.builder = builder;
             this.callback = callback;
+            this.postProcessor = postProcessor;
         }
 
         @Override
@@ -167,6 +198,7 @@ public class RebootStrategy
                                             .type(DoneStatus.SUCCESS)
                                             .build())
                             .build());
+            this.postProcessor.completed(this.start);
         }
     }
 }

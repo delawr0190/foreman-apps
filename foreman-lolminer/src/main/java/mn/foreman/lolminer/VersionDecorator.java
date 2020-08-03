@@ -45,6 +45,16 @@ public class VersionDecorator
     }
 
     @Override
+    public int getApiPort() {
+        return this.v4Miner.getApiPort();
+    }
+
+    @Override
+    public String getIp() {
+        return this.v4Miner.getIp();
+    }
+
+    @Override
     public MinerID getMinerID() {
         return this.v4Miner.getMinerID();
     }

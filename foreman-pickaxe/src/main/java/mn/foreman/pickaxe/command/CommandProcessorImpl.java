@@ -20,13 +20,20 @@ public class CommandProcessorImpl
     /** The api handler. */
     private final ForemanApi foremanApi;
 
+    /** The factory for making strategies. */
+    private final StrategyFactory strategyFactory;
+
     /**
      * Constructor.
      *
-     * @param foremanApi The API handler.
+     * @param foremanApi      The API handler.
+     * @param strategyFactory The factory for making strategies.
      */
-    public CommandProcessorImpl(final ForemanApi foremanApi) {
+    public CommandProcessorImpl(
+            final ForemanApi foremanApi,
+            final StrategyFactory strategyFactory) {
         this.foremanApi = foremanApi;
+        this.strategyFactory = strategyFactory;
     }
 
     @Override
@@ -34,11 +41,11 @@ public class CommandProcessorImpl
         LOG.debug("Processing command {}", command);
         final String action = command.command;
 
-        final Optional<Command> commandType =
-                Command.forName(action);
-        if (commandType.isPresent()) {
+        final Optional<CommandStrategy> strategy =
+                this.strategyFactory.forType(action);
+        if (strategy.isPresent()) {
             runKnownCommand(
-                    commandType.get(),
+                    strategy.get(),
                     command);
         } else {
             LOG.warn("Unknown command type: {}", action);
@@ -48,11 +55,11 @@ public class CommandProcessorImpl
     /**
      * Runs a known command.
      *
-     * @param command The command to run.
-     * @param start   The start that was issued.
+     * @param strategy The strategy to run.
+     * @param start    The start that was issued.
      */
     private void runKnownCommand(
-            final Command command,
+            final CommandStrategy strategy,
             final CommandStart start) {
         final CommandDone.CommandDoneBuilder builder =
                 CommandDone
@@ -63,13 +70,11 @@ public class CommandProcessorImpl
                     .pickaxe()
                     .commandStarted(start)
                     .isPresent()) {
-                command
-                        .getStrategy()
-                        .runCommand(
-                                start,
-                                this.foremanApi,
-                                builder,
-                                new CommandCallback(start));
+                strategy.runCommand(
+                        start,
+                        this.foremanApi,
+                        builder,
+                        new CommandCallback(start));
             }
         } catch (final Exception me) {
             LOG.warn("Exception occurred while processing command", me);

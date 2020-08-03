@@ -10,6 +10,20 @@ import mn.foreman.model.miners.MinerStats;
 public interface Miner {
 
     /**
+     * Returns the miner's API port.
+     *
+     * @return The miner's API port.
+     */
+    int getApiPort();
+
+    /**
+     * Returns the miner's IP.
+     *
+     * @return The miner's IP.
+     */
+    String getIp();
+
+    /**
      * Returns the ID.
      *
      * @return The ID.

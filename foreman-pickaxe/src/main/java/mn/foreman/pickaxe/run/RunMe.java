@@ -3,16 +3,16 @@ package mn.foreman.pickaxe.run;
 import mn.foreman.api.ForemanApi;
 import mn.foreman.api.ForemanApiImpl;
 import mn.foreman.api.JdkWebUtil;
-import mn.foreman.model.MetricsReport;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.command.Commands;
 import mn.foreman.model.error.MinerException;
-import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
 import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandProcessor;
 import mn.foreman.pickaxe.command.CommandProcessorImpl;
+import mn.foreman.pickaxe.command.asic.AsicStrategyFactory;
+import mn.foreman.pickaxe.command.asic.reboot.PostRebootProcessor;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.RemoteConfiguration;
@@ -123,39 +123,21 @@ public class RunMe {
                                 this.configuration.getPickaxeId()),
                         this.configuration.getApiKey());
 
+        final MetricsSender metricsSender =
+                new MetricsSenderImpl(
+                        metricsProcessingStrategy);
+
         startConfigQuerying();
         startUpdateMiners();
 
         // Only query for commands if pickaxe is running for command and control
         if (this.configuration.isControl()) {
-            startCommandQuerying();
+            startCommandQuerying(metricsSender);
         }
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            final MetricsReport.Builder metricsReportBuilder =
-                    new MetricsReport.Builder();
-            final List<MinerStats> stats =
-                    this.statsCache.getMetrics();
-            if (!stats.isEmpty()) {
-                stats.forEach(
-                        metricsReportBuilder::addMinerStats);
-
-                try {
-                    // Metrics could be empty if everything was down
-                    final MetricsReport metricsReport =
-                            metricsReportBuilder.build();
-
-                    LOG.debug("Generated report: {}", metricsReport);
-
-                    metricsProcessingStrategy.process(metricsReport);
-                } catch (final Exception e) {
-                    LOG.warn("Exception occurred while generating report", e);
-                }
-            } else {
-                LOG.debug("No miner stats to report");
-            }
-
+            metricsSender.sendMetrics(this.statsCache.getMetrics());
             try {
                 TimeUnit.MINUTES.sleep(1);
             } catch (final InterruptedException ie) {
@@ -179,11 +161,20 @@ public class RunMe {
                 uri);
     }
 
-    /** Schedules command and control querying. */
-    private void startCommandQuerying() {
+    /**
+     * Schedules command and control querying.
+     *
+     * @param metricsSender The metrics sender.
+     */
+    private void startCommandQuerying(final MetricsSender metricsSender) {
         final CommandProcessor commandProcessor =
                 new CommandProcessorImpl(
-                        this.foremanApi);
+                        this.foremanApi,
+                        new AsicStrategyFactory(
+                                new PostRebootProcessor(
+                                        this.statsCache,
+                                        this.miners,
+                                        metricsSender)));
         this.threadPool.scheduleWithFixedDelay(
                 () -> {
                     try {

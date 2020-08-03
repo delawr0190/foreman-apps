@@ -67,7 +67,7 @@ public class SelfExpiringStatsCache
     }
 
     @Override
-    public void invalidate(MinerID minerID) {
+    public void invalidate(final MinerID minerID) {
         this.cache.invalidate(minerID);
     }
 }

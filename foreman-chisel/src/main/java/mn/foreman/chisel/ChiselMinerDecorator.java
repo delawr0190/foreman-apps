@@ -85,6 +85,16 @@ public class ChiselMinerDecorator
     }
 
     @Override
+    public int getApiPort() {
+        return this.realMiner.getApiPort();
+    }
+
+    @Override
+    public String getIp() {
+        return this.realMiner.getIp();
+    }
+
+    @Override
     public MinerID getMinerID() {
         return this.realMiner.getMinerID();
     }
