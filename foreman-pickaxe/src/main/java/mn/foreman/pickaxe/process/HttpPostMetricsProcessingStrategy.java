@@ -72,6 +72,7 @@ public class HttpPostMetricsProcessingStrategy
         try (final CloseableHttpClient httpClient =
                      HttpClients.custom()
                              .setDefaultRequestConfig(requestConfig)
+                             .disableAutomaticRetries()
                              .build()) {
             final ObjectMapper objectMapper =
                     new ObjectMapper()

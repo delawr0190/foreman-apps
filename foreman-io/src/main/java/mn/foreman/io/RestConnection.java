@@ -111,6 +111,7 @@ public class RestConnection
         try (final CloseableHttpClient httpClient =
                      HttpClients.custom()
                              .setDefaultRequestConfig(requestConfig)
+                             .disableAutomaticRetries()
                              .build()) {
             final HttpRequestBase httpRequest =
                     toRequest();

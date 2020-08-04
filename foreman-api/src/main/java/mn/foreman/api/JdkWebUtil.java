@@ -123,6 +123,7 @@ public class JdkWebUtil
         try (final CloseableHttpClient httpClient =
                      HttpClients.custom()
                              .setDefaultRequestConfig(requestConfig)
+                             .disableAutomaticRetries()
                              .build()) {
 
             final StringEntity stringEntity =

@@ -579,7 +579,10 @@ public class Query {
         context.setAuthCache(authCache);
 
         final CloseableHttpClient httpClient =
-                HttpClients.createDefault();
+                HttpClients
+                        .custom()
+                        .disableAutomaticRetries()
+                        .build();
 
         final HttpPost httpRequest = new HttpPost(url.getPath());
         final List<NameValuePair> params = new ArrayList<>();
