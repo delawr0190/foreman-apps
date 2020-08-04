@@ -116,13 +116,13 @@ public class AsyncAsicAction
     private static Map<String, String> toParams(final Map<String, Object> params) {
         return ImmutableMap.of(
                 "apiIp",
-                (String) params.get("ip"),
+                params.get("ip").toString(),
                 "apiPort",
-                ((Integer) params.get("apiPort")).toString(),
+                params.get("apiPort").toString(),
                 "username",
-                (String) params.getOrDefault("username", ""),
+                params.getOrDefault("username", "").toString(),
                 "password",
-                (String) params.getOrDefault("password", ""));
+                params.getOrDefault("password", "").toString());
     }
 
     /**

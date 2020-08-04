@@ -57,8 +57,8 @@ public class PostCommandProcessorImpl
     public void completed(final CommandStart start) {
         final Map<String, Object> args = start.args;
 
-        final String ip = (String) args.get("ip");
-        final int apiPort = (Integer) args.get("apiPort");
+        final String ip = args.get("ip").toString();
+        final int apiPort = Integer.parseInt(args.get("apiPort").toString());
 
         final List<Miner> miners = this.miners.get();
         final Optional<Miner> minerOptional =
