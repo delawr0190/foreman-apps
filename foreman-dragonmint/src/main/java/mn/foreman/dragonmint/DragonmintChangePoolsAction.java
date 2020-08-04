@@ -1,7 +1,6 @@
 package mn.foreman.dragonmint;
 
-import mn.foreman.model.AbstractChangePoolsStrategy;
-import mn.foreman.model.ChangePoolsStrategy;
+import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
@@ -12,12 +11,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link DragonmintChangePoolsStrategy} provides a {@link
- * ChangePoolsStrategy} implementation that will change the pools in use by a
- * dragonmint device.
+ * A {@link DragonmintChangePoolsAction} provides an {@link
+ * AbstractChangePoolsAction} implementation that will change the pools in use
+ * by a dragonmint device.
  */
-public class DragonmintChangePoolsStrategy
-        extends AbstractChangePoolsStrategy {
+public class DragonmintChangePoolsAction
+        extends AbstractChangePoolsAction {
 
     @Override
     public boolean doChange(

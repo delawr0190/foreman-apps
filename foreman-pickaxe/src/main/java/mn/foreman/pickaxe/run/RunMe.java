@@ -12,7 +12,7 @@ import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandProcessor;
 import mn.foreman.pickaxe.command.CommandProcessorImpl;
 import mn.foreman.pickaxe.command.asic.AsicStrategyFactory;
-import mn.foreman.pickaxe.command.asic.reboot.PostRebootProcessor;
+import mn.foreman.pickaxe.command.asic.PostCommandProcessorImpl;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.RemoteConfiguration;
@@ -171,7 +171,7 @@ public class RunMe {
                 new CommandProcessorImpl(
                         this.foremanApi,
                         new AsicStrategyFactory(
-                                new PostRebootProcessor(
+                                new PostCommandProcessorImpl(
                                         this.statsCache,
                                         this.miners,
                                         metricsSender)));

@@ -1,18 +1,15 @@
 package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
-import mn.foreman.model.AsyncRebootStrategy;
-import mn.foreman.model.MinerFactory;
+import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 
 import java.util.Map;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** A strategy that performs an antminer reboot. */
-public class AntminerRebootStrategy
-        extends AsyncRebootStrategy {
+public class AntminerRebootAction
+        implements AsicAction.CompletableAction {
 
     /** The realm. */
     private final String realm;
@@ -20,31 +17,14 @@ public class AntminerRebootStrategy
     /**
      * Constructor.
      *
-     * @param delay        The delay.
-     * @param interval     The interval.
-     * @param units        The units.
-     * @param threadPool   The thread pool.
-     * @param minerFactory The factory.
-     * @param realm        The realm.
+     * @param realm The realm.
      */
-    public AntminerRebootStrategy(
-            final long delay,
-            final long interval,
-            final TimeUnit units,
-            final ScheduledThreadPoolExecutor threadPool,
-            final MinerFactory minerFactory,
-            final String realm) {
-        super(
-                delay,
-                interval,
-                units,
-                threadPool,
-                minerFactory);
+    public AntminerRebootAction(final String realm) {
         this.realm = realm;
     }
 
     @Override
-    public boolean doReboot(
+    public boolean run(
             final String ip,
             final int port,
             final Map<String, Object> parameters)

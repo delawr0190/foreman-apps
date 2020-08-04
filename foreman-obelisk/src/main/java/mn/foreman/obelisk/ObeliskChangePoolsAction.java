@@ -1,7 +1,6 @@
 package mn.foreman.obelisk;
 
-import mn.foreman.model.AbstractChangePoolsStrategy;
-import mn.foreman.model.ChangePoolsStrategy;
+import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.obelisk.json.Dashboard;
@@ -14,11 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An {@link ObeliskChangePoolsStrategy} provides a {@link ChangePoolsStrategy}
- * implementation that will change the pools in use by an obelisk device.
+ * An {@link ObeliskChangePoolsAction} provides an {@link
+ * AbstractChangePoolsAction} implementation that will change the pools in use
+ * by an obelisk device.
  */
-public class ObeliskChangePoolsStrategy
-        extends AbstractChangePoolsStrategy {
+public class ObeliskChangePoolsAction
+        extends AbstractChangePoolsAction {
 
     @Override
     public boolean doChange(

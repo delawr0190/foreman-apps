@@ -1,6 +1,6 @@
 package mn.foreman.dragonmint;
 
-import mn.foreman.util.AbstractRebootITest;
+import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.SkipFirstHandler;
@@ -8,23 +8,17 @@ import mn.foreman.util.http.SkipFirstHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test rebooting a Dragonmint. */
 public class DragonmintRebootITest
-        extends AbstractRebootITest {
+        extends AbstractAsyncActionITest {
 
     /** Constructor. */
     public DragonmintRebootITest() {
         super(
                 8080,
                 8080,
-                new DragonmintRebootStrategy(
-                        1,
-                        1,
-                        TimeUnit.SECONDS,
-                        THREAD_POOL,
-                        new DragonmintFactory()),
+                new DragonmintRebootAction(),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -213,6 +207,8 @@ public class DragonmintRebootITest
                                                                 "  \"tuning\": false,\n" +
                                                                 "  \"hashrates\": []\n" +
                                                                 "}"))))),
+                new DragonmintFactory(),
+                Collections.emptyMap(),
                 true);
     }
 }

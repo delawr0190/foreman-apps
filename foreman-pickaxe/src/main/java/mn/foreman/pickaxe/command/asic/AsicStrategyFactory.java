@@ -4,8 +4,6 @@ import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
 import mn.foreman.pickaxe.command.StrategyFactory;
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
-import mn.foreman.pickaxe.command.asic.pools.ChangePoolsStrategy;
-import mn.foreman.pickaxe.command.asic.reboot.RebootStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
 import java.util.Optional;
@@ -47,13 +45,16 @@ public class AsicStrategyFactory
             case "change-pools":
                 strategy =
                         Optional.of(
-                                new ChangePoolsStrategy());
+                                new RebootingCommandStrategy(
+                                        this.postRebootProcessor,
+                                        Manufacturer::getChangePoolsAction));
                 break;
             case "reboot":
                 strategy =
                         Optional.of(
-                                new RebootStrategy(
-                                        this.postRebootProcessor));
+                                new RebootingCommandStrategy(
+                                        this.postRebootProcessor,
+                                        Manufacturer::getRebootAction));
                 break;
             default:
                 break;

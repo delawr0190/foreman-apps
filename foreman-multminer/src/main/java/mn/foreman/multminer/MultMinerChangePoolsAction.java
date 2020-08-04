@@ -1,7 +1,6 @@
 package mn.foreman.multminer;
 
-import mn.foreman.model.AbstractChangePoolsStrategy;
-import mn.foreman.model.ChangePoolsStrategy;
+import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
@@ -14,15 +13,16 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A {@link MultMinerChangePoolsStrategy} provides a {@link ChangePoolsStrategy}
- * implementation that will change the pools in use by a multminer device.
+ * A {@link MultMinerChangePoolsAction} provides an {@link
+ * AbstractChangePoolsAction} implementation that will change the pools in use
+ * by a multminer device.
  */
-public class MultMinerChangePoolsStrategy
-        extends AbstractChangePoolsStrategy {
+public class MultMinerChangePoolsAction
+        extends AbstractChangePoolsAction {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(MultMinerChangePoolsStrategy.class);
+            LoggerFactory.getLogger(MultMinerChangePoolsAction.class);
 
     @Override
     protected boolean doChange(

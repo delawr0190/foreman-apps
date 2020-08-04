@@ -1,6 +1,8 @@
-package mn.foreman.pickaxe.command.asic.reboot;
+package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.api.ForemanApi;
+import mn.foreman.model.AsicAction;
+import mn.foreman.model.CompletionCallback;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.command.DoneStatus;
@@ -8,7 +10,6 @@ import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
-import mn.foreman.pickaxe.command.asic.Manufacturer;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
@@ -16,37 +17,47 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 
-/** A {@link CommandStrategy} that will perform a miner reboot. */
-public class RebootStrategy
+/**
+ * A {@link RebootingCommandStrategy} provides a {@link CommandStrategy}
+ * implementation that will require a reboot to the miner.
+ */
+public class RebootingCommandStrategy
         implements CommandStrategy {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(RebootStrategy.class);
+            LoggerFactory.getLogger(RebootingCommandStrategy.class);
 
-    /** The processor to invoke when a reboot has been completed successfully. */
+    /** The processor for what to do one the action is completed. */
     private final PostCommandProcessor postProcessor;
+
+    /** The supplier for the action to perform. */
+    private final Function<Manufacturer, AsicAction> supplier;
 
     /**
      * Constructor.
      *
-     * @param postProcessor The processor to invoke when a reboot has been
-     *                      completed successfully.
+     * @param postProcessor The post processor.
+     * @param supplier      The supplier.
      */
-    public RebootStrategy(final PostCommandProcessor postProcessor) {
+    RebootingCommandStrategy(
+            final PostCommandProcessor postProcessor,
+            final Function<Manufacturer, AsicAction> supplier) {
         this.postProcessor = postProcessor;
+        this.supplier = supplier;
     }
 
     @Override
     public void runCommand(
-            final CommandStart command,
+            final CommandStart start,
             final ForemanApi foremanApi,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
-        final Map<String, Object> args = command.args;
+        final Map<String, Object> args = start.args;
 
         final String type = safeGet(args, "type");
         final String ip = safeGet(args, "ip");
@@ -54,10 +65,10 @@ public class RebootStrategy
 
         switch (type) {
             case "asic":
-                runAsicReboot(
+                runAsicAction(
                         ip,
                         port,
-                        command,
+                        start,
                         args,
                         builder,
                         callback);
@@ -68,7 +79,7 @@ public class RebootStrategy
     }
 
     /**
-     * Reboots ASICs.
+     * Performs the ASIC action.
      *
      * @param ip       The ip.
      * @param port     The port.
@@ -77,7 +88,7 @@ public class RebootStrategy
      * @param builder  The builder to use for creating the final result.
      * @param callback The completion callback.
      */
-    private void runAsicReboot(
+    private void runAsicAction(
             final String ip,
             final String port,
             final CommandStart start,
@@ -90,26 +101,27 @@ public class RebootStrategy
         if (type.isPresent()) {
             final Manufacturer manufacturerType =
                     type.get();
-            final mn.foreman.model.RebootStrategy strategy =
-                    manufacturerType.getRebootStrategy();
 
-            LOG.info("Rebooting {} ({}:{})",
+            LOG.info("Running action {} for {} ({}:{})",
+                    start,
                     manufacturer,
                     ip,
                     port);
 
             try {
-                final RebootCallback rebootCallback =
-                        new RebootCallback(
+                final CompletionCallback completionCallback =
+                        new CallbackImpl(
                                 start,
                                 builder,
                                 callback,
                                 this.postProcessor);
-                strategy.reboot(
+                final AsicAction asicAction =
+                        this.supplier.apply(manufacturerType);
+                asicAction.runAction(
                         ip,
                         Integer.parseInt(port),
                         args,
-                        rebootCallback);
+                        completionCallback);
             } catch (final NotAuthenticatedException nae) {
                 LOG.warn("Failed to authentication with the miner", nae);
                 callback.done(
@@ -139,8 +151,8 @@ public class RebootStrategy
     }
 
     /** A callback for handling async reboot operations. */
-    private static class RebootCallback
-            implements mn.foreman.model.RebootStrategy.Callback {
+    private static class CallbackImpl
+            implements CompletionCallback {
 
         /** The done builder. */
         private final CommandDone.CommandDoneBuilder builder;
@@ -162,7 +174,7 @@ public class RebootStrategy
          * @param callback      The callback.
          * @param postProcessor The processor for post command completion.
          */
-        RebootCallback(
+        CallbackImpl(
                 final CommandStart start,
                 final CommandDone.CommandDoneBuilder builder,
                 final Callback callback,
@@ -175,7 +187,7 @@ public class RebootStrategy
 
         @Override
         public void failed(final String message) {
-            LOG.warn("Failed to reboot");
+            LOG.warn("Failed to complete action");
             this.callback.done(
                     this.builder
                             .status(
@@ -189,7 +201,7 @@ public class RebootStrategy
 
         @Override
         public void success() {
-            LOG.info("Reboot completed!");
+            LOG.info("Action completed!");
             this.callback.done(
                     this.builder
                             .status(

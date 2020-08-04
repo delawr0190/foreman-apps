@@ -1,4 +1,4 @@
-package mn.foreman.pickaxe.command.asic.reboot;
+package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.model.Miner;
 import mn.foreman.model.command.CommandStart;
@@ -17,16 +17,16 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * A {@link PostRebootProcessor} provides a {@link PostCommandProcessor} that
- * will send updated metrics to the dashboard for a miner that has just
- * completed rebooting.
+ * A {@link PostCommandProcessorImpl} provides a {@link PostCommandProcessor}
+ * that will send updated metrics to the dashboard for a miner that has just
+ * completed an action.
  */
-public class PostRebootProcessor
+public class PostCommandProcessorImpl
         implements PostCommandProcessor {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(PostRebootProcessor.class);
+            LoggerFactory.getLogger(PostCommandProcessorImpl.class);
 
     /** The sender for pushing metrics to the dashboard. */
     private final MetricsSender metricsSender;
@@ -44,7 +44,7 @@ public class PostRebootProcessor
      * @param miners        The miners.
      * @param metricsSender The sender for pushing metrics to the dashboard.
      */
-    public PostRebootProcessor(
+    public PostCommandProcessorImpl(
             final StatsCache statsCache,
             final AtomicReference<List<Miner>> miners,
             final MetricsSender metricsSender) {

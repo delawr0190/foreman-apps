@@ -1,6 +1,6 @@
 package mn.foreman.obelisk;
 
-import mn.foreman.util.AbstractRebootITest;
+import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.SkipFirstHandler;
@@ -8,23 +8,17 @@ import mn.foreman.util.http.SkipFirstHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test rebooting an Obelisk. */
 public class ObeliskRebootITest
-        extends AbstractRebootITest {
+        extends AbstractAsyncActionITest {
 
     /** Constructor. */
     public ObeliskRebootITest() {
         super(
                 8080,
                 8080,
-                new ObeliskRebootStrategy(
-                        1,
-                        1,
-                        TimeUnit.SECONDS,
-                        THREAD_POOL,
-                        new ObeliskFactory()),
+                new ObeliskRebootAction(),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -95,6 +89,8 @@ public class ObeliskRebootITest
                                                         "  ]\n" +
                                                         "}",
                                                 Collections.emptyMap())))),
+                new ObeliskFactory(),
+                Collections.emptyMap(),
                 true);
     }
 }

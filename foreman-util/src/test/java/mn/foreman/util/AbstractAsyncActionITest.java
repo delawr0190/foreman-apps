@@ -1,7 +1,6 @@
 package mn.foreman.util;
 
-import mn.foreman.model.Detection;
-import mn.foreman.model.RebootStrategy;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
@@ -19,12 +18,8 @@ import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
-/** An abstract integration test for testing reboot operations. */
-public abstract class AbstractRebootITest {
-
-    /** A test thread pool. */
-    protected static final ScheduledThreadPoolExecutor THREAD_POOL =
-            new ScheduledThreadPoolExecutor(1);
+/** An abstract integration test for testing async asic operations. */
+public abstract class AbstractAsyncActionITest {
 
     /** The default args. */
     private static final Map<String, Object> DEFAULT_ARGS =
@@ -38,17 +33,24 @@ public abstract class AbstractRebootITest {
                     "ip",
                     "127.0.0.1");
 
+    /** A test thread pool. */
+    private static final ScheduledThreadPoolExecutor THREAD_POOL =
+            new ScheduledThreadPoolExecutor(1);
+
+    /** The {@link AsicAction} under test. */
+    private final AsicAction.CompletableAction action;
+
     /** The arguments. */
     private final Map<String, Object> args;
 
     /** Whether or not a reboot should have occurred. */
     private final boolean expectedChange;
 
+    /** The factory. */
+    private final MinerFactory minerFactory;
+
     /** The port. */
     private final int port;
-
-    /** The {@link RebootStrategy} under test. */
-    private final RebootStrategy rebootStrategy;
 
     /** The fake server supplier. */
     private final List<Supplier<FakeMinerServer>> serverSuppliers;
@@ -58,21 +60,27 @@ public abstract class AbstractRebootITest {
      *
      * @param port            The port.
      * @param apiPort         The api port.
-     * @param rebootStrategy  The strategy under test.
+     * @param action          The action under test.
      * @param serverSuppliers A {@link Supplier} for making servers.
+     * @param minerFactory    The miner factory.
+     * @param additionalArgs  Any additional args.
      * @param expectedChange  Whether or not a change should have occurred.
      */
-    public AbstractRebootITest(
+    public AbstractAsyncActionITest(
             final int port,
             final int apiPort,
-            final RebootStrategy rebootStrategy,
+            final AsicAction.CompletableAction action,
             final List<Supplier<FakeMinerServer>> serverSuppliers,
+            final MinerFactory minerFactory,
+            final Map<String, Object> additionalArgs,
             final boolean expectedChange) {
-        this.rebootStrategy = rebootStrategy;
+        this.action = action;
         this.port = port;
         this.args = new HashMap<>(DEFAULT_ARGS);
+        additionalArgs.forEach(this.args::put);
         this.args.put("apiPort", apiPort);
         this.serverSuppliers = new ArrayList<>(serverSuppliers);
+        this.minerFactory = minerFactory;
         this.expectedChange = expectedChange;
     }
 
@@ -148,11 +156,20 @@ public abstract class AbstractRebootITest {
                 final AtomicBoolean completed = new AtomicBoolean(false);
                 final AtomicBoolean status = new AtomicBoolean(false);
 
-                this.rebootStrategy.reboot(
+                final AsicAction asicAction =
+                        new AsyncAsicAction(
+                                1,
+                                1,
+                                TimeUnit.SECONDS,
+                                THREAD_POOL,
+                                this.minerFactory,
+                                this.action);
+                asicAction.runAction(
                         "127.0.0.1",
                         port,
                         this.args,
-                        new RebootStrategy.Callback() {
+                        new CompletionCallback() {
+
                             @Override
                             public void failed(final String message) {
                                 status.set(false);

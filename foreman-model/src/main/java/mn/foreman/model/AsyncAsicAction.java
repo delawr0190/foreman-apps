@@ -1,6 +1,7 @@
 package mn.foreman.model;
 
 import mn.foreman.model.error.MinerException;
+import mn.foreman.model.error.NotAuthenticatedException;
 
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
@@ -12,16 +13,20 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 /**
- * An {@link AsyncRebootStrategy} provides a {@link RebootStrategy}
- * implementation that will start a miner reboot and then continuously check to
- * see if the miner has recovered in a separate thread pool.
+ * An {@link AsyncAsicAction} provides an {@link AsicAction} that will perform
+ * an action against and ASIC and then only invoke the {@link
+ * #completableAction} when the device has rebooted and is back up, running, and
+ * mining.
  */
-public abstract class AsyncRebootStrategy
-        implements RebootStrategy {
+public class AsyncAsicAction
+        implements AsicAction {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(AsyncRebootStrategy.class);
+            LoggerFactory.getLogger(AsyncAsicAction.class);
+
+    /** The action to perform. */
+    private final CompletableAction completableAction;
 
     /** The delay. */
     private final long delay;
@@ -47,79 +52,59 @@ public abstract class AsyncRebootStrategy
     /**
      * Constructor.
      *
-     * @param delay        The delay.
-     * @param interval     The interval.
-     * @param units        The units.
-     * @param threadPool   The thread pool.
-     * @param minerFactory The factory for creating a miner to use to obtain
-     *                     stats.
+     * @param delay             The delay.
+     * @param interval          The interval.
+     * @param units             The units.
+     * @param threadPool        The thread pool.
+     * @param minerFactory      The factory for creating a miner to use to
+     *                          obtain stats.
+     * @param completableAction The completable action.
      */
-    public AsyncRebootStrategy(
+    public AsyncAsicAction(
             final long delay,
             final long interval,
             final TimeUnit units,
             final ScheduledThreadPoolExecutor threadPool,
-            final MinerFactory minerFactory) {
+            final MinerFactory minerFactory,
+            final CompletableAction completableAction) {
         this.delay = delay;
         this.interval = interval;
         this.units = units;
         this.threadPool = threadPool;
         this.minerFactory = minerFactory;
+        this.completableAction = completableAction;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * <p>Note: overridden to invoke the {@link Callback} in a separate
-     * thread when the miner has returned.</p>
-     */
     @Override
-    public void reboot(
+    public void runAction(
             final String ip,
             final int port,
-            final Map<String, Object> parameters,
-            final Callback doneCallback)
-            throws MinerException {
-        if (doReboot(
+            final Map<String, Object> args,
+            final CompletionCallback callback)
+            throws NotAuthenticatedException, MinerException {
+        if (this.completableAction.run(
                 ip,
                 port,
-                parameters)) {
+                args)) {
             final long deadlineInMillis =
                     System.currentTimeMillis() +
-                            (Integer) parameters.get("deadlineMillis");
+                            (Integer) args.get("deadlineMillis");
             final Map<String, String> newParams =
-                    toParams(parameters);
+                    toParams(args);
             this.task =
                     this.threadPool.scheduleAtFixedRate(
                             () -> evaluateMiner(
                                     deadlineInMillis,
                                     newParams,
-                                    doneCallback),
+                                    callback),
                             this.delay,
                             this.interval,
                             this.units);
         } else {
-            // Didn't reboot
-            doneCallback.failed("Failed to trigger reboot");
+            // Didn't work
+            callback.failed("Fail to perform action");
         }
     }
-
-    /**
-     * Starts a reboot operation on a miner.
-     *
-     * @param ip         The ip.
-     * @param port       The port.
-     * @param parameters The parameters.
-     *
-     * @return Whether or not the reboot was successfully started.
-     *
-     * @throws MinerException on unexpected failure
-     */
-    protected abstract boolean doReboot(
-            String ip,
-            int port,
-            Map<String, Object> parameters)
-            throws MinerException;
 
     /**
      * Creates params that miners typically need to be queried.
@@ -151,7 +136,7 @@ public abstract class AsyncRebootStrategy
     private void evaluateMiner(
             final long deadlineInMillis,
             final Map<String, String> params,
-            final Callback doneCallback) {
+            final CompletionCallback doneCallback) {
         final long now = System.currentTimeMillis();
         if (now < deadlineInMillis) {
             final Miner miner = this.minerFactory.create(params);

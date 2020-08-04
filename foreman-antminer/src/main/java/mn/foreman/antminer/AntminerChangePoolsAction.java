@@ -1,8 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
-import mn.foreman.model.AbstractChangePoolsStrategy;
-import mn.foreman.model.ChangePoolsStrategy;
+import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
@@ -19,15 +18,16 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * An {@link AntminerChangePoolsStrategy} provides a {@link ChangePoolsStrategy}
- * implementation that will change the pools in use by an antminer device.
+ * An {@link AntminerChangePoolsAction} provides an {@link
+ * AbstractChangePoolsAction} implementation that will change the pools in use
+ * by an antminer device.
  */
-public class AntminerChangePoolsStrategy
-        extends AbstractChangePoolsStrategy {
+public class AntminerChangePoolsAction
+        extends AbstractChangePoolsAction {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(AntminerChangePoolsStrategy.class);
+            LoggerFactory.getLogger(AntminerChangePoolsAction.class);
 
     /** The props. */
     private final List<ConfValue> props;
@@ -41,7 +41,7 @@ public class AntminerChangePoolsStrategy
      * @param realm The realm.
      * @param props The props.
      */
-    public AntminerChangePoolsStrategy(
+    public AntminerChangePoolsAction(
             final String realm,
             final List<ConfValue> props) {
         this.realm = realm;

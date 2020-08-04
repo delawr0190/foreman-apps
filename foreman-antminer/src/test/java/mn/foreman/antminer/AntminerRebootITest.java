@@ -2,25 +2,23 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
-import mn.foreman.util.TestUtils;
-import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.net.httpserver.HttpExchange;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /** Test changing pools on an Antminer. */
 @RunWith(Parameterized.class)
-public class AntminerChangePoolsITest
+public class AntminerRebootITest
         extends AntminerAsyncActionITest {
 
     /**
@@ -29,29 +27,13 @@ public class AntminerChangePoolsITest
      * @param httpHandlers The HTTP handlers.
      * @param rpcHandlers  The RPC handlers.
      */
-    public AntminerChangePoolsITest(
+    public AntminerRebootITest(
             final Map<String, ServerHandler> httpHandlers,
             final Map<String, HandlerInterface> rpcHandlers) {
         super(
-                TestUtils.toPoolJson(),
+                Collections.emptyMap(),
                 new AntminerFactory(BigDecimal.ONE),
-                new AntminerChangePoolsAction(
-                        "antMiner Configuration",
-                        Arrays.asList(
-                                AntminerConfValue.POOL_1_URL,
-                                AntminerConfValue.POOL_1_USER,
-                                AntminerConfValue.POOL_1_PASS,
-                                AntminerConfValue.POOL_2_URL,
-                                AntminerConfValue.POOL_2_USER,
-                                AntminerConfValue.POOL_2_PASS,
-                                AntminerConfValue.POOL_3_URL,
-                                AntminerConfValue.POOL_3_USER,
-                                AntminerConfValue.POOL_3_PASS,
-                                AntminerConfValue.NO_BEEPER,
-                                AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                AntminerConfValue.FAN_CTRL,
-                                AntminerConfValue.FAN_PWM,
-                                AntminerConfValue.FREQ)),
+                new AntminerRebootAction("antMiner Configuration"),
                 httpHandlers,
                 rpcHandlers);
     }
@@ -67,41 +49,7 @@ public class AntminerChangePoolsITest
                 new Object[][]{
                         {
                                 // Antminer L3
-                                ImmutableMap.of(
-                                        "/cgi-bin/get_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "",
-                                                "{\n" +
-                                                        "\"pools\" : [\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum-ltc.antpool.com:8888\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum-ltc.antpool.com:443\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum.f2pool.com:8888\",\n" +
-                                                        "\"user\" : \"ant.123\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "}\n" +
-                                                        "]\n" +
-                                                        ",\n" +
-                                                        "\"api-listen\" : true,\n" +
-                                                        "\"api-network\" : true,\n" +
-                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
-                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
-                                                        "\"bitmain-freq\" : \"384\"\n" +
-                                                        "}",
-                                                AntminerChangePoolsITest::validateDigest),
-                                        "/cgi-bin/set_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=384",
-                                                "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                AntminerTestUtils.toRebootHandlers("antMiner Configuration"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -112,44 +60,7 @@ public class AntminerChangePoolsITest
                         },
                         {
                                 // Antminer L3 (custom fan)
-                                ImmutableMap.of(
-                                        "/cgi-bin/get_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "",
-                                                "{\n" +
-                                                        "\"pools\" : [\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum-ltc.antpool.com:8888\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum-ltc.antpool.com:443\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum.f2pool.com:8888\",\n" +
-                                                        "\"user\" : \"ant.123\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "}\n" +
-                                                        "]\n" +
-                                                        ",\n" +
-                                                        "\"api-listen\" : true,\n" +
-                                                        "\"api-network\" : true,\n" +
-                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
-                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
-                                                        "\"bitmain-fan-ctrl\" : true,\n" +
-                                                        "\"bitmain-fan-pwm\" : \"100\",\n" +
-                                                        "\"bitmain-use-vil\" : true,\n" +
-                                                        "\"bitmain-freq\" : \"384\"\n" +
-                                                        "}",
-                                                AntminerChangePoolsITest::validateDigest),
-                                        "/cgi-bin/set_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=true&_ant_fan_customize_value=100&_ant_freq=384",
-                                                "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                AntminerTestUtils.toRebootHandlers("antMiner Configuration"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -160,43 +71,7 @@ public class AntminerChangePoolsITest
                         },
                         {
                                 // Antminer S9
-                                ImmutableMap.of(
-                                        "/cgi-bin/get_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "",
-                                                "{\n" +
-                                                        "\"pools\" : [\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"solo.antpool.com:3333\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum.antpool.com:3333\",\n" +
-                                                        "\"user\" : \"antminer_1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "},\n" +
-                                                        "{\n" +
-                                                        "\"url\" : \"stratum+tcp://cn.ss.btc.com:3333\",\n" +
-                                                        "\"user\" : \"antminer.1\",\n" +
-                                                        "\"pass\" : \"123\"\n" +
-                                                        "}\n" +
-                                                        "]\n" +
-                                                        ",\n" +
-                                                        "\"api-listen\" : true,\n" +
-                                                        "\"api-network\" : true,\n" +
-                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version:noncenum\",\n" +
-                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
-                                                        "\"bitmain-use-vil\" : true,\n" +
-                                                        "\"bitmain-freq\" : \"550\",\n" +
-                                                        "\"multi-version\" : \"1\"\n" +
-                                                        "}",
-                                                AntminerChangePoolsITest::validateDigest),
-                                        "/cgi-bin/set_miner_conf.cgi",
-                                        new HttpHandler(
-                                                "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=550",
-                                                "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                AntminerTestUtils.toRebootHandlers("antMiner Configuration"),
                                 ImmutableMap.of(
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
@@ -206,18 +81,5 @@ public class AntminerChangePoolsITest
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1576765846,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 1.0.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://xxxxxx:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":9487,\"Accepted\":86241,\"Rejected\":411,\"Discarded\":136597,\"Stale\":116,\"Get Failures\":5,\"Remote Failures\":4,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"0:00:03\",\"Diff\":\"39.5K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":3210701589.00000000,\"Difficulty Rejected\":17465628.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":39491.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"xxxxxx\",\"Has GBT\":false,\"Best Share\":1431836158,\"Pool Rejected%\":0.5410,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"stratum+tcp://xxxxxx:3333\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":8879,\"Accepted\":63,\"Rejected\":0,\"Discarded\":86,\"Stale\":2,\"Get Failures\":55,\"Remote Failures\":0,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"66:18:15\",\"Diff\":\"512\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":1901924.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":81558.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"stratum.slushpool.com\",\"Has GBT\":false,\"Best Share\":2237539,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"stratum+tcp://stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":8878,\"Accepted\":196,\"Rejected\":5,\"Discarded\":193,\"Stale\":4,\"Get Failures\":51,\"Remote Failures\":0,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"66:29:37\",\"Diff\":\"512\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":3690626.00000000,\"Difficulty Rejected\":40960.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":28756.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"xxxxxx\",\"Has GBT\":false,\"Best Share\":1433415,\"Pool Rejected%\":1.0977,\"Pool Stale%\":0.0000}],\"id\":1}"))
                         }
                 });
-    }
-
-    /**
-     * Validates the exchange digest.
-     *
-     * @param exchange The exchange.
-     *
-     * @return Whether or not the digest was validated.
-     */
-    private static boolean validateDigest(final HttpExchange exchange) {
-        return AntminerTestUtils.validateDigest(
-                exchange,
-                "antMiner Configuration");
     }
 }

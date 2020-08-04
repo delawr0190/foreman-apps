@@ -1,8 +1,8 @@
 package mn.foreman.innosilicon;
 
-import mn.foreman.dragonmint.DragonmintRebootStrategy;
+import mn.foreman.dragonmint.DragonmintRebootAction;
 import mn.foreman.dragonmint.DragonmintTestUtils;
-import mn.foreman.util.AbstractRebootITest;
+import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -11,23 +11,18 @@ import mn.foreman.util.rpc.RpcHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Arrays;
-import java.util.concurrent.TimeUnit;
+import java.util.Collections;
 
 /** Test rebooting an Innosilicon. */
 public class InnosiliconRebootITest
-        extends AbstractRebootITest {
+        extends AbstractAsyncActionITest {
 
     /** Constructor. */
     public InnosiliconRebootITest() {
         super(
                 8080,
                 4028,
-                new DragonmintRebootStrategy(
-                        1,
-                        1,
-                        TimeUnit.SECONDS,
-                        THREAD_POOL,
-                        new InnosiliconFactory(ApiType.HS_API)),
+                new DragonmintRebootAction(),
                 Arrays.asList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -49,6 +44,8 @@ public class InnosiliconRebootITest
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1593966947,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"innominer a9-1.1.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://americas.equihash.mining-dutch.nl:6663\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":3128,\"Accepted\":5128,\"Rejected\":26,\"Works\":413652,\"Discarded\":3437209,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"Last Share Time\":1593966945,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":2487729810.00000000,\"Difficulty Rejected\":12551116.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":573494.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"americas.equihash.mining-dutch.nl\",\"Has GBT\":false,\"Pool Rejected%\":0.5020,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"stratum+tcp://solo-zen.2miners.com:7070\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":2,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":1,\"Remote Failures\":0,\"Last Share Time\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"stratum+tcp://us1.zhash.pro:8059\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"Last Share Time\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")))),
+                new InnosiliconFactory(ApiType.HS_API),
+                Collections.emptyMap(),
                 true);
     }
 }

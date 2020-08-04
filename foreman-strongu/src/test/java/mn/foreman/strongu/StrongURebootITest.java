@@ -1,20 +1,26 @@
 package mn.foreman.strongu;
 
-import mn.foreman.antminer.util.AntminerRebootITest;
+import mn.foreman.antminer.AntminerRebootAction;
+import mn.foreman.antminer.util.AntminerAsyncActionITest;
+import mn.foreman.antminer.util.AntminerTestUtils;
 import mn.foreman.util.rpc.RpcHandler;
 import mn.foreman.util.rpc.SkipFirstDecorator;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Collections;
+
 /** Tests rebooting of a stu. */
 public class StrongURebootITest
-        extends AntminerRebootITest {
+        extends AntminerAsyncActionITest {
 
     /** Constructor. */
     public StrongURebootITest() {
         super(
+                Collections.emptyMap(),
                 new StrongUFactory(),
-                "stuMiner Configuration",
+                new AntminerRebootAction("stuMiner Configuration"),
+                AntminerTestUtils.toRebootHandlers("stuMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"summary\"}",
                         new SkipFirstDecorator(

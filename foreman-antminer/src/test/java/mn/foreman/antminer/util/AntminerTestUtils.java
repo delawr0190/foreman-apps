@@ -1,12 +1,36 @@
 package mn.foreman.antminer.util;
 
+import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
+
+import com.google.common.collect.ImmutableMap;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
+import org.apache.http.HttpStatus;
 
 import java.util.Map;
 
 /** Test utilities for Antminer testing. */
 public class AntminerTestUtils {
+
+    /**
+     * Factory method that creates the typical reboot handlers.
+     *
+     * @param realm The realm.
+     *
+     * @return The handlers.
+     */
+    public static Map<String, ServerHandler> toRebootHandlers(final String realm) {
+        return ImmutableMap.of(
+                "/cgi-bin/reboot.cgi",
+                new HttpHandler(
+                        "",
+                        "",
+                        exchange -> AntminerTestUtils.validateDigest(
+                                exchange,
+                                realm),
+                        HttpStatus.SC_INTERNAL_SERVER_ERROR));
+    }
 
     /**
      * Validates the digest authentication.
