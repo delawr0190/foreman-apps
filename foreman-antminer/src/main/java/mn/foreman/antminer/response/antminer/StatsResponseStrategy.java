@@ -1,4 +1,4 @@
-package mn.foreman.antminer.response;
+package mn.foreman.antminer.response.antminer;
 
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.ResponseStrategy;

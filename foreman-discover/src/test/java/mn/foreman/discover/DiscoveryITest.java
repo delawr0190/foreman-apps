@@ -51,6 +51,18 @@ public class DiscoveryITest {
                                 .query("{\"command\":\"version\"}")
                                 .response("")
                                 .success(true)
+                                .build(),
+                        Discovery
+                                .builder()
+                                .query("{\"command\":\"temps\"}")
+                                .response("")
+                                .success(true)
+                                .build(),
+                        Discovery
+                                .builder()
+                                .query("{\"command\":\"fans\"}")
+                                .response("")
+                                .success(true)
                                 .build()));
     }
 
@@ -87,6 +99,18 @@ public class DiscoveryITest {
                         Discovery
                                 .builder()
                                 .query("{\"command\":\"version\"}")
+                                .response("")
+                                .success(false)
+                                .build(),
+                        Discovery
+                                .builder()
+                                .query("{\"command\":\"temps\"}")
+                                .response("")
+                                .success(false)
+                                .build(),
+                        Discovery
+                                .builder()
+                                .query("{\"command\":\"fans\"}")
                                 .response("")
                                 .success(false)
                                 .build()));

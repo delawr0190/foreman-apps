@@ -1,6 +1,7 @@
 package mn.foreman.cgminer;
 
 import mn.foreman.cgminer.response.CgMinerResponse;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 /**
@@ -18,8 +19,10 @@ public interface ResponseStrategy {
      *
      * @param builder  The builder to update.
      * @param response The response.
+     *
+     * @throws MinerException on failure to process response.
      */
     void processResponse(
             MinerStats.Builder builder,
-            CgMinerResponse response);
+            CgMinerResponse response) throws MinerException;
 }

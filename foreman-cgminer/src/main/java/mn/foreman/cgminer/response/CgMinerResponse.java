@@ -1,5 +1,6 @@
 package mn.foreman.cgminer.response;
 
+import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.AbstractBuilder;
 
 import org.apache.commons.lang3.Validate;
@@ -11,6 +12,9 @@ import java.util.*;
 /** A generic cgminer response. */
 public class CgMinerResponse {
 
+    /** The request. */
+    private final CgMinerRequest request;
+
     /** The status sections. */
     private List<Map<String, String>> status;
 
@@ -20,18 +24,24 @@ public class CgMinerResponse {
     /**
      * Constructor.
      *
-     * @param status The status.
-     * @param values The values.
+     * @param request The request.
+     * @param status  The status.
+     * @param values  The values.
      */
     private CgMinerResponse(
+            final CgMinerRequest request,
             final List<Map<String, String>> status,
             final Map<String, List<Map<String, String>>> values) {
+        Validate.notNull(
+                request,
+                "request cannot be null");
         Validate.notNull(
                 status,
                 "status cannot be null");
         Validate.notEmpty(
                 status,
                 "status cannot be empty");
+        this.request = request;
         this.status = new ArrayList<>(status);
         this.values = new HashMap<>(values);
     }
@@ -54,6 +64,15 @@ public class CgMinerResponse {
                             .isEquals();
         }
         return isEqual;
+    }
+
+    /**
+     * Returns the request.
+     *
+     * @return The request.
+     */
+    public CgMinerRequest getRequest() {
+        return this.request;
     }
 
     /**
@@ -129,6 +148,9 @@ public class CgMinerResponse {
         private final Map<String, List<Map<String, String>>> values =
                 new HashMap<>();
 
+        /** The corresponding request. */
+        private CgMinerRequest request;
+
         /**
          * Adds the provided status.
          *
@@ -176,8 +198,21 @@ public class CgMinerResponse {
         @Override
         public CgMinerResponse build() {
             return new CgMinerResponse(
+                    this.request,
                     this.status,
                     this.values);
+        }
+
+        /**
+         * Sets the request.
+         *
+         * @param request The request.
+         *
+         * @return This builder instance.
+         */
+        public Builder setRequest(final CgMinerRequest request) {
+            this.request = request;
+            return this;
         }
     }
 }

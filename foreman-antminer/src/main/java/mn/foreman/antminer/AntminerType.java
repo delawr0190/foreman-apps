@@ -73,6 +73,9 @@ public enum AntminerType
     /** BraiinsOS Antminer S9. */
     BRAIINS_S9("braiins-am1-s9", "antminer-s9"),
 
+    /** BraiinsOS+ Antminer S9. */
+    BRAIINS_S9_BOSP("BOSminer+", "antminer-s9"),
+
     /** Minecenter S9. */
     MINECENTER_S9("Minecenter S9", "antminer-s9"),
 
@@ -117,15 +120,22 @@ public enum AntminerType
     /**
      * Converts the provided model to an {@link AntminerType}.
      *
+     * @param key   The key.
      * @param model The model.
      *
      * @return The corresponding {@link AntminerType}.
      */
-    public static Optional<AntminerType> forModel(final String model) {
-        if (model != null && !model.isEmpty()) {
+    public static Optional<AntminerType> forModel(
+            final String key,
+            final String model) {
+        final String slug =
+                key.contains("BOS")
+                        ? key
+                        : model;
+        if (slug != null && !slug.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()
-                    .filter(entry -> model.startsWith(entry.getKey()))
+                    .filter(entry -> slug.startsWith(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst();
         }
@@ -140,5 +150,15 @@ public enum AntminerType
     @Override
     public String getSlug() {
         return this.slug;
+    }
+
+    /**
+     * Returns whether or not the type indicates braiins os.
+     *
+     * @return Whether or not the type indicates braiins os.
+     */
+    public boolean isBraiins() {
+        final String name = this.name().toLowerCase();
+        return name.contains("bos") || name.contains("braiins");
     }
 }

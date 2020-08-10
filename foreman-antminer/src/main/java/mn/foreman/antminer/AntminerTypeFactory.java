@@ -20,17 +20,7 @@ public class AntminerTypeFactory
     public Optional<MinerType> toType(
             final Map<String, List<Map<String, String>>> responseValues)
             throws EmptySiteException {
-        return AntminerType.forModel(
-                responseValues
-                        .entrySet()
-                        .stream()
-                        .filter(entry -> entry.getKey().equals("VERSION"))
-                        .map(Map.Entry::getValue)
-                        .flatMap(List::stream)
-                        .filter(map -> map.containsKey("Type"))
-                        .findFirst()
-                        .orElseThrow(EmptySiteException::new)
-                        .get("Type"))
+        return AntminerUtils.toType(responseValues)
                 .map(type -> type);
     }
 }

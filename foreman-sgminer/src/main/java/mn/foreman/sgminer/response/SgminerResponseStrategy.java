@@ -2,6 +2,7 @@ package mn.foreman.sgminer.response;
 
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 /**
@@ -16,18 +17,24 @@ public interface SgminerResponseStrategy {
      *
      * @param builder  The builder.
      * @param response The response.
+     *
+     * @throws MinerException on unexpected error.
      */
     void processDevs(
             MinerStats.Builder builder,
-            CgMinerResponse response);
+            CgMinerResponse response)
+            throws MinerException;
 
     /**
      * Processes a {@link CgMinerCommand#POOLS POOLS} response.
      *
      * @param builder  The builder.
      * @param response The response.
+     *
+     * @throws MinerException on unexpected error.
      */
     void processPools(
             MinerStats.Builder builder,
-            CgMinerResponse response);
+            CgMinerResponse response)
+            throws MinerException;
 }

@@ -19,10 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -147,14 +144,17 @@ public class CgMiner
     /**
      * Converts the response map to a {@link CgMinerResponse}.
      *
+     * @param request  The request.
      * @param response The map.
      *
      * @return The response.
      */
     private static CgMinerResponse toResponse(
+            final CgMinerRequest request,
             final Map<String, List<Map<String, String>>> response) {
         final CgMinerResponse.Builder builder =
-                new CgMinerResponse.Builder();
+                new CgMinerResponse.Builder()
+                        .setRequest(request);
         response.get("STATUS").forEach(builder::addStatus);
         response.entrySet()
                 .stream()
@@ -228,7 +228,10 @@ public class CgMiner
                                     new TypeReference<Map<String, List<Map<String, String>>>>() {
                                     });
                     if (!responseMap.isEmpty()) {
-                        response = toResponse(responseMap);
+                        response =
+                                toResponse(
+                                        request,
+                                        responseMap);
                     }
                 }
             }
@@ -305,6 +308,28 @@ public class CgMiner
                             request,
                             patchingStrategy,
                             responseStrategy));
+            return this;
+        }
+
+        /**
+         * Adds the provided requests.
+         *
+         * @param requests The requests to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRequests(
+                final List<Map<CgMinerCommand, ResponseStrategy>> requests) {
+            requests
+                    .stream()
+                    .map(Map::entrySet)
+                    .flatMap(Set::stream)
+                    .forEach(entry ->
+                            addRequest(
+                                    new CgMinerRequest.Builder()
+                                            .setCommand(entry.getKey())
+                                            .build(),
+                                    entry.getValue()));
             return this;
         }
 

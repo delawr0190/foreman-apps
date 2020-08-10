@@ -16,7 +16,13 @@ public enum CgMinerCommand {
     SUMMARY("summary"),
 
     /** The cgminer "version" command. */
-    VERSION("version");
+    VERSION("version"),
+
+    /** The bOS temps command. */
+    TEMPS("temps"),
+
+    /** The bOS fans command. */
+    FANS("fans");
 
     /** The command. */
     private final String command;

@@ -1,6 +1,7 @@
 package mn.foreman.cgminer;
 
 import mn.foreman.cgminer.response.CgMinerResponse;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 import java.math.BigDecimal;
@@ -54,12 +55,14 @@ public class RateMultiplyingDecorator
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
-            final CgMinerResponse response) {
+            final CgMinerResponse response)
+            throws MinerException {
         final Map<String, List<Map<String, String>>> origValues =
                 response.getValues();
 
         final CgMinerResponse.Builder responseBuilder =
                 new CgMinerResponse.Builder()
+                        .setRequest(response.getRequest())
                         .addStatus(response.getStatus());
 
         for (final Map.Entry<String, List<Map<String, String>>> entry :

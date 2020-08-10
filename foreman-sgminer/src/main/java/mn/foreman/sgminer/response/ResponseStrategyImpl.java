@@ -3,6 +3,7 @@ package mn.foreman.sgminer.response;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
+import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.Rig;
@@ -51,7 +52,8 @@ public class ResponseStrategyImpl
     @Override
     public void processDevs(
             final MinerStats.Builder builder,
-            final CgMinerResponse response) {
+            final CgMinerResponse response)
+            throws MinerException {
         if (isTrm(response)) {
             this.hardwareErrors =
                     response.getValues()
@@ -73,7 +75,8 @@ public class ResponseStrategyImpl
     @Override
     public void processPools(
             final MinerStats.Builder builder,
-            final CgMinerResponse response) {
+            final CgMinerResponse response)
+            throws MinerException {
         if (isTrm(response)) {
             this.algorithm =
                     response.getValues()

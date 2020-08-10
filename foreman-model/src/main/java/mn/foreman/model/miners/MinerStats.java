@@ -254,6 +254,18 @@ public class MinerStats {
         }
 
         /**
+         * Adds the provided CPUs.
+         *
+         * @param cpus The CPUs to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addCpus(final List<Cpu> cpus) {
+            cpus.forEach(this::addCpu);
+            return this;
+        }
+
+        /**
          * Adds the provided {@link Pool}.
          *
          * @param pool The {@link Pool}.
@@ -315,6 +327,23 @@ public class MinerStats {
                     this.asics,
                     this.rigs,
                     this.cpus);
+        }
+
+        /**
+         * Populates the builder from the provided stats.
+         *
+         * @param stats The source stats.
+         *
+         * @return This builder instance.
+         */
+        public Builder fromStats(final MinerStats stats) {
+            setApiIp(stats.getApiIp());
+            setApiPort(stats.getApiPort());
+            setPools(stats.getPools());
+            addAsics(stats.getAsics());
+            setRigs(stats.getRigs());
+            addCpus(stats.getCpus());
+            return this;
         }
 
         /**
