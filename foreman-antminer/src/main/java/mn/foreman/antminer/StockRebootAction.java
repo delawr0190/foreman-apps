@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** A strategy that performs an antminer reboot. */
-public class AntminerRebootAction
+public class StockRebootAction
         implements AsicAction.CompletableAction {
 
     /** The realm. */
@@ -19,7 +19,7 @@ public class AntminerRebootAction
      *
      * @param realm The realm.
      */
-    public AntminerRebootAction(final String realm) {
+    public StockRebootAction(final String realm) {
         this.realm = realm;
     }
 

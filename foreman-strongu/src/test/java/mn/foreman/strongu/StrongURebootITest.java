@@ -1,6 +1,6 @@
 package mn.foreman.strongu;
 
-import mn.foreman.antminer.AntminerRebootAction;
+import mn.foreman.antminer.StockRebootAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
 import mn.foreman.util.rpc.RpcHandler;
@@ -19,7 +19,7 @@ public class StrongURebootITest
         super(
                 Collections.emptyMap(),
                 new StrongUFactory(),
-                new AntminerRebootAction("stuMiner Configuration"),
+                new StockRebootAction("stuMiner Configuration"),
                 AntminerTestUtils.toRebootHandlers("stuMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"summary\"}",

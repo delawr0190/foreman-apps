@@ -686,84 +686,90 @@ public class Query {
                         url.getPort(),
                         url.getProtocol());
 
-        final CloseableHttpClient httpClient;
-        final HttpClientContext context = HttpClientContext.create();
+        CloseableHttpClient httpClient = null;
+        try {
+            final HttpClientContext context = HttpClientContext.create();
 
-        if (realm != null && username != null) {
-            final CredentialsProvider credsProvider =
-                    new BasicCredentialsProvider();
-            credsProvider.setCredentials(
-                    AuthScope.ANY,
-                    new UsernamePasswordCredentials(
-                            username,
-                            password));
-            final AuthCache authCache = new BasicAuthCache();
-            final DigestScheme digestScheme = new DigestScheme();
-            digestScheme.overrideParamter(
-                    "realm",
-                    realm);
-            digestScheme.overrideParamter(
-                    "nonce",
-                    UUID
-                            .randomUUID()
-                            .toString()
-                            .replace("-", ""));
-            authCache.put(targetHost, digestScheme);
+            if (realm != null && username != null) {
+                final CredentialsProvider credsProvider =
+                        new BasicCredentialsProvider();
+                credsProvider.setCredentials(
+                        AuthScope.ANY,
+                        new UsernamePasswordCredentials(
+                                username,
+                                password));
+                final AuthCache authCache = new BasicAuthCache();
+                final DigestScheme digestScheme = new DigestScheme();
+                digestScheme.overrideParamter(
+                        "realm",
+                        realm);
+                digestScheme.overrideParamter(
+                        "nonce",
+                        UUID
+                                .randomUUID()
+                                .toString()
+                                .replace("-", ""));
+                authCache.put(targetHost, digestScheme);
 
-            httpClient =
-                    HttpClients
-                            .custom()
-                            .setDefaultCredentialsProvider(credsProvider)
-                            .disableAutomaticRetries()
-                            .build();
-            context.setAuthCache(authCache);
-        } else {
-            httpClient =
-                    HttpClients
-                            .custom()
-                            .disableAutomaticRetries()
-                            .build();
-        }
-
-        final HttpRequest httpRequest;
-        if (!isPost) {
-            httpRequest = new HttpGet(url.getPath());
-        } else {
-            final HttpPost httpPost = new HttpPost(url.getPath());
-            if (content != null) {
-                final List<NameValuePair> params = new ArrayList<>();
-                content.forEach(entry ->
-                        params.add(
-                                new BasicNameValuePair(
-                                        entry.get("key").toString(),
-                                        entry.get("value").toString())));
-                LOG.debug("Params for POST: {}", params);
-
-                final HttpEntity entity =
-                        new UrlEncodedFormEntity(
-                                params,
-                                "UTF-8");
-                LOG.debug("Entity: {}", entity);
-                httpPost.setEntity(entity);
+                httpClient =
+                        HttpClients
+                                .custom()
+                                .setDefaultCredentialsProvider(credsProvider)
+                                .disableAutomaticRetries()
+                                .build();
+                context.setAuthCache(authCache);
+            } else {
+                httpClient =
+                        HttpClients
+                                .custom()
+                                .disableAutomaticRetries()
+                                .build();
             }
-            httpRequest = httpPost;
-        }
 
-        LOG.debug("Sending request: {}", httpRequest);
+            final HttpRequest httpRequest;
+            if (!isPost) {
+                httpRequest = new HttpGet(url.getPath());
+            } else {
+                final HttpPost httpPost = new HttpPost(url.getPath());
+                if (content != null) {
+                    final List<NameValuePair> params = new ArrayList<>();
+                    content.forEach(entry ->
+                            params.add(
+                                    new BasicNameValuePair(
+                                            entry.get("key").toString(),
+                                            entry.get("value").toString())));
+                    LOG.debug("Params for POST: {}", params);
 
-        try (final CloseableHttpResponse response =
-                     httpClient.execute(
-                             targetHost,
-                             httpRequest,
-                             context)) {
-            final StatusLine statusLine =
-                    response.getStatusLine();
-            final String responseBody =
-                    EntityUtils.toString(response.getEntity());
-            LOG.debug("Received digest API response: {}", responseBody);
-            responseProcessor.accept(
-                    statusLine.getStatusCode(),
-                    responseBody);
+                    final HttpEntity entity =
+                            new UrlEncodedFormEntity(
+                                    params,
+                                    "UTF-8");
+                    LOG.debug("Entity: {}", entity);
+                    httpPost.setEntity(entity);
+                }
+                httpRequest = httpPost;
+            }
+
+            LOG.debug("Sending request: {}", httpRequest);
+
+            try (final CloseableHttpResponse response =
+                         httpClient.execute(
+                                 targetHost,
+                                 httpRequest,
+                                 context)) {
+                final StatusLine statusLine =
+                        response.getStatusLine();
+                final String responseBody =
+                        EntityUtils.toString(response.getEntity());
+                LOG.debug("Received digest API response: {}", responseBody);
+                responseProcessor.accept(
+                        statusLine.getStatusCode(),
+                        responseBody);
+            }
+        } finally {
+            if (httpClient != null) {
+                httpClient.close();
+            }
         }
     }
 

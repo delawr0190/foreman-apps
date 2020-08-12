@@ -1,6 +1,6 @@
 package mn.foreman.strongu;
 
-import mn.foreman.antminer.AntminerChangePoolsAction;
+import mn.foreman.antminer.StockChangePoolsAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
@@ -35,7 +35,7 @@ public class StrongUChangePoolsITest
         super(
                 TestUtils.toPoolJson(),
                 new StrongUFactory(),
-                new AntminerChangePoolsAction(
+                new StockChangePoolsAction(
                         "stuMiner Configuration",
                         Arrays.asList(
                                 StrongUConfValue.POOL_1_URL,
@@ -155,7 +155,7 @@ public class StrongUChangePoolsITest
         return headers
                 .entrySet()
                 .stream()
-                .filter(entry -> "Authorization".equals(entry.getKey()))
+                .filter(entry -> "Authorization" .equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .anyMatch(header -> {
                     final String headerString = header.get(0);

@@ -18,16 +18,15 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
- * An {@link AntminerChangePoolsAction} provides an {@link
- * AbstractChangePoolsAction} implementation that will change the pools in use
- * by an antminer device.
+ * An {@link FirmwareAwareAction} provides an {@link AbstractChangePoolsAction}
+ * implementation that will change the pools in use by an antminer device.
  */
-public class AntminerChangePoolsAction
+public class StockChangePoolsAction
         extends AbstractChangePoolsAction {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(AntminerChangePoolsAction.class);
+            LoggerFactory.getLogger(FirmwareAwareAction.class);
 
     /** The props. */
     private final List<ConfValue> props;
@@ -41,7 +40,7 @@ public class AntminerChangePoolsAction
      * @param realm The realm.
      * @param props The props.
      */
-    public AntminerChangePoolsAction(
+    public StockChangePoolsAction(
             final String realm,
             final List<ConfValue> props) {
         this.realm = realm;

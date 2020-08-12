@@ -1,6 +1,6 @@
 package mn.foreman.blackminer;
 
-import mn.foreman.antminer.AntminerRebootAction;
+import mn.foreman.antminer.StockRebootAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
 import mn.foreman.util.rpc.RpcHandler;
@@ -18,7 +18,7 @@ public class BlackminerRebootITest
         super(
                 Collections.emptyMap(),
                 new BlackminerFactory(),
-                new AntminerRebootAction("blackMiner Configuration"),
+                new StockRebootAction("blackMiner Configuration"),
                 AntminerTestUtils.toRebootHandlers("blackMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"summary\"}",

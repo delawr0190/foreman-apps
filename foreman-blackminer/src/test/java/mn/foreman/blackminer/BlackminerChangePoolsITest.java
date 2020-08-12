@@ -1,6 +1,6 @@
 package mn.foreman.blackminer;
 
-import mn.foreman.antminer.AntminerChangePoolsAction;
+import mn.foreman.antminer.StockChangePoolsAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
@@ -36,7 +36,7 @@ public class BlackminerChangePoolsITest
         super(
                 toTestData(algoChanged),
                 new BlackminerFactory(),
-                new AntminerChangePoolsAction(
+                new StockChangePoolsAction(
                         "blackMiner Configuration",
                         Arrays.asList(
                                 BlackminerConfValue.POOL_1_URL,

@@ -62,28 +62,32 @@ public enum Manufacturer {
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new AntminerFactory(BigDecimal.ONE),
-                            new AntminerChangePoolsAction(
-                                    "antMiner Configuration",
-                                    Arrays.asList(
-                                            AntminerConfValue.POOL_1_URL,
-                                            AntminerConfValue.POOL_1_USER,
-                                            AntminerConfValue.POOL_1_PASS,
-                                            AntminerConfValue.POOL_2_URL,
-                                            AntminerConfValue.POOL_2_USER,
-                                            AntminerConfValue.POOL_2_PASS,
-                                            AntminerConfValue.POOL_3_URL,
-                                            AntminerConfValue.POOL_3_USER,
-                                            AntminerConfValue.POOL_3_PASS,
-                                            AntminerConfValue.NO_BEEPER,
-                                            AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                            AntminerConfValue.FAN_CTRL,
-                                            AntminerConfValue.FAN_PWM,
-                                            AntminerConfValue.FREQ))),
+                            new FirmwareAwareAction(
+                                    new StockChangePoolsAction(
+                                            "antMiner Configuration",
+                                            Arrays.asList(
+                                                    AntminerConfValue.POOL_1_URL,
+                                                    AntminerConfValue.POOL_1_USER,
+                                                    AntminerConfValue.POOL_1_PASS,
+                                                    AntminerConfValue.POOL_2_URL,
+                                                    AntminerConfValue.POOL_2_USER,
+                                                    AntminerConfValue.POOL_2_PASS,
+                                                    AntminerConfValue.POOL_3_URL,
+                                                    AntminerConfValue.POOL_3_USER,
+                                                    AntminerConfValue.POOL_3_PASS,
+                                                    AntminerConfValue.NO_BEEPER,
+                                                    AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                                    AntminerConfValue.FAN_CTRL,
+                                                    AntminerConfValue.FAN_PWM,
+                                                    AntminerConfValue.FREQ)),
+                                    new BraiinsChangePoolsAction())),
             scheduledThreadPoolExecutor ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new AntminerFactory(BigDecimal.ONE),
-                            new AntminerRebootAction("antMiner Configuration"))),
+                            new FirmwareAwareAction(
+                                    new StockRebootAction("antMiner Configuration"),
+                                    new BraiinsRebootAction()))),
 
     /** Avalon. */
     AVALON(
@@ -109,7 +113,7 @@ public enum Manufacturer {
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new BlackminerFactory(),
-                            new AntminerChangePoolsAction(
+                            new StockChangePoolsAction(
                                     "blackMiner Configuration",
                                     Arrays.asList(
                                             BlackminerConfValue.POOL_1_URL,
@@ -131,7 +135,7 @@ public enum Manufacturer {
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new BlackminerFactory(),
-                            new AntminerRebootAction("blackMiner Configuration"))),
+                            new StockRebootAction("blackMiner Configuration"))),
 
     /** Dayun. */
     DAYUN(
@@ -236,7 +240,7 @@ public enum Manufacturer {
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new StrongUFactory(),
-                            new AntminerChangePoolsAction(
+                            new StockChangePoolsAction(
                                     "stuMiner Configuration",
                                     Arrays.asList(
                                             StrongUConfValue.POOL_1_URL,
@@ -263,7 +267,7 @@ public enum Manufacturer {
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
                             new StrongUFactory(),
-                            new AntminerRebootAction(
+                            new StockRebootAction(
                                     "stuMiner Configuration"))),
 
     /** Whatsminer. */

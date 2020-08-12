@@ -24,5 +24,6 @@ public interface ResponseStrategy {
      */
     void processResponse(
             MinerStats.Builder builder,
-            CgMinerResponse response) throws MinerException;
+            CgMinerResponse response)
+            throws MinerException;
 }

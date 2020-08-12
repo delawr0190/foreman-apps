@@ -16,6 +16,7 @@ import org.junit.runners.Parameterized;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /** Test changing pools on an Antminer. */
@@ -35,23 +36,25 @@ public class AntminerChangePoolsITest
         super(
                 TestUtils.toPoolJson(),
                 new AntminerFactory(BigDecimal.ONE),
-                new AntminerChangePoolsAction(
-                        "antMiner Configuration",
-                        Arrays.asList(
-                                AntminerConfValue.POOL_1_URL,
-                                AntminerConfValue.POOL_1_USER,
-                                AntminerConfValue.POOL_1_PASS,
-                                AntminerConfValue.POOL_2_URL,
-                                AntminerConfValue.POOL_2_USER,
-                                AntminerConfValue.POOL_2_PASS,
-                                AntminerConfValue.POOL_3_URL,
-                                AntminerConfValue.POOL_3_USER,
-                                AntminerConfValue.POOL_3_PASS,
-                                AntminerConfValue.NO_BEEPER,
-                                AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                AntminerConfValue.FAN_CTRL,
-                                AntminerConfValue.FAN_PWM,
-                                AntminerConfValue.FREQ)),
+                new FirmwareAwareAction(
+                        new StockChangePoolsAction(
+                                "antMiner Configuration",
+                                Arrays.asList(
+                                        AntminerConfValue.POOL_1_URL,
+                                        AntminerConfValue.POOL_1_USER,
+                                        AntminerConfValue.POOL_1_PASS,
+                                        AntminerConfValue.POOL_2_URL,
+                                        AntminerConfValue.POOL_2_USER,
+                                        AntminerConfValue.POOL_2_PASS,
+                                        AntminerConfValue.POOL_3_URL,
+                                        AntminerConfValue.POOL_3_USER,
+                                        AntminerConfValue.POOL_3_PASS,
+                                        AntminerConfValue.NO_BEEPER,
+                                        AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                        AntminerConfValue.FAN_CTRL,
+                                        AntminerConfValue.FAN_PWM,
+                                        AntminerConfValue.FREQ)),
+                        new BraiinsChangePoolsAction()),
                 httpHandlers,
                 rpcHandlers);
     }
@@ -213,6 +216,121 @@ public class AntminerChangePoolsITest
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1576765846,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 1.0.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://xxxxxx:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":9487,\"Accepted\":86241,\"Rejected\":411,\"Discarded\":136597,\"Stale\":116,\"Get Failures\":5,\"Remote Failures\":4,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"0:00:03\",\"Diff\":\"39.5K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":3210701589.00000000,\"Difficulty Rejected\":17465628.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":39491.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"xxxxxx\",\"Has GBT\":false,\"Best Share\":1431836158,\"Pool Rejected%\":0.5410,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"stratum+tcp://xxxxxx:3333\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":8879,\"Accepted\":63,\"Rejected\":0,\"Discarded\":86,\"Stale\":2,\"Get Failures\":55,\"Remote Failures\":0,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"66:18:15\",\"Diff\":\"512\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":1901924.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":81558.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"stratum.slushpool.com\",\"Has GBT\":false,\"Best Share\":2237539,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"stratum+tcp://stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":8878,\"Accepted\":196,\"Rejected\":5,\"Discarded\":193,\"Stale\":4,\"Get Failures\":51,\"Remote Failures\":0,\"User\":\"CosmosCapitalFund.COSMOSxCNKxS17Px00001\",\"Last Share Time\":\"66:29:37\",\"Diff\":\"512\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":3690626.00000000,\"Difficulty Rejected\":40960.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":28756.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"xxxxxx\",\"Has GBT\":false,\"Best Share\":1433415,\"Pool Rejected%\":1.0977,\"Pool Stale%\":0.0000}],\"id\":1}"))
+                        },
+                        {
+                                // Antminer S9 (bOS+)
+                                ImmutableMap.of(
+                                        "/cgi-bin/luci/admin/miner/overview",
+                                        new HttpHandler(
+                                                "luci_username=my-auth-username&luci_password=my-auth-password",
+                                                Collections.emptyMap(),
+                                                "<html></html>",
+                                                ImmutableMap.of(
+                                                        "Set-Cookie",
+                                                        "sysauth=foreman")),
+                                        "/cgi-bin/luci/admin/miner/cfg_data/",
+                                        new HttpHandler(
+                                                "",
+                                                ImmutableMap.of(
+                                                        "Cookie",
+                                                        "sysauth=foreman"),
+                                                "{\n" +
+                                                        "  \"status\": {\n" +
+                                                        "    \"code\": 0,\n" +
+                                                        "    \"message\": null,\n" +
+                                                        "    \"generator\": \"BOSminer+ 0.2.0-36c56a9363\",\n" +
+                                                        "    \"timestamp\": 1597106558\n" +
+                                                        "  },\n" +
+                                                        "  \"data\": {\n" +
+                                                        "    \"format\": {\n" +
+                                                        "      \"version\": \"1.1+\",\n" +
+                                                        "      \"model\": \"Antminer S9\",\n" +
+                                                        "      \"generator\": \"BOSminer+ 0.2.0-36c56a9363\",\n" +
+                                                        "      \"timestamp\": 1597106558\n" +
+                                                        "    },\n" +
+                                                        "    \"group\": [\n" +
+                                                        "      {\n" +
+                                                        "        \"name\": \"Default\",\n" +
+                                                        "        \"pool\": [\n" +
+                                                        "          {\n" +
+                                                        "            \"url\": \"stratum2+tcp://v2.stratum.slushpool.com/u95GEReVMjK6k5YqiSFNqqTnKU4ypU2Wm8awa6tmbmDmk1bWt\",\n" +
+                                                        "            \"user\": \"!non-existent-user!!\",\n" +
+                                                        "            \"password\": \"x\"\n" +
+                                                        "          },\n" +
+                                                        "          {\n" +
+                                                        "            \"url\": \"stratum+tcp://stratum.slushpool.com:3333\",\n" +
+                                                        "            \"user\": \"!non-existent-user!!\",\n" +
+                                                        "            \"password\": \"xx\"\n" +
+                                                        "          },\n" +
+                                                        "          {\n" +
+                                                        "            \"url\": \"stratum+tcp://stratum.slushpool.com:3333\",\n" +
+                                                        "            \"user\": \"!non-existent-user!!!\",\n" +
+                                                        "            \"password\": \"xxx\"\n" +
+                                                        "          }\n" +
+                                                        "        ]\n" +
+                                                        "      }\n" +
+                                                        "    ],\n" +
+                                                        "    \"autotuning\": {\n" +
+                                                        "      \"enabled\": true\n" +
+                                                        "    }\n" +
+                                                        "  }\n" +
+                                                        "}",
+                                                Collections.emptyMap()),
+                                        "/cgi-bin/luci/admin/miner/cfg_save/",
+                                        new HttpHandler(
+                                                "{\"data\":{\"group\":[{\"name\":\"Foreman Group\",\"pool\":[{\"url\":\"stratum+tcp://my-test-pool1.com:5588\",\"user\":\"my-test-username1\",\"password\":\"my-test-password1\"},{\"url\":\"stratum+tcp://my-test-pool2.com:5588\",\"user\":\"my-test-username2\",\"password\":\"my-test-password2\"},{\"url\":\"stratum+tcp://my-test-pool3.com:5588\",\"user\":\"my-test-username3\",\"password\":\"my-test-password3\"}]}],\"autotuning\":{\"enabled\":true}}}",
+                                                ImmutableMap.of(
+                                                        "Cookie",
+                                                        "sysauth=foreman"),
+                                                "{\n" +
+                                                        "  \"status\": {\n" +
+                                                        "    \"code\": 0,\n" +
+                                                        "    \"message\": null,\n" +
+                                                        "    \"generator\": \"BOSminer+ 0.2.0-36c56a9363\",\n" +
+                                                        "    \"timestamp\": 1597184258\n" +
+                                                        "  },\n" +
+                                                        "  \"data\": {\n" +
+                                                        "    \"path\": \"/etc/bosminer.toml\",\n" +
+                                                        "    \"format\": {\n" +
+                                                        "      \"version\": \"1.1+\",\n" +
+                                                        "      \"model\": \"Antminer S9\",\n" +
+                                                        "      \"generator\": \"BOSminer+ 0.2.0-36c56a9363\",\n" +
+                                                        "      \"timestamp\": 1597184258\n" +
+                                                        "    }\n" +
+                                                        "  }\n" +
+                                                        "}",
+                                                Collections.emptyMap()),
+                                        "/cgi-bin/luci/admin/miner/cfg_apply/",
+                                        new HttpHandler(
+                                                "",
+                                                ImmutableMap.of(
+                                                        "Cookie",
+                                                        "sysauth=foreman"),
+                                                "{\n" +
+                                                        "  \"status\": {\n" +
+                                                        "    \"message\": \"Reloading configuration...\",\n" +
+                                                        "    \"generator\": \"LuCI backend\",\n" +
+                                                        "    \"timestamp\": 1597184258,\n" +
+                                                        "    \"code\": 0\n" +
+                                                        "  }\n" +
+                                                        "}",
+                                                Collections.emptyMap())),
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187881,\"Code\":22,\"Msg\":\"BOSminer+ versions\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer+\":\"0.2.0-36c56a9363\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187909,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"POOLS\":[{\"Accepted\":152,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":10984863,\"Difficulty Accepted\":9961472.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":106,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597187897,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":16655828},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":3,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:443\",\"URL\":\"stratum+tcp://stratum.antpool.com:443\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":0},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":2,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":2,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.antpool.com:25\",\"URL\":\"stratum+tcp://stratum.antpool.com:25\",\"User\":\"antminer_1\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"),
+                                        "{\"command\":\"summary\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187939,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"SUMMARY\":[{\"Accepted\":153,\"Best Share\":65536,\"Device Hardware%\":0.001644850292093576,\"Device Rejected%\":0.0,\"Difficulty Accepted\":10027008.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":3680,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":110,\"Hardware Errors\":186,\"Last getwork\":1597187939,\"Local Work\":17131300,\"MHS 15m\":14199249.521457672,\"MHS 1m\":13967276.98800245,\"MHS 24h\":562115.4771588066,\"MHS 5m\":14257979.893394984,\"MHS 5s\":15740915.842676325,\"MHS av\":11988299.650652435,\"Network Blocks\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":44121202599.395325,\"Utility\":2.4945652173913047,\"Work Utility\":184349.05814696933}],\"id\":1}"),
+                                        "{\"command\":\"fans\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187973,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":2820,\"Speed\":40},{\"FAN\":1,\"ID\":1,\"RPM\":3780,\"Speed\":40},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":40},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":40}],\"id\":1}"),
+                                        "{\"command\":\"temps\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187996,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"TEMPS\":[{\"Board\":75.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":63.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":70.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}"))
                         }
                 });
     }

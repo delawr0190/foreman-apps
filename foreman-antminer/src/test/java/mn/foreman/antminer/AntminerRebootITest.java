@@ -33,7 +33,7 @@ public class AntminerRebootITest
         super(
                 Collections.emptyMap(),
                 new AntminerFactory(BigDecimal.ONE),
-                new AntminerRebootAction("antMiner Configuration"),
+                new StockRebootAction("antMiner Configuration"),
                 httpHandlers,
                 rpcHandlers);
     }
