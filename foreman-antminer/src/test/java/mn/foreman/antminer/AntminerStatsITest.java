@@ -398,6 +398,59 @@ public class AntminerStatsITest
                                                         .hasErrors(false)
                                                         .build())
                                         .build()
+                        },
+                        {
+                                // Antminer S9 (bOS)
+                                BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597196862,\"Code\":22,\"Msg\":\"BOSminer versions\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer\":\"0.2.0-d360818\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197657,\"Code\":7,\"Msg\":\"2 Pool(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"POOLS\":[{\"Accepted\":68,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":6027,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":8,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597197610,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.28368794326241137,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":483100},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Dead\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.slushpool.com:3333\",\"URL\":\"stratum+tcp://stratum.slushpool.com:3333\",\"User\":\"!non-existent-user!\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"),
+                                        "{\"command\":\"summary\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197626,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"SUMMARY\":[{\"Accepted\":68,\"Best Share\":65536,\"Device Hardware%\":0.0,\"Device Rejected%\":22.852041954920775,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":92,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":7,\"Hardware Errors\":0,\"Last getwork\":1597197626,\"Local Work\":357660,\"MHS 15m\":1368586.556684464,\"MHS 1m\":14194945.838709138,\"MHS 24h\":14256.109965463167,\"MHS 5m\":4105759.670053392,\"MHS 5s\":14274425.317759488,\"MHS av\":16698158.653278796,\"Network Blocks\":0,\"Pool Rejected%\":2.857142857142857,\"Pool Stale%\":0.0,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":1550311395.16416,\"Utility\":44.347826086956516,\"Work Utility\":185334.3043014206}],\"id\":1}"),
+                                        "{\"command\":\"fans\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197416,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":1560,\"Speed\":1},{\"FAN\":1,\"ID\":1,\"RPM\":1560,\"Speed\":1},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":1},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":1}],\"id\":1}"),
+                                        "{\"command\":\"temps\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197430,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"TEMPS\":[{\"Board\":53.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":46.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":52.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}")),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("stratum.antpool.com:3333")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(68, 2, 0)
+                                                        .build())
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("stratum.slushpool.com:3333")
+                                                        .setStatus(true, false)
+                                                        .setPriority(1)
+                                                        .setCounts(0, 0, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("14274425317759.488000000"))
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(1560)
+                                                                        .addSpeed(1560)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(53)
+                                                        .addTemp(46)
+                                                        .addTemp(52)
+                                                        .hasErrors(false)
+                                                        .build())
+                                        .build()
                         }
                 });
     }

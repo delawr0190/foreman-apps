@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.model.MinerType;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -76,6 +77,9 @@ public enum AntminerType
     /** BraiinsOS+ Antminer S9. */
     BRAIINS_S9_BOSP("BOSminer+", "antminer-s9"),
 
+    /** BraiinsOS Antminer S9. */
+    BRAIINS_S9_BOS("BOSminer", "antminer-s9"),
+
     /** Minecenter S9. */
     MINECENTER_S9("Minecenter S9", "antminer-s9"),
 
@@ -137,7 +141,7 @@ public enum AntminerType
                     .stream()
                     .filter(entry -> slug.startsWith(entry.getKey()))
                     .map(Map.Entry::getValue)
-                    .findFirst();
+                    .max(Comparator.comparing(type -> type.getIdentifier().length()));
         }
         return Optional.empty();
     }
@@ -145,6 +149,15 @@ public enum AntminerType
     @Override
     public Category getCategory() {
         return Category.ASIC;
+    }
+
+    /**
+     * Returns the identifier.
+     *
+     * @return The identifier.
+     */
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     @Override

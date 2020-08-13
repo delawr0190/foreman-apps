@@ -2,18 +2,25 @@ package mn.foreman.antminer;
 
 import mn.foreman.model.error.EmptySiteException;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /** A collection of utility functions for antminer processing. */
 public class AntminerUtils {
 
-    /** The bOS key. */
-    private static String BRAINS_OS_P = "BOSminer+";
+    /** The known bOS types. */
+    private static final List<AntminerType> BRAIINS_TYPES;
 
     /** The type key. */
     private static String TYPE = "Type";
+
+    static {
+        final List<AntminerType> braiinsTypes =
+                Arrays.stream(AntminerType.values())
+                        .filter(AntminerType::isBraiins)
+                        .collect(Collectors.toList());
+        BRAIINS_TYPES = Collections.unmodifiableList(braiinsTypes);
+    }
 
     /**
      * Finds the {@link AntminerType} from the provided versions response.
@@ -34,13 +41,39 @@ public class AntminerUtils {
                         .filter(entry -> entry.getKey().equals("VERSION"))
                         .map(Map.Entry::getValue)
                         .flatMap(List::stream)
-                        .filter(map -> map.containsKey(TYPE) || map.containsKey(BRAINS_OS_P))
+                        .filter(AntminerUtils::isKnown)
                         .findFirst()
                         .orElseThrow(EmptySiteException::new);
-        final String key =
-                values.containsKey(TYPE)
-                        ? TYPE
-                        : BRAINS_OS_P;
-        return AntminerType.forModel(key, values.get(key));
+        Optional<AntminerType> type = toBraiinsType(values);
+        if (!type.isPresent()) {
+            type = AntminerType.forModel(TYPE, values.get(TYPE));
+        }
+        return type;
+    }
+
+    /**
+     * Checks to see if the type is known.
+     *
+     * @param values The values to inspect.
+     *
+     * @return The type.
+     */
+    private static boolean isKnown(final Map<String, String> values) {
+        return values.containsKey(TYPE) || toBraiinsType(values).isPresent();
+
+    }
+
+    /**
+     * Checks to see if the provided values are braiins.
+     *
+     * @param values The values.
+     *
+     * @return The type, if found.
+     */
+    private static Optional<AntminerType> toBraiinsType(final Map<String, String> values) {
+        return BRAIINS_TYPES
+                .stream()
+                .filter(type -> values.containsKey(type.getIdentifier()))
+                .findFirst();
     }
 }
