@@ -4,6 +4,7 @@ setlocal
 
 rem # Set pickaxe home directory
 set PICKAXE_HOME=%~dp0..
+set "PICKAXE_HOST=%COMPUTERNAME%"
 
 rem # Set java - use bundled first
 if "%PROCESSOR_ARCHITECTURE%" == "AMD64" (

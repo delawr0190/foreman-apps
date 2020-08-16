@@ -16,8 +16,7 @@ import java.time.ZonedDateTime;
  * <pre>
  *   {
  *     "timestamp": "2017-12-11T18:53:49.600+0000",
- *     "appVersion": "1.2.3",
- *     "version": "1.0.0-SNAPSHOT"
+ *     "appVersion": "1.2.3"
  *   }
  * </pre>
  */

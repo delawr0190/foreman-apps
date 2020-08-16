@@ -28,7 +28,7 @@ public class PhoenixITest
                 new ClaymoreFactory(
                         new TypeMapping.Builder()
                                 .addMapping(
-                                        "^PM.*- ETH$",
+                                        "^PM.*\\d.\\d[a-zA-Z]? - [a-zA-Z]{3}$",
                                         new BigDecimal(1000))
                                 .build()).create(
                         ImmutableMap.of(
@@ -41,7 +41,7 @@ public class PhoenixITest
                         ImmutableMap.of(
                                 "{\"id\":0,\"jsonrpc\":\"2.0\",\"method\":\"miner_getstat1\"}\n",
                                 new RpcHandler(
-                                        "{\"id\":0,\"jsonrpc\":\"2.0\",\"result\":[\"PM 3.0c - ETH\", \"0\", \"237936;1;0\", \"29792;29791;29689;29787;29793;29794;29793;29494\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"50;49;46;47;47;48;47;47;48;48;48;48;47;47;48;48\", \"ssl://eu1.ethermine.org:5555\", \"0;0;0;0\"]}\n"))),
+                                        "{\"id\":0,\"jsonrpc\":\"2.0\",\"result\":[\"PM 5.1c - ETH\", \"0\", \"237936;1;0\", \"29792;29791;29689;29787;29793;29794;29793;29494\", \"0;0;0\", \"off;off;off;off;off;off;off;off\", \"50;49;46;47;47;48;47;47;48;48;48;48;47;47;48;48\", \"ssl://eu1.ethermine.org:5555\", \"0;0;0;0\"]}\n"))),
                 new MinerStats.Builder()
                         .setApiIp("127.0.0.1")
                         .setApiPort(3333)

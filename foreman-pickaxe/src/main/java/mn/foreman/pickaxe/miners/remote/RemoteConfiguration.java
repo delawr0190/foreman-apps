@@ -51,6 +51,7 @@ import mn.foreman.srbminer.SrbminerFactory;
 import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.swarm.SwarmFactory;
 import mn.foreman.trex.TrexFactory;
+import mn.foreman.util.EnvUtils;
 import mn.foreman.whatsminer.WhatsminerFactory;
 import mn.foreman.xmrig.XmrigFactory;
 import mn.foreman.xmrstak.XmrstakFactory;
@@ -70,6 +71,8 @@ import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -83,6 +86,12 @@ import java.util.stream.Collectors;
  */
 public class RemoteConfiguration
         implements MinerConfiguration {
+
+    /** The hostname. */
+    private static final String HOSTNAME = EnvUtils.getHostname();
+
+    /** The local IP. */
+    private static final String IP = EnvUtils.getLanIp();
 
     /** The logger for this class. */
     private static final Logger LOG =
@@ -168,7 +177,15 @@ public class RemoteConfiguration
 
         final List<MinerConfig> configs = new LinkedList<>();
         getConfig(
-                this.configUrl,
+                String.format(
+                        "%s?hostname=%s&ip=%s",
+                        this.configUrl,
+                        URLEncoder.encode(
+                                HOSTNAME,
+                                StandardCharsets.UTF_8.name()),
+                        URLEncoder.encode(
+                                IP,
+                                StandardCharsets.UTF_8.name())),
                 response -> {
                     try {
                         configs.addAll(

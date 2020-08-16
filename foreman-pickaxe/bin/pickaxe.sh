@@ -52,6 +52,7 @@ start() {
 
         echo -n "Starting pickaxe..."
 
+        export PICKAXE_HOST=$(hostname)
         exec $JAVA \
             $JVM_OPTS \
             $JVM_PARAMS \
