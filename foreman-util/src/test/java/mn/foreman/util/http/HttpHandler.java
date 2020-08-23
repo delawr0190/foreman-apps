@@ -307,9 +307,12 @@ public class HttpHandler
      */
     private boolean didMatch(final HttpExchange exchange)
             throws IOException {
-        final byte[] requestBytes =
+        byte[] requestBytes =
                 IOUtils.toByteArray(
                         exchange.getRequestBody());
+        if (requestBytes.length == 0 && this.expectedRequest.length() > 0) {
+            requestBytes = exchange.getRequestURI().getQuery().getBytes();
+        }
         boolean matched =
                 Arrays.equals(
                         requestBytes,

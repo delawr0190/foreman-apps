@@ -18,16 +18,19 @@ public class BaikalTypeFactory
     @Override
     public Optional<MinerType> toType(
             final Map<String, List<Map<String, String>>> responseValues) {
-        if (responseValues
-                .entrySet()
-                .stream()
-                .filter(entry -> entry.getKey().equals("DEVS"))
-                .map(Map.Entry::getValue)
-                .flatMap(List::stream)
-                .anyMatch(map ->
-                        map.getOrDefault("Name", "").startsWith("BKL"))) {
-            return Optional.of(BaikalType.BAIKAL);
-        }
-        return Optional.empty();
+        final String identifier =
+                responseValues
+                        .entrySet()
+                        .stream()
+                        .filter(entry -> entry.getKey().equals("DEVS"))
+                        .map(Map.Entry::getValue)
+                        .flatMap(List::stream)
+                        .filter(map -> map.containsKey("Name"))
+                        .filter(map -> map.get("Name").startsWith("BKL"))
+                        .map(map -> map.get("Name"))
+                        .findFirst()
+                        .orElse(BaikalType.X.getIdentifier());
+        return BaikalType.forIdentifier(identifier)
+                .map(type -> type);
     }
 }

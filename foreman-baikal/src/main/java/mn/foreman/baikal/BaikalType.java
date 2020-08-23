@@ -14,7 +14,10 @@ public enum BaikalType
         implements MinerType {
 
     /** A Baikal. */
-    BAIKAL("BKLU", "baikal-bk-x");
+    X("BKLU", "baikal-bk-x"),
+
+    /** The Baikal giant. */
+    GIANT("BKLS", "baikal-giant");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, BaikalType> TYPE_MAP =
@@ -66,6 +69,15 @@ public enum BaikalType
     @Override
     public Category getCategory() {
         return Category.ASIC;
+    }
+
+    /**
+     * Returns the identifier.
+     *
+     * @return The identifier.
+     */
+    public String getIdentifier() {
+        return this.identifier;
     }
 
     @Override

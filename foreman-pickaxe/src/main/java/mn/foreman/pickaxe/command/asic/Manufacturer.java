@@ -3,6 +3,9 @@ package mn.foreman.pickaxe.command.asic;
 import mn.foreman.aixin.AixinTypeFactory;
 import mn.foreman.antminer.*;
 import mn.foreman.avalon.AvalonTypeFactory;
+import mn.foreman.baikal.BaikalChangePoolsAction;
+import mn.foreman.baikal.BaikalFactory;
+import mn.foreman.baikal.BaikalRebootAction;
 import mn.foreman.baikal.BaikalTypeFactory;
 import mn.foreman.blackminer.BlackminerConfValue;
 import mn.foreman.blackminer.BlackminerFactory;
@@ -101,7 +104,17 @@ public enum Manufacturer {
             "baikal",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
-                    new BaikalTypeFactory())),
+                    new BaikalTypeFactory()),
+            scheduledThreadPoolExecutor ->
+                    AsyncActionFactory.toAsync(
+                            scheduledThreadPoolExecutor,
+                            new BaikalFactory(),
+                            new BaikalChangePoolsAction()),
+            scheduledThreadPoolExecutor ->
+                    AsyncActionFactory.toAsync(
+                            scheduledThreadPoolExecutor,
+                            new BaikalFactory(),
+                            new BaikalRebootAction())),
 
     /** Blackminer. */
     BLACKMINER(
