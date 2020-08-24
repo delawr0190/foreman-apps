@@ -44,10 +44,13 @@ public abstract class AbstractAsyncActionITest {
     private final Map<String, Object> args;
 
     /** Whether or not a reboot should have occurred. */
-    private final boolean expectedChange;
+    private final boolean foundResult;
 
     /** The factory. */
     private final MinerFactory minerFactory;
+
+    /** The result for when the miner couldn't be found. */
+    private final boolean notFoundResult;
 
     /** The port. */
     private final int port;
@@ -64,7 +67,8 @@ public abstract class AbstractAsyncActionITest {
      * @param serverSuppliers A {@link Supplier} for making servers.
      * @param minerFactory    The miner factory.
      * @param additionalArgs  Any additional args.
-     * @param expectedChange  Whether or not a change should have occurred.
+     * @param foundResult     Whether or not a change should have occurred.
+     * @param notFoundResult  The result for when the miner couldn't be found.
      */
     public AbstractAsyncActionITest(
             final int port,
@@ -73,7 +77,8 @@ public abstract class AbstractAsyncActionITest {
             final List<Supplier<FakeMinerServer>> serverSuppliers,
             final MinerFactory minerFactory,
             final Map<String, Object> additionalArgs,
-            final boolean expectedChange) {
+            final boolean foundResult,
+            final boolean notFoundResult) {
         this.action = action;
         this.port = port;
         this.args = new HashMap<>(DEFAULT_ARGS);
@@ -81,7 +86,38 @@ public abstract class AbstractAsyncActionITest {
         this.args.put("apiPort", apiPort);
         this.serverSuppliers = new ArrayList<>(serverSuppliers);
         this.minerFactory = minerFactory;
-        this.expectedChange = expectedChange;
+        this.foundResult = foundResult;
+        this.notFoundResult = notFoundResult;
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param port            The port.
+     * @param apiPort         The api port.
+     * @param action          The action under test.
+     * @param serverSuppliers A {@link Supplier} for making servers.
+     * @param minerFactory    The miner factory.
+     * @param additionalArgs  Any additional args.
+     * @param foundResult     Whether or not a change should have occurred.
+     */
+    public AbstractAsyncActionITest(
+            final int port,
+            final int apiPort,
+            final AsicAction.CompletableAction action,
+            final List<Supplier<FakeMinerServer>> serverSuppliers,
+            final MinerFactory minerFactory,
+            final Map<String, Object> additionalArgs,
+            final boolean foundResult) {
+        this(
+                port,
+                apiPort,
+                action,
+                serverSuppliers,
+                minerFactory,
+                additionalArgs,
+                foundResult,
+                false);
     }
 
     /**
@@ -94,7 +130,8 @@ public abstract class AbstractAsyncActionITest {
             throws Exception {
         runTest(
                 this.port,
-                this.expectedChange);
+                this.foundResult,
+                true);
     }
 
     /**
@@ -107,6 +144,7 @@ public abstract class AbstractAsyncActionITest {
             throws Exception {
         runTest(
                 this.port + 1,
+                this.notFoundResult,
                 false);
     }
 
@@ -140,10 +178,12 @@ public abstract class AbstractAsyncActionITest {
      *
      * @param port           The API port to query.
      * @param expectedChange Whether or not a change was expected.
+     * @param wasFound       Whether or not the miner was found.
      */
     private void runTest(
             final int port,
-            final boolean expectedChange)
+            final boolean expectedChange,
+            final boolean wasFound)
             throws Exception {
         final List<FakeMinerServer> servers =
                 this.serverSuppliers
@@ -194,7 +234,7 @@ public abstract class AbstractAsyncActionITest {
                         me.getMessage(),
                         expectedChange);
             }
-            if (expectedChange) {
+            if (wasFound) {
                 servers.forEach(
                         server ->
                                 assertTrue(

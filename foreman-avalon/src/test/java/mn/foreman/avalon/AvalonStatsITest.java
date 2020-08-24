@@ -356,7 +356,7 @@ public class AvalonStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("52126282150000.000"))
+                                                        .setHashRate(new BigDecimal("47071128800000.00"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(10)
@@ -666,7 +666,7 @@ public class AvalonStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("38567094380000.000"))
+                                                        .setHashRate(new BigDecimal("36588896320000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(3)
@@ -1288,7 +1288,7 @@ public class AvalonStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("473707649510000.000"))
+                                                        .setHashRate(new BigDecimal("420699742360000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(50)
@@ -1629,7 +1629,7 @@ public class AvalonStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("34751312190000.000"))
+                                                        .setHashRate(new BigDecimal("36550242200000.00"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)

@@ -2,6 +2,9 @@ package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.aixin.AixinTypeFactory;
 import mn.foreman.antminer.*;
+import mn.foreman.avalon.AvalonChangePoolsAction;
+import mn.foreman.avalon.AvalonFactory;
+import mn.foreman.avalon.AvalonRebootAction;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalChangePoolsAction;
 import mn.foreman.baikal.BaikalFactory;
@@ -97,7 +100,18 @@ public enum Manufacturer {
             "avalon",
             new CgMinerDetectionStrategy(
                     CgMinerCommand.STATS,
-                    new AvalonTypeFactory())),
+                    new AvalonTypeFactory()),
+            scheduledThreadPoolExecutor ->
+                    AsyncActionFactory.toAsync(
+                            scheduledThreadPoolExecutor,
+                            new AvalonFactory(),
+                            new AvalonChangePoolsAction(
+                                    new AvalonRebootAction())),
+            scheduledThreadPoolExecutor ->
+                    AsyncActionFactory.toAsync(
+                            scheduledThreadPoolExecutor,
+                            new AvalonFactory(),
+                            new AvalonRebootAction())),
 
     /** Baikal. */
     BAIKAL(

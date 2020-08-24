@@ -11,6 +11,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -292,6 +293,39 @@ public class Query {
     }
 
     /**
+     * Performs a rest query with basic auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param content           The content.
+     * @param responseProcessor The processor for responses.
+     *
+     * @throws IOException        on failure.
+     * @throws URISyntaxException on failure.
+     */
+    public static void restGetQuery(
+            final String host,
+            final int port,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final Consumer<String> responseProcessor) throws IOException, URISyntaxException {
+        runRestQuery(
+                true,
+                host,
+                port,
+                path,
+                username,
+                password,
+                content,
+                responseProcessor);
+    }
+
+    /**
      * Utility method to perform a query against a REST API.
      *
      * @param apiIp                  The API IP.
@@ -545,64 +579,15 @@ public class Query {
             final String password,
             final List<Map<String, Object>> content,
             final Consumer<String> responseProcessor) throws IOException, URISyntaxException {
-        final URI uri =
-                new URI(
-                        "http",
-                        null,
-                        host,
-                        port,
-                        path,
-                        null,
-                        null);
-        final URL url = uri.toURL();
-
-        final HttpHost targetHost =
-                new HttpHost(
-                        url.getHost(),
-                        url.getPort(),
-                        url.getProtocol());
-
-        final CredentialsProvider provider = new BasicCredentialsProvider();
-        final UsernamePasswordCredentials credentials =
-                new UsernamePasswordCredentials(
-                        username,
-                        password);
-        provider.setCredentials(
-                AuthScope.ANY,
-                credentials);
-
-        final AuthCache authCache = new BasicAuthCache();
-        authCache.put(targetHost, new BasicScheme());
-
-        final HttpClientContext context = HttpClientContext.create();
-        context.setCredentialsProvider(provider);
-        context.setAuthCache(authCache);
-
-        final CloseableHttpClient httpClient =
-                HttpClients
-                        .custom()
-                        .disableAutomaticRetries()
-                        .build();
-
-        final HttpPost httpRequest = new HttpPost(url.getPath());
-        final List<NameValuePair> params = new ArrayList<>();
-        content.forEach(entry ->
-                params.add(
-                        new BasicNameValuePair(
-                                entry.get("key").toString(),
-                                entry.get("value").toString())));
-        httpRequest.setEntity(new UrlEncodedFormEntity(params));
-
-        try (final CloseableHttpResponse response =
-                     httpClient.execute(
-                             targetHost,
-                             httpRequest,
-                             context)) {
-            final String responseBody =
-                    EntityUtils.toString(response.getEntity());
-            LOG.debug("Received API response: {}", responseBody);
-            responseProcessor.accept(responseBody);
-        }
+        runRestQuery(
+                false,
+                host,
+                port,
+                path,
+                username,
+                password,
+                content,
+                responseProcessor);
     }
 
     /**
@@ -813,5 +798,101 @@ public class Query {
             throw new MinerException("Failed to obtain a response");
         }
         return response;
+    }
+
+    /**
+     * Performs a rest query with basic auth.
+     *
+     * @param isGet             Whether or not the request is a GET.
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param content           The content.
+     * @param responseProcessor The processor for responses.
+     *
+     * @throws IOException        on failure.
+     * @throws URISyntaxException on failure.
+     */
+    private static void runRestQuery(
+            final boolean isGet,
+            final String host,
+            final int port,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final Consumer<String> responseProcessor) throws IOException, URISyntaxException {
+        final URI uri =
+                new URI(
+                        "http",
+                        null,
+                        host,
+                        port,
+                        path,
+                        null,
+                        null);
+        final URL url = uri.toURL();
+
+        final HttpHost targetHost =
+                new HttpHost(
+                        url.getHost(),
+                        url.getPort(),
+                        url.getProtocol());
+
+        final CredentialsProvider provider = new BasicCredentialsProvider();
+        final UsernamePasswordCredentials credentials =
+                new UsernamePasswordCredentials(
+                        username,
+                        password);
+        provider.setCredentials(
+                AuthScope.ANY,
+                credentials);
+
+        final AuthCache authCache = new BasicAuthCache();
+        authCache.put(targetHost, new BasicScheme());
+
+        final HttpClientContext context = HttpClientContext.create();
+        context.setCredentialsProvider(provider);
+        context.setAuthCache(authCache);
+
+        final CloseableHttpClient httpClient =
+                HttpClients
+                        .custom()
+                        .disableAutomaticRetries()
+                        .setDefaultRequestConfig(
+                                RequestConfig
+                                        .custom()
+                                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                        .build())
+                        .build();
+
+        final HttpRequest httpRequest;
+        if (!isGet) {
+            final HttpPost post = new HttpPost(url.getPath());
+            final List<NameValuePair> params = new ArrayList<>();
+            content.forEach(entry ->
+                    params.add(
+                            new BasicNameValuePair(
+                                    entry.get("key").toString(),
+                                    entry.get("value").toString())));
+            post.setEntity(new UrlEncodedFormEntity(params));
+            httpRequest = post;
+        } else {
+            httpRequest = new HttpGet(url.getPath());
+        }
+
+        try (final CloseableHttpResponse response =
+                     httpClient.execute(
+                             targetHost,
+                             httpRequest,
+                             context)) {
+            final String responseBody =
+                    EntityUtils.toString(response.getEntity());
+            LOG.debug("Received API response: {}", responseBody);
+            responseProcessor.accept(responseBody);
+        }
     }
 }

@@ -49,9 +49,7 @@ class AvalonUtils {
                 .filter(entry -> "SUMMARY".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .flatMap(List::stream)
-                .filter(map ->
-                        map.containsKey("MHS 5s") ||
-                                map.containsKey("MHS 30s"))
+                .filter(map -> map.containsKey("MHS av"))
                 .forEach(map ->
                         builder
                                 .setHashRate(
@@ -158,9 +156,6 @@ class AvalonUtils {
      * @return The hash rate.
      */
     private static BigDecimal toHashRate(final Map<String, String> values) {
-        return new BigDecimal(
-                values.getOrDefault(
-                        "MHS 5s",
-                        values.getOrDefault("MHS 30s", "0")));
+        return new BigDecimal(values.getOrDefault("MHS av", "0"));
     }
 }
