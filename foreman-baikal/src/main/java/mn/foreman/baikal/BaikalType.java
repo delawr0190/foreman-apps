@@ -17,7 +17,7 @@ public enum BaikalType
     X("BKLU", "baikal-bk-x"),
 
     /** The Baikal giant. */
-    GIANT("BKLS", "baikal-giant");
+    GIANT("BKLS", "baikal-giantp-a2000");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, BaikalType> TYPE_MAP =
