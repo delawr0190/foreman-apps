@@ -66,7 +66,7 @@ public abstract class AbstractDetectITest {
         this.detectionStrategy = detectionStrategy;
         this.ip = ip;
         this.port = port;
-        this.args = DEFAULT_ARGS;
+        this.args = args;
         this.serverSupplier = serverSupplier;
         this.detection = detection;
     }
