@@ -31,6 +31,7 @@ public class ZigZ1DetectITest
                         .minerType(DayunType.DAYUN_ZIG_Z1)
                         .ipAddress("127.0.0.1")
                         .port(4028)
+                        .parameters(DEFAULT_ARGS)
                         .build());
     }
 }

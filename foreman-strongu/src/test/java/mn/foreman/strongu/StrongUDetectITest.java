@@ -41,6 +41,7 @@ public class StrongUDetectITest
                         .minerType(expectedType)
                         .ipAddress("127.0.0.1")
                         .port(4028)
+                        .parameters(DEFAULT_ARGS)
                         .build());
     }
 

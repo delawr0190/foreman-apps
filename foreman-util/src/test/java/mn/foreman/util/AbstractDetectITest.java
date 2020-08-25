@@ -3,10 +3,9 @@ package mn.foreman.util;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 
+import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
@@ -22,6 +21,12 @@ public abstract class AbstractDetectITest {
 
     /** A default test port. */
     private static final int DEFAULT_PORT = 4028;
+
+    /** Default arguments. */
+    protected static Map<String, Object> DEFAULT_ARGS =
+            ImmutableMap.of(
+                    "arg1",
+                    "val1");
 
     /** The arguments. */
     private final Map<String, Object> args;
@@ -61,7 +66,7 @@ public abstract class AbstractDetectITest {
         this.detectionStrategy = detectionStrategy;
         this.ip = ip;
         this.port = port;
-        this.args = new HashMap<>(args);
+        this.args = DEFAULT_ARGS;
         this.serverSupplier = serverSupplier;
         this.detection = detection;
     }
@@ -81,7 +86,9 @@ public abstract class AbstractDetectITest {
                 detectionStrategy,
                 DEFAULT_IP,
                 DEFAULT_PORT,
-                Collections.emptyMap(),
+                ImmutableMap.of(
+                        "arg1",
+                        "val1"),
                 serverSupplier,
                 detection);
     }

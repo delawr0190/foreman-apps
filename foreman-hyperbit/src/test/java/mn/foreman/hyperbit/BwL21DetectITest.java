@@ -110,6 +110,7 @@ public class BwL21DetectITest
                         .minerType(HyperbitType.BW_L21)
                         .ipAddress("127.0.0.1")
                         .port(4028)
+                        .parameters(DEFAULT_ARGS)
                         .build());
     }
 }

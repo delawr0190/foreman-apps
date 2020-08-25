@@ -112,6 +112,7 @@ public class CgMinerDetectionStrategy
                                 .ipAddress(ip)
                                 .port(port)
                                 .minerType(type.get())
+                                .parameters(args)
                                 .build();
             }
         } catch (final MinerException | EmptySiteException e) {

@@ -19,7 +19,7 @@ public class MultMinerM1DetectITest
                 new MultMinerDetectionStrategy(),
                 "127.0.0.1",
                 8080,
-                Collections.emptyMap(),
+                DEFAULT_ARGS,
                 () -> new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
@@ -34,7 +34,7 @@ public class MultMinerM1DetectITest
                         .minerType(MultMinerType.M1)
                         .ipAddress("127.0.0.1")
                         .port(8080)
-                        .parameters(Collections.emptyMap())
+                        .parameters(DEFAULT_ARGS)
                         .build());
     }
 }
