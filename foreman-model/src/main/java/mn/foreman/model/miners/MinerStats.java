@@ -411,5 +411,17 @@ public class MinerStats {
             this.apiPort = apiPort;
             return this;
         }
+
+        /**
+         * Sets the {@link Asic ASICs}.
+         *
+         * @param asics The {@link Asic ASICs}.
+         *
+         * @return This builder instance.
+         */
+        public Builder setAsics(final List<Asic> asics) {
+            this.asics.clear();
+            return addAsics(asics);
+        }
     }
 }

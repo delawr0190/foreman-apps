@@ -24,6 +24,23 @@ public class PoolsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(PoolsResponseStrategy.class);
 
+    /** The callback to invoke when a pool is found. */
+    private final PoolCallback poolCallback;
+
+    /** Constructor. */
+    public PoolsResponseStrategy() {
+        this(new NullPoolCallback());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param poolCallback The callback to invoke when a pool is found.
+     */
+    public PoolsResponseStrategy(final PoolCallback poolCallback) {
+        this.poolCallback = poolCallback;
+    }
+
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
@@ -34,10 +51,12 @@ public class PoolsResponseStrategy
                     .stream()
                     .filter(entry -> entry.getKey().startsWith("POOL"))
                     .forEach(entry -> entry.getValue().forEach(
-                            value ->
-                                    addPoolStats(
-                                            builder,
-                                            value)));
+                            value -> {
+                                this.poolCallback.foundPool(value);
+                                addPoolStats(
+                                        builder,
+                                        value);
+                            }));
         } else {
             LOG.debug("No pools found");
         }

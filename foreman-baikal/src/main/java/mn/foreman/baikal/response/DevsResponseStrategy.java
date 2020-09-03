@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;
 
 /**
@@ -28,6 +30,9 @@ public class DevsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(DevsResponseStrategy.class);
 
+    /** A map containing the algos for each pool. */
+    private final ConcurrentMap<String, String> poolAlgoMap;
+
     /** The temperature key. */
     private final String temperatureKey;
 
@@ -37,7 +42,22 @@ public class DevsResponseStrategy
      * @param temperatureKey The temperature key.
      */
     public DevsResponseStrategy(final String temperatureKey) {
+        this(
+                temperatureKey,
+                new ConcurrentHashMap<>());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param temperatureKey The temperature key.
+     * @param poolAlgoMap    The algorithms for each pool.
+     */
+    public DevsResponseStrategy(
+            final String temperatureKey,
+            final ConcurrentMap<String, String> poolAlgoMap) {
         this.temperatureKey = temperatureKey;
+        this.poolAlgoMap = poolAlgoMap;
     }
 
     @Override
@@ -123,6 +143,17 @@ public class DevsResponseStrategy
                 .map(Double::parseDouble)
                 .map(Double::intValue)
                 .forEach(asicBuilder::addTemp);
+        asicValues
+                .stream()
+                .filter(map -> map.containsKey("Last Share Pool"))
+                .map(map -> map.get("Last Share Pool"))
+                .findFirst()
+                .ifPresent(poolIndex -> {
+                    if (this.poolAlgoMap.containsKey(poolIndex)) {
+                        asicBuilder.setPowerState(
+                                this.poolAlgoMap.get(poolIndex));
+                    }
+                });
         statsBuilder.addAsic(asicBuilder.build());
     }
 }

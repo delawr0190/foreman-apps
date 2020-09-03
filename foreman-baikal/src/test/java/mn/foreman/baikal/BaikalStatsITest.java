@@ -278,6 +278,7 @@ public class BaikalStatsITest
                                                                         .setCount(0)
                                                                         .setSpeedUnits("%")
                                                                         .build())
+                                                        .setPowerState("qubit")
                                                         .addTemp(47)
                                                         .addTemp(47)
                                                         .addTemp(46)
@@ -938,6 +939,7 @@ public class BaikalStatsITest
                                                         .addTemp(49)
                                                         .addTemp(44)
                                                         .addTemp(44)
+                                                        .setPowerState("x13")
                                                         .build())
                                         .build()
                         }

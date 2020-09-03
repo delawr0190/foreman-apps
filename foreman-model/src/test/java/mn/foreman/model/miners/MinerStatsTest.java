@@ -52,6 +52,7 @@ public class MinerStatsTest {
                         .setHashRate(new BigDecimal(1234))
                         .setFanInfo(fanInfo)
                         .addTemp(32)
+                        .setPowerState("powerState")
                         .hasErrors(true)
                         .build();
 

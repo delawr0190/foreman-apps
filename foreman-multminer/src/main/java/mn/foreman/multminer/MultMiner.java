@@ -74,7 +74,8 @@ public class MultMiner
                         new FanInfo.Builder()
                                 .setCount(0)
                                 .setSpeedUnits("%")
-                                .build());
+                                .build())
+                .setPowerState(stats.mt.split(" ")[0]);
         stats
                 .boards
                 .stream()

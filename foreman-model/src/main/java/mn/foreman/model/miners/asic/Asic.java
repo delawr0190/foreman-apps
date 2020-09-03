@@ -37,6 +37,7 @@ import java.util.List;
  *       67,
  *       69
  *     ],
+ *     "powerState": "",
  *     "hasErrors": false
  *   }
  * </pre>
@@ -53,21 +54,26 @@ public class Asic {
     @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal hashRate;
 
+    /** The power state. */
+    private final String powerState;
+
     /** The temp sensor readings. */
     private final List<Integer> temps;
 
     /**
      * Constructor.
      *
-     * @param hashRate  The hash rate.
-     * @param fans      The fan information.
-     * @param temps     The temperatures.
-     * @param hasErrors Whether or not errors were observed.
+     * @param hashRate   The hash rate.
+     * @param fans       The fan information.
+     * @param temps      The temperatures.
+     * @param powerState The power state.
+     * @param hasErrors  Whether or not errors were observed.
      */
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
+            @JsonProperty("powerState") final String powerState,
             @JsonProperty("hasErrors") final Boolean hasErrors) {
         Validate.notNull(
                 hashRate,
@@ -84,6 +90,7 @@ public class Asic {
         this.hashRate = hashRate;
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
+        this.powerState = powerState;
         this.hasErrors = hasErrors;
     }
 
@@ -101,6 +108,7 @@ public class Asic {
                             .append(this.hashRate, asic.hashRate)
                             .append(this.fans, asic.fans)
                             .append(this.temps, asic.temps)
+                            .append(this.powerState, asic.powerState)
                             .append(this.hasErrors, asic.hasErrors)
                             .isEquals();
         }
@@ -135,6 +143,15 @@ public class Asic {
     }
 
     /**
+     * Returns the power state.
+     *
+     * @return The power state.
+     */
+    public String getPowerState() {
+        return this.powerState;
+    }
+
+    /**
      * Returns the temps.
      *
      * @return The temps.
@@ -149,6 +166,7 @@ public class Asic {
                 .append(this.hashRate)
                 .append(this.fans)
                 .append(this.temps)
+                .append(this.powerState)
                 .append(this.hasErrors)
                 .hashCode();
     }
@@ -160,12 +178,14 @@ public class Asic {
                         "hashRate=%s, " +
                         "fans=%s, " +
                         "temps=%s, " +
+                        "powerState=%s, " +
                         "hasErrors=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
                 this.fans,
                 this.temps,
+                this.powerState,
                 this.hasErrors);
     }
 
@@ -184,6 +204,9 @@ public class Asic {
 
         /** The hash rate. */
         private BigDecimal hashRate;
+
+        /** The power state. */
+        private String powerState = null;
 
         /**
          * Adds a new temperature reading.
@@ -222,7 +245,26 @@ public class Asic {
                     this.hashRate,
                     this.fanInfo,
                     this.temps,
+                    this.powerState,
                     this.hasErrors);
+        }
+
+        /**
+         * Creates a builder from the asic provided.
+         *
+         * @param asic The asic to reference.
+         *
+         * @return This builder instance.
+         */
+        public Builder fromAsic(final Asic asic) {
+            if (asic != null) {
+                setFanInfo(asic.fans);
+                hasErrors(asic.hasErrors);
+                setHashRate(asic.hashRate);
+                setPowerState(asic.powerState);
+                asic.temps.forEach(this::addTemp);
+            }
+            return this;
         }
 
         /**
@@ -258,6 +300,20 @@ public class Asic {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
+            return this;
+        }
+
+        /**
+         * Sets the power state.
+         *
+         * @param powerState The power state.
+         *
+         * @return This builder instance.
+         */
+        public Builder setPowerState(final String powerState) {
+            if (powerState != null) {
+                this.powerState = powerState.toLowerCase();
+            }
             return this;
         }
     }

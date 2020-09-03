@@ -108,6 +108,7 @@ public class MultMinerM1StatsITest
                                         .addTemp(67)
                                         .addTemp(80)
                                         .addTemp(71)
+                                        .setPowerState("trb")
                                         .build())
                         .build());
     }

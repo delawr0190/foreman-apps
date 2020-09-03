@@ -26,7 +26,13 @@ public enum BlackminerType
     BLACKMINER_F1_ULTRA("Blackminer F1-ULTRA", "blackminer-f1-ultra"),
 
     /** Blackminer F1-Mini. */
-    BLACKMINER_F1_MINI("Blackminer F1-MINI", "blackminer-f1-mini");
+    BLACKMINER_F1_MINI("Blackminer F1-MINI", "blackminer-f1-mini"),
+
+    /** Blackminer F1-Mini. */
+    BLACKMINER_F1_MINIP("Blackminer F1-MINI+", "blackminer-f1-mini+"),
+
+    /** Blackminer F2. */
+    BLACKMINER_F2("Blackminer F2", "blackminer-f2");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, BlackminerType> TYPE_MAP =

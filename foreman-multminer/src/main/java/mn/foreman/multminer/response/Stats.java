@@ -18,6 +18,10 @@ public class Stats {
     @JsonProperty("ms")
     public List<List<String>> ms;
 
+    /** The mt json property. */
+    @JsonProperty("mt")
+    public String mt;
+
     /** A board object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     @JsonDeserialize(using = BoardDeserializer.class)

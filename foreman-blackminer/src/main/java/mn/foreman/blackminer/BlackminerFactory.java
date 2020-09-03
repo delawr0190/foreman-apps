@@ -9,6 +9,7 @@ import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
@@ -36,24 +37,29 @@ public class BlackminerFactory
                                                 values,
                                                 builder)),
                         () -> null);
-        return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp"))
-                .setApiPort(config.get("apiPort"))
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        new PoolsResponseStrategy())
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.SUMMARY)
-                                .build(),
-                        responseStrategy)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.STATS)
-                                .build(),
-                        responseStrategy)
-                .build();
+        return new CoinTypeDecorator(
+                new CgMiner.Builder()
+                        .setApiIp(config.get("apiIp"))
+                        .setApiPort(config.get("apiPort"))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy())
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                responseStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.STATS)
+                                        .build(),
+                                responseStrategy)
+                        .build(),
+                config.getOrDefault("username", ""),
+                config.getOrDefault("password", ""),
+                Integer.parseInt(config.getOrDefault("port", "80")),
+                new ObjectMapper());
     }
 }
