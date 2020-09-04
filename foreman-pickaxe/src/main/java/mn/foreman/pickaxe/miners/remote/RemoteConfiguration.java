@@ -15,7 +15,6 @@ import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.TypeMapping;
 import mn.foreman.cpuminer.CpuminerFactory;
 import mn.foreman.dayun.DayunFactory;
-import mn.foreman.dragonmint.Dragonmint;
 import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
 import mn.foreman.ethminer.EthminerFactory;
@@ -59,7 +58,6 @@ import mn.foreman.xmrstak.XmrstakType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.Validate;
 import org.slf4j.Logger;
@@ -291,20 +289,15 @@ public class RemoteConfiguration
     }
 
     /**
-     * Finds the {@link MinerConfig.Param} that matches the provided key.
+     * Adds all of the params.
      *
-     * @param key    The key.
-     * @param params The params.
-     *
-     * @return The matching param.
+     * @param dest   The destination.
+     * @param params The params to add.
      */
-    private static Optional<MinerConfig.Param> findParam(
-            final String key,
+    private static void addParams(
+            final Map<String, String> dest,
             final List<MinerConfig.Param> params) {
-        return params
-                .stream()
-                .filter(param -> key.equals(param.key))
-                .findAny();
+        params.forEach(param -> dest.put(param.key, param.value));
     }
 
     /**
@@ -337,65 +330,6 @@ public class RemoteConfiguration
                                         () -> new IllegalArgumentException(
                                                 "Invalid api type"))));
         return new AutoMinerFactory(mappingBuilder.build());
-    }
-
-    /**
-     * Creates a claymore {@link Miner} from the config.
-     *
-     * @param port         The port.
-     * @param config       The config.
-     * @param minerFactory The factory.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toClaymore(
-            final int port,
-            final MinerConfig config,
-            final MinerFactory minerFactory) {
-        final Map<String, String> attributes = new HashMap<>();
-        attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(port));
-        findParam(
-                "apiPassword",
-                config.params).ifPresent(
-                (password) ->
-                        attributes.put(
-                                "apiPassword",
-                                password.value));
-        return minerFactory.create(attributes);
-    }
-
-    /**
-     * Creates a {@link Dragonmint} miner from the configuration.
-     *
-     * @param port         The port.
-     * @param config       The config.
-     * @param minerFactory The factory.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toDragonmintApi(
-            final int port,
-            final MinerConfig config,
-            final MinerFactory minerFactory) {
-        final Map<String, String> attributes = new HashMap<>();
-        attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(port));
-        findParam(
-                "username",
-                config.params).ifPresent(
-                (username) ->
-                        attributes.put(
-                                "username",
-                                username.value));
-        findParam(
-                "password",
-                config.params).ifPresent(
-                (password) ->
-                        attributes.put(
-                                "password",
-                                password.value));
-        return minerFactory.create(attributes);
     }
 
     /**
@@ -644,12 +578,17 @@ public class RemoteConfiguration
             final int port,
             final MinerConfig config,
             final mn.foreman.model.MinerFactory minerFactory) {
-        return minerFactory.create(
-                ImmutableMap.of(
-                        "apiIp",
-                        config.apiIp,
-                        "apiPort",
-                        Integer.toString(port)));
+        final Map<String, String> params = new HashMap<>();
+        params.put(
+                "apiIp",
+                config.apiIp);
+        params.put(
+                "apiPort",
+                Integer.toString(port));
+        addParams(
+                params,
+                config.params);
+        return minerFactory.create(params);
     }
 
     /**
@@ -686,16 +625,6 @@ public class RemoteConfiguration
 
         final List<Miner> miners = new LinkedList<>();
         switch (apiType) {
-            case ETHMINER_API:
-                // Fall through
-            case CLAYMORE_ETH_API:
-                // Fall through
-            case CLAYMORE_ZEC_API:
-                miners.add(toClaymore(port, config, minerFactory));
-                break;
-            case DRAGONMINT_API:
-                miners.add(toDragonmintApi(port, config, minerFactory));
-                break;
             case XMRSTAK_GPU_API:
                 // Fall through
             case XMRSTAK_CPU_API:
