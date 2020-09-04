@@ -3,6 +3,7 @@ package mn.foreman.pickaxe.command.asic;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
 import mn.foreman.pickaxe.command.StrategyFactory;
+import mn.foreman.pickaxe.command.asic.digest.DigestStrategy;
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
@@ -33,14 +34,10 @@ public class AsicStrategyFactory
         Optional<CommandStrategy> strategy = Optional.empty();
         switch (type) {
             case "discover":
-                strategy =
-                        Optional.of(
-                                new DiscoverStrategy());
+                strategy = Optional.of(new DiscoverStrategy());
                 break;
             case "scan":
-                strategy =
-                        Optional.of(
-                                new ScanStrategy());
+                strategy = Optional.of(new ScanStrategy());
                 break;
             case "change-pools":
                 strategy =
@@ -55,6 +52,9 @@ public class AsicStrategyFactory
                                 new RebootingCommandStrategy(
                                         this.postRebootProcessor,
                                         Manufacturer::getRebootAction));
+                break;
+            case "digest":
+                strategy = Optional.of(new DigestStrategy());
                 break;
             default:
                 break;

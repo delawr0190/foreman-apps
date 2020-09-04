@@ -7,6 +7,7 @@ import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link FakeHttpMinerServer} provides a fake HTTP-based miner API that can
@@ -14,6 +15,11 @@ import java.util.Map;
  */
 public class FakeHttpMinerServer
         extends AbstractFakeMinerServer<ServerHandler> {
+
+    /**
+     * The maximum number of times to wait for a connection to be established.
+     */
+    private static final int MAX_CONNECT_ATTEMPTS = 5;
 
     /** The server. */
     private HttpServer server;
@@ -37,19 +43,27 @@ public class FakeHttpMinerServer
 
     @Override
     public void start() {
-        try {
-            this.server =
-                    HttpServer.create(
-                            new InetSocketAddress(this.port),
-                            0);
-            for (final Map.Entry<String, ServerHandler> entry :
-                    this.handlers.entrySet()) {
-                this.server.createContext(entry.getKey(), entry.getValue());
+        boolean connected = false;
+        int attempts = 0;
+        do {
+            try {
+                this.server =
+                        HttpServer.create(
+                                new InetSocketAddress(this.port),
+                                0);
+                for (final Map.Entry<String, ServerHandler> entry :
+                        this.handlers.entrySet()) {
+                    this.server.createContext(entry.getKey(), entry.getValue());
+                }
+                this.server.start();
+                connected = true;
+            } catch (final IOException ioe) {
+                try {
+                    TimeUnit.SECONDS.sleep(5);
+                } catch (InterruptedException e) {
+                    // Ignore
+                }
             }
-            this.server.start();
-        } catch (final IOException ioe) {
-            throw new IllegalArgumentException(
-                    "Exception occurred: " + ioe);
-        }
+        } while (!connected && attempts++ < MAX_CONNECT_ATTEMPTS);
     }
 }
