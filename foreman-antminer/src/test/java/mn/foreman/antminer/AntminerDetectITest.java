@@ -103,12 +103,20 @@ public class AntminerDetectITest
                                 AntminerType.ANTMINER_S19_PRO
                         },
                         {
+                                // Antminer Z9
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1599985655,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 26 20:42:30 CST 2018\",\"Type\":\"Antminer Z9\"}],\"id\":1}")),
+                                AntminerType.ANTMINER_Z9
+                        },
+                        {
                                 // Antminer Z9 Mini
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1545582055,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 26 20:42:30 CST 2018\",\"Type\":\"Antminer Z9-Mini\"}],\"id\":1}")),
-                                AntminerType.ANTMINER_Z9
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1599985655,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 26 20:42:30 CST 2018\",\"Type\":\"Antminer Z9-Mini\"}],\"id\":1}")),
+                                AntminerType.ANTMINER_Z9M
                         },
                         {
                                 // Braiins OS S9

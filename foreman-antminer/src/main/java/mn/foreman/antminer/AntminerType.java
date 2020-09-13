@@ -68,6 +68,9 @@ public enum AntminerType
     /** Antminer Z9. */
     ANTMINER_Z9("Antminer Z9", "antminer-z9"),
 
+    /** Antminer Z9-Mini. */
+    ANTMINER_Z9M("Antminer Z9-Mini", "antminer-z9-mini"),
+
     /** Antminer Z11. */
     ANTMINER_Z11("Antminer Z11", "antminer-z11"),
 
