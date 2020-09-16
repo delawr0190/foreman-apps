@@ -141,6 +141,14 @@ public class AntminerDetectITest
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597196862,\"Code\":22,\"Msg\":\"BOSminer versions\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer\":\"0.2.0-d360818\"}],\"id\":1}")),
                                 AntminerType.BRAIINS_S9_BOS
+                        },
+                        {
+                                // Hiveon S9
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1600293257,\"Code\":22,\"Msg\":\"BMMiner versions\",\"Description\":\"bmminer 1.0.0\"}],\"VERSION\":[{\"BMMiner\":\"2.0.0 rwglr\",\"API\":\"3.1\",\"Miner\":\"30.0.1.3\",\"CompileTime\":\"Tue Nov 20 10:12:30 UTC 2019\",\"Type\":\"Antminer S9 Hiveon\"}],\"id\":1}")),
+                                AntminerType.ANTMINER_S9
                         }
                 });
     }
