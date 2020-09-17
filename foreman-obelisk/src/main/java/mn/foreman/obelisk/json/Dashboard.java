@@ -62,6 +62,10 @@ public class Dashboard {
         /** The pool url. */
         @JsonProperty("url")
         public String url;
+
+        /** The worker. */
+        @JsonProperty("worker")
+        public String worker;
     }
 
     /** A system info response object. */

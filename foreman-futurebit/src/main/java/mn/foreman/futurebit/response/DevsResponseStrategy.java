@@ -1,5 +1,7 @@
 package mn.foreman.futurebit.response;
 
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
@@ -30,6 +32,18 @@ public class DevsResponseStrategy
     /** MHs 20s. */
     private static final String MHS_20_KEY = "MHS 20s";
 
+    /** Sets the context. */
+    private final Context context;
+
+    /**
+     * Constructor.
+     *
+     * @param context The context.
+     */
+    public DevsResponseStrategy(final Context context) {
+        this.context = context;
+    }
+
     @Override
     public void processResponse(
             final MinerStats.Builder builder,
@@ -51,32 +65,6 @@ public class DevsResponseStrategy
         } else {
             LOG.debug("Received an empty response");
         }
-    }
-
-    /**
-     * Adds all of the PGAs from the provided values.
-     *
-     * @param values       The values.
-     * @param statsBuilder The builder.
-     */
-    private static void addPga(
-            final List<Map<String, String>> values,
-            final MinerStats.Builder statsBuilder) {
-        final List<Map<String, String>> pgaValues =
-                values
-                        .stream()
-                        .filter((map) -> map.containsKey("PGA"))
-                        .collect(Collectors.toList());
-        statsBuilder.addAsic(
-                new Asic.Builder()
-                        .setHashRate(toRate(pgaValues))
-                        .setFanInfo(
-                                new FanInfo.Builder()
-                                        .setCount(0)
-                                        .setSpeedUnits("RPM")
-                                        .build())
-                        .hasErrors(false)
-                        .build());
     }
 
     /**
@@ -110,5 +98,33 @@ public class DevsResponseStrategy
                         value.multiply(
                                 new BigDecimal(1000 * 1000)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Adds all of the PGAs from the provided values.
+     *
+     * @param values       The values.
+     * @param statsBuilder The builder.
+     */
+    private void addPga(
+            final List<Map<String, String>> values,
+            final MinerStats.Builder statsBuilder) {
+        final List<Map<String, String>> pgaValues =
+                values
+                        .stream()
+                        .filter((map) -> map.containsKey("PGA"))
+                        .collect(Collectors.toList());
+        final Asic.Builder asicBuilder =
+                new Asic.Builder()
+                        .setHashRate(toRate(pgaValues))
+                        .setFanInfo(
+                                new FanInfo.Builder()
+                                        .setCount(0)
+                                        .setSpeedUnits("RPM")
+                                        .build())
+                        .hasErrors(false);
+        this.context.get(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
+        statsBuilder.addAsic(asicBuilder.build());
     }
 }

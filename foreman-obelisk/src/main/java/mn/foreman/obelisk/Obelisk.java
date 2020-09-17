@@ -9,6 +9,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.obelisk.json.Dashboard;
 import mn.foreman.obelisk.json.Info;
+import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -116,11 +118,13 @@ public class Obelisk
      * @param statsBuilder The stats builder.
      * @param dashboard    The dashboard stats.
      * @param gen          The generation.
+     * @param mrrRigId     The MRR rig id.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
             final Dashboard dashboard,
-            final ObeliskGen gen) {
+            final ObeliskGen gen,
+            final String mrrRigId) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder.setHashRate(toHashRate(dashboard));
@@ -147,6 +151,8 @@ public class Obelisk
                     asicBuilder.addTemp(board.temp1);
                     asicBuilder.addTemp(board.temp2);
                 });
+
+        asicBuilder.setMrrRigId(mrrRigId);
 
         statsBuilder.addAsic(asicBuilder.build());
     }
@@ -233,13 +239,20 @@ public class Obelisk
                         .password(this.password)
                         .responseClass(Dashboard.class)
                         .responseCallback(dashboard -> {
-                            addAsics(
-                                    statsBuilder,
-                                    dashboard,
-                                    gen);
                             addPools(
                                     statsBuilder,
                                     dashboard);
+                            addAsics(
+                                    statsBuilder,
+                                    dashboard,
+                                    gen,
+                                    dashboard
+                                            .pools
+                                            .stream()
+                                            .map(pool -> MrrUtils.getRigId(pool.url, pool.worker))
+                                            .filter(Objects::nonNull)
+                                            .findFirst()
+                                            .orElse(""));
                         })
                         .build());
     }

@@ -1,5 +1,7 @@
 package mn.foreman.antminer.response.braiins;
 
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
@@ -21,11 +23,23 @@ import java.util.stream.Collectors;
 public class BraiinsResponseStrategy
         implements ResponseStrategy {
 
+    /** The context. */
+    private final Context context;
+
     /** The fans. */
     private FanInfo fanInfo;
 
     /** The hash rate. */
     private BigDecimal hashRate;
+
+    /**
+     * Constructor.
+     *
+     * @param context The context.
+     */
+    public BraiinsResponseStrategy(final Context context) {
+        this.context = context;
+    }
 
     @Override
     public void processResponse(
@@ -63,7 +77,7 @@ public class BraiinsResponseStrategy
                 values
                         .stream()
                         .map(map -> map.get("RPM"))
-                        .filter(rpm -> !"0" .equals(rpm))
+                        .filter(rpm -> !"0".equals(rpm))
                         .collect(Collectors.toList());
         final FanInfo.Builder fanBuilder =
                 new FanInfo.Builder()
@@ -111,6 +125,11 @@ public class BraiinsResponseStrategy
             asicBuilder.addTemp(map.get("Board"));
             asicBuilder.addTemp(map.get("Chip"));
         });
+
+        // MRR rig id
+        this.context.get(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
+
         builder.addAsic(asicBuilder.build());
     }
 }

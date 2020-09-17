@@ -1,5 +1,7 @@
 package mn.foreman.baikal.response;
 
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
@@ -30,6 +32,9 @@ public class DevsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(DevsResponseStrategy.class);
 
+    /** The context. */
+    private final Context context;
+
     /** A map containing the algos for each pool. */
     private final ConcurrentMap<String, String> poolAlgoMap;
 
@@ -40,11 +45,15 @@ public class DevsResponseStrategy
      * Constructor.
      *
      * @param temperatureKey The temperature key.
+     * @param context        The context.
      */
-    public DevsResponseStrategy(final String temperatureKey) {
+    public DevsResponseStrategy(
+            final String temperatureKey,
+            final Context context) {
         this(
                 temperatureKey,
-                new ConcurrentHashMap<>());
+                new ConcurrentHashMap<>(),
+                context);
     }
 
     /**
@@ -52,12 +61,15 @@ public class DevsResponseStrategy
      *
      * @param temperatureKey The temperature key.
      * @param poolAlgoMap    The algorithms for each pool.
+     * @param context        The context.
      */
     public DevsResponseStrategy(
             final String temperatureKey,
-            final ConcurrentMap<String, String> poolAlgoMap) {
+            final ConcurrentMap<String, String> poolAlgoMap,
+            final Context context) {
         this.temperatureKey = temperatureKey;
         this.poolAlgoMap = poolAlgoMap;
+        this.context = context;
     }
 
     @Override
@@ -154,6 +166,8 @@ public class DevsResponseStrategy
                                 this.poolAlgoMap.get(poolIndex));
                     }
                 });
+        this.context.get(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
         statsBuilder.addAsic(asicBuilder.build());
     }
 }

@@ -8,6 +8,7 @@ import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.multminer.response.Stats;
+import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,6 +17,7 @@ import com.google.common.collect.Iterables;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A {@link MultMiner} provides a {@link AbstractMiner} implementation that can
@@ -49,12 +51,23 @@ public class MultMiner
                         "/gst.csp?a=a",
                         new TypeReference<Stats>() {
                         });
-        addAsics(
-                statsBuilder,
-                stats);
         addPools(
                 statsBuilder,
                 stats.ms);
+        addAsics(
+                statsBuilder,
+                stats,
+                stats
+                        .ms
+                        .stream()
+                        .filter(strings -> strings.size() >= 7)
+                        .map(strings ->
+                                MrrUtils.getRigId(
+                                        strings.get(6),
+                                        strings.get(2)))
+                        .filter(Objects::nonNull)
+                        .findAny()
+                        .orElse(""));
     }
 
     /**
@@ -62,10 +75,12 @@ public class MultMiner
      *
      * @param statsBuilder The stats builder.
      * @param stats        The stats.
+     * @param mrrRigId     The rig ID.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
-            final Stats stats) {
+            final Stats stats,
+            final String mrrRigId) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder
@@ -84,6 +99,7 @@ public class MultMiner
                 .flatMap(List::stream)
                 .map(chip -> Iterables.get(chip, 1, "0"))
                 .forEach(asicBuilder::addTemp);
+        asicBuilder.setMrrRigId(mrrRigId);
         statsBuilder.addAsic(asicBuilder.build());
     }
 

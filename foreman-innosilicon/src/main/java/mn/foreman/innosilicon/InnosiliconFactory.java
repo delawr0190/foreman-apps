@@ -36,8 +36,11 @@ public class InnosiliconFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
+        final Context context = new Context();
         final ResponseStrategy responseStrategy =
-                createResponseStrategy(this.apiType);
+                createResponseStrategy(
+                        this.apiType,
+                        context);
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -45,7 +48,8 @@ public class InnosiliconFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)
                                 .build(),
-                        new PoolsResponseStrategy())
+                        new PoolsResponseStrategy(
+                                new MrrRigIdCallback(context)))
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.SUMMARY)
@@ -63,12 +67,14 @@ public class InnosiliconFactory
      * Creates a strategy that will correct the hash rate returned by the API
      * and aggregate summary and stats responses to extract {@link Asic ASICs}.
      *
-     * @param apiType The type.
+     * @param apiType   The type.
+     * @param cgContext The context.
      *
      * @return The strategy.
      */
     private static ResponseStrategy createResponseStrategy(
-            final ApiType apiType) {
+            final ApiType apiType,
+            final Context cgContext) {
         return new RateMultiplyingDecorator(
                 "SUMMARY",
                 "MHS av",
@@ -79,7 +85,8 @@ public class InnosiliconFactory
                                 (values, builder, context) -> updateSummary(values, builder),
                                 "STATS",
                                 (values, builder, context) -> updateStats(values, builder)),
-                        () -> null));
+                        () -> null,
+                        cgContext));
     }
 
     /**

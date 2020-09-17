@@ -142,7 +142,7 @@ public class BwL21StatsITest
                                                 "      \"Stale\": 0,\n" +
                                                 "      \"Get Failures\": 0,\n" +
                                                 "      \"Remote Failures\": 0,\n" +
-                                                "      \"User\": \"xxxx\",\n" +
+                                                "      \"User\": \"xxxx.yyyy\",\n" +
                                                 "      \"Passwd\": \"xxxx\",\n" +
                                                 "      \"Last Share Time\": 1558529871,\n" +
                                                 "      \"Diff1 Shares\": 2048,\n" +
@@ -283,6 +283,9 @@ public class BwL21StatsITest
                                         .addTemp(34)
                                         .addTemp(34)
                                         .addTemp(34)
+                                        .addAttribute(
+                                                "mrr_rig_id",
+                                                "yyyy")
                                         .build())
                         .build());
     }

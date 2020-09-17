@@ -1,5 +1,7 @@
 package mn.foreman.dayun.response;
 
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.FanInfo;
@@ -23,6 +25,18 @@ public class StatsResponseStrategy
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(StatsResponseStrategy.class);
+
+    /** The context. */
+    private final Context context;
+
+    /**
+     * Constructor.
+     *
+     * @param context The context.
+     */
+    public StatsResponseStrategy(final Context context) {
+        this.context = context;
+    }
 
     @Override
     public void processResponse(
@@ -52,13 +66,13 @@ public class StatsResponseStrategy
      * @param builder The builder to update.
      * @param values  The asic values.
      */
-    private static void addAsicStats(
+    private void addAsicStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
         final BigDecimal hashRate =
                 new BigDecimal(values.get("MHS 30S"))
                         .multiply(new BigDecimal(Math.pow(1000, 2)));
-        builder.addAsic(
+        final Asic.Builder asicBuilder =
                 new Asic.Builder()
                         .setHashRate(hashRate)
                         .setFanInfo(
@@ -74,7 +88,9 @@ public class StatsResponseStrategy
                         .addTemp(values.get("CH3 Temp"))
                         .addTemp(values.get("CH4 Temp"))
                         // API doesn't report errors
-                        .hasErrors(false)
-                        .build());
+                        .hasErrors(false);
+        this.context.get(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
+        builder.addAsic(asicBuilder.build());
     }
 }

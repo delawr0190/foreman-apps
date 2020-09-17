@@ -8,6 +8,7 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <h1>Overview</h1>
@@ -75,13 +77,20 @@ public class Dragonmint
                         this.password,
                         new TypeReference<Summary>() {
                         });
-        addAsics(
-                statsBuilder,
-                summary.devs,
-                summary.hardware);
         addPools(
                 statsBuilder,
                 summary.pools);
+        addAsics(
+                statsBuilder,
+                summary.devs,
+                summary.hardware,
+                summary
+                        .pools
+                        .stream()
+                        .map(pool -> MrrUtils.getRigId(pool.url, pool.user))
+                        .filter(Objects::nonNull)
+                        .findAny()
+                        .orElse(""));
     }
 
     @Override
@@ -116,11 +125,13 @@ public class Dragonmint
      * @param statsBuilder The stats builder.
      * @param devs         The devices.
      * @param hardware     The hardware information.
+     * @param mrrRigId     The rig ID.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
             final List<Summary.Dev> devs,
-            final Summary.Hardware hardware) {
+            final Summary.Hardware hardware,
+            final String mrrRigId) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder
@@ -134,6 +145,7 @@ public class Dragonmint
         for (final Summary.Dev dev : devs) {
             asicBuilder.addTemp(dev.temperature);
         }
+        asicBuilder.setMrrRigId(mrrRigId);
         statsBuilder.addAsic(asicBuilder.build());
     }
 

@@ -1,6 +1,8 @@
 package mn.foreman.dayun;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.MrrRigIdCallback;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
@@ -20,6 +22,7 @@ public class DayunFactory
 
     @Override
     public Miner create(final Map<String, String> config) {
+        final Context context = new Context();
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -27,12 +30,13 @@ public class DayunFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)
                                 .build(),
-                        new PoolsResponseStrategy())
+                        new PoolsResponseStrategy(
+                                new MrrRigIdCallback(context)))
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        new StatsResponseStrategy(),
+                        new StatsResponseStrategy(context),
                         new StatsPatchingStrategy())
                 .build();
     }

@@ -232,5 +232,9 @@ public class Summary {
         /** The url. */
         @JsonProperty("URL")
         public String url;
+
+        /** The user. */
+        @JsonProperty("User")
+        public String user;
     }
 }

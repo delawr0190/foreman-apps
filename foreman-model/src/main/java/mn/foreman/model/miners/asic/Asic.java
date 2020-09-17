@@ -6,15 +6,13 @@ import mn.foreman.model.miners.FanInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * The following POJO represents a JSON object with the following format:
@@ -44,6 +42,9 @@ import java.util.List;
  */
 public class Asic {
 
+    /** Miscellaneous rig attributes. */
+    private final List<Map<String, String>> attributes;
+
     /** The fan readings. */
     private final FanInfo fans;
 
@@ -68,13 +69,15 @@ public class Asic {
      * @param temps      The temperatures.
      * @param powerState The power state.
      * @param hasErrors  Whether or not errors were observed.
+     * @param attributes Rig attributes.
      */
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("powerState") final String powerState,
-            @JsonProperty("hasErrors") final Boolean hasErrors) {
+            @JsonProperty("hasErrors") final Boolean hasErrors,
+            @JsonProperty("attributes") final List<Map<String, String>> attributes) {
         Validate.notNull(
                 hashRate,
                 "hashRate cannot be null");
@@ -92,6 +95,7 @@ public class Asic {
         this.temps = new ArrayList<>(temps);
         this.powerState = powerState;
         this.hasErrors = hasErrors;
+        this.attributes = new ArrayList<>(attributes);
     }
 
     @Override
@@ -110,9 +114,19 @@ public class Asic {
                             .append(this.temps, asic.temps)
                             .append(this.powerState, asic.powerState)
                             .append(this.hasErrors, asic.hasErrors)
+                            .append(this.attributes, asic.attributes)
                             .isEquals();
         }
         return isEqual;
+    }
+
+    /**
+     * Returns the attributes.
+     *
+     * @return The attributes.
+     */
+    public List<Map<String, String>> getAttributes() {
+        return Collections.unmodifiableList(this.attributes);
     }
 
     /**
@@ -168,6 +182,7 @@ public class Asic {
                 .append(this.temps)
                 .append(this.powerState)
                 .append(this.hasErrors)
+                .append(this.attributes)
                 .hashCode();
     }
 
@@ -179,19 +194,24 @@ public class Asic {
                         "fans=%s, " +
                         "temps=%s, " +
                         "powerState=%s, " +
-                        "hasErrors=%s" +
+                        "hasErrors=%s, " +
+                        "attributes=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
                 this.fans,
                 this.temps,
                 this.powerState,
-                this.hasErrors);
+                this.hasErrors,
+                this.attributes);
     }
 
     /** A builder for creating {@link Asic ASICs}. */
     public static class Builder
             extends AbstractBuilder<Asic> {
+
+        /** The attributes. */
+        private final List<Map<String, String>> attributes = new ArrayList<>();
 
         /** The temperatures. */
         private final List<Integer> temps = new LinkedList<>();
@@ -207,6 +227,58 @@ public class Asic {
 
         /** The power state. */
         private String powerState = null;
+
+        /**
+         * Adds a rig attribute.
+         *
+         * @param key   The key.
+         * @param value The value.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder addAttribute(
+                final String key,
+                final String value) {
+            if ((key != null) && (!key.isEmpty()) &&
+                    (value != null) && (!value.isEmpty())) {
+                this.attributes.add(
+                        ImmutableMap.of(
+                                "key",
+                                key,
+                                "value",
+                                value));
+            }
+            return this;
+        }
+
+        /**
+         * Adds the provided attributes.
+         *
+         * @param attributes The attributes to add.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder addAttributes(
+                final List<Map<String, String>> attributes) {
+            if (attributes != null) {
+                attributes.forEach(this::addAttributes);
+            }
+            return this;
+        }
+
+        /**
+         * Adds the provided attributes.
+         *
+         * @param attributes The attributes to add.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder addAttributes(final Map<String, String> attributes) {
+            if (attributes != null) {
+                this.attributes.add(new HashMap<>(attributes));
+            }
+            return this;
+        }
 
         /**
          * Adds a new temperature reading.
@@ -246,7 +318,8 @@ public class Asic {
                     this.fanInfo,
                     this.temps,
                     this.powerState,
-                    this.hasErrors);
+                    this.hasErrors,
+                    this.attributes);
         }
 
         /**
@@ -263,6 +336,7 @@ public class Asic {
                 setHashRate(asic.hashRate);
                 setPowerState(asic.powerState);
                 asic.temps.forEach(this::addTemp);
+                addAttributes(asic.attributes);
             }
             return this;
         }
@@ -300,6 +374,22 @@ public class Asic {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
+            return this;
+        }
+
+        /**
+         * Sets the rig id
+         *
+         * @param rigId The rig id.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setMrrRigId(final String rigId) {
+            if (rigId != null && !rigId.isEmpty()) {
+                addAttribute(
+                        "mrr_rig_id",
+                        rigId);
+            }
             return this;
         }
 

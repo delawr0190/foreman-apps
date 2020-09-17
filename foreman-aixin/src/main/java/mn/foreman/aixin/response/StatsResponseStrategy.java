@@ -1,5 +1,7 @@
 package mn.foreman.aixin.response;
 
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.ResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
@@ -28,6 +30,18 @@ public class StatsResponseStrategy
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(StatsResponseStrategy.class);
+
+    /** The context. */
+    private final Context context;
+
+    /**
+     * Constructor.
+     *
+     * @param context The context.
+     */
+    public StatsResponseStrategy(final Context context) {
+        this.context = context;
+    }
 
     @Override
     public void processResponse(
@@ -58,7 +72,7 @@ public class StatsResponseStrategy
      * @param builder The builder to update.
      * @param values  The asic values.
      */
-    private static void addAsicStats(
+    private void addAsicStats(
             final MinerStats.Builder builder,
             final List<Map<String, String>> values) {
         if (values.size() >= 1) {
@@ -106,6 +120,11 @@ public class StatsResponseStrategy
                                     Integer.parseInt(map.get("Num chips")) !=
                                             Integer.parseInt(map.get("Num active " +
                                                     "chips"))));
+
+            // MRR rig id
+            this.context.get(ContextKey.MRR_RIG_ID)
+                    .ifPresent(asicBuilder::setMrrRigId);
+
             builder.addAsic(asicBuilder.build());
         } else {
             LOG.warn("No stats found");

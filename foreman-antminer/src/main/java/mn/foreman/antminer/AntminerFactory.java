@@ -3,10 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.antminer.response.VersionResponseStrategy;
 import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
-import mn.foreman.cgminer.CgMiner;
-import mn.foreman.cgminer.PoolsResponseStrategy;
-import mn.foreman.cgminer.RateMultiplyingDecorator;
-import mn.foreman.cgminer.ResponseStrategy;
+import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -44,6 +41,8 @@ public class AntminerFactory
         final String apiIp = config.get("apiIp");
         final String apiPort = config.get("apiPort");
 
+        final Context context = new Context();
+
         final CgMiner antminer =
                 toMiner(
                         apiIp,
@@ -51,7 +50,8 @@ public class AntminerFactory
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
-                                        new PoolsResponseStrategy()),
+                                        new PoolsResponseStrategy(
+                                                new MrrRigIdCallback(context))),
                                 ImmutableMap.of(
                                         CgMinerCommand.STATS,
                                         new RateMultiplyingDecorator(
@@ -62,10 +62,12 @@ public class AntminerFactory
                                                         "STATS",
                                                         "GHS 5s",
                                                         this.multiplier,
-                                                        new StatsResponseStrategy())))));
+                                                        new StatsResponseStrategy(
+                                                                context))))));
 
         final ResponseStrategy braiinsStrategy =
-                new BraiinsResponseStrategy();
+                new BraiinsResponseStrategy(
+                        context);
         final CgMiner braiins =
                 toMiner(
                         apiIp,
@@ -73,7 +75,8 @@ public class AntminerFactory
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
-                                        new PoolsResponseStrategy()),
+                                        new PoolsResponseStrategy(
+                                                new MrrRigIdCallback(context))),
                                 ImmutableMap.of(
                                         CgMinerCommand.SUMMARY,
                                         braiinsStrategy),

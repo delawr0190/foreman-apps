@@ -24,6 +24,9 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
     private static final Logger LOG =
             LoggerFactory.getLogger(AggregatingResponseStrategy.class);
 
+    /** The context. */
+    private final Context context;
+
     /** The factory for creating new contexts. */
     private final Supplier<T> contextFactory;
 
@@ -45,12 +48,15 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
      *
      * @param responseMapping The mapping of response key to strategy.
      * @param contextFactory  The factory for creating new contexts.
+     * @param context         The context.
      */
     public AggregatingResponseStrategy(
             final Map<String, AggregatingStrategy<T>> responseMapping,
-            final Supplier<T> contextFactory) {
+            final Supplier<T> contextFactory,
+            final Context context) {
         this.responseMapping = new HashMap<>(responseMapping);
         this.contextFactory = contextFactory;
+        this.context = context;
         reset();
     }
 
@@ -84,6 +90,10 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
             }
 
             if (isComplete()) {
+                // MRR rig id
+                this.context.get(ContextKey.MRR_RIG_ID)
+                        .ifPresent(asicBuilder::setMrrRigId);
+
                 builder.addAsic(this.asicBuilder.build());
                 reset();
             }
