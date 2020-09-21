@@ -12,9 +12,11 @@ import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.asic.Manufacturer;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.net.InetAddresses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
 import java.util.*;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
@@ -36,9 +38,8 @@ public class ScanStrategy
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
-        final String subnet = safeGet(args, "subnet");
-        final int start = Integer.parseInt(safeGet(args, "start"));
-        final int stop = Integer.parseInt(safeGet(args, "stop"));
+        final long start = ipToLong(safeGet(args, "start"));
+        final long stop = ipToLong(safeGet(args, "stop"));
         final int port = Integer.parseInt(safeGet(args, "port"));
 
         switch (type) {
@@ -47,7 +48,6 @@ public class ScanStrategy
                         command,
                         foremanApi,
                         safeGet(args, "manufacturer"),
-                        subnet,
                         start,
                         stop,
                         port,
@@ -58,6 +58,35 @@ public class ScanStrategy
             default:
                 break;
         }
+    }
+
+    /**
+     * Converts the IP as a long to an IP address.
+     *
+     * @param ip IP to convert.
+     *
+     * @return The ip.
+     */
+    private static String ipFromLong(final long ip) {
+        return String.format("%d.%d.%d.%d",
+                (ip >>> 24) & 0xff,
+                (ip >>> 16) & 0xff,
+                (ip >>> 8) & 0xff,
+                (ip) & 0xff);
+    }
+
+    /**
+     * Converts the IP as a string to a long.
+     *
+     * @param ip IP to convert.
+     *
+     * @return The ip.
+     */
+    @SuppressWarnings("UnstableApiUsage")
+    private static long ipToLong(final String ip) {
+        final InetAddress inetAddress = InetAddresses.forString(ip);
+        final int ipInt = InetAddresses.coerceToInteger(inetAddress);
+        return ipInt & 0xFFFFFFFFL;
     }
 
     /**
@@ -88,7 +117,6 @@ public class ScanStrategy
      * @param command      The command.
      * @param foremanApi   The Foreman API handle.
      * @param manufacturer The manufacturer.
-     * @param subnet       The subnet.
      * @param start        Where to start.
      * @param stop         Where to stop.
      * @param port         The port to inspect.
@@ -100,9 +128,8 @@ public class ScanStrategy
             final CommandStart command,
             final ForemanApi foremanApi,
             final String manufacturer,
-            final String subnet,
-            final int start,
-            final int stop,
+            final long start,
+            final long stop,
             final int port,
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder,
@@ -115,7 +142,6 @@ public class ScanStrategy
             runScan(
                     foremanApi,
                     command.id,
-                    subnet,
                     start,
                     stop,
                     port,
@@ -131,7 +157,6 @@ public class ScanStrategy
      *
      * @param foremanApi        The Foreman API handle.
      * @param id                The command ID.
-     * @param subnet            The subnet.
      * @param start             Where to start.
      * @param stop              Where to stop.
      * @param port              The port to inspect.
@@ -144,9 +169,8 @@ public class ScanStrategy
     private void runScan(
             final ForemanApi foremanApi,
             final String id,
-            final String subnet,
-            final int start,
-            final int stop,
+            final long start,
+            final long stop,
             final int port,
             final Map<String, Object> args,
             final DetectionStrategy detectionStrategy,
@@ -154,8 +178,8 @@ public class ScanStrategy
             final Callback callback) {
         final List<Object> miners = new LinkedList<>();
 
-        for (int i = start; i <= stop; i++) {
-            final String ip = String.format("%s.%d", subnet, i);
+        for (long i = start; i <= stop; i++) {
+            final String ip = ipFromLong(i);
             final Optional<Detection> detectionOpt =
                     detectionStrategy.detect(
                             ip,
