@@ -142,7 +142,7 @@ public class RebootingCommandStrategy
                                         CommandDone.Status
                                                 .builder()
                                                 .type(DoneStatus.FAILED)
-                                                .message("An unexpected exception occurred")
+                                                .message(me.getMessage())
                                                 .details(ExceptionUtils.getStackTrace(me))
                                                 .build())
                                 .build());
