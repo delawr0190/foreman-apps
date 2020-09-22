@@ -67,7 +67,7 @@ public class FirmwareAwareAction
                                     try {
                                         AntminerUtils.toType(response.getValues())
                                                 .ifPresent(typeReference::set);
-                                    } catch (EmptySiteException e) {
+                                    } catch (final EmptySiteException e) {
                                         throw new MinerException(e);
                                     }
                                 })

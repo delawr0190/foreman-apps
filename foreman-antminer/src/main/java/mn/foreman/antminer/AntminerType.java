@@ -174,7 +174,7 @@ public enum AntminerType
      * @return Whether or not the type indicates braiins os.
      */
     public boolean isBraiins() {
-        final String name = this.name().toLowerCase();
+        final String name = name().toLowerCase();
         return name.contains("bos") || name.contains("braiins");
     }
 }

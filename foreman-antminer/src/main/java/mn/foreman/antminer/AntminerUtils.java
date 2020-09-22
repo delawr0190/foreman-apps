@@ -34,21 +34,35 @@ public class AntminerUtils {
     public static Optional<AntminerType> toType(
             final Map<String, List<Map<String, String>>> responseValues)
             throws EmptySiteException {
-        final Map<String, String> values =
-                responseValues
-                        .entrySet()
-                        .stream()
-                        .filter(entry -> entry.getKey().equals("VERSION"))
-                        .map(Map.Entry::getValue)
-                        .flatMap(List::stream)
-                        .filter(AntminerUtils::isKnown)
-                        .findFirst()
-                        .orElseThrow(EmptySiteException::new);
+        final Map<String, String> values = toVersion(responseValues);
         Optional<AntminerType> type = toBraiinsType(values);
         if (!type.isPresent()) {
             type = AntminerType.forModel(TYPE, values.get(TYPE));
         }
         return type;
+    }
+
+    /**
+     * Gets the version info from the response values.
+     *
+     * @param responseValues The response values.
+     *
+     * @return The version info, if found.
+     *
+     * @throws EmptySiteException if not found.
+     */
+    static Map<String, String> toVersion(
+            final Map<String, List<Map<String, String>>> responseValues)
+            throws EmptySiteException {
+        return responseValues
+                .entrySet()
+                .stream()
+                .filter(entry -> entry.getKey().equals("VERSION"))
+                .map(Map.Entry::getValue)
+                .flatMap(List::stream)
+                .filter(AntminerUtils::isKnown)
+                .findFirst()
+                .orElseThrow(EmptySiteException::new);
     }
 
     /**
