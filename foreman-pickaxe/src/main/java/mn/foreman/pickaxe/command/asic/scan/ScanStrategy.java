@@ -176,8 +176,54 @@ public class ScanStrategy
             final DetectionStrategy detectionStrategy,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
-        final List<Object> miners = new LinkedList<>();
+        if (stop - start <= 65_536) {
+            scanInRange(
+                    foremanApi,
+                    id,
+                    start,
+                    stop,
+                    port,
+                    args,
+                    detectionStrategy,
+                    builder,
+                    callback);
+        } else {
+            callback.done(
+                    builder.status(
+                            CommandDone.Status
+                                    .builder()
+                                    .type(DoneStatus.FAILED)
+                                    .message("Subnet range is too large")
+                                    .build())
+                            .build());
+        }
+    }
 
+    /**
+     * Scans a valid range.
+     *
+     * @param foremanApi        The Foreman API handle.
+     * @param id                The command ID.
+     * @param start             Where to start.
+     * @param stop              Where to stop.
+     * @param port              The port to inspect.
+     * @param args              The arguments.
+     * @param builder           The builder to use for creating the final
+     *                          result.
+     * @param detectionStrategy The strategy to use for detecting miners.
+     * @param callback          The callback.
+     */
+    private void scanInRange(
+            final ForemanApi foremanApi,
+            final String id,
+            final long start,
+            final long stop,
+            final int port,
+            final Map<String, Object> args,
+            final DetectionStrategy detectionStrategy,
+            final CommandDone.CommandDoneBuilder builder,
+            final Callback callback) {
+        final List<Object> miners = new LinkedList<>();
         for (long i = start; i <= stop; i++) {
             final String ip = ipFromLong(i);
             final Optional<Detection> detectionOpt =
@@ -208,7 +254,6 @@ public class ScanStrategy
                                     .build(),
                             id);
         }
-
         callback.done(
                 builder
                         .result(
