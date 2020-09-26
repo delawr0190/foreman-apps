@@ -30,7 +30,7 @@ public class BaikalFactory
         final Context context = new Context();
         final PoolCallback mrrRigIdCallback =
                 new MrrRigIdCallback(context);
-        return new CgMiner.Builder()
+        return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequest(

@@ -40,7 +40,7 @@ public class WhatsminerFactory
                                                 builder)),
                         () -> null,
                         cgContext);
-        return new CgMiner.Builder()
+        return new CgMiner.Builder(cgContext, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequest(

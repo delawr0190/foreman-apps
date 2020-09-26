@@ -45,7 +45,7 @@ public class InnosiliconFactory
                 createResponseStrategy(
                         this.apiType,
                         context);
-        return new CgMiner.Builder()
+        return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequest(

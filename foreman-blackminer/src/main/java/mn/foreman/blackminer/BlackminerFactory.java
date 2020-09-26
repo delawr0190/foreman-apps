@@ -42,7 +42,7 @@ public class BlackminerFactory
                         () -> null,
                         cgContext);
         return new CoinTypeDecorator(
-                new CgMiner.Builder()
+                new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .addRequest(

@@ -27,7 +27,7 @@ public class HyperbitFactory
             final List<String> statsWhitelist,
             final Map<String, Object> config) {
         final Context context = new Context();
-        return new CgMiner.Builder()
+        return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequest(

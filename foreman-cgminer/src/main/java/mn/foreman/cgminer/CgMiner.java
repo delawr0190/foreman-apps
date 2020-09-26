@@ -282,20 +282,20 @@ public class CgMiner
         public Builder() {
             this(
                     null,
-                    false);
+                    Collections.emptyList());
         }
 
         /**
          * Constructor.
          *
-         * @param context   The context.
-         * @param storeJson Whether or not to store raw json.
+         * @param context        The context.
+         * @param statsWhitelist The stats whitelist.
          */
         public Builder(
                 final Context context,
-                final boolean storeJson) {
+                final List<String> statsWhitelist) {
             this.context = context;
-            this.storeJson = storeJson;
+            this.storeJson = !statsWhitelist.isEmpty();
         }
 
         /**

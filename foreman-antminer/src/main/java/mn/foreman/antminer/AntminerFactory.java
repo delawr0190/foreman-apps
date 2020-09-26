@@ -5,6 +5,7 @@ import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -12,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +47,8 @@ public class AntminerFactory
                 toMiner(
                         apiIp,
                         apiPort,
+                        context,
+                        statsWhitelist,
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
@@ -72,6 +74,8 @@ public class AntminerFactory
                 toMiner(
                         apiIp,
                         apiPort,
+                        context,
+                        statsWhitelist,
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
@@ -86,31 +90,38 @@ public class AntminerFactory
                                 ImmutableMap.of(
                                         CgMinerCommand.TEMPS,
                                         braiinsStrategy)));
-        return toMiner(
-                apiIp,
-                apiPort,
-                Collections.singletonList(
-                        ImmutableMap.of(
-                                CgMinerCommand.VERSION,
-                                new VersionResponseStrategy(
-                                        antminer,
-                                        braiins))));
+
+        return new CgMiner.Builder()
+                .setApiIp(apiIp)
+                .setApiPort(apiPort)
+                .addRequest(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.VERSION)
+                                .build(),
+                        new VersionResponseStrategy(
+                                antminer,
+                                braiins))
+                .build();
     }
 
     /**
      * Creates a miner with the provided configuration.
      *
-     * @param apiIp    The API IP.
-     * @param apiPort  The API port.
-     * @param requests The requests.
+     * @param apiIp          The API IP.
+     * @param apiPort        The API port.
+     * @param context        The context.
+     * @param statsWhitelist The whitelist.
+     * @param requests       The requests.
      *
      * @return The new miner.
      */
     private static CgMiner toMiner(
             final String apiIp,
             final String apiPort,
+            final Context context,
+            final List<String> statsWhitelist,
             final List<Map<CgMinerCommand, ResponseStrategy>> requests) {
-        return new CgMiner.Builder()
+        return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequests(requests)

@@ -1,6 +1,7 @@
 package mn.foreman.sgminer;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.cgminer.CgMinerFactory;
 import mn.foreman.cgminer.PoolsResponseStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
@@ -10,6 +11,7 @@ import mn.foreman.sgminer.response.DevsResponseStrategy;
 import mn.foreman.sgminer.response.ResponseStrategyImpl;
 import mn.foreman.sgminer.response.SgminerResponseStrategy;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,17 +19,21 @@ import java.util.Map;
  * a {@link Miner} that will query an sgminer.
  */
 public class SgminerFactory
-        implements MinerFactory {
+        extends CgMinerFactory {
 
     @Override
-    public Miner create(final Map<String, Object> config) {
+    protected Miner create(
+            final String apiIp,
+            final String apiPort,
+            final List<String> statsWhitelist,
+            final Map<String, Object> config) {
         final SgminerResponseStrategy responseStrategy =
                 new ResponseStrategyImpl(
                         new PoolsResponseStrategy(),
                         new DevsResponseStrategy());
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp").toString())
-                .setApiPort(config.get("apiPort").toString())
+                .setApiIp(apiIp)
+                .setApiPort(apiPort)
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.DEVS)
