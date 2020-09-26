@@ -23,11 +23,11 @@ public class HyperbitFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         final Context context = new Context();
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp"))
-                .setApiPort(config.get("apiPort"))
+                .setApiIp(config.get("apiIp").toString())
+                .setApiPort(config.get("apiPort").toString())
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)

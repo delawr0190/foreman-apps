@@ -15,5 +15,5 @@ public interface MinerFactory {
      *
      * @return The new {@link Miner}.
      */
-    Miner create(Map<String, String> config);
+    Miner create(Map<String, Object> config);
 }

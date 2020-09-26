@@ -25,11 +25,13 @@ public class ClaymoreFactory
     }
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new Claymore(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")),
-                config.get("apiPassword"),
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()),
+                config.containsKey("apiPassword")
+                        ? config.get("apiPassword").toString()
+                        : null,
                 this.typeMapping);
     }
 }

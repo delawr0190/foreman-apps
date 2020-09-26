@@ -28,10 +28,10 @@ public class NiceHashMinerFactory
     }
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new NiceHashMiner(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")),
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()),
                 this.candidates);
     }
 }

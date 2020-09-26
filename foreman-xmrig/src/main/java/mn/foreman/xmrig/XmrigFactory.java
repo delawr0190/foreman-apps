@@ -16,9 +16,9 @@ public class XmrigFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
-        final String apiIp = config.get("apiIp");
-        final int apiPort = Integer.parseInt(config.get("apiPort"));
+    public Miner create(final Map<String, Object> config) {
+        final String apiIp = config.get("apiIp").toString();
+        final int apiPort = Integer.parseInt(config.get("apiPort").toString());
         return new AlternatingMiner(
                 apiIp,
                 apiPort,
@@ -30,6 +30,8 @@ public class XmrigFactory
                 new XmrigNew(
                         apiIp,
                         apiPort,
-                        config.get("accessToken")));
+                        config.containsKey("accessToken")
+                                ? config.get("accessToken").toString()
+                                : null));
     }
 }

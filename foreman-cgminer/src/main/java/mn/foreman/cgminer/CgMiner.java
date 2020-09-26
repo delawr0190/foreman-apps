@@ -257,6 +257,12 @@ public class CgMiner
     public static class Builder
             extends AbstractBuilder<CgMiner> {
 
+        /** The context. */
+        private final Context context;
+
+        /** Whether or not to store json. */
+        private final boolean storeJson;
+
         /** The API IP. */
         private String apiIp;
 
@@ -271,6 +277,26 @@ public class CgMiner
 
         /** The requests. */
         private List<Request> requests = new LinkedList<>();
+
+        /** Constructor. */
+        public Builder() {
+            this(
+                    null,
+                    false);
+        }
+
+        /**
+         * Constructor.
+         *
+         * @param context   The context.
+         * @param storeJson Whether or not to store raw json.
+         */
+        public Builder(
+                final Context context,
+                final boolean storeJson) {
+            this.context = context;
+            this.storeJson = storeJson;
+        }
 
         /**
          * Adds the strategy to use for the provided request to be performed.
@@ -295,14 +321,21 @@ public class CgMiner
          *
          * @param request          The request.
          * @param responseStrategy The response strategy.
-         * @param patchingStrategy The patching strategy.
+         * @param original         The patching strategy.
          *
          * @return This builder instance.
          */
         public Builder addRequest(
                 final CgMinerRequest request,
                 final ResponseStrategy responseStrategy,
-                final ResponsePatchingStrategy patchingStrategy) {
+                final ResponsePatchingStrategy original) {
+            ResponsePatchingStrategy patchingStrategy = original;
+            if (this.storeJson) {
+                patchingStrategy =
+                        new RawStatsInterceptingStrategy(
+                                this.context,
+                                original);
+            }
             this.requests.add(
                     new Request(
                             request,

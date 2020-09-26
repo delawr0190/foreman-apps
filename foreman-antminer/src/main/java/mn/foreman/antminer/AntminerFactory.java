@@ -37,9 +37,9 @@ public class AntminerFactory
     }
 
     @Override
-    public Miner create(final Map<String, String> config) {
-        final String apiIp = config.get("apiIp");
-        final String apiPort = config.get("apiPort");
+    public Miner create(final Map<String, Object> config) {
+        final String apiIp = config.get("apiIp").toString();
+        final String apiPort = config.get("apiPort").toString();
 
         final Context context = new Context();
 

@@ -19,7 +19,7 @@ public class BlackminerFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         final Context cgContext = new Context();
         final ResponseStrategy responseStrategy =
                 new AggregatingResponseStrategy<>(
@@ -38,8 +38,8 @@ public class BlackminerFactory
                         cgContext);
         return new CoinTypeDecorator(
                 new CgMiner.Builder()
-                        .setApiIp(config.get("apiIp"))
-                        .setApiPort(config.get("apiPort"))
+                        .setApiIp(config.get("apiIp").toString())
+                        .setApiPort(config.get("apiPort").toString())
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)
@@ -57,9 +57,9 @@ public class BlackminerFactory
                                         .build(),
                                 responseStrategy)
                         .build(),
-                config.getOrDefault("username", ""),
-                config.getOrDefault("password", ""),
-                Integer.parseInt(config.getOrDefault("port", "80")),
+                config.getOrDefault("username", "").toString(),
+                config.getOrDefault("password", "").toString(),
+                Integer.parseInt(config.getOrDefault("port", "80").toString()),
                 new ObjectMapper());
     }
 }

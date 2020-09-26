@@ -20,14 +20,14 @@ public class SgminerFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         final SgminerResponseStrategy responseStrategy =
                 new ResponseStrategyImpl(
                         new PoolsResponseStrategy(),
                         new DevsResponseStrategy());
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp"))
-                .setApiPort(config.get("apiPort"))
+                .setApiIp(config.get("apiIp").toString())
+                .setApiPort(config.get("apiPort").toString())
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.DEVS)

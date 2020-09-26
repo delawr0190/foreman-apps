@@ -13,9 +13,9 @@ public class IximinerFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
-        final String apiIp = config.get("apiIp");
-        final int apiPort = Integer.parseInt(config.get("apiPort"));
+    public Miner create(final Map<String, Object> config) {
+        final String apiIp = config.get("apiIp").toString();
+        final int apiPort = Integer.parseInt(config.get("apiPort").toString());
         return new Iximiner(
                 apiIp,
                 apiPort);

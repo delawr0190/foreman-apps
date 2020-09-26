@@ -47,6 +47,7 @@
         <lombok.version>1.18.12</lombok.version>
         <netty.version>4.1.42.Final</netty.version>
         <slf.version>1.7.25</slf.version>
+        <wnameless-json.version>0.9.0</wnameless-json.version>
 
         <maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
@@ -470,6 +471,11 @@
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-yaml</artifactId>
                 <version>${jackson.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.wnameless.json</groupId>
+                <artifactId>json-flattener</artifactId>
+                <version>${wnameless-json.version}</version>
             </dependency>
 
             <!-- Logging -->

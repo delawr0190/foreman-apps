@@ -89,7 +89,7 @@ public class AsyncAsicAction
             final long deadlineInMillis =
                     System.currentTimeMillis() +
                             (Integer) args.get("deadlineMillis");
-            final Map<String, String> newParams =
+            final Map<String, Object> newParams =
                     toParams(args);
             this.task =
                     this.threadPool.scheduleAtFixedRate(
@@ -113,16 +113,16 @@ public class AsyncAsicAction
      *
      * @return The parameters.
      */
-    private static Map<String, String> toParams(final Map<String, Object> params) {
+    private static Map<String, Object> toParams(final Map<String, Object> params) {
         return ImmutableMap.of(
                 "apiIp",
-                params.get("ip").toString(),
+                params.get("ip"),
                 "apiPort",
-                params.get("apiPort").toString(),
+                params.get("apiPort"),
                 "username",
-                params.getOrDefault("username", "").toString(),
+                params.getOrDefault("username", ""),
                 "password",
-                params.getOrDefault("password", "").toString());
+                params.getOrDefault("password", ""));
     }
 
     /**
@@ -135,7 +135,7 @@ public class AsyncAsicAction
      */
     private void evaluateMiner(
             final long deadlineInMillis,
-            final Map<String, String> params,
+            final Map<String, Object> params,
             final CompletionCallback doneCallback) {
         final long now = System.currentTimeMillis();
         if (now < deadlineInMillis) {

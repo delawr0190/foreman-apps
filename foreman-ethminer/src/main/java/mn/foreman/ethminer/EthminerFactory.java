@@ -13,11 +13,10 @@ public class EthminerFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(
-            final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new Ethminer(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")),
-                config.get("apiPassword"));
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()),
+                config.get("apiPassword").toString());
     }
 }

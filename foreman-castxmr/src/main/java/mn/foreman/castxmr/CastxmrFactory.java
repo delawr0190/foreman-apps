@@ -13,9 +13,9 @@ public class CastxmrFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new Castxmr(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")));
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()));
     }
 }

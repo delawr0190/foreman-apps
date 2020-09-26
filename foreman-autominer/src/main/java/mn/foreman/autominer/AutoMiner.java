@@ -310,7 +310,7 @@ public class AutoMiner
             final String apiIp,
             final int apiPort) {
         return this.minerMapping.getMiner(minerType).map(factory -> {
-            final Map<String, String> attributes = new HashMap<>();
+            final Map<String, Object> attributes = new HashMap<>();
             attributes.put("apiIp", apiIp);
             attributes.put("apiPort", Integer.toString(apiPort));
             return factory.create(attributes);

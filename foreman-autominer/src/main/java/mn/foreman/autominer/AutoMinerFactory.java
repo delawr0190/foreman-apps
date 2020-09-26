@@ -25,10 +25,10 @@ public class AutoMinerFactory
     }
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new AutoMiner(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")),
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()),
                 this.mappings);
     }
 }

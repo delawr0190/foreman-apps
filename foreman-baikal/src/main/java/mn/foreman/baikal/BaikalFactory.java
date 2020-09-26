@@ -19,15 +19,15 @@ public class BaikalFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         final ConcurrentMap<String, String> poolAlgos =
                 new ConcurrentHashMap<>();
         final Context context = new Context();
         final PoolCallback mrrRigIdCallback =
                 new MrrRigIdCallback(context);
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp"))
-                .setApiPort(config.get("apiPort"))
+                .setApiIp(config.get("apiIp").toString())
+                .setApiPort(config.get("apiPort").toString())
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)

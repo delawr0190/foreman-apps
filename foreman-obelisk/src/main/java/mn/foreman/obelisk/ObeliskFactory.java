@@ -13,11 +13,11 @@ public class ObeliskFactory
         implements MinerFactory {
 
     @Override
-    public Miner create(final Map<String, String> config) {
+    public Miner create(final Map<String, Object> config) {
         return new Obelisk(
-                config.get("apiIp"),
-                Integer.parseInt(config.get("apiPort")),
-                config.get("username"),
-                config.get("password"));
+                config.get("apiIp").toString(),
+                Integer.parseInt(config.get("apiPort").toString()),
+                config.get("username").toString(),
+                config.get("password").toString());
     }
 }

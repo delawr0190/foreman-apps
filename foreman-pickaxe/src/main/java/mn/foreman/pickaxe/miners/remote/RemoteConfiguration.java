@@ -295,7 +295,7 @@ public class RemoteConfiguration
      * @param params The params to add.
      */
     private static void addParams(
-            final Map<String, String> dest,
+            final Map<String, Object> dest,
             final List<MinerConfig.Param> params) {
         params.forEach(param -> dest.put(param.key, param.value));
     }
@@ -578,7 +578,7 @@ public class RemoteConfiguration
             final int port,
             final MinerConfig config,
             final mn.foreman.model.MinerFactory minerFactory) {
-        final Map<String, String> params = new HashMap<>();
+        final Map<String, Object> params = new HashMap<>();
         params.put(
                 "apiIp",
                 config.apiIp);
@@ -729,7 +729,7 @@ public class RemoteConfiguration
             final ApiType apiType,
             final MinerConfig config,
             final MinerFactory minerFactory) {
-        final Map<String, String> attributes = new HashMap<>();
+        final Map<String, Object> attributes = new HashMap<>();
         attributes.put("type", toXmrstakType(apiType));
         attributes.put("apiIp", config.apiIp);
         attributes.put("apiPort", Integer.toString(port));

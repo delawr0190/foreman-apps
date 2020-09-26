@@ -79,7 +79,7 @@ public class MinerConfig {
 
         /** The value. */
         @JsonProperty("value")
-        public String value;
+        public Object value;
 
         @Override
         public String toString() {
