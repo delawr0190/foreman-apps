@@ -166,7 +166,7 @@ public class DevsResponseStrategy
                                 this.poolAlgoMap.get(poolIndex));
                     }
                 });
-        this.context.get(ContextKey.MRR_RIG_ID)
+        this.context.getSimple(ContextKey.MRR_RIG_ID)
                 .ifPresent(asicBuilder::setMrrRigId);
         statsBuilder.addAsic(asicBuilder.build());
     }

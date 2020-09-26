@@ -89,7 +89,7 @@ public class StatsResponseStrategy
                         .addTemp(values.get("CH4 Temp"))
                         // API doesn't report errors
                         .hasErrors(false);
-        this.context.get(ContextKey.MRR_RIG_ID)
+        this.context.getSimple(ContextKey.MRR_RIG_ID)
                 .ifPresent(asicBuilder::setMrrRigId);
         builder.addAsic(asicBuilder.build());
     }

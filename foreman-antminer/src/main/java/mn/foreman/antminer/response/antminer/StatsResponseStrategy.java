@@ -114,11 +114,9 @@ public class StatsResponseStrategy
         }
         asicBuilder.hasErrors(hasErrors);
 
-        // MRR rig id
-        this.context.get(ContextKey.MRR_RIG_ID).ifPresent(s ->
-                asicBuilder.addAttribute(
-                        ContextKey.MRR_RIG_ID.getKey(),
-                        s));
+        // Context data
+        this.context.getSimple(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
 
         builder.addAsic(asicBuilder.build());
     }

@@ -121,8 +121,8 @@ public class StatsResponseStrategy
                                             Integer.parseInt(map.get("Num active " +
                                                     "chips"))));
 
-            // MRR rig id
-            this.context.get(ContextKey.MRR_RIG_ID)
+            // Context data
+            this.context.getSimple(ContextKey.MRR_RIG_ID)
                     .ifPresent(asicBuilder::setMrrRigId);
 
             builder.addAsic(asicBuilder.build());

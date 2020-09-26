@@ -7,6 +7,8 @@ import mn.foreman.model.miners.FanInfo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,9 +38,14 @@ import java.util.*;
  *       69
  *     ],
  *     "powerState": "",
- *     "hasErrors": false
+ *     "hasErrors": false,
+ *     "rawStats": {}
  *   }
  * </pre>
+ *
+ * <p>Note: the raw stats that are sent above are a subset of the raw stats
+ * that are returned by a miner. The stats are based on a user-defined whitelist
+ * of stats.</p>
  */
 public class Asic {
 
@@ -58,6 +65,9 @@ public class Asic {
     /** The power state. */
     private final String powerState;
 
+    /** The whitelisted raw stats. */
+    private final Map<String, Object> rawStats;
+
     /** The temp sensor readings. */
     private final List<Integer> temps;
 
@@ -70,6 +80,7 @@ public class Asic {
      * @param powerState The power state.
      * @param hasErrors  Whether or not errors were observed.
      * @param attributes Rig attributes.
+     * @param rawStats   The flattended raw stats.
      */
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
@@ -77,7 +88,8 @@ public class Asic {
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("powerState") final String powerState,
             @JsonProperty("hasErrors") final Boolean hasErrors,
-            @JsonProperty("attributes") final List<Map<String, String>> attributes) {
+            @JsonProperty("attributes") final List<Map<String, String>> attributes,
+            @JsonProperty("rawStats") final Map<String, Object> rawStats) {
         Validate.notNull(
                 hashRate,
                 "hashRate cannot be null");
@@ -96,6 +108,7 @@ public class Asic {
         this.powerState = powerState;
         this.hasErrors = hasErrors;
         this.attributes = new ArrayList<>(attributes);
+        this.rawStats = rawStats;
     }
 
     @Override
@@ -107,15 +120,20 @@ public class Asic {
             isEqual = false;
         } else {
             final Asic asic = (Asic) other;
+            final MapDifference<String, Object> diff =
+                    Maps.difference(
+                            this.rawStats,
+                            asic.rawStats);
             isEqual =
-                    new EqualsBuilder()
-                            .append(this.hashRate, asic.hashRate)
-                            .append(this.fans, asic.fans)
-                            .append(this.temps, asic.temps)
-                            .append(this.powerState, asic.powerState)
-                            .append(this.hasErrors, asic.hasErrors)
-                            .append(this.attributes, asic.attributes)
-                            .isEquals();
+                    diff.areEqual() &&
+                            new EqualsBuilder()
+                                    .append(this.hashRate, asic.hashRate)
+                                    .append(this.fans, asic.fans)
+                                    .append(this.temps, asic.temps)
+                                    .append(this.powerState, asic.powerState)
+                                    .append(this.hasErrors, asic.hasErrors)
+                                    .append(this.attributes, asic.attributes)
+                                    .isEquals();
         }
         return isEqual;
     }
@@ -166,6 +184,15 @@ public class Asic {
     }
 
     /**
+     * Returns the whitelisted raw stats.
+     *
+     * @return The whitelisted raw stats.
+     */
+    public Map<String, Object> getRawStats() {
+        return Collections.unmodifiableMap(this.rawStats);
+    }
+
+    /**
      * Returns the temps.
      *
      * @return The temps.
@@ -183,6 +210,7 @@ public class Asic {
                 .append(this.powerState)
                 .append(this.hasErrors)
                 .append(this.attributes)
+                .append(this.rawStats)
                 .hashCode();
     }
 
@@ -195,7 +223,8 @@ public class Asic {
                         "temps=%s, " +
                         "powerState=%s, " +
                         "hasErrors=%s, " +
-                        "attributes=%s" +
+                        "attributes=%s, " +
+                        "rawStats=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
@@ -203,7 +232,8 @@ public class Asic {
                 this.temps,
                 this.powerState,
                 this.hasErrors,
-                this.attributes);
+                this.attributes,
+                this.rawStats);
     }
 
     /** A builder for creating {@link Asic ASICs}. */
@@ -212,6 +242,9 @@ public class Asic {
 
         /** The attributes. */
         private final List<Map<String, String>> attributes = new ArrayList<>();
+
+        /** The raw json. */
+        private final Map<String, Object> rawStats = new HashMap<>();
 
         /** The temperatures. */
         private final List<Integer> temps = new LinkedList<>();
@@ -281,6 +314,40 @@ public class Asic {
         }
 
         /**
+         * Adds the provided values.
+         *
+         * @param values The values.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRawStats(final Map<String, Object> values) {
+            this.rawStats.putAll(values);
+            return this;
+        }
+
+        /**
+         * Adds the provided values.
+         *
+         * @param values          The values.
+         * @param whitelistedKeys The whitelisted keys.
+         *
+         * @return This builder instance.
+         */
+        public Builder addRawStats(
+                final Map<String, Object> values,
+                final List<String> whitelistedKeys) {
+            values
+                    .entrySet()
+                    .stream()
+                    .filter(entry -> whitelistedKeys.contains(entry.getKey()))
+                    .forEach(entry ->
+                            this.rawStats.put(
+                                    entry.getKey(),
+                                    entry.getValue()));
+            return this;
+        }
+
+        /**
          * Adds a new temperature reading.
          *
          * @param temp The new temperature reading.
@@ -319,7 +386,8 @@ public class Asic {
                     this.temps,
                     this.powerState,
                     this.hasErrors,
-                    this.attributes);
+                    this.attributes,
+                    this.rawStats);
         }
 
         /**
@@ -337,6 +405,7 @@ public class Asic {
                 setPowerState(asic.powerState);
                 asic.temps.forEach(this::addTemp);
                 addAttributes(asic.attributes);
+                addRawStats(asic.rawStats);
             }
             return this;
         }

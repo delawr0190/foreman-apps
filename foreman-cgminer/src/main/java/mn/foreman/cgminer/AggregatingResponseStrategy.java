@@ -90,8 +90,8 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
             }
 
             if (isComplete()) {
-                // MRR rig id
-                this.context.get(ContextKey.MRR_RIG_ID)
+                // Context data
+                this.context.getSimple(ContextKey.MRR_RIG_ID)
                         .ifPresent(asicBuilder::setMrrRigId);
 
                 builder.addAsic(this.asicBuilder.build());
