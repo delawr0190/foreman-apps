@@ -9,16 +9,25 @@ import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class SpondooliesSP36StatsITest
         extends AbstractApiITest {
 
-    /** Constructor. */
-    public SpondooliesSP36StatsITest() {
+    /**
+     * Constructor.
+     *
+     * @throws IOException never.
+     */
+    public SpondooliesSP36StatsITest()
+            throws IOException {
         super(
                 new SpondooliesFactory().create(
                         ImmutableMap.of(
@@ -83,6 +92,12 @@ public class SpondooliesSP36StatsITest
                                         .addTemp(43)
                                         .addTemp(65)
                                         .addTemp(47)
+                                        .addFlatResponse(
+                                                new ObjectMapper()
+                                                        .readValue(
+                                                                SpondooliesSP36StatsITest.class.getResourceAsStream("/sp36.json"),
+                                                                new TypeReference<Map<String, Object>>() {
+                                                                }))
                                         .build())
                         .build());
     }

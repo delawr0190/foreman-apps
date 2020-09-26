@@ -8,22 +8,36 @@ import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /** Runs an integration tests using {@link Dragonmint} against a fake API. */
 public class DragonmintStatsITest
         extends AbstractApiITest {
 
-    /** Constructor. */
-    public DragonmintStatsITest() {
+    /**
+     * Constructor.
+     *
+     * @throws IOException never.
+     */
+    public DragonmintStatsITest()
+            throws IOException {
         super(
-                new Dragonmint(
-                        "127.0.0.1",
-                        8080,
-                        "username",
-                        "password"),
+                new DragonmintFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "8080",
+                                "username",
+                                "username",
+                                "password",
+                                "password")),
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
@@ -244,6 +258,12 @@ public class DragonmintStatsITest
                                         .addTemp(72)
                                         .addTemp(67)
                                         .addTemp(67)
+                                        .addFlatResponse(
+                                                new ObjectMapper()
+                                                        .readValue(
+                                                                DragonmintStatsITest.class.getResourceAsStream("/t1.json"),
+                                                                new TypeReference<Map<String, Object>>() {
+                                                                }))
                                         .build())
                         .build());
     }

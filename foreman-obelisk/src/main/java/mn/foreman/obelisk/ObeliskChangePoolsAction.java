@@ -51,6 +51,8 @@ public class ObeliskChangePoolsAction
                             .username(username)
                             .password(password)
                             .content(objectMapper.writeValueAsString(newPools))
+                            .rawCallback(s -> {
+                            })
                             .build());
         } catch (final Exception e) {
             throw new MinerException(e);

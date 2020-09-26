@@ -9,10 +9,13 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,9 +55,12 @@ public class InnosiliconStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -111,6 +117,12 @@ public class InnosiliconStatsITest
                                                         .addTemp(47)
                                                         .addTemp(48)
                                                         .addTemp(45)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                InnosiliconStatsITest.class.getResourceAsStream("/a9_old.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -180,6 +192,12 @@ public class InnosiliconStatsITest
                                                         .addTemp(62)
                                                         .addTemp(64)
                                                         .addTemp(60)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                InnosiliconStatsITest.class.getResourceAsStream("/a9_new.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

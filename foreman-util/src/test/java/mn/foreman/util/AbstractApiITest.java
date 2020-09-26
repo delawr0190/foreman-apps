@@ -63,9 +63,10 @@ public abstract class AbstractApiITest {
     public void testMiner() throws Exception {
         try {
             this.fakeMinerServers.forEach(FakeMinerServer::start);
+            final MinerStats actual = this.miner.getStats();
             assertEquals(
                     this.expectedStats,
-                    this.miner.getStats());
+                    actual);
             this.fakeMinerServers.forEach(server ->
                     assertTrue(
                             server.waitTillDone(

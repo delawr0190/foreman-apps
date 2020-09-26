@@ -9,10 +9,13 @@ import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,9 +60,12 @@ public class ObeliskStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -160,6 +166,12 @@ public class ObeliskStatsITest
                                                         .addTemp(81)
                                                         .addTemp(72)
                                                         .addTemp(82)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                ObeliskStatsITest.class.getResourceAsStream("/sc1_gen1.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -256,6 +268,12 @@ public class ObeliskStatsITest
                                                         .addTemp(81)
                                                         .addTemp(72)
                                                         .addTemp(82)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                ObeliskStatsITest.class.getResourceAsStream("/sc1_gen2.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

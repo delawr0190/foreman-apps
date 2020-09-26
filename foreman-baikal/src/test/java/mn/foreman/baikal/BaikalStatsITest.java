@@ -10,10 +10,13 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -51,9 +54,12 @@ public class BaikalStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection<Object[]> parameters() {
+    public static Collection<Object[]> parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -282,6 +288,12 @@ public class BaikalStatsITest
                                                         .addTemp(47)
                                                         .addTemp(47)
                                                         .addTemp(46)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                BaikalStatsITest.class.getResourceAsStream("/x10.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -940,6 +952,12 @@ public class BaikalStatsITest
                                                         .addTemp(44)
                                                         .addTemp(44)
                                                         .setPowerState("x13")
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                BaikalStatsITest.class.getResourceAsStream("/giant.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

@@ -1,0 +1,14 @@
+{
+  "hashboardStatus.0.intakeTemp": 71,
+  "hashboardStatus.0.exhaustTemp": 81,
+  "hashboardStatus.0.hashrate5min": 3.5,
+  "hashboardStatus.1.intakeTemp": 72,
+  "hashboardStatus.1.exhaustTemp": 82,
+  "hashboardStatus.1.hashrate5min": 3.5,
+  "poolStatus.0.url": "myurl.com:3333",
+  "poolStatus.0.status": "Alive",
+  "poolStatus.0.accepted": 1234,
+  "poolStatus.0.rejected": 5678,
+  "systemInfo.0.name": "Fan Speed",
+  "systemInfo.0.value": 99
+}

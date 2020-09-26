@@ -21,21 +21,25 @@ public class BlackminerFactory
     @Override
     public Miner create(final Map<String, String> config) {
         final Context cgContext = new Context();
+        final ObjectMapper objectMapper = new ObjectMapper();
         final ResponseStrategy responseStrategy =
-                new AggregatingResponseStrategy<>(
-                        ImmutableMap.of(
-                                "SUMMARY",
-                                (values, builder, context) ->
-                                        BlackminerUtils.updateSummary(
-                                                values,
-                                                builder),
-                                "STATS",
-                                (values, builder, context) ->
-                                        BlackminerUtils.updateStats(
-                                                values,
-                                                builder)),
-                        () -> null,
-                        cgContext);
+                new RawStoringDecorator(
+                        cgContext,
+                        objectMapper,
+                        new AggregatingResponseStrategy<>(
+                                ImmutableMap.of(
+                                        "SUMMARY",
+                                        (values, builder, context) ->
+                                                BlackminerUtils.updateSummary(
+                                                        values,
+                                                        builder),
+                                        "STATS",
+                                        (values, builder, context) ->
+                                                BlackminerUtils.updateStats(
+                                                        values,
+                                                        builder)),
+                                () -> null,
+                                cgContext));
         return new CoinTypeDecorator(
                 new CgMiner.Builder()
                         .setApiIp(config.get("apiIp"))
@@ -44,8 +48,11 @@ public class BlackminerFactory
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)
                                         .build(),
-                                new PoolsResponseStrategy(
-                                        new MrrRigIdCallback(cgContext)))
+                                new RawStoringDecorator(
+                                        cgContext,
+                                        objectMapper,
+                                        new PoolsResponseStrategy(
+                                                new MrrRigIdCallback(cgContext))))
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.SUMMARY)

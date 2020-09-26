@@ -9,16 +9,25 @@ import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class BwL21StatsITest
         extends AbstractApiITest {
 
-    /** Constructor. */
-    public BwL21StatsITest() {
+    /**
+     * Constructor.
+     *
+     * @throws IOException never.
+     */
+    public BwL21StatsITest()
+            throws IOException {
         super(
                 new HyperbitFactory()
                         .create(
@@ -286,6 +295,12 @@ public class BwL21StatsITest
                                         .addAttribute(
                                                 "mrr_rig_id",
                                                 "yyyy")
+                                        .addFlatResponse(
+                                                new ObjectMapper()
+                                                        .readValue(
+                                                                BwL21StatsITest.class.getResourceAsStream("/l21.json"),
+                                                                new TypeReference<Map<String, Object>>() {
+                                                                }))
                                         .build())
                         .build());
     }

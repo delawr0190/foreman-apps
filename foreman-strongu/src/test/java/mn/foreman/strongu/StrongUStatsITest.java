@@ -10,10 +10,13 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,9 +53,12 @@ public class StrongUStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection<Object[]> parameters() {
+    public static Collection<Object[]> parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -118,6 +124,12 @@ public class StrongUStatsITest
                                                                         .build())
                                                         .addTemp(54)
                                                         .addTemp(55)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                StrongUStatsITest.class.getResourceAsStream("/stu6.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -185,6 +197,12 @@ public class StrongUStatsITest
                                                         .addTemp(65)
                                                         .addTemp(70)
                                                         .addTemp(68)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                StrongUStatsITest.class.getResourceAsStream("/stu2.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

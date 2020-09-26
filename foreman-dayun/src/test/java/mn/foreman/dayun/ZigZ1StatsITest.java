@@ -9,16 +9,24 @@ import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class ZigZ1StatsITest
         extends AbstractApiITest {
 
-    /** Constructor. */
-    public ZigZ1StatsITest() {
+    /**
+     * Constructor.
+     *
+     * @throws IOException never.
+     */
+    public ZigZ1StatsITest() throws IOException {
         super(
                 new DayunFactory().create(
                         ImmutableMap.of(
@@ -75,6 +83,12 @@ public class ZigZ1StatsITest
                                         .addTemp(20)
                                         .addTemp(18)
                                         .hasErrors(false)
+                                        .addFlatResponse(
+                                                new ObjectMapper()
+                                                        .readValue(
+                                                                ZigZ1StatsITest.class.getResourceAsStream("/z1.json"),
+                                                                new TypeReference<Map<String, Object>>() {
+                                                                }))
                                         .build())
                         .build());
     }

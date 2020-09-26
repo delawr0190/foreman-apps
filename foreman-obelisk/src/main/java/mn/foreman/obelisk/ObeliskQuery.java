@@ -51,7 +51,9 @@ public class ObeliskQuery {
                                     "password",
                                     context.getPassword())),
                     sessionId,
-                    Object.class);
+                    Object.class,
+                    s -> {
+                    });
 
             // Run the query
             final Class<T> responseClass = context.getResponseClass();
@@ -63,7 +65,8 @@ public class ObeliskQuery {
                             false,
                             context.getContent(),
                             sessionId,
-                            responseClass);
+                            responseClass,
+                            context.getRawCallback());
             if (responseClass != null) {
                 if (responseOptional.isPresent()) {
                     final T response = responseOptional.get();
@@ -85,7 +88,9 @@ public class ObeliskQuery {
                         false,
                         null,
                         sessionId,
-                        Object.class);
+                        Object.class,
+                        s -> {
+                        });
             }
         }
     }
@@ -116,14 +121,15 @@ public class ObeliskQuery {
     /**
      * Queries an Obelisk.
      *
-     * @param context   The request context.
-     * @param uri       The API URI.
-     * @param method    The method.
-     * @param isLogin   Whether or not the request is a login attempt.
-     * @param content   The content.
-     * @param sessionId The session ID.
-     * @param clazz     The class of the response.
-     * @param <T>       The response type.
+     * @param context     The request context.
+     * @param uri         The API URI.
+     * @param method      The method.
+     * @param isLogin     Whether or not the request is a login attempt.
+     * @param content     The content.
+     * @param sessionId   The session ID.
+     * @param clazz       The class of the response.
+     * @param rawCallback The raw callback.
+     * @param <T>         The response type.
      *
      * @return The response, if present.
      *
@@ -137,7 +143,8 @@ public class ObeliskQuery {
             final boolean isLogin,
             final String content,
             final AtomicReference<String> sessionId,
-            final Class<U> clazz)
+            final Class<U> clazz,
+            final Consumer<String> rawCallback)
             throws
             IOException,
             MinerException {
@@ -178,6 +185,7 @@ public class ObeliskQuery {
                     headerMap,
                     sessionId);
             final String response = apiRequest.getResponse();
+            rawCallback.accept(response);
             if (response != null && !response.isEmpty()) {
                 result =
                         objectMapper.readValue(
@@ -237,6 +245,9 @@ public class ObeliskQuery {
 
         /** The password. */
         private final String password;
+
+        /** The raw callback. */
+        private final Consumer<String> rawCallback;
 
         /** The response callback. */
         private final Consumer<T> responseCallback;

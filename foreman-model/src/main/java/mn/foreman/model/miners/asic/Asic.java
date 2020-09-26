@@ -5,8 +5,12 @@ import mn.foreman.model.miners.BigDecimalSerializer;
 import mn.foreman.model.miners.FanInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.MapDifference;
+import com.google.common.collect.Maps;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -36,7 +40,8 @@ import java.util.*;
  *       69
  *     ],
  *     "powerState": "",
- *     "hasErrors": false
+ *     "hasErrors": false,
+ *     "flatResponse": {}
  *   }
  * </pre>
  */
@@ -47,6 +52,9 @@ public class Asic {
 
     /** The fan readings. */
     private final FanInfo fans;
+
+    /** The flattened response. */
+    private final Map<String, Object> flatResponse;
 
     /** Whether or not errors were reported. */
     private final Boolean hasErrors;
@@ -64,12 +72,13 @@ public class Asic {
     /**
      * Constructor.
      *
-     * @param hashRate   The hash rate.
-     * @param fans       The fan information.
-     * @param temps      The temperatures.
-     * @param powerState The power state.
-     * @param hasErrors  Whether or not errors were observed.
-     * @param attributes Rig attributes.
+     * @param hashRate     The hash rate.
+     * @param fans         The fan information.
+     * @param temps        The temperatures.
+     * @param powerState   The power state.
+     * @param hasErrors    Whether or not errors were observed.
+     * @param attributes   Rig attributes.
+     * @param flatResponse The flattened response.
      */
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
@@ -77,7 +86,8 @@ public class Asic {
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("powerState") final String powerState,
             @JsonProperty("hasErrors") final Boolean hasErrors,
-            @JsonProperty("attributes") final List<Map<String, String>> attributes) {
+            @JsonProperty("attributes") final List<Map<String, String>> attributes,
+            @JsonProperty("flatResponse") final Map<String, Object> flatResponse) {
         Validate.notNull(
                 hashRate,
                 "hashRate cannot be null");
@@ -91,11 +101,17 @@ public class Asic {
                 hasErrors,
                 "hasErrors cannot be null");
         this.hashRate = hashRate;
+        try {
+            System.out.println(new ObjectMapper().writeValueAsString(flatResponse));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
         this.powerState = powerState;
         this.hasErrors = hasErrors;
         this.attributes = new ArrayList<>(attributes);
+        this.flatResponse = flatResponse;
     }
 
     @Override
@@ -107,7 +123,12 @@ public class Asic {
             isEqual = false;
         } else {
             final Asic asic = (Asic) other;
+            final MapDifference<String, Object> diff =
+                    Maps.difference(
+                            this.flatResponse,
+                            asic.flatResponse);
             isEqual =
+                    diff.areEqual() &&
                     new EqualsBuilder()
                             .append(this.hashRate, asic.hashRate)
                             .append(this.fans, asic.fans)
@@ -136,6 +157,15 @@ public class Asic {
      */
     public FanInfo getFans() {
         return this.fans;
+    }
+
+    /**
+     * Returns the flattened response.
+     *
+     * @return The flattened response.
+     */
+    public Map<String, Object> getFlatResponse() {
+        return Collections.unmodifiableMap(this.flatResponse);
     }
 
     /**
@@ -183,6 +213,7 @@ public class Asic {
                 .append(this.powerState)
                 .append(this.hasErrors)
                 .append(this.attributes)
+                .append(this.flatResponse)
                 .hashCode();
     }
 
@@ -195,7 +226,8 @@ public class Asic {
                         "temps=%s, " +
                         "powerState=%s, " +
                         "hasErrors=%s, " +
-                        "attributes=%s" +
+                        "attributes=%s, " +
+                        "flatResponse=%s" +
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
@@ -203,7 +235,8 @@ public class Asic {
                 this.temps,
                 this.powerState,
                 this.hasErrors,
-                this.attributes);
+                this.attributes,
+                this.flatResponse);
     }
 
     /** A builder for creating {@link Asic ASICs}. */
@@ -212,6 +245,9 @@ public class Asic {
 
         /** The attributes. */
         private final List<Map<String, String>> attributes = new ArrayList<>();
+
+        /** The raw json. */
+        private final Map<String, Object> flatResponse = new HashMap<>();
 
         /** The temperatures. */
         private final List<Integer> temps = new LinkedList<>();
@@ -281,6 +317,18 @@ public class Asic {
         }
 
         /**
+         * Adds the provided values.
+         *
+         * @param values The values.
+         *
+         * @return This builder instance.
+         */
+        public Builder addFlatResponse(final Map<String, Object> values) {
+            this.flatResponse.putAll(values);
+            return this;
+        }
+
+        /**
          * Adds a new temperature reading.
          *
          * @param temp The new temperature reading.
@@ -319,7 +367,8 @@ public class Asic {
                     this.temps,
                     this.powerState,
                     this.hasErrors,
-                    this.attributes);
+                    this.attributes,
+                    this.flatResponse);
         }
 
         /**
@@ -337,6 +386,7 @@ public class Asic {
                 setPowerState(asic.powerState);
                 asic.temps.forEach(this::addTemp);
                 addAttributes(asic.attributes);
+                addFlatResponse(asic.flatResponse);
             }
             return this;
         }

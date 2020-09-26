@@ -1,14 +1,13 @@
 package mn.foreman.aixin;
 
 import mn.foreman.aixin.response.StatsResponseStrategy;
-import mn.foreman.cgminer.CgMiner;
-import mn.foreman.cgminer.Context;
-import mn.foreman.cgminer.MrrRigIdCallback;
-import mn.foreman.cgminer.PoolsResponseStrategy;
+import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Map;
 
@@ -22,6 +21,7 @@ public class AixinFactory
     @Override
     public Miner create(final Map<String, String> config) {
         final Context context = new Context();
+        final ObjectMapper objectMapper = new ObjectMapper();
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -29,14 +29,20 @@ public class AixinFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)
                                 .build(),
-                        new PoolsResponseStrategy(
-                                new MrrRigIdCallback(
-                                        context)))
+                        new RawStoringDecorator(
+                                context,
+                                objectMapper,
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(
+                                                context))))
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        new StatsResponseStrategy(context))
+                        new RawStoringDecorator(
+                                context,
+                                objectMapper,
+                                new StatsResponseStrategy(context)))
                 .build();
     }
 }

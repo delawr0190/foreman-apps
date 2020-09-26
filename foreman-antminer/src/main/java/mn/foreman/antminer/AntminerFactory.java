@@ -8,6 +8,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
@@ -42,6 +43,7 @@ public class AntminerFactory
         final String apiPort = config.get("apiPort");
 
         final Context context = new Context();
+        final ObjectMapper objectMapper = new ObjectMapper();
 
         final CgMiner antminer =
                 toMiner(
@@ -50,24 +52,33 @@ public class AntminerFactory
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
-                                        new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(context))),
+                                        new RawStoringDecorator(
+                                                context,
+                                                objectMapper,
+                                                new PoolsResponseStrategy(
+                                                        new MrrRigIdCallback(context)))),
                                 ImmutableMap.of(
                                         CgMinerCommand.STATS,
-                                        new RateMultiplyingDecorator(
-                                                "STATS",
-                                                "GHS av",
-                                                this.multiplier,
+                                        new RawStoringDecorator(
+                                                context,
+                                                objectMapper,
                                                 new RateMultiplyingDecorator(
                                                         "STATS",
-                                                        "GHS 5s",
+                                                        "GHS av",
                                                         this.multiplier,
-                                                        new StatsResponseStrategy(
-                                                                context))))));
+                                                        new RateMultiplyingDecorator(
+                                                                "STATS",
+                                                                "GHS 5s",
+                                                                this.multiplier,
+                                                                new StatsResponseStrategy(
+                                                                        context)))))));
 
         final ResponseStrategy braiinsStrategy =
-                new BraiinsResponseStrategy(
-                        context);
+                new RawStoringDecorator(
+                        context,
+                        objectMapper,
+                        new BraiinsResponseStrategy(
+                                context));
         final CgMiner braiins =
                 toMiner(
                         apiIp,
@@ -75,8 +86,11 @@ public class AntminerFactory
                         Arrays.asList(
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
-                                        new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(context))),
+                                        new RawStoringDecorator(
+                                                context,
+                                                objectMapper,
+                                                new PoolsResponseStrategy(
+                                                        new MrrRigIdCallback(context)))),
                                 ImmutableMap.of(
                                         CgMinerCommand.SUMMARY,
                                         braiinsStrategy),

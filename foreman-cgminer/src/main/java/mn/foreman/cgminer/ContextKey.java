@@ -3,6 +3,9 @@ package mn.foreman.cgminer;
 /** All of the accepted context keys. */
 public enum ContextKey {
 
+    /** Raw json stats. */
+    RAW_STATS("raw_stats"),
+
     /** MRR rig id. */
     MRR_RIG_ID("mrr_rig_id");
 

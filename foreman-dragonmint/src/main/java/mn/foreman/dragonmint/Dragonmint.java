@@ -12,12 +12,17 @@ import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.wnameless.json.flattener.FlattenMode;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <h1>Overview</h1>
@@ -37,6 +42,10 @@ import java.util.Objects;
  */
 public class Dragonmint
         extends AbstractMiner {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(Dragonmint.class);
 
     /** The API password. */
     private final String password;
@@ -68,6 +77,7 @@ public class Dragonmint
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
+        final AtomicReference<String> rawJson = new AtomicReference<>();
         final Summary summary =
                 Query.restQuery(
                         this.apiIp,
@@ -76,12 +86,14 @@ public class Dragonmint
                         this.username,
                         this.password,
                         new TypeReference<Summary>() {
-                        });
+                        },
+                        rawJson::set);
         addPools(
                 statsBuilder,
                 summary.pools);
         addAsics(
                 statsBuilder,
+                rawJson,
                 summary.devs,
                 summary.hardware,
                 summary
@@ -117,36 +129,6 @@ public class Dragonmint
                 ", username=%s, password=%s",
                 this.username,
                 this.password);
-    }
-
-    /**
-     * Adds an ASIC from the provided devices and hardware.
-     *
-     * @param statsBuilder The stats builder.
-     * @param devs         The devices.
-     * @param hardware     The hardware information.
-     * @param mrrRigId     The rig ID.
-     */
-    private static void addAsics(
-            final MinerStats.Builder statsBuilder,
-            final List<Summary.Dev> devs,
-            final Summary.Hardware hardware,
-            final String mrrRigId) {
-        final Asic.Builder asicBuilder =
-                new Asic.Builder();
-        asicBuilder
-                .setHashRate(toHashRate(devs))
-                .setFanInfo(
-                        new FanInfo.Builder()
-                                .setCount(1)
-                                .addSpeed(hardware.fanSpeed)
-                                .setSpeedUnits("%")
-                                .build());
-        for (final Summary.Dev dev : devs) {
-            asicBuilder.addTemp(dev.temperature);
-        }
-        asicBuilder.setMrrRigId(mrrRigId);
-        statsBuilder.addAsic(asicBuilder.build());
     }
 
     /**
@@ -204,5 +186,62 @@ public class Dragonmint
                         value.multiply(
                                 new BigDecimal(1000 * 1000)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    /**
+     * Adds an ASIC from the provided devices and hardware.
+     *
+     * @param statsBuilder The stats builder.
+     * @param rawJson      The raw JSON.
+     * @param devs         The devices.
+     * @param hardware     The hardware information.
+     * @param mrrRigId     The rig ID.
+     */
+    private void addAsics(
+            final MinerStats.Builder statsBuilder,
+            final AtomicReference<String> rawJson,
+            final List<Summary.Dev> devs,
+            final Summary.Hardware hardware,
+            final String mrrRigId) {
+        final Asic.Builder asicBuilder =
+                new Asic.Builder();
+        asicBuilder
+                .setHashRate(toHashRate(devs))
+                .setFanInfo(
+                        new FanInfo.Builder()
+                                .setCount(1)
+                                .addSpeed(hardware.fanSpeed)
+                                .setSpeedUnits("%")
+                                .build());
+        for (final Summary.Dev dev : devs) {
+            asicBuilder.addTemp(dev.temperature);
+        }
+        asicBuilder.setMrrRigId(mrrRigId);
+        addStats(
+                rawJson,
+                asicBuilder);
+        statsBuilder.addAsic(asicBuilder.build());
+    }
+
+    /**
+     * Adds flat json.
+     *
+     * @param rawJson The raw JSON.
+     * @param builder The builder.
+     */
+    private void addStats(
+            final AtomicReference<String> rawJson,
+            final Asic.Builder builder) {
+        try {
+            final String json = rawJson.get();
+            if (json != null) {
+                builder.addFlatResponse(
+                        new JsonFlattener(json)
+                                .withFlattenMode(FlattenMode.MONGODB)
+                                .flattenAsMap());
+            }
+        } catch (final Exception e) {
+            LOG.warn("Failed to flatten json - skipping", e);
+        }
     }
 }

@@ -66,7 +66,9 @@ public class DragonmintDetectionStrategy<T extends MinerType>
                             new TypeReference<Overview>() {
                             },
                             1,
-                            TimeUnit.SECONDS);
+                            TimeUnit.SECONDS,
+                            s -> {
+                            });
             final Optional<T> type =
                     this.mapper.apply(
                             overview.type);

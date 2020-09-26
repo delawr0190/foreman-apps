@@ -10,10 +10,13 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -52,9 +55,11 @@ public class AntminerStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection<Object[]> parameters() {
+    public static Collection<Object[]> parameters() throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -111,6 +116,12 @@ public class AntminerStatsITest
                                                         .addTemp(67)
                                                         .addTemp(62)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/d3.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -184,6 +195,12 @@ public class AntminerStatsITest
                                                         .addTemp(62)
                                                         .addTemp(53)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/e3.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -229,6 +246,12 @@ public class AntminerStatsITest
                                                         .addTemp(56)
                                                         .addTemp(53)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/l3.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -274,6 +297,12 @@ public class AntminerStatsITest
                                                         .addTemp(56)
                                                         .addTemp(53)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/l3_not-hashing.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -336,6 +365,12 @@ public class AntminerStatsITest
                                                         .addTemp(75)
                                                         .addTemp(63)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s17.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -396,6 +431,12 @@ public class AntminerStatsITest
                                                         .addTemp(63)
                                                         .addTemp(70)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s9_bosp.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -449,6 +490,12 @@ public class AntminerStatsITest
                                                         .addTemp(46)
                                                         .addTemp(52)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s9_bos.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -506,6 +553,12 @@ public class AntminerStatsITest
                                                         .addTemp(65)
                                                         .addTemp(72)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s9_hiveon.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -570,6 +623,12 @@ public class AntminerStatsITest
                                                         .addTemp(71)
                                                         .addTemp(78)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s9_nicehash.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -627,6 +686,12 @@ public class AntminerStatsITest
                                                         .addTemp(74)
                                                         .addTemp(86)
                                                         .hasErrors(false)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AntminerStatsITest.class.getResourceAsStream("/s9_asicseer.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

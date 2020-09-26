@@ -9,16 +9,24 @@ import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.Map;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class AixinA1StatsITest
         extends AbstractApiITest {
 
-    /** Constructor. */
-    public AixinA1StatsITest() {
+    /**
+     * Constructor.
+     *
+     * @throws IOException never.
+     */
+    public AixinA1StatsITest() throws IOException {
         super(
                 new AixinFactory()
                         .create(
@@ -75,6 +83,12 @@ public class AixinA1StatsITest
                                         .addTemp(73)
                                         .addTemp(74)
                                         .hasErrors(false)
+                                        .addFlatResponse(
+                                                new ObjectMapper()
+                                                        .readValue(
+                                                                AixinA1StatsITest.class.getResourceAsStream("/a1.json"),
+                                                                new TypeReference<Map<String, Object>>() {
+                                                                }))
                                         .build())
                         .build());
     }

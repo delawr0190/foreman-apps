@@ -1,0 +1,16 @@
+{
+  "hashboardStatus.0.boardTemp": 71,
+  "hashboardStatus.0.chipTemp": 81,
+  "hashboardStatus.0.mhsAvg": 3.5,
+  "hashboardStatus.1.boardTemp": 72,
+  "hashboardStatus.1.chipTemp": 82,
+  "hashboardStatus.1.mhsAvg": 3.5,
+  "poolStatus.0.url": "myurl.com:3333",
+  "poolStatus.0.status": "Alive",
+  "poolStatus.0.accepted": 1234,
+  "poolStatus.0.rejected": 5678,
+  "systemInfo.0.name": "Fan 1 Speed",
+  "systemInfo.0.value": 6000,
+  "systemInfo.1.name": "Fan 2 Speed",
+  "systemInfo.1.value": 7000
+}

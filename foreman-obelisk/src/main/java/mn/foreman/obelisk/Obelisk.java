@@ -13,12 +13,15 @@ import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.github.wnameless.json.flattener.FlattenMode;
+import com.github.wnameless.json.flattener.JsonFlattener;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <h1>Overview</h1>
@@ -116,12 +119,14 @@ public class Obelisk
      * Adds an ASIC from the provided devices and hardware.
      *
      * @param statsBuilder The stats builder.
+     * @param raw          The raw JSON.
      * @param dashboard    The dashboard stats.
      * @param gen          The generation.
      * @param mrrRigId     The MRR rig id.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
+            final AtomicReference<String> raw,
             final Dashboard dashboard,
             final ObeliskGen gen,
             final String mrrRigId) {
@@ -153,6 +158,9 @@ public class Obelisk
                 });
 
         asicBuilder.setMrrRigId(mrrRigId);
+        addStats(
+                raw,
+                asicBuilder);
 
         statsBuilder.addAsic(asicBuilder.build());
     }
@@ -198,6 +206,28 @@ public class Obelisk
     }
 
     /**
+     * Adds flat json.
+     *
+     * @param rawJson The raw JSON.
+     * @param builder The builder.
+     */
+    private static void addStats(
+            final AtomicReference<String> rawJson,
+            final Asic.Builder builder) {
+        try {
+            final String json = rawJson.get();
+            if (json != null) {
+                builder.addFlatResponse(
+                        new JsonFlattener(json)
+                                .withFlattenMode(FlattenMode.MONGODB)
+                                .flattenAsMap());
+            }
+        } catch (final Exception e) {
+            // Ignore
+        }
+    }
+
+    /**
      * Adds up the hash rates from the provided devices.
      *
      * @param dashboard The dashboard stats.
@@ -228,6 +258,7 @@ public class Obelisk
             final ObeliskGen gen,
             final MinerStats.Builder statsBuilder)
             throws Exception {
+        final AtomicReference<String> rawJson = new AtomicReference<>();
         ObeliskQuery.runSessionQuery(
                 ObeliskQuery.Context
                         .<Dashboard>builder()
@@ -238,12 +269,14 @@ public class Obelisk
                         .username(this.username)
                         .password(this.password)
                         .responseClass(Dashboard.class)
+                        .rawCallback(rawJson::set)
                         .responseCallback(dashboard -> {
                             addPools(
                                     statsBuilder,
                                     dashboard);
                             addAsics(
                                     statsBuilder,
+                                    rawJson,
                                     dashboard,
                                     gen,
                                     dashboard

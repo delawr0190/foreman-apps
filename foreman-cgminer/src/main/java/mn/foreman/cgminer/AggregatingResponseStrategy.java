@@ -90,9 +90,11 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
             }
 
             if (isComplete()) {
-                // MRR rig id
-                this.context.get(ContextKey.MRR_RIG_ID)
-                        .ifPresent(asicBuilder::setMrrRigId);
+                // Context data
+                this.context.getSimple(ContextKey.MRR_RIG_ID)
+                        .ifPresent(this.asicBuilder::setMrrRigId);
+                this.context.getMulti(ContextKey.RAW_STATS)
+                        .ifPresent(this.asicBuilder::addFlatResponse);
 
                 builder.addAsic(this.asicBuilder.build());
                 reset();

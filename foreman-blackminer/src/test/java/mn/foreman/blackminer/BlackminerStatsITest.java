@@ -11,12 +11,15 @@ import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -59,9 +62,12 @@ public class BlackminerStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -139,6 +145,12 @@ public class BlackminerStatsITest
                                                                         .build())
                                                         .addTemp(44)
                                                         .setPowerState("ckb")
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                BlackminerStatsITest.class.getResourceAsStream("/f1-mini.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -242,6 +254,12 @@ public class BlackminerStatsITest
                                                         .addTemp(58)
                                                         .addTemp(51)
                                                         .setPowerState("tellor")
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                BlackminerStatsITest.class.getResourceAsStream("/f1.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -345,6 +363,12 @@ public class BlackminerStatsITest
                                                         .addTemp(67)
                                                         .addTemp(71)
                                                         .setPowerState("tellor")
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                BlackminerStatsITest.class.getResourceAsStream("/f1-ultra.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

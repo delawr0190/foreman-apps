@@ -9,10 +9,13 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
@@ -50,9 +53,12 @@ public class AvalonStatsITest
      * Test parameters
      *
      * @return The test parameters.
+     *
+     * @throws IOException never.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static Collection parameters()
+            throws IOException {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -392,6 +398,12 @@ public class AvalonStatsITest
                                                         .addTemp(90)
                                                         .addTemp(37)
                                                         .addTemp(78)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AvalonStatsITest.class.getResourceAsStream("/7xx.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -681,6 +693,12 @@ public class AvalonStatsITest
                                                         .addTemp(85)
                                                         .addTemp(37)
                                                         .addTemp(83)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AvalonStatsITest.class.getResourceAsStream("/8xx.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -1444,6 +1462,12 @@ public class AvalonStatsITest
                                                         .addTemp(94)
                                                         .addTemp(24)
                                                         .addTemp(94)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AvalonStatsITest.class.getResourceAsStream("/9xx.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -1638,6 +1662,12 @@ public class AvalonStatsITest
                                                                         .build())
                                                         .addTemp(28)
                                                         .addTemp(75)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                AvalonStatsITest.class.getResourceAsStream("/10xx.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }

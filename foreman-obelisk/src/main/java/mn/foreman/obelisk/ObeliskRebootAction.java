@@ -31,6 +31,8 @@ public class ObeliskRebootAction
                             .username(username)
                             .password(password)
                             .isReboot(true)
+                            .rawCallback(s -> {
+                            })
                             .build());
         } catch (final Exception e) {
             throw new MinerException(e);

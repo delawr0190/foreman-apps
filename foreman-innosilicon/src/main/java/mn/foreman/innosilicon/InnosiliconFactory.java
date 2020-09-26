@@ -8,6 +8,7 @@ import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.asic.Asic;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
@@ -37,10 +38,14 @@ public class InnosiliconFactory
     @Override
     public Miner create(final Map<String, String> config) {
         final Context context = new Context();
+        final ObjectMapper objectMapper = new ObjectMapper();
         final ResponseStrategy responseStrategy =
-                createResponseStrategy(
-                        this.apiType,
-                        context);
+                new RawStoringDecorator(
+                        context,
+                        objectMapper,
+                        createResponseStrategy(
+                                this.apiType,
+                                context));
         return new CgMiner.Builder()
                 .setApiIp(config.get("apiIp"))
                 .setApiPort(config.get("apiPort"))
@@ -48,8 +53,11 @@ public class InnosiliconFactory
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)
                                 .build(),
-                        new PoolsResponseStrategy(
-                                new MrrRigIdCallback(context)))
+                        new RawStoringDecorator(
+                                context,
+                                objectMapper,
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(context))))
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.SUMMARY)

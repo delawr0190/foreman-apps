@@ -28,7 +28,7 @@ public class MrrRigIdCallback
                         pool,
                         poolInfo.getOrDefault("User", ""));
         if (rigId != null && !rigId.isEmpty()) {
-            this.context.add(
+            this.context.addSimple(
                     ContextKey.MRR_RIG_ID,
                     rigId);
         }

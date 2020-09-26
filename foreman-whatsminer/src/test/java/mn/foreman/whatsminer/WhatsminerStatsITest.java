@@ -9,6 +9,8 @@ import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.io.IOUtils;
 import org.junit.runner.RunWith;
@@ -114,6 +116,12 @@ public class WhatsminerStatsITest
                                                         .addTemp(75)
                                                         .addTemp(75)
                                                         .hasErrors(true)
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                WhatsminerStatsITest.class.getResourceAsStream("/m3.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         },
@@ -166,6 +174,12 @@ public class WhatsminerStatsITest
                                                         .addAttribute(
                                                                 "mrr_rig_id",
                                                                 "yyyy")
+                                                        .addFlatResponse(
+                                                                new ObjectMapper()
+                                                                        .readValue(
+                                                                                WhatsminerStatsITest.class.getResourceAsStream("/m20s.json"),
+                                                                                new TypeReference<Map<String, Object>>() {
+                                                                                }))
                                                         .build())
                                         .build()
                         }
