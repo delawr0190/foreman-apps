@@ -22,7 +22,7 @@ import java.util.Map;
  * braiins.
  */
 public class AntminerFactory
-        implements MinerFactory {
+        extends CgMinerFactory {
 
     /** The hash rate multiplier. */
     private final BigDecimal multiplier;
@@ -37,12 +37,12 @@ public class AntminerFactory
     }
 
     @Override
-    public Miner create(final Map<String, Object> config) {
-        final String apiIp = config.get("apiIp").toString();
-        final String apiPort = config.get("apiPort").toString();
-
+    protected Miner create(
+            final String apiIp,
+            final String apiPort,
+            final List<String> statsWhitelist,
+            final Map<String, Object> config) {
         final Context context = new Context();
-
         final CgMiner antminer =
                 toMiner(
                         apiIp,
@@ -86,7 +86,6 @@ public class AntminerFactory
                                 ImmutableMap.of(
                                         CgMinerCommand.TEMPS,
                                         braiinsStrategy)));
-
         return toMiner(
                 apiIp,
                 apiPort,

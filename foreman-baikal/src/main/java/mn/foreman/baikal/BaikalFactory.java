@@ -7,6 +7,7 @@ import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -16,18 +17,22 @@ import java.util.concurrent.ConcurrentMap;
  * a {@link Miner} that will query a Baikal.
  */
 public class BaikalFactory
-        implements MinerFactory {
+        extends CgMinerFactory {
 
     @Override
-    public Miner create(final Map<String, Object> config) {
+    protected Miner create(
+            final String apiIp,
+            final String apiPort,
+            final List<String> statsWhitelist,
+            final Map<String, Object> config) {
         final ConcurrentMap<String, String> poolAlgos =
                 new ConcurrentHashMap<>();
         final Context context = new Context();
         final PoolCallback mrrRigIdCallback =
                 new MrrRigIdCallback(context);
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp").toString())
-                .setApiPort(config.get("apiPort").toString())
+                .setApiIp(apiIp)
+                .setApiPort(apiPort)
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)

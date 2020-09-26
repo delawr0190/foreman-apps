@@ -9,6 +9,7 @@ import mn.foreman.model.MinerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,10 +17,14 @@ import java.util.Map;
  * a {@link Miner} that will query a Blackminer.
  */
 public class BlackminerFactory
-        implements MinerFactory {
+        extends CgMinerFactory {
 
     @Override
-    public Miner create(final Map<String, Object> config) {
+    protected Miner create(
+            final String apiIp,
+            final String apiPort,
+            final List<String> statsWhitelist,
+            final Map<String, Object> config) {
         final Context cgContext = new Context();
         final ResponseStrategy responseStrategy =
                 new AggregatingResponseStrategy<>(
@@ -38,8 +43,8 @@ public class BlackminerFactory
                         cgContext);
         return new CoinTypeDecorator(
                 new CgMiner.Builder()
-                        .setApiIp(config.get("apiIp").toString())
-                        .setApiPort(config.get("apiPort").toString())
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)

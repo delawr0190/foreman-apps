@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * a {@link Miner} that will query an Innosilicon.
  */
 public class InnosiliconFactory
-        implements MinerFactory {
+        extends CgMinerFactory {
 
     /** The api type. */
     private final ApiType apiType;
@@ -35,15 +35,19 @@ public class InnosiliconFactory
     }
 
     @Override
-    public Miner create(final Map<String, Object> config) {
+    protected Miner create(
+            final String apiIp,
+            final String apiPort,
+            final List<String> statsWhitelist,
+            final Map<String, Object> config) {
         final Context context = new Context();
         final ResponseStrategy responseStrategy =
                 createResponseStrategy(
                         this.apiType,
                         context);
         return new CgMiner.Builder()
-                .setApiIp(config.get("apiIp").toString())
-                .setApiPort(config.get("apiPort").toString())
+                .setApiIp(apiIp)
+                .setApiPort(apiPort)
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.POOLS)
