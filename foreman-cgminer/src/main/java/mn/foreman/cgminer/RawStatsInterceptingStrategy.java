@@ -6,7 +6,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A {@link RawStatsInterceptingStrategy} provides a {@link ResponseStrategy}
@@ -26,16 +29,22 @@ public class RawStatsInterceptingStrategy
     /** The real strategy. */
     private final ResponsePatchingStrategy real;
 
+    /** The stats whitelist. */
+    private final List<String> statsWhitelist;
+
     /**
      * Constructor.
      *
-     * @param context The context.
-     * @param real    The real.
+     * @param context        The context.
+     * @param statsWhitelist The stats whitelist.
+     * @param real           The real.
      */
     public RawStatsInterceptingStrategy(
             final Context context,
+            final List<String> statsWhitelist,
             final ResponsePatchingStrategy real) {
         this.context = context;
+        this.statsWhitelist = new ArrayList<>(statsWhitelist);
         this.real = real;
     }
 
@@ -46,8 +55,13 @@ public class RawStatsInterceptingStrategy
             final Map<String, Object> flattened =
                     new JsonFlattener(patched)
                             .withFlattenMode(FlattenMode.MONGODB)
-                            .flattenAsMap();
-            LOG.info("Flattended response to: {}", flattened);
+                            .flattenAsMap()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> this.statsWhitelist.contains(entry.getKey()))
+                            .collect(Collectors.toMap(
+                                    Map.Entry::getKey,
+                                    Map.Entry::getValue));
             this.context.addMulti(
                     ContextKey.RAW_STATS,
                     flattened);

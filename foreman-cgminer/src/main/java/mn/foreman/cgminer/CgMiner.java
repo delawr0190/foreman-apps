@@ -260,6 +260,9 @@ public class CgMiner
         /** The context. */
         private final Context context;
 
+        /** The stats whitelist. */
+        private final List<String> statsWhitelist;
+
         /** Whether or not to store json. */
         private final boolean storeJson;
 
@@ -295,6 +298,7 @@ public class CgMiner
                 final Context context,
                 final List<String> statsWhitelist) {
             this.context = context;
+            this.statsWhitelist = new ArrayList<>(statsWhitelist);
             this.storeJson = !statsWhitelist.isEmpty();
         }
 
@@ -334,6 +338,7 @@ public class CgMiner
                 patchingStrategy =
                         new RawStatsInterceptingStrategy(
                                 this.context,
+                                this.statsWhitelist,
                                 original);
             }
             this.requests.add(
