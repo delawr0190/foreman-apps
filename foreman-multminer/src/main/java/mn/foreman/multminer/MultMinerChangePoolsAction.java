@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -182,7 +183,8 @@ public class MultMinerChangePoolsAction
         final MultMiner miner =
                 new MultMiner(
                         ip,
-                        port);
+                        port,
+                        Collections.emptyList());
 
         long now = System.currentTimeMillis();
         final long deadlineMillis = now + TimeUnit.MINUTES.toMillis(5);

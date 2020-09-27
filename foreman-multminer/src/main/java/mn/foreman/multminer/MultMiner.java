@@ -8,6 +8,7 @@ import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.multminer.response.Stats;
+import mn.foreman.util.Flatten;
 import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
@@ -16,8 +17,7 @@ import com.google.common.collect.Iterables;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * A {@link MultMiner} provides a {@link AbstractMiner} implementation that can
@@ -26,31 +26,42 @@ import java.util.Objects;
 public class MultMiner
         extends AbstractMiner {
 
+    /** The whitelisted stats keys. */
+    private final List<String> statsWhitelist;
+
     /**
      * Constructor.
      *
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
+     * @param apiIp          The API IP.
+     * @param apiPort        The API port.
+     * @param statsWhitelist The stats whitelist.
      */
     MultMiner(
             final String apiIp,
-            final int apiPort) {
+            final int apiPort,
+            final List<String> statsWhitelist) {
         super(
                 apiIp,
                 apiPort);
+        this.statsWhitelist = new ArrayList<>(statsWhitelist);
     }
 
     @Override
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
+        final Map<String, Object> rawStats = new HashMap<>();
         final Stats stats =
                 Query.restQuery(
                         this.apiIp,
                         this.apiPort,
                         "/gst.csp?a=a",
                         new TypeReference<Stats>() {
-                        });
+                        },
+                        rawJson -> rawStats.putAll(
+                                Flatten.flattenAndFilter(
+                                        rawJson,
+                                        this.statsWhitelist)));
         addPools(
                 statsBuilder,
                 stats.ms);
@@ -67,7 +78,8 @@ public class MultMiner
                                         strings.get(2)))
                         .filter(Objects::nonNull)
                         .findAny()
-                        .orElse(""));
+                        .orElse(""),
+                rawStats);
     }
 
     /**
@@ -76,11 +88,13 @@ public class MultMiner
      * @param statsBuilder The stats builder.
      * @param stats        The stats.
      * @param mrrRigId     The rig ID.
+     * @param rawStats     The raw stats.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
             final Stats stats,
-            final String mrrRigId) {
+            final String mrrRigId,
+            final Map<String, Object> rawStats) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder
@@ -99,7 +113,9 @@ public class MultMiner
                 .flatMap(List::stream)
                 .map(chip -> Iterables.get(chip, 1, "0"))
                 .forEach(asicBuilder::addTemp);
-        asicBuilder.setMrrRigId(mrrRigId);
+        asicBuilder
+                .setMrrRigId(mrrRigId)
+                .addRawStats(rawStats);
         statsBuilder.addAsic(asicBuilder.build());
     }
 

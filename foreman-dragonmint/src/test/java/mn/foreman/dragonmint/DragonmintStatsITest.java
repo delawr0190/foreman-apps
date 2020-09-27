@@ -19,11 +19,16 @@ public class DragonmintStatsITest
     /** Constructor. */
     public DragonmintStatsITest() {
         super(
-                new Dragonmint(
-                        "127.0.0.1",
-                        8080,
-                        "username",
-                        "password"),
+                new DragonmintFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "8080",
+                                "username",
+                                "username",
+                                "password",
+                                "password")),
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(

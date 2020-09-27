@@ -259,7 +259,9 @@ public class Query {
                 request,
                 type,
                 connectTimeout,
-                connectTimeoutUnits);
+                connectTimeoutUnits,
+                s -> {
+                });
     }
 
     /**
@@ -337,6 +339,7 @@ public class Query {
      * @param <T>                    The response type.
      * @param connectionTimeout      The timeout.
      * @param connectionTimeoutUnits The units.
+     * @param rawCallback            The raw callback.
      *
      * @return The response.
      *
@@ -350,7 +353,8 @@ public class Query {
             final String password,
             final TypeReference<T> type,
             final int connectionTimeout,
-            final TimeUnit connectionTimeoutUnits)
+            final TimeUnit connectionTimeoutUnits,
+            final Consumer<String> rawCallback)
             throws MinerException {
         final String auth =
                 Base64.getEncoder().encodeToString(
@@ -365,19 +369,21 @@ public class Query {
                 "POST",
                 type,
                 connectionTimeout,
-                connectionTimeoutUnits);
+                connectionTimeoutUnits,
+                rawCallback);
     }
 
     /**
      * Utility method to perform a query against a REST API.
      *
-     * @param apiIp    The API IP.
-     * @param apiPort  The API port.
-     * @param uri      The URI.
-     * @param username The username.
-     * @param password The password.
-     * @param type     The response class.
-     * @param <T>      The response type.
+     * @param apiIp       The API IP.
+     * @param apiPort     The API port.
+     * @param uri         The URI.
+     * @param username    The username.
+     * @param password    The password.
+     * @param type        The response class.
+     * @param rawCallback The raw callback.
+     * @param <T>         The response type.
      *
      * @return The response.
      *
@@ -389,7 +395,8 @@ public class Query {
             final String uri,
             final String username,
             final String password,
-            final TypeReference<T> type)
+            final TypeReference<T> type,
+            final Consumer<String> rawCallback)
             throws MinerException {
         return restQuery(
                 apiIp,
@@ -399,38 +406,8 @@ public class Query {
                 password,
                 type,
                 10,
-                TimeUnit.SECONDS);
-    }
-
-    /**
-     * Utility method to perform a query against a REST API.
-     *
-     * @param apiIp   The API IP.
-     * @param apiPort The API port.
-     * @param uri     The URI.
-     * @param command The command.
-     * @param type    The response class.
-     * @param <T>     The response type.
-     *
-     * @return The response.
-     *
-     * @throws MinerException on failure to query.
-     */
-    public static <T> T restQuery(
-            final String apiIp,
-            final int apiPort,
-            final String uri,
-            final String command,
-            final TypeReference<T> type)
-            throws MinerException {
-        return restQuery(
-                apiIp,
-                apiPort,
-                uri,
-                command,
-                type,
-                10,
-                TimeUnit.SECONDS);
+                TimeUnit.SECONDS,
+                rawCallback);
     }
 
     /**
@@ -444,6 +421,7 @@ public class Query {
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param rawCallback         The raw callback.
      * @param <T>                 The response type.
      *
      * @return The response.
@@ -458,7 +436,8 @@ public class Query {
             final String command,
             final TypeReference<T> type,
             final int connectTimeout,
-            final TimeUnit connectTimeoutUnits)
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<String> rawCallback)
             throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -479,7 +458,8 @@ public class Query {
                 request,
                 type,
                 connectTimeout,
-                connectTimeoutUnits);
+                connectTimeoutUnits,
+                rawCallback);
     }
 
     /**
@@ -508,7 +488,41 @@ public class Query {
                 "GET",
                 type,
                 2,
-                TimeUnit.SECONDS);
+                TimeUnit.SECONDS,
+                s -> {
+                });
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp    The API IP.
+     * @param apiPort  The API port.
+     * @param uri      The URI.
+     * @param type     The response class.
+     * @param callback The callback.
+     * @param <T>      The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQuery(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final TypeReference<T> type,
+            final Consumer<String> callback)
+            throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                "GET",
+                type,
+                2,
+                TimeUnit.SECONDS,
+                callback);
     }
 
     /**
@@ -521,6 +535,7 @@ public class Query {
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param callback            The callback.
      * @param <T>                 The response type.
      *
      * @return The response.
@@ -534,7 +549,8 @@ public class Query {
             final String command,
             final TypeReference<T> type,
             final int connectTimeout,
-            final TimeUnit connectTimeoutUnits)
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<String> callback)
             throws MinerException {
         final ApiRequest request =
                 new ApiRequestImpl(
@@ -554,7 +570,8 @@ public class Query {
                 request,
                 type,
                 connectTimeout,
-                connectTimeoutUnits);
+                connectTimeoutUnits,
+                callback);
     }
 
     /**
@@ -625,7 +642,9 @@ public class Query {
                 "GET",
                 type,
                 connectTimeout,
-                connectTimeoutUnits);
+                connectTimeoutUnits,
+                s -> {
+                });
     }
 
     /**
@@ -765,6 +784,7 @@ public class Query {
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param rawCallback         The raw callback.
      * @param <T>                 The response type.
      *
      * @return The response.
@@ -775,7 +795,8 @@ public class Query {
             final ApiRequest request,
             final TypeReference<T> type,
             final int connectTimeout,
-            final TimeUnit connectTimeoutUnits)
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<String> rawCallback)
             throws MinerException {
         T response;
         if (request.waitForCompletion(
@@ -786,6 +807,7 @@ public class Query {
                             .registerModule(new JavaTimeModule());
             try {
                 final String responseJson = request.getResponse();
+                rawCallback.accept(responseJson);
                 LOG.debug("Received API response: {}", responseJson);
                 response =
                         objectMapper.readValue(

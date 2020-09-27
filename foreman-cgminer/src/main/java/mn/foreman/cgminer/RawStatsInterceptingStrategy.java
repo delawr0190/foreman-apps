@@ -1,15 +1,13 @@
 package mn.foreman.cgminer;
 
-import com.github.wnameless.json.flattener.FlattenMode;
-import com.github.wnameless.json.flattener.JsonFlattener;
+import mn.foreman.util.Flatten;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * A {@link RawStatsInterceptingStrategy} provides a {@link ResponseStrategy}
@@ -52,19 +50,11 @@ public class RawStatsInterceptingStrategy
     public String patch(final String json) throws IOException {
         final String patched = this.real.patch(json);
         try {
-            final Map<String, Object> flattened =
-                    new JsonFlattener(patched)
-                            .withFlattenMode(FlattenMode.MONGODB)
-                            .flattenAsMap()
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> this.statsWhitelist.contains(entry.getKey()))
-                            .collect(Collectors.toMap(
-                                    Map.Entry::getKey,
-                                    Map.Entry::getValue));
             this.context.addMulti(
                     ContextKey.RAW_STATS,
-                    flattened);
+                    Flatten.flattenAndFilter(
+                            json,
+                            this.statsWhitelist));
         } catch (final Exception e) {
             LOG.warn("Failed to flatten json - skipping", e);
         }

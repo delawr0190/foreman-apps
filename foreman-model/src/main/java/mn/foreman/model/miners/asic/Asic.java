@@ -326,28 +326,6 @@ public class Asic {
         }
 
         /**
-         * Adds the provided values.
-         *
-         * @param values          The values.
-         * @param whitelistedKeys The whitelisted keys.
-         *
-         * @return This builder instance.
-         */
-        public Builder addRawStats(
-                final Map<String, Object> values,
-                final List<String> whitelistedKeys) {
-            values
-                    .entrySet()
-                    .stream()
-                    .filter(entry -> whitelistedKeys.contains(entry.getKey()))
-                    .forEach(entry ->
-                            this.rawStats.put(
-                                    entry.getKey(),
-                                    entry.getValue()));
-            return this;
-        }
-
-        /**
          * Adds a new temperature reading.
          *
          * @param temp The new temperature reading.

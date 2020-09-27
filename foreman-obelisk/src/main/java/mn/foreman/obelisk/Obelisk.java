@@ -9,6 +9,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.obelisk.json.Dashboard;
 import mn.foreman.obelisk.json.Info;
+import mn.foreman.util.Flatten;
 import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
@@ -17,8 +18,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * <h1>Overview</h1>
@@ -34,40 +34,51 @@ public class Obelisk
     /** The API password. */
     private final String password;
 
+    /** The stats whitelist. */
+    private final List<String> statsWhitelist;
+
     /** The API username. */
     private final String username;
 
     /**
      * Constructor.
      *
-     * @param apiIp    The API IP.
-     * @param apiPort  The API port.
-     * @param username The username.
-     * @param password The password.
+     * @param apiIp          The API IP.
+     * @param apiPort        The API port.
+     * @param username       The username.
+     * @param password       The password.
+     * @param statsWhitelist The stats whitelist.
      */
     Obelisk(
             final String apiIp,
             final int apiPort,
             final String username,
-            final String password) {
+            final String password,
+            final List<String> statsWhitelist) {
         super(
                 apiIp,
                 apiPort);
         this.username = username;
         this.password = password;
+        this.statsWhitelist = new ArrayList<>(statsWhitelist);
     }
 
     @Override
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
+        final Map<String, Object> rawStats = new HashMap<>();
         final Info info =
                 Query.restQuery(
                         this.apiIp,
                         this.apiPort,
                         "/api/info",
                         new TypeReference<Info>() {
-                        });
+                        },
+                        rawJson -> rawStats.putAll(
+                                Flatten.flattenAndFilter(
+                                        rawJson,
+                                        this.statsWhitelist)));
         final Optional<ObeliskType> type =
                 ObeliskType.forType(
                         info.model);
@@ -77,7 +88,8 @@ public class Obelisk
             try {
                 addStatsForGen(
                         obeliskType.getGen(),
-                        statsBuilder);
+                        statsBuilder,
+                        rawStats);
             } catch (final Exception e) {
                 throw new MinerException(e);
             }
@@ -119,12 +131,14 @@ public class Obelisk
      * @param dashboard    The dashboard stats.
      * @param gen          The generation.
      * @param mrrRigId     The MRR rig id.
+     * @param rawStats     The raw stats.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
             final Dashboard dashboard,
             final ObeliskGen gen,
-            final String mrrRigId) {
+            final String mrrRigId,
+            final Map<String, Object> rawStats) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder.setHashRate(toHashRate(dashboard));
@@ -152,7 +166,10 @@ public class Obelisk
                     asicBuilder.addTemp(board.temp2);
                 });
 
-        asicBuilder.setMrrRigId(mrrRigId);
+        // Context data
+        asicBuilder
+                .setMrrRigId(mrrRigId)
+                .addRawStats(rawStats);
 
         statsBuilder.addAsic(asicBuilder.build());
     }
@@ -221,12 +238,14 @@ public class Obelisk
      *
      * @param gen          The generation.
      * @param statsBuilder The stats.
+     * @param rawStats     The raw stats.
      *
      * @throws MinerException on failure to query.
      */
     private void addStatsForGen(
             final ObeliskGen gen,
-            final MinerStats.Builder statsBuilder)
+            final MinerStats.Builder statsBuilder,
+            final Map<String, Object> rawStats)
             throws Exception {
         ObeliskQuery.runSessionQuery(
                 ObeliskQuery.Context
@@ -252,7 +271,8 @@ public class Obelisk
                                             .map(pool -> MrrUtils.getRigId(pool.url, pool.worker))
                                             .filter(Objects::nonNull)
                                             .findFirst()
-                                            .orElse(""));
+                                            .orElse(""),
+                                    rawStats);
                         })
                         .build());
     }

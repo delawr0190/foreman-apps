@@ -8,6 +8,7 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.util.Flatten;
 import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
@@ -16,8 +17,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <h1>Overview</h1>
@@ -41,33 +41,40 @@ public class Dragonmint
     /** The API password. */
     private final String password;
 
+    /** The stats whitelist. */
+    private final List<String> statsWhitelist;
+
     /** The API username. */
     private final String username;
 
     /**
      * Constructor.
      *
-     * @param apiIp    The API IP.
-     * @param apiPort  The API port.
-     * @param username The username.
-     * @param password The password.
+     * @param apiIp          The API IP.
+     * @param apiPort        The API port.
+     * @param username       The username.
+     * @param password       The password.
+     * @param statsWhitelist The stats whitelist.
      */
     Dragonmint(
             final String apiIp,
             final int apiPort,
             final String username,
-            final String password) {
+            final String password,
+            final List<String> statsWhitelist) {
         super(
                 apiIp,
                 apiPort);
         this.username = username;
         this.password = password;
+        this.statsWhitelist = new ArrayList<>(statsWhitelist);
     }
 
     @Override
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
+        final Map<String, Object> rawStats = new HashMap<>();
         final Summary summary =
                 Query.restQuery(
                         this.apiIp,
@@ -76,7 +83,11 @@ public class Dragonmint
                         this.username,
                         this.password,
                         new TypeReference<Summary>() {
-                        });
+                        },
+                        rawJson -> rawStats.putAll(
+                                Flatten.flattenAndFilter(
+                                        rawJson,
+                                        this.statsWhitelist)));
         addPools(
                 statsBuilder,
                 summary.pools);
@@ -90,7 +101,8 @@ public class Dragonmint
                         .map(pool -> MrrUtils.getRigId(pool.url, pool.user))
                         .filter(Objects::nonNull)
                         .findAny()
-                        .orElse(""));
+                        .orElse(""),
+                rawStats);
     }
 
     @Override
@@ -126,12 +138,14 @@ public class Dragonmint
      * @param devs         The devices.
      * @param hardware     The hardware information.
      * @param mrrRigId     The rig ID.
+     * @param rawStats     The raw stats.
      */
     private static void addAsics(
             final MinerStats.Builder statsBuilder,
             final List<Summary.Dev> devs,
             final Summary.Hardware hardware,
-            final String mrrRigId) {
+            final String mrrRigId,
+            final Map<String, Object> rawStats) {
         final Asic.Builder asicBuilder =
                 new Asic.Builder();
         asicBuilder
@@ -145,7 +159,10 @@ public class Dragonmint
         for (final Summary.Dev dev : devs) {
             asicBuilder.addTemp(dev.temperature);
         }
-        asicBuilder.setMrrRigId(mrrRigId);
+        // Context data
+        asicBuilder
+                .setMrrRigId(mrrRigId)
+                .addRawStats(rawStats);
         statsBuilder.addAsic(asicBuilder.build());
     }
 

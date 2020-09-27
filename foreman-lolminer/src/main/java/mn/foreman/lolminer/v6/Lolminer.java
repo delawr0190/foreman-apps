@@ -63,7 +63,9 @@ public class Lolminer
                         new TypeReference<Response>() {
                         },
                         1,
-                        TimeUnit.SECONDS);
+                        TimeUnit.SECONDS,
+                        s -> {
+                        });
 
         // Add the pool
         statsBuilder.addPool(
