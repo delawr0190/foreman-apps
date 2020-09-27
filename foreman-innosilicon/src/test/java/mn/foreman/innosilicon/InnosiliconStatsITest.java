@@ -16,6 +16,7 @@ import org.junit.runners.Parameterized;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /** Tests innosilicon stats obtaining. */
@@ -26,13 +27,15 @@ public class InnosiliconStatsITest
     /**
      * Constructor.
      *
-     * @param apiType       The API type.
-     * @param handlers      The handlers.
-     * @param expectedStats The expected stats.
+     * @param apiType        The API type.
+     * @param handlers       The handlers.
+     * @param statsWhitelist The stats whitelist.
+     * @param expectedStats  The expected stats.
      */
     public InnosiliconStatsITest(
             final ApiType apiType,
             final Map<String, HandlerInterface> handlers,
+            final List<String> statsWhitelist,
             final MinerStats expectedStats) {
         super(
                 new InnosiliconFactory(apiType)
@@ -41,7 +44,9 @@ public class InnosiliconStatsITest
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028")),
+                                        "4028",
+                                        "statsWhitelist",
+                                        statsWhitelist)),
                 new FakeRpcMinerServer(
                         4028,
                         handlers),
@@ -70,6 +75,9 @@ public class InnosiliconStatsITest
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1536018726,\"Code\":7,\"Msg\":\"1 Pool(s)\",\"Description\":\"sgminer 4.4.2\"}],\"POOL0\":[{\"POOL\":0,\"URL\":\"stratum+tcp://zcl.suprnova.cc:4042\",\"Status\":\"Alive\",\"Priority\":0,\"Accepted\":2113,\"Rejected\":27,\"Stale\":1}],\"POOL1\":[{\"POOL\":1,\"URL\":\"stratum+tcp://zcl.suprnova.cc:4043\",\"Status\":\"Alive\",\"Priority\":1,\"Accepted\":3,\"Rejected\":2,\"Stale\":1}],\"id\":1}")),
+                                Arrays.asList(
+                                        "STATS2.0.MHS av",
+                                        "STATS2.0.Fan duty"),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(4028)
@@ -111,6 +119,12 @@ public class InnosiliconStatsITest
                                                         .addTemp(47)
                                                         .addTemp(48)
                                                         .addTemp(45)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "STATS2.0.MHS av",
+                                                                        new BigDecimal("16500.0"),
+                                                                        "STATS2.0.Fan duty",
+                                                                        new BigDecimal("100")))
                                                         .build())
                                         .build()
                         },
@@ -127,6 +141,9 @@ public class InnosiliconStatsITest
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1593966947,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"innominer a9-1.1.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://americas.equihash.mining-dutch.nl:6663\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":3128,\"Accepted\":5128,\"Rejected\":26,\"Works\":413652,\"Discarded\":3437209,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"Last Share Time\":1593966945,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":2487729810.00000000,\"Difficulty Rejected\":12551116.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":573494.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"americas.equihash.mining-dutch.nl\",\"Has GBT\":false,\"Pool Rejected%\":0.5020,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"stratum+tcp://solo-zen.2miners.com:7070\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":2,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":1,\"Remote Failures\":0,\"Last Share Time\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"stratum+tcp://us1.zhash.pro:8059\",\"User\":\"xxx\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"Last Share Time\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                Arrays.asList(
+                                        "STATS.0.00 cores",
+                                        "STATS.0.00 nVol"),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(4028)
@@ -180,6 +197,12 @@ public class InnosiliconStatsITest
                                                         .addTemp(62)
                                                         .addTemp(64)
                                                         .addTemp(60)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "STATS.0.00 cores",
+                                                                        new BigDecimal("32"),
+                                                                        "STATS.0.00 nVol",
+                                                                        new BigDecimal("865")))
                                                         .build())
                                         .build()
                         }

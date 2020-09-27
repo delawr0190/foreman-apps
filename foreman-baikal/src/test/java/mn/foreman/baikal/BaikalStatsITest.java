@@ -40,7 +40,11 @@ public class BaikalStatsITest
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028")),
+                                        "4028",
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "DEVS.1.No Device",
+                                                "DEVS.1.Device Hardware%"))),
                 new FakeRpcMinerServer(
                         4028,
                         handlers),
@@ -282,6 +286,12 @@ public class BaikalStatsITest
                                                         .addTemp(47)
                                                         .addTemp(47)
                                                         .addTemp(46)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "DEVS.1.No Device",
+                                                                        false,
+                                                                        "DEVS.1.Device Hardware%",
+                                                                        new BigDecimal("0.0")))
                                                         .build())
                                         .build()
                         },
@@ -940,6 +950,12 @@ public class BaikalStatsITest
                                                         .addTemp(44)
                                                         .addTemp(44)
                                                         .setPowerState("x13")
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "DEVS.1.No Device",
+                                                                        false,
+                                                                        "DEVS.1.Device Hardware%",
+                                                                        new BigDecimal("0")))
                                                         .build())
                                         .build()
                         }

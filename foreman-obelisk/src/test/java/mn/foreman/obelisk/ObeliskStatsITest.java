@@ -14,10 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Map;
+import java.util.*;
 
 /** Tests obelisk stats obtaining. */
 @RunWith(Parameterized.class)
@@ -27,26 +24,36 @@ public class ObeliskStatsITest
     /**
      * Constructor.
      *
-     * @param port          The port.
-     * @param handlers      The handlers.
-     * @param expectedStats The expected stats.
+     * @param port           The port.
+     * @param handlers       The handlers.
+     * @param statsWhitelist The stats whitelist.
+     * @param expectedStats  The expected stats.
      */
     public ObeliskStatsITest(
             final int port,
             final Map<String, ServerHandler> handlers,
+            final List<String> statsWhitelist,
             final MinerStats expectedStats) {
         super(
                 new ObeliskFactory()
                         .create(
-                                ImmutableMap.of(
-                                        "apiIp",
-                                        "127.0.0.1",
-                                        "apiPort",
-                                        Integer.toString(port),
-                                        "username",
-                                        "username",
-                                        "password",
-                                        "password")),
+                                ImmutableMap.<String, Object>builder()
+                                        .put(
+                                                "apiIp",
+                                                "127.0.0.1")
+                                        .put(
+                                                "apiPort",
+                                                Integer.toString(port))
+                                        .put(
+                                                "username",
+                                                "username")
+                                        .put(
+                                                "password",
+                                                "password")
+                                        .put(
+                                                "statsWhitelist",
+                                                statsWhitelist)
+                                        .build()),
                 new FakeHttpMinerServer(
                         port,
                         handlers),
@@ -131,6 +138,9 @@ public class ObeliskStatsITest
                                                         "sessionid=foreman"),
                                                 "",
                                                 Collections.emptyMap())),
+                                Arrays.asList(
+                                        "hashboardStatus.0.boardTemp",
+                                        "hashboardStatus.0.chipTemp"),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(8080)
@@ -160,6 +170,12 @@ public class ObeliskStatsITest
                                                         .addTemp(81)
                                                         .addTemp(72)
                                                         .addTemp(82)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "hashboardStatus.0.boardTemp",
+                                                                        new BigDecimal("71"),
+                                                                        "hashboardStatus.0.chipTemp",
+                                                                        new BigDecimal("81")))
                                                         .build())
                                         .build()
                         },
@@ -228,6 +244,9 @@ public class ObeliskStatsITest
                                                         "sessionid=foreman"),
                                                 "",
                                                 Collections.emptyMap())),
+                                Arrays.asList(
+                                        "hashboardStatus.0.intakeTemp",
+                                        "hashboardStatus.0.exhaustTemp"),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(8081)
@@ -256,6 +275,12 @@ public class ObeliskStatsITest
                                                         .addTemp(81)
                                                         .addTemp(72)
                                                         .addTemp(82)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "hashboardStatus.0.intakeTemp",
+                                                                        new BigDecimal("71"),
+                                                                        "hashboardStatus.0.exhaustTemp",
+                                                                        new BigDecimal("81")))
                                                         .build())
                                         .build()
                         }

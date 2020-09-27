@@ -12,6 +12,7 @@ import mn.foreman.util.rpc.RpcHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class Moonlander2StatsITest
@@ -26,7 +27,11 @@ public class Moonlander2StatsITest
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028")),
+                                        "4028",
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "DEVS.0.Enabled",
+                                                "DEVS.0.Device Elapsed"))),
                 new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(
@@ -145,6 +150,12 @@ public class Moonlander2StatsITest
                                                         .setSpeedUnits("RPM")
                                                         .build())
                                         .hasErrors(false)
+                                        .addRawStats(
+                                                ImmutableMap.of(
+                                                        "DEVS.0.Enabled",
+                                                        "Y",
+                                                        "DEVS.0.Device Elapsed",
+                                                        new BigDecimal("82")))
                                         .build())
                         .build());
     }

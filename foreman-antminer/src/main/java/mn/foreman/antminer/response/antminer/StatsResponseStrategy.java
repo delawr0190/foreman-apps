@@ -117,6 +117,8 @@ public class StatsResponseStrategy
         // Context data
         this.context.getSimple(ContextKey.MRR_RIG_ID)
                 .ifPresent(asicBuilder::setMrrRigId);
+        this.context.getMulti(ContextKey.RAW_STATS)
+                .ifPresent(asicBuilder::addRawStats);
 
         builder.addAsic(asicBuilder.build());
     }

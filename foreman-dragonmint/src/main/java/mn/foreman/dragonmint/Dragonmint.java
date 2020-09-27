@@ -74,7 +74,7 @@ public class Dragonmint
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        final Map<String, Object> rawStats = new HashMap<>();
+        final Map<String, Object> rawStats = new LinkedHashMap<>();
         final Summary summary =
                 Query.restQuery(
                         this.apiIp,

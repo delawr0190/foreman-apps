@@ -39,7 +39,11 @@ public class AvalonStatsITest
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028")),
+                                        "4028",
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "SUMMARY.0.Total MH",
+                                                "SUMMARY.0.Remote Failures"))),
                 new FakeRpcMinerServer(
                         4028,
                         handlers),
@@ -392,6 +396,12 @@ public class AvalonStatsITest
                                                         .addTemp(90)
                                                         .addTemp(37)
                                                         .addTemp(78)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Remote Failures",
+                                                                        new BigDecimal("0"),
+                                                                        "SUMMARY.0.Total MH",
+                                                                        new BigDecimal("5537208847")))
                                                         .build())
                                         .build()
                         },
@@ -681,6 +691,12 @@ public class AvalonStatsITest
                                                         .addTemp(85)
                                                         .addTemp(37)
                                                         .addTemp(83)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Remote Failures",
+                                                                        new BigDecimal("0"),
+                                                                        "SUMMARY.0.Total MH",
+                                                                        new BigDecimal("2310692276")))
                                                         .build())
                                         .build()
                         },
@@ -1444,6 +1460,12 @@ public class AvalonStatsITest
                                                         .addTemp(94)
                                                         .addTemp(24)
                                                         .addTemp(94)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Remote Failures",
+                                                                        new BigDecimal("2"),
+                                                                        "SUMMARY.0.Total MH",
+                                                                        new BigDecimal("27769280354638")))
                                                         .build())
                                         .build()
                         },
@@ -1638,6 +1660,12 @@ public class AvalonStatsITest
                                                                         .build())
                                                         .addTemp(28)
                                                         .addTemp(75)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Remote Failures",
+                                                                        new BigDecimal("0"),
+                                                                        "SUMMARY.0.Total MH",
+                                                                        new BigDecimal("3796956022127")))
                                                         .build())
                                         .build()
                         }

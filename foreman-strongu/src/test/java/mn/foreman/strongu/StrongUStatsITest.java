@@ -39,7 +39,11 @@ public class StrongUStatsITest
                                 "apiIp",
                                 "127.0.0.1",
                                 "apiPort",
-                                "4028")),
+                                "4028",
+                                "statsWhitelist",
+                                Arrays.asList(
+                                        "DEVS.0.volt",
+                                        "DEVS.0.Temperature"))),
                 new FakeRpcMinerServer(
                         4028,
                         handlers),
@@ -118,6 +122,12 @@ public class StrongUStatsITest
                                                                         .build())
                                                         .addTemp(54)
                                                         .addTemp(55)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "DEVS.0.volt",
+                                                                        new BigDecimal("10.5"),
+                                                                        "DEVS.0.Temperature",
+                                                                        new BigDecimal("54.56")))
                                                         .build())
                                         .build()
                         },
@@ -185,6 +195,12 @@ public class StrongUStatsITest
                                                         .addTemp(65)
                                                         .addTemp(70)
                                                         .addTemp(68)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "DEVS.0.volt",
+                                                                        new BigDecimal("10.5"),
+                                                                        "DEVS.0.Temperature",
+                                                                        new BigDecimal("65.88")))
                                                         .build())
                                         .build()
                         }

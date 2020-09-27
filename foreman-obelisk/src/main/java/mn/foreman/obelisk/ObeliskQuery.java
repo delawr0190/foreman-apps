@@ -31,7 +31,7 @@ public class ObeliskQuery {
      *
      * @throws MinerException on failure to query.
      */
-    public static <T> void runSessionQuery(final Context<T> context)
+    static <T> void runSessionQuery(final Context<T> context)
             throws Exception {
         final AtomicReference<String> sessionId =
                 new AtomicReference<>();
@@ -178,6 +178,11 @@ public class ObeliskQuery {
                     headerMap,
                     sessionId);
             final String response = apiRequest.getResponse();
+            final Consumer<String> callback =
+                    context.getRawResponseCallback();
+            if (callback != null) {
+                callback.accept(response);
+            }
             if (response != null && !response.isEmpty()) {
                 result =
                         objectMapper.readValue(
@@ -237,6 +242,9 @@ public class ObeliskQuery {
 
         /** The password. */
         private final String password;
+
+        /** The raw response callback. */
+        private final Consumer<String> rawResponseCallback;
 
         /** The response callback. */
         private final Consumer<T> responseCallback;

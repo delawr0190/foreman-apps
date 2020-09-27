@@ -11,6 +11,7 @@ import mn.foreman.util.http.HttpHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /** Runs an integration tests using {@link Dragonmint} against a fake API. */
 public class DragonmintStatsITest
@@ -20,15 +21,25 @@ public class DragonmintStatsITest
     public DragonmintStatsITest() {
         super(
                 new DragonmintFactory().create(
-                        ImmutableMap.of(
-                                "apiIp",
-                                "127.0.0.1",
-                                "apiPort",
-                                "8080",
-                                "username",
-                                "username",
-                                "password",
-                                "password")),
+                        ImmutableMap.<String, Object>builder()
+                                .put(
+                                        "apiIp",
+                                        "127.0.0.1")
+                                .put(
+                                        "apiPort",
+                                        "8080")
+                                .put(
+                                        "username",
+                                        "username")
+                                .put(
+                                        "password",
+                                        "password")
+                                .put(
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "DEVS.0.Temperature",
+                                                "DEVS.0.MHS av"))
+                                .build()),
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
@@ -249,6 +260,12 @@ public class DragonmintStatsITest
                                         .addTemp(72)
                                         .addTemp(67)
                                         .addTemp(67)
+                                        .addRawStats(
+                                                ImmutableMap.of(
+                                                        "DEVS.0.Temperature",
+                                                        new BigDecimal("72"),
+                                                        "DEVS.0.MHS av",
+                                                        new BigDecimal("4904247.73")))
                                         .build())
                         .build());
     }

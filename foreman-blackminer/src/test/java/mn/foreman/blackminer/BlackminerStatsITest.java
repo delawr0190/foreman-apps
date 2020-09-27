@@ -40,17 +40,28 @@ public class BlackminerStatsITest
         super(
                 new BlackminerFactory()
                         .create(
-                                ImmutableMap.of(
-                                        "apiIp",
-                                        "127.0.0.1",
-                                        "apiPort",
-                                        "4028",
-                                        "username",
-                                        "username",
-                                        "password",
-                                        "password",
-                                        "port",
-                                        "8080")),
+                                ImmutableMap.<String, Object>builder()
+                                        .put(
+                                                "apiIp",
+                                                "127.0.0.1")
+                                        .put(
+                                                "apiPort",
+                                                "4028")
+                                        .put(
+                                                "username",
+                                                "username")
+                                        .put(
+                                                "password",
+                                                "password")
+                                        .put(
+                                                "port",
+                                                "8080")
+                                        .put(
+                                                "statsWhitelist",
+                                                Arrays.asList(
+                                                        "SUMMARY.0.Last getwork",
+                                                        "STATS.0.GHS av"))
+                                        .build()),
                 servers,
                 expectedStats);
     }
@@ -139,6 +150,12 @@ public class BlackminerStatsITest
                                                                         .build())
                                                         .addTemp(44)
                                                         .setPowerState("ckb")
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Last getwork",
+                                                                        new BigDecimal("1593395696"),
+                                                                        "STATS.0.GHS av",
+                                                                        "1.5698"))
                                                         .build())
                                         .build()
                         },
@@ -242,6 +259,12 @@ public class BlackminerStatsITest
                                                         .addTemp(58)
                                                         .addTemp(51)
                                                         .setPowerState("tellor")
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Last getwork",
+                                                                        new BigDecimal("1544107423"),
+                                                                        "STATS.0.GHS av",
+                                                                        "14.6359"))
                                                         .build())
                                         .build()
                         },
@@ -345,6 +368,12 @@ public class BlackminerStatsITest
                                                         .addTemp(67)
                                                         .addTemp(71)
                                                         .setPowerState("tellor")
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "SUMMARY.0.Last getwork",
+                                                                        new BigDecimal("1590413031"),
+                                                                        "STATS.0.GHS av",
+                                                                        "4.5009"))
                                                         .build())
                                         .build()
                         }

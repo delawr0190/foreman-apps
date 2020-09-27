@@ -50,7 +50,7 @@ public class MultMiner
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        final Map<String, Object> rawStats = new HashMap<>();
+        final Map<String, Object> rawStats = new LinkedHashMap<>();
         final Stats stats =
                 Query.restQuery(
                         this.apiIp,

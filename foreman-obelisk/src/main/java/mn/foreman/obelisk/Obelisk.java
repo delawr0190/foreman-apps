@@ -67,7 +67,7 @@ public class Obelisk
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        final Map<String, Object> rawStats = new HashMap<>();
+        final Map<String, Object> rawStats = new LinkedHashMap<>();
         final Info info =
                 Query.restQuery(
                         this.apiIp,
@@ -75,10 +75,10 @@ public class Obelisk
                         "/api/info",
                         new TypeReference<Info>() {
                         },
-                        rawJson -> rawStats.putAll(
-                                Flatten.flattenAndFilter(
-                                        rawJson,
-                                        this.statsWhitelist)));
+                        s -> handleResponse(
+                                s,
+                                rawStats,
+                                this.statsWhitelist));
         final Optional<ObeliskType> type =
                 ObeliskType.forType(
                         info.model);
@@ -256,6 +256,11 @@ public class Obelisk
                         .method("GET")
                         .username(this.username)
                         .password(this.password)
+                        .rawResponseCallback(s ->
+                                handleResponse(
+                                        s,
+                                        rawStats,
+                                        this.statsWhitelist))
                         .responseClass(Dashboard.class)
                         .responseCallback(dashboard -> {
                             addPools(
@@ -275,5 +280,24 @@ public class Obelisk
                                     rawStats);
                         })
                         .build());
+    }
+
+    /**
+     * Handles the raw response.
+     *
+     * @param json      The raw response.
+     * @param dest      The destination.
+     * @param whitelist The stats key whitelist.
+     */
+    private void handleResponse(
+            final String json,
+            final Map<String, Object> dest,
+            final List<String> whitelist) {
+        if (json != null) {
+            dest.putAll(
+                    Flatten.flattenAndFilter(
+                            json,
+                            whitelist));
+        }
     }
 }

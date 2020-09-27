@@ -3,6 +3,7 @@ package mn.foreman.util;
 import com.github.wnameless.json.flattener.FlattenMode;
 import com.github.wnameless.json.flattener.JsonFlattener;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -26,9 +27,26 @@ public class Flatten {
                 .flattenAsMap()
                 .entrySet()
                 .stream()
-                .filter(entry -> whitelist.contains(entry.getKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue));
+                .filter(entry -> isWhitelisted(entry, whitelist))
+                .collect(
+                        Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (o, o2) -> o,
+                                LinkedHashMap::new));
+    }
+
+    /**
+     * Checks to see if the provided entry contains a key that's whitelisted.
+     *
+     * @param entry     The entry.
+     * @param whitelist The whitelist.
+     *
+     * @return Whether or not the key is allowed.
+     */
+    private static boolean isWhitelisted(
+            final Map.Entry<String, Object> entry,
+            final List<String> whitelist) {
+        return whitelist.contains(entry.getKey()) || whitelist.contains("all");
     }
 }

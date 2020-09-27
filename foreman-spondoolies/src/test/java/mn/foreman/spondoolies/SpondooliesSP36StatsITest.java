@@ -12,6 +12,7 @@ import mn.foreman.util.rpc.RpcHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 public class SpondooliesSP36StatsITest
@@ -25,7 +26,11 @@ public class SpondooliesSP36StatsITest
                                 "apiIp",
                                 "127.0.0.1",
                                 "apiPort",
-                                "4028")),
+                                "4028",
+                                "statsWhitelist",
+                                Arrays.asList(
+                                        "STATS.0.json-stats",
+                                        "STATS.0.Elapsed"))),
                 new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(
@@ -83,6 +88,12 @@ public class SpondooliesSP36StatsITest
                                         .addTemp(43)
                                         .addTemp(65)
                                         .addTemp(47)
+                                        .addRawStats(
+                                                ImmutableMap.of(
+                                                        "STATS.0.json-stats",
+                                                        "{\"top-board\":{\"power\":2176,\"psu-temp\":47,\"psu-name\":\"Artesyn2000\",\"i2c-psu-error%\":0.28,\"reported-hashrate\":270005,\"avg-hashrate\":254783,\"hardware-error%\":2.02,\"min-temp\":47,\"max-temp\":97,\"rear-temp\":66,\"front-temp\":44,\"loops-enabled\":[true,true,true,true,true],\"working-asics\":75,\"enabled-engines\":441},\"bottom-board\":{\"power\":2144,\"psu-temp\":47,\"psu-name\":\"Artesyn2000\",\"i2c-psu-error%\":0.3,\"reported-hashrate\":269410,\"avg-hashrate\":257932,\"hardware-error%\":0.72,\"min-temp\":47,\"max-temp\":93,\"rear-temp\":65,\"front-temp\":43,\"loops-enabled\":[true,true,true,true,true],\"working-asics\":75,\"enabled-engines\":442},\"fan-speeds\":[12028,11094,11956,11094],\"fan-percent\":100}",
+                                                        "STATS.0.Elapsed",
+                                                        new BigDecimal("147407")))
                                         .build())
                         .build());
     }

@@ -93,6 +93,8 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
                 // Context data
                 this.context.getSimple(ContextKey.MRR_RIG_ID)
                         .ifPresent(asicBuilder::setMrrRigId);
+                this.context.getMulti(ContextKey.RAW_STATS)
+                        .ifPresent(asicBuilder::addRawStats);
 
                 builder.addAsic(this.asicBuilder.build());
                 reset();

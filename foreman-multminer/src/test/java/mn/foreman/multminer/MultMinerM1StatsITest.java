@@ -11,6 +11,7 @@ import mn.foreman.util.http.HttpHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.Collections;
 
 /** Runs an integration tests using {@link MultMiner} against a fake API. */
@@ -26,7 +27,11 @@ public class MultMinerM1StatsITest
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "8080")),
+                                        "8080",
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "bd.0.cs.1.5",
+                                                "bd.0.cs.1.6"))),
                 new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
@@ -109,6 +114,12 @@ public class MultMinerM1StatsITest
                                         .addTemp(80)
                                         .addTemp(71)
                                         .setPowerState("trb")
+                                        .addRawStats(
+                                                ImmutableMap.of(
+                                                        "bd.0.cs.1.5",
+                                                        "0/0",
+                                                        "bd.0.cs.1.6",
+                                                        "0/0"))
                                         .build())
                         .build());
     }

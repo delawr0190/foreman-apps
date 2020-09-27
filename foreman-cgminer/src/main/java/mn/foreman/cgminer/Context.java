@@ -1,6 +1,6 @@
 package mn.foreman.cgminer;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
@@ -28,7 +28,7 @@ public class Context {
         final Map<String, Object> dest =
                 this.multiContext.computeIfAbsent(
                         key,
-                        key1 -> new HashMap<>());
+                        key1 -> new LinkedHashMap<>());
         dest.putAll(value);
     }
 

@@ -244,7 +244,7 @@ public class Asic {
         private final List<Map<String, String>> attributes = new ArrayList<>();
 
         /** The raw json. */
-        private final Map<String, Object> rawStats = new HashMap<>();
+        private final Map<String, Object> rawStats = new LinkedHashMap<>();
 
         /** The temperatures. */
         private final List<Integer> temps = new LinkedList<>();
