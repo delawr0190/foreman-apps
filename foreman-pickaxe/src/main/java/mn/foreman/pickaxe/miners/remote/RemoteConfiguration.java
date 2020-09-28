@@ -6,6 +6,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
+import mn.foreman.pickaxe.util.MinerUtils;
 import mn.foreman.util.EnvUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -241,44 +242,6 @@ public class RemoteConfiguration
     }
 
     /**
-     * Adds all of the params.
-     *
-     * @param dest   The destination.
-     * @param params The params to add.
-     */
-    private static void addParams(
-            final Map<String, Object> dest,
-            final List<MinerConfig.Param> params) {
-        params.forEach(param -> dest.put(param.key, param.value));
-    }
-
-    /**
-     * Converts the provided config to a {@link Miner}.
-     *
-     * @param port         The port.
-     * @param config       The config.
-     * @param minerFactory The factory.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toMiner(
-            final int port,
-            final MinerConfig config,
-            final mn.foreman.model.MinerFactory minerFactory) {
-        final Map<String, Object> params = new HashMap<>();
-        params.put(
-                "apiIp",
-                config.apiIp);
-        params.put(
-                "apiPort",
-                Integer.toString(port));
-        addParams(
-                params,
-                config.params);
-        return minerFactory.create(params);
-    }
-
-    /**
      * Converts each {@link MinerConfig} to a {@link Miner}.
      *
      * @param apiType             The {@link ApiType}.
@@ -319,7 +282,7 @@ public class RemoteConfiguration
                         });
 
         final List<Miner> miners = new LinkedList<>();
-        miners.add(toMiner(port, config, minerFactory));
+        miners.add(MinerUtils.toMiner(port, config, minerFactory));
 
         // The user may be running chisel to extract additional metrics from
         // miners that offer weak APIs

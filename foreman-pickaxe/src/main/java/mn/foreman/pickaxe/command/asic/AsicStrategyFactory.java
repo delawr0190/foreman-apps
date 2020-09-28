@@ -5,6 +5,7 @@ import mn.foreman.pickaxe.command.PostCommandProcessor;
 import mn.foreman.pickaxe.command.StrategyFactory;
 import mn.foreman.pickaxe.command.asic.digest.DigestStrategy;
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
+import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
 import java.util.Optional;
@@ -55,6 +56,9 @@ public class AsicStrategyFactory
                 break;
             case "digest":
                 strategy = Optional.of(new DigestStrategy());
+                break;
+            case "raw-stats":
+                strategy = Optional.of(new RawStatsStrategy());
                 break;
             default:
                 break;

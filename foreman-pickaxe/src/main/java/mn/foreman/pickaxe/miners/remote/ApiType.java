@@ -533,9 +533,22 @@ public enum ApiType {
                 nicehashMiners);
     }
 
+    /** A factory for creating {@link MinerFactory factories}. */
     @FunctionalInterface
     private interface FactorySupplier {
 
+        /**
+         * Creates a {@link MinerFactory} from the provided configuration.
+         *
+         * @param port           The port.
+         * @param config         The config.
+         * @param nicehash       The nicehash config.
+         * @param autominer      The autominer config.
+         * @param claymore       The claymore config.
+         * @param nicehashMiners The nicehash candidates.
+         *
+         * @return The factory.
+         */
         MinerFactory create(
                 int port,
                 MinerConfig config,
@@ -545,9 +558,23 @@ public enum ApiType {
                 MinerSupplier nicehashMiners);
     }
 
+    /**
+     * A {@link MinerSupplier} provides a supplier for producing related
+     * miners.
+     */
     @FunctionalInterface
     public interface MinerSupplier {
 
+        /**
+         * Creates the miners that will be used.
+         *
+         * @param config    The config.
+         * @param nicehash  The nicehash config.
+         * @param autominer The autominer config.
+         * @param claymore  The claymore config.
+         *
+         * @return The miners, if any.
+         */
         List<Miner> create(
                 MinerConfig config,
                 List<ApiType> nicehash,

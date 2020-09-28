@@ -36,6 +36,10 @@ public class MinerConfig {
     @JsonProperty("params")
     public List<Param> params;
 
+    /** The raw stats that have been whitelisted. */
+    @JsonProperty("statsWhitelist")
+    public List<String> statsWhitelist;
+
     @Override
     public String toString() {
         return String.format(
@@ -44,14 +48,16 @@ public class MinerConfig {
                         "apiPort=%d, " +
                         "apiType=%s, " +
                         "params=[%s], " +
-                        "chisel=%s " +
+                        "chisel=%s, " +
+                        "statesWhitelist=%s " +
                         "]",
                 getClass().getSimpleName(),
                 this.apiIp,
                 this.apiPort,
                 this.apiType,
                 this.params,
-                this.chisel);
+                this.chisel,
+                this.statsWhitelist);
     }
 
     /** A chisel configuration. */
