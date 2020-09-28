@@ -7,6 +7,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.command.Commands;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
 import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandProcessor;
@@ -21,6 +22,7 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,6 +70,11 @@ public class RunMe {
             new SelfExpiringStatsCache(
                     90,
                     TimeUnit.SECONDS);
+
+    /** The thread pool for running tasks. */
+    private final ScheduledExecutorService statsThreadPool =
+            Executors.newScheduledThreadPool(
+                    Runtime.getRuntime().availableProcessors());
 
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
@@ -137,7 +144,13 @@ public class RunMe {
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            metricsSender.sendMetrics(this.statsCache.getMetrics());
+            final List<List<MinerStats>> stats =
+                    Lists.partition(
+                            this.statsCache.getMetrics(),
+                            100);
+            stats
+                    .parallelStream()
+                    .forEach(metricsSender::sendMetrics);
             try {
                 TimeUnit.MINUTES.sleep(1);
             } catch (final InterruptedException ie) {
@@ -258,7 +271,7 @@ public class RunMe {
      * @param miner The miner.
      */
     private void updateMiner(final Miner miner) {
-        this.threadPool.execute(() -> {
+        this.statsThreadPool.execute(() -> {
             final MinerID minerID = miner.getMinerID();
             try {
                 this.statsCache.add(

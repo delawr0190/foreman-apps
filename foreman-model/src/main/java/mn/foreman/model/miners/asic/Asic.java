@@ -321,7 +321,13 @@ public class Asic {
          * @return This builder instance.
          */
         public Builder addRawStats(final Map<String, Object> values) {
-            this.rawStats.putAll(values);
+            for (final Map.Entry<String, Object> entry : values.entrySet()) {
+                this.rawStats.put(
+                        entry.getKey()
+                                .toLowerCase()
+                                .replace(" ", "_"),
+                        entry.getValue());
+            }
             return this;
         }
 
