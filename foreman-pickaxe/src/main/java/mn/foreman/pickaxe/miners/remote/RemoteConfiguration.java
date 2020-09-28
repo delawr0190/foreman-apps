@@ -1,60 +1,12 @@
 package mn.foreman.pickaxe.miners.remote;
 
-import mn.foreman.aixin.AixinFactory;
-import mn.foreman.antminer.AntminerFactory;
-import mn.foreman.autominer.AutoMinerFactory;
-import mn.foreman.autominer.MinerMapping;
-import mn.foreman.avalon.AvalonFactory;
-import mn.foreman.baikal.BaikalFactory;
-import mn.foreman.blackminer.BlackminerFactory;
-import mn.foreman.bminer.BminerFactory;
-import mn.foreman.castxmr.CastxmrFactory;
-import mn.foreman.ccminer.CcminerFactory;
 import mn.foreman.chisel.ChiselMinerDecorator;
-import mn.foreman.claymore.ClaymoreFactory;
 import mn.foreman.claymore.TypeMapping;
-import mn.foreman.cpuminer.CpuminerFactory;
-import mn.foreman.dayun.DayunFactory;
-import mn.foreman.dragonmint.DragonmintFactory;
-import mn.foreman.dstm.DstmFactory;
-import mn.foreman.ethminer.EthminerFactory;
-import mn.foreman.ewbf.EwbfFactory;
-import mn.foreman.excavator.ExcavatorFactory;
-import mn.foreman.futurebit.FutureBitFactory;
-import mn.foreman.gminer.GminerFactory;
-import mn.foreman.grinpro.GrinProFactory;
-import mn.foreman.hspminer.HspminerFactory;
-import mn.foreman.hyperbit.HyperbitFactory;
-import mn.foreman.innosilicon.InnosiliconFactory;
-import mn.foreman.iximiner.IximinerFactory;
-import mn.foreman.jceminer.JceminerFactory;
-import mn.foreman.lolminer.LolminerFactory;
-import mn.foreman.miniz.MinizFactory;
-import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
-import mn.foreman.multiminer.MultiminerFactory;
-import mn.foreman.multminer.MultMinerFactory;
-import mn.foreman.nanominer.NanominerFactory;
-import mn.foreman.nbminer.NbminerFactory;
-import mn.foreman.nicehash.NiceHashMiner;
-import mn.foreman.nicehash.NiceHashMinerFactory;
-import mn.foreman.obelisk.ObeliskFactory;
-import mn.foreman.optiminer.OptiminerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
-import mn.foreman.rhminer.RhminerFactory;
-import mn.foreman.sgminer.SgminerFactory;
-import mn.foreman.spondoolies.SpondooliesFactory;
-import mn.foreman.srbminer.SrbminerFactory;
-import mn.foreman.strongu.StrongUFactory;
-import mn.foreman.swarm.SwarmFactory;
-import mn.foreman.trex.TrexFactory;
 import mn.foreman.util.EnvUtils;
-import mn.foreman.whatsminer.WhatsminerFactory;
-import mn.foreman.xmrig.XmrigFactory;
-import mn.foreman.xmrstak.XmrstakFactory;
-import mn.foreman.xmrstak.XmrstakType;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -301,271 +253,6 @@ public class RemoteConfiguration
     }
 
     /**
-     * Creates an {@link AutoMinerFactory}.
-     *
-     * @param minerConfig        The config.
-     * @param niceHashCandidates The nicehash configs.
-     * @param amMappings         The autominer mappings.
-     * @param claymoreMappings   The claymore mappings.
-     *
-     * @return The {@link AutoMinerFactory}.
-     */
-    private static MinerFactory toAutominerFactory(
-            final MinerConfig minerConfig,
-            final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings,
-            final TypeMapping claymoreMappings) {
-        final MinerMapping.Builder mappingBuilder =
-                new MinerMapping.Builder();
-        amMappings.forEach(
-                (s, apiType) ->
-                        mappingBuilder.addMapping(
-                                s,
-                                toFactory(
-                                        minerConfig,
-                                        apiType,
-                                        niceHashCandidates,
-                                        amMappings,
-                                        claymoreMappings).orElseThrow(
-                                        () -> new IllegalArgumentException(
-                                                "Invalid api type"))));
-        return new AutoMinerFactory(mappingBuilder.build());
-    }
-
-    /**
-     * Creates a {@link MinerFactory} for the provided configuration
-     * parameters.
-     *
-     * @param minerConfig        The config.
-     * @param apiType            The type.
-     * @param niceHashCandidates The NiceHash candidates.
-     * @param amMappings         The autominer mappings.
-     * @param claymoreMappings   The claymore mappings.
-     *
-     * @return The {@link MinerFactory}.
-     */
-    @SuppressWarnings("ConstantConditions")
-    private static Optional<MinerFactory> toFactory(
-            final MinerConfig minerConfig,
-            final ApiType apiType,
-            final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings,
-            final TypeMapping claymoreMappings) {
-        MinerFactory minerFactory = null;
-        switch (apiType) {
-            case AIXIN_API:
-                minerFactory = new AixinFactory();
-                break;
-            case ANTMINER_HS_API:
-                minerFactory =
-                        new AntminerFactory(
-                                new BigDecimal(0.000000001));
-                break;
-            case ANTMINER_KHS_API:
-                minerFactory =
-                        new AntminerFactory(
-                                new BigDecimal(0.000001));
-                break;
-            case ANTMINER_MHS_API:
-                minerFactory =
-                        new AntminerFactory(
-                                new BigDecimal(0.001));
-                break;
-            case ANTMINER_GHS_API:
-                minerFactory =
-                        new AntminerFactory(
-                                BigDecimal.ONE);
-                break;
-            case AUTOMINER_API:
-                minerFactory =
-                        toAutominerFactory(
-                                minerConfig,
-                                niceHashCandidates,
-                                amMappings,
-                                claymoreMappings);
-                break;
-            case AVALON_API:
-                minerFactory = new AvalonFactory();
-                break;
-            case BAIKAL_API:
-                minerFactory = new BaikalFactory();
-                break;
-            case BLACKMINER_API:
-                minerFactory = new BlackminerFactory();
-                break;
-            case BMINER_API:
-                minerFactory = new BminerFactory();
-                break;
-            case CASTXMR_API:
-                minerFactory = new CastxmrFactory();
-                break;
-            case CCMINER_API:
-                minerFactory = new CcminerFactory();
-                break;
-            case CLAYMORE_ETH_API:
-                // Fall through
-            case CLAYMORE_ZEC_API:
-                minerFactory =
-                        new ClaymoreFactory(
-                                claymoreMappings);
-                break;
-            case CPUMINER_API:
-                minerFactory = new CpuminerFactory();
-                break;
-            case DAYUN_API:
-                minerFactory = new DayunFactory();
-                break;
-            case DSTM_API:
-                minerFactory = new DstmFactory();
-                break;
-            case DRAGONMINT_API:
-                minerFactory = new DragonmintFactory();
-                break;
-            case ETHMINER_API:
-                minerFactory = new EthminerFactory();
-                break;
-            case EWBF_API:
-                minerFactory = new EwbfFactory();
-                break;
-            case EXCAVATOR_API:
-                minerFactory = new ExcavatorFactory();
-                break;
-            case GMINER_API:
-                minerFactory = new GminerFactory();
-                break;
-            case GRINPRO_API:
-                minerFactory = new GrinProFactory();
-                break;
-            case HSPMINER_API:
-                minerFactory = new HspminerFactory();
-                break;
-            case HYPERBIT_API:
-                minerFactory = new HyperbitFactory();
-                break;
-            case INNOSILICON_HS_API:
-                // Fall through
-            case INNOSILICON_KHS_API:
-                // Fall through
-            case INNOSILICON_MHS_API:
-                // Fall through
-            case INNOSILICON_GHS_API:
-                minerFactory =
-                        new InnosiliconFactory(
-                                toInnosiliconType(
-                                        apiType));
-                break;
-            case IXIMINER_API:
-                minerFactory = new IximinerFactory();
-                break;
-            case JCEMINER_API:
-                minerFactory = new JceminerFactory();
-                break;
-            case LOLMINER_API:
-                minerFactory = new LolminerFactory();
-                break;
-            case MINIZ_API:
-                minerFactory = new MinizFactory();
-                break;
-            case MKXMINER_API:
-                minerFactory = new MkxminerFactory();
-                break;
-            case FUTUREBIT_API:
-                minerFactory = new FutureBitFactory();
-                break;
-            case MULTIMINER_API:
-                minerFactory = new MultiminerFactory();
-                break;
-            case MULTMINER_API:
-                minerFactory = new MultMinerFactory();
-                break;
-            case NANOMINER_API:
-                minerFactory = new NanominerFactory();
-                break;
-            case NBMINER_API:
-                minerFactory = new NbminerFactory();
-                break;
-            case NICEHASH_API:
-                minerFactory =
-                        toNiceHashFactory(
-                                minerConfig,
-                                niceHashCandidates,
-                                amMappings,
-                                claymoreMappings);
-                break;
-            case OBELISK_API:
-                minerFactory = new ObeliskFactory();
-                break;
-            case OPTIMINER_API:
-                minerFactory = new OptiminerFactory();
-                break;
-            case RHMINER_API:
-                minerFactory = new RhminerFactory();
-                break;
-            case SGMINER_API:
-                minerFactory = new SgminerFactory();
-                break;
-            case SPONDOOLIES_API:
-                minerFactory = new SpondooliesFactory();
-                break;
-            case SRBMINER_API:
-                minerFactory = new SrbminerFactory();
-                break;
-            case STRONGU_API:
-                minerFactory = new StrongUFactory();
-                break;
-            case SWARM_API:
-                minerFactory = new SwarmFactory();
-                break;
-            case TREX_API:
-                minerFactory = new TrexFactory();
-                break;
-            case WHATSMINER_API:
-                minerFactory = new WhatsminerFactory();
-                break;
-            case XMRIG_API:
-                minerFactory = new XmrigFactory();
-                break;
-            case XMRSTAK_CPU_API:
-                // Fall through
-            case XMRSTAK_GPU_API:
-                minerFactory = new XmrstakFactory();
-                break;
-            default:
-                break;
-        }
-        return Optional.ofNullable(minerFactory);
-    }
-
-    /**
-     * Converts the type to an Innosilicon type.
-     *
-     * @param apiType The type.
-     *
-     * @return The type.
-     */
-    private static mn.foreman.innosilicon.ApiType toInnosiliconType(
-            final ApiType apiType) {
-        mn.foreman.innosilicon.ApiType type = null;
-        switch (apiType) {
-            case INNOSILICON_HS_API:
-                type = mn.foreman.innosilicon.ApiType.HS_API;
-                break;
-            case INNOSILICON_KHS_API:
-                type = mn.foreman.innosilicon.ApiType.KHS_API;
-                break;
-            case INNOSILICON_MHS_API:
-                type = mn.foreman.innosilicon.ApiType.MHS_API;
-                break;
-            case INNOSILICON_GHS_API:
-                type = mn.foreman.innosilicon.ApiType.GHS_API;
-                break;
-            default:
-                break;
-        }
-        return type;
-    }
-
-    /**
      * Converts the provided config to a {@link Miner}.
      *
      * @param port         The port.
@@ -613,27 +300,26 @@ public class RemoteConfiguration
         LOG.debug("Adding miner for {}", config);
 
         final MinerFactory minerFactory =
-                toFactory(
+                apiType.toFactory(
+                        port,
                         config,
-                        apiType,
                         niceHashCandidates,
                         amMappings,
-                        claymoreMultipliers)
-                        .orElseThrow(
-                                () -> new IllegalArgumentException(
-                                        "Unknown api type"));
+                        claymoreMultipliers,
+                        (config1, nicehash, autominer, claymore) -> {
+                            final List<Miner> miners = new LinkedList<>();
+                            addNiceHashCandidates(
+                                    config1,
+                                    config1.apiPort,
+                                    nicehash,
+                                    autominer,
+                                    claymore,
+                                    miners);
+                            return miners;
+                        });
 
         final List<Miner> miners = new LinkedList<>();
-        switch (apiType) {
-            case XMRSTAK_GPU_API:
-                // Fall through
-            case XMRSTAK_CPU_API:
-                miners.add(toXmrstak(port, apiType, config, minerFactory));
-                break;
-            default:
-                miners.add(toMiner(port, config, minerFactory));
-                break;
-        }
+        miners.add(toMiner(port, config, minerFactory));
 
         // The user may be running chisel to extract additional metrics from
         // miners that offer weak APIs
@@ -683,80 +369,6 @@ public class RemoteConfiguration
                                 claymoreMultipliers))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-    }
-
-    /**
-     * Creates a {@link NiceHashMiner}.
-     *
-     * @param config             The configuration.
-     * @param niceHashCandidates The nicehash candidates.
-     * @param amMappings         The autominer mappings.
-     * @param claymoreMappings   The claymore mappings.
-     *
-     * @return The new {@link Miner miners}.
-     */
-    private static MinerFactory toNiceHashFactory(
-            final MinerConfig config,
-            final List<ApiType> niceHashCandidates,
-            final Map<String, ApiType> amMappings,
-            final TypeMapping claymoreMappings) {
-        final List<Miner> candidates = new LinkedList<>();
-
-        // Query up to a 5-port range for nicehash
-        addNiceHashCandidates(
-                config,
-                config.apiPort,
-                niceHashCandidates,
-                amMappings,
-                claymoreMappings,
-                candidates);
-
-        return new NiceHashMinerFactory(candidates);
-    }
-
-    /**
-     * Creates an xmrstak {@link Miner} from the config.
-     *
-     * @param port         The port.
-     * @param apiType      The {@link ApiType}.
-     * @param config       The config.
-     * @param minerFactory The factory.
-     *
-     * @return The {@link Miner}.
-     */
-    private static Miner toXmrstak(
-            final int port,
-            final ApiType apiType,
-            final MinerConfig config,
-            final MinerFactory minerFactory) {
-        final Map<String, Object> attributes = new HashMap<>();
-        attributes.put("type", toXmrstakType(apiType));
-        attributes.put("apiIp", config.apiIp);
-        attributes.put("apiPort", Integer.toString(port));
-        return minerFactory.create(attributes);
-    }
-
-    /**
-     * Converts the {@link ApiType} to an {@link XmrstakType}.
-     *
-     * @param apiType The {@link ApiType}.
-     *
-     * @return The {@link XmrstakType}.
-     */
-    private static String toXmrstakType(
-            final ApiType apiType) {
-        String type = null;
-        switch (apiType) {
-            case XMRSTAK_GPU_API:
-                type = XmrstakType.GPU.name().toLowerCase();
-                break;
-            case XMRSTAK_CPU_API:
-                type = XmrstakType.CPU.name().toLowerCase();
-                break;
-            default:
-                break;
-        }
-        return type;
     }
 
     /**

@@ -4,6 +4,7 @@ import mn.foreman.model.AlternatingMiner;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.xmrstak.XmrstakFactory;
+import mn.foreman.xmrstak.XmrstakType;
 
 import java.util.Map;
 
@@ -24,7 +25,7 @@ public class JceminerFactory
                 new Jceminer(
                         apiIp,
                         apiPort),
-                new XmrstakFactory().create(
+                new XmrstakFactory(XmrstakType.GPU).create(
                         config));
     }
 }

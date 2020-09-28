@@ -18,14 +18,12 @@ public class XmrstakCpuITest
     /** Constructor. */
     public XmrstakCpuITest() {
         super(
-                new XmrstakFactory().create(
+                new XmrstakFactory(XmrstakType.CPU).create(
                         ImmutableMap.of(
                                 "apiIp",
                                 "127.0.0.1",
                                 "apiPort",
-                                "44444",
-                                "type",
-                                XmrstakType.CPU.name())),
+                                "44444")),
                 new FakeHttpMinerServer(
                         44444,
                         ImmutableMap.of(

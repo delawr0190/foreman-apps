@@ -21,14 +21,12 @@ public class XmrstakGpuITest
     /** Constructor. */
     public XmrstakGpuITest() {
         super(
-                new XmrstakFactory().create(
+                new XmrstakFactory(XmrstakType.GPU).create(
                         ImmutableMap.of(
                                 "apiIp",
                                 "127.0.0.1",
                                 "apiPort",
-                                "44444",
-                                "type",
-                                XmrstakType.GPU.name())),
+                                "44444")),
                 new FakeHttpMinerServer(
                         44444,
                         ImmutableMap.of(
