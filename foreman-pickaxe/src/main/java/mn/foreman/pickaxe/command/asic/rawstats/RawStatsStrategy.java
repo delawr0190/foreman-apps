@@ -17,11 +17,7 @@ import mn.foreman.pickaxe.util.MinerUtils;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.*;
 
 /**
  * A {@link RawStatsStrategy} provides a mechanism to push all of the raw,
@@ -75,7 +71,6 @@ public class RawStatsStrategy
         minerConfig.apiPort = apiPort;
         minerConfig.apiType = apiType;
         minerConfig.params = toParams(params);
-        minerConfig.statsWhitelist = Collections.singletonList("all");
         return minerConfig;
     }
 
@@ -88,7 +83,8 @@ public class RawStatsStrategy
      */
     private static List<MinerConfig.Param> toParams(
             final List<Map<String, Object>> params) {
-        return params
+        final List<MinerConfig.Param> newParams = new LinkedList<>();
+        params
                 .stream()
                 .map(map -> {
                     final MinerConfig.Param param =
@@ -97,7 +93,14 @@ public class RawStatsStrategy
                     param.value = map.get("value");
                     return param;
                 })
-                .collect(Collectors.toList());
+                .forEach(newParams::add);
+
+        final MinerConfig.Param whitelist = new MinerConfig.Param();
+        whitelist.key = "statsWhitelist";
+        whitelist.value = Collections.singletonList("all");
+        newParams.add(whitelist);
+
+        return newParams;
     }
 
     /**
