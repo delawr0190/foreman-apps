@@ -152,16 +152,24 @@ public class CgMinerResponse {
         private CgMinerRequest request;
 
         /**
-         * Adds the provided status.
+         * Adds object values.
          *
-         * @param status The status.
+         * @param key    The key.
+         * @param values The values.
          *
          * @return This builder instance.
          */
-        public Builder addStatus(
-                final Map<String, String> status) {
-            this.status.add(status);
-            return this;
+        public Builder addObjectValues(
+                final String key,
+                final Map<String, Object> values) {
+            final Map<String, String> newValues = new LinkedHashMap<>();
+            values.forEach(
+                    (key1, value) -> newValues.put(
+                            key1,
+                            value.toString()));
+            return addValues(
+                    key,
+                    newValues);
         }
 
         /**
@@ -174,6 +182,19 @@ public class CgMinerResponse {
         public Builder addStatus(
                 final List<Map<String, String>> status) {
             this.status.addAll(status);
+            return this;
+        }
+
+        /**
+         * Adds the provided status.
+         *
+         * @param status The status.
+         *
+         * @return This builder instance.
+         */
+        public Builder addStatus(
+                final Map<String, String> status) {
+            this.status.add(status);
             return this;
         }
 

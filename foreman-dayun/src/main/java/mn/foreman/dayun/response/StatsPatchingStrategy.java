@@ -20,6 +20,9 @@ import java.util.Map;
 public class StatsPatchingStrategy
         implements ResponsePatchingStrategy {
 
+    /** The mapper. */
+    private final ObjectMapper objectMapper = new ObjectMapper();
+
     @Override
     @SuppressWarnings("unchecked")
     public String patch(final String json)
@@ -27,18 +30,15 @@ public class StatsPatchingStrategy
         final Map<String, Object> sanitized =
                 new HashMap<>();
 
-        final ObjectMapper objectMapper =
-                new ObjectMapper();
-
-        final Map<String, List<Map<String, Object>>> response =
-                objectMapper.readValue(
+        final Map<String, Object> response =
+                this.objectMapper.readValue(
                         json,
-                        new TypeReference<
-                                Map<String, List<Map<String, Object>>>>() {
+                        new TypeReference<Map<String, Object>>() {
                         });
         sanitized.put("STATUS", response.get("STATUS"));
 
-        final Map<String, Object> stats = response.get("STATS").get(0);
+        final Map<String, Object> stats =
+                ((List<Map<String, Object>>) response.get("STATS")).get(0);
         final Map<String, String> sanitizedStats = new HashMap<>();
         sanitizedStats.put("ID",
                 stats.get("ID").toString());
@@ -73,6 +73,6 @@ public class StatsPatchingStrategy
 
         sanitized.put("STATS", Collections.singletonList(sanitizedStats));
 
-        return objectMapper.writeValueAsString(sanitized);
+        return this.objectMapper.writeValueAsString(sanitized);
     }
 }

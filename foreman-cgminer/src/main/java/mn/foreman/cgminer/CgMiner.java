@@ -48,6 +48,9 @@ public class CgMiner
     /** The connection timeout units. */
     private final TimeUnit connectTimeoutUnits;
 
+    /** The mapper. */
+    private final ObjectMapper objectMapper;
+
     /** The requests. */
     private final List<Request> requests;
 
@@ -63,6 +66,10 @@ public class CgMiner
         this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
+        this.objectMapper = new ObjectMapper();
+        this.objectMapper.configure(
+                JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
+                true);
     }
 
     @Override
@@ -80,20 +87,6 @@ public class CgMiner
                     statsBuilder,
                     response);
         }
-    }
-
-    /**
-     * Creates a new mapper.
-     *
-     * @return The new mapper.
-     */
-    private static ObjectMapper createMapper() {
-        final ObjectMapper objectMapper =
-                new ObjectMapper();
-        objectMapper.configure(
-                JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
-                true);
-        return objectMapper;
     }
 
     /**
@@ -122,22 +115,6 @@ public class CgMiner
                             json.substring(
                                     errorObjectEnd + 1);
         }
-
-        try {
-            // Remove id
-            final ObjectMapper objectMapper =
-                    createMapper();
-            final Map<String, Object> parsed =
-                    objectMapper.readValue(
-                            goodJson,
-                            new TypeReference<Map<String, Object>>() {
-                            });
-            parsed.remove("id");
-            goodJson = objectMapper.writeValueAsString(parsed);
-        } catch (final IOException e) {
-            // Ignore
-        }
-
         return patchingStrategy.patch(goodJson);
     }
 
@@ -149,23 +126,29 @@ public class CgMiner
      *
      * @return The response.
      */
+    @SuppressWarnings("unchecked")
     private static CgMinerResponse toResponse(
             final CgMinerRequest request,
-            final Map<String, List<Map<String, String>>> response) {
+            final Map<String, Object> response) {
         final CgMinerResponse.Builder builder =
                 new CgMinerResponse.Builder()
                         .setRequest(request);
-        response.get("STATUS").forEach(builder::addStatus);
+        ((List<Map<String, String>>) response.get("STATUS"))
+                .forEach(builder::addStatus);
         response.entrySet()
                 .stream()
+                .filter(entry -> !entry.getKey().equals("id"))
                 .filter(entry -> !entry.getKey().equals("STATUS"))
                 .forEach(
-                        entry ->
-                                entry.getValue().forEach(
-                                        value ->
-                                                builder.addValues(
-                                                        entry.getKey(),
-                                                        value)));
+                        entry -> {
+                            final List<Map<String, Object>> values =
+                                    (List<Map<String, Object>>) entry.getValue();
+                            values.forEach(
+                                    value ->
+                                            builder.addObjectValues(
+                                                    entry.getKey(),
+                                                    value));
+                        });
         return builder.build();
     }
 
@@ -190,10 +173,8 @@ public class CgMiner
         CgMinerResponse response = null;
 
         try {
-            final ObjectMapper objectMapper = createMapper();
-
             final String message =
-                    objectMapper.writeValueAsString(request);
+                    this.objectMapper.writeValueAsString(request);
             LOG.debug("Sending message ({}) to {}:{}",
                     message,
                     this.apiIp,
@@ -222,10 +203,10 @@ public class CgMiner
                             patchJson(
                                     responseString,
                                     patchingStrategy);
-                    final Map<String, List<Map<String, String>>> responseMap =
-                            objectMapper.readValue(
+                    final Map<String, Object> responseMap =
+                            this.objectMapper.readValue(
                                     responseString,
-                                    new TypeReference<Map<String, List<Map<String, String>>>>() {
+                                    new TypeReference<Map<String, Object>>() {
                                     });
                     if (!responseMap.isEmpty()) {
                         response =
