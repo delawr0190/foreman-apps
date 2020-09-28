@@ -1,12 +1,15 @@
 package mn.foreman.pickaxe.run;
 
 import mn.foreman.model.MetricsReport;
+import mn.foreman.model.metadata.ApiVersion;
+import mn.foreman.model.metadata.Metadata;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 /**
@@ -33,9 +36,16 @@ public class MetricsSenderImpl
     }
 
     @Override
-    public void sendMetrics(final List<MinerStats> stats) {
+    public void sendMetrics(
+            final ZonedDateTime publishTime,
+            final List<MinerStats> stats) {
         final MetricsReport.Builder builder =
-                new MetricsReport.Builder();
+                new MetricsReport.Builder()
+                        .setMetadata(
+                                new Metadata.Builder()
+                                        .setApiVersion(ApiVersion.V1_0_0)
+                                        .setTimestamp(publishTime)
+                                        .build());
         if (!stats.isEmpty()) {
             stats.forEach(builder::addMinerStats);
             try {

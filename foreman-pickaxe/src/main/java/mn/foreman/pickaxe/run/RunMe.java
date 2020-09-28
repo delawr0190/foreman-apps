@@ -7,7 +7,6 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.command.Commands;
 import mn.foreman.model.error.MinerException;
-import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
 import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandProcessor;
@@ -22,7 +21,6 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -144,13 +142,16 @@ public class RunMe {
 
         //noinspection InfiniteLoopStatement
         while (true) {
-            final List<List<MinerStats>> stats =
-                    Lists.partition(
+            final List<StatsBatch> batches =
+                    StatsBatch.toBatches(
                             this.statsCache.getMetrics(),
                             100);
-            stats
+            batches
                     .parallelStream()
-                    .forEach(metricsSender::sendMetrics);
+                    .forEach(batch ->
+                            metricsSender.sendMetrics(
+                                    batch.getBatchTime(),
+                                    batch.getBatch()));
             try {
                 TimeUnit.MINUTES.sleep(1);
             } catch (final InterruptedException ie) {
