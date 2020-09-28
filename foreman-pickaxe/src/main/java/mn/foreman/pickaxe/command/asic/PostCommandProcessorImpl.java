@@ -10,6 +10,7 @@ import mn.foreman.pickaxe.run.MetricsSender;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -75,6 +76,7 @@ public class PostCommandProcessorImpl
                         miner.getMinerID(),
                         stats);
                 this.metricsSender.sendMetrics(
+                        ZonedDateTime.now(),
                         Collections.singletonList(
                                 stats));
             } catch (final Exception e) {
