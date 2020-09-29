@@ -39,7 +39,7 @@ public class AvalonStatsITest
             final Map<String, HandlerInterface> handlers,
             final MinerStats expectedStats) {
         super(
-                new AvalonFactory(0)
+                new AvalonFactory()
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",
