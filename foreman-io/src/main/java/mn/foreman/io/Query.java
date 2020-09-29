@@ -728,6 +728,12 @@ public class Query {
                                 .custom()
                                 .setDefaultCredentialsProvider(credsProvider)
                                 .disableAutomaticRetries()
+                                .setDefaultRequestConfig(
+                                        RequestConfig
+                                                .custom()
+                                                .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .build())
                                 .build();
                 context.setAuthCache(authCache);
             } else {
@@ -735,6 +741,12 @@ public class Query {
                         HttpClients
                                 .custom()
                                 .disableAutomaticRetries()
+                                .setDefaultRequestConfig(
+                                        RequestConfig
+                                                .custom()
+                                                .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .build())
                                 .build();
             }
 
