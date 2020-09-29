@@ -49,14 +49,16 @@ public class RawStatsInterceptingStrategy
     @Override
     public String patch(final String json) throws IOException {
         final String patched = this.real.patch(json);
-        try {
-            this.context.addMulti(
-                    ContextKey.RAW_STATS,
-                    Flatten.flattenAndFilter(
-                            json,
-                            this.statsWhitelist));
-        } catch (final Exception e) {
-            LOG.warn("Failed to flatten json - skipping", e);
+        if (!this.statsWhitelist.isEmpty()) {
+            try {
+                this.context.addMulti(
+                        ContextKey.RAW_STATS,
+                        Flatten.flattenAndFilter(
+                                json,
+                                this.statsWhitelist));
+            } catch (final Exception e) {
+                LOG.warn("Failed to flatten json - skipping", e);
+            }
         }
         return patched;
     }
