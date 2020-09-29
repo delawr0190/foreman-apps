@@ -77,16 +77,15 @@ public class CgMiner
             final MinerStats.Builder statsBuilder)
             throws MinerException {
         for (final Request request : this.requests) {
-            final List<CgMinerResponse> responses =
+            final CgMinerResponse response =
                     query(
                             request.request,
                             request.patchingStrategy);
+
             final ResponseStrategy strategy = request.responseStrategy;
-            for (final CgMinerResponse response : responses) {
-                strategy.processResponse(
-                        statsBuilder,
-                        response);
-            }
+            strategy.processResponse(
+                    statsBuilder,
+                    response);
         }
     }
 
@@ -119,11 +118,18 @@ public class CgMiner
         return patchingStrategy.patch(goodJson);
     }
 
+    /**
+     * Converts the response map to a {@link CgMinerResponse}.
+     *
+     * @param request  The request.
+     * @param response The map.
+     *
+     * @return The response.
+     */
     @SuppressWarnings("unchecked")
-    private static void toResponse(
+    private static CgMinerResponse toResponse(
             final CgMinerRequest request,
-            final Map<String, Object> response,
-            final List<CgMinerResponse> dest) {
+            final Map<String, Object> response) {
         final CgMinerResponse.Builder builder =
                 new CgMinerResponse.Builder()
                         .setRequest(request);
@@ -143,34 +149,7 @@ public class CgMiner
                                                     entry.getKey(),
                                                     value));
                         });
-        dest.add(builder.build());
-    }
-
-    /**
-     * Converts the response map to a {@link CgMinerResponse}.
-     *
-     * @param request  The request.
-     * @param response The map.
-     * @param dest     The destination.
-     */
-    @SuppressWarnings("unchecked")
-    private static void toResponses(
-            final CgMinerRequest request,
-            final Map<String, Object> response,
-            final List<CgMinerResponse> dest) {
-        if (request.isMulti()) {
-            for (final Map.Entry<String, Object> entry : response.entrySet()) {
-                toResponse(
-                        request,
-                        ((List<Map<String, Object>>) entry.getValue()).get(0),
-                        dest);
-            }
-        } else {
-            toResponse(
-                    request,
-                    response,
-                    dest);
-        }
+        return builder.build();
     }
 
     /**
@@ -187,11 +166,11 @@ public class CgMiner
      *
      * @throws MinerException on failure to query.
      */
-    private List<CgMinerResponse> query(
+    private CgMinerResponse query(
             final CgMinerRequest request,
             final ResponsePatchingStrategy patchingStrategy)
             throws MinerException {
-        final List<CgMinerResponse> responses = new LinkedList<>();
+        CgMinerResponse response = null;
 
         try {
             final String message =
@@ -230,10 +209,10 @@ public class CgMiner
                                     new TypeReference<Map<String, Object>>() {
                                     });
                     if (!responseMap.isEmpty()) {
-                        toResponses(
-                                request,
-                                responseMap,
-                                responses);
+                        response =
+                                toResponse(
+                                        request,
+                                        responseMap);
                     }
                 }
             }
@@ -244,7 +223,7 @@ public class CgMiner
                     ioe);
         }
 
-        if (responses.isEmpty()) {
+        if (response == null) {
             throw new MinerException(
                     String.format(
                             "Failed to obtain a response from %s:%d",
@@ -252,7 +231,7 @@ public class CgMiner
                             this.apiPort));
         }
 
-        return responses;
+        return response;
     }
 
     /** A builder for creating new {@link CgMiner CgMiners}. */

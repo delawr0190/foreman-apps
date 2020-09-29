@@ -86,7 +86,7 @@ public class AggregatingResponseStrategy<T extends AggregationContext>
                         this.activeContext);
                 this.observedResponses.add(strategy);
             } else {
-                LOG.info("Received a response type with no known mapping");
+                LOG.warn("Received a response type with no known mapping");
             }
 
             if (isComplete()) {

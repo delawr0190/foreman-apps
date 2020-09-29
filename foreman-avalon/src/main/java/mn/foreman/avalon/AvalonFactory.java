@@ -8,7 +8,6 @@ import mn.foreman.model.MinerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -46,15 +45,20 @@ public class AvalonFactory
                 .setApiPort(apiPort)
                 .addRequest(
                         new CgMinerRequest.Builder()
-                                .addCommand(CgMinerCommand.POOLS)
-                                .addCommand(CgMinerCommand.SUMMARY)
-                                .addCommand(CgMinerCommand.STATS)
+                                .setCommand(CgMinerCommand.POOLS)
                                 .build(),
-                        new MultiResponseStrategy(
-                                Arrays.asList(
-                                        new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(cgContext)),
-                                        responseStrategy)))
+                        new PoolsResponseStrategy(
+                                new MrrRigIdCallback(cgContext)))
+                .addRequest(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.SUMMARY)
+                                .build(),
+                        responseStrategy)
+                .addRequest(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.STATS)
+                                .build(),
+                        responseStrategy)
                 .build();
     }
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /** A custom serializer to produce JSON that cgminer expects. */
@@ -35,11 +36,17 @@ public class CgMinerRequestSerializer
         gen.writeStartObject();
         gen.writeStringField(
                 "command",
-                value
-                        .getCommands()
-                        .stream()
-                        .map(CgMinerCommand::getCommand)
-                        .collect(Collectors.joining("+")));
+                value.getCommand().getCommand());
+
+        // Only write out comma-separate parameters if they exist
+        final List<String> parameters = value.getParameters();
+        if (!parameters.isEmpty()) {
+            gen.writeStringField(
+                    "parameter",
+                    parameters.stream().collect(
+                            Collectors.joining(",")));
+        }
+
         gen.writeEndObject();
     }
 }
