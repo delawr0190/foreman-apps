@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -66,13 +67,12 @@ public class RunMe {
     /** An in-memory cache for holding all of the active stats. */
     private final StatsCache statsCache =
             new SelfExpiringStatsCache(
-                    90,
+                    120,
                     TimeUnit.SECONDS);
 
     /** The thread pool for running tasks. */
-    private final ScheduledExecutorService statsThreadPool =
-            Executors.newScheduledThreadPool(
-                    Runtime.getRuntime().availableProcessors());
+    private final ForkJoinPool statsThreadPool =
+            new ForkJoinPool();
 
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
@@ -253,9 +253,13 @@ public class RunMe {
                 () -> {
                     try {
                         LOG.debug("Updating miner stats cache");
-                        this.miners
-                                .get()
-                                .forEach(this::updateMiner);
+                        final List<Miner> miners = this.miners.get();
+                        this.statsThreadPool
+                                .submit(() ->
+                                        miners
+                                                .parallelStream()
+                                                .forEach(this::updateMiner))
+                                .get();
                     } catch (final Exception e) {
                         LOG.warn("Exception occurred while updating", e);
                     }
@@ -271,20 +275,19 @@ public class RunMe {
      *
      * @param miner The miner.
      */
-    private void updateMiner(final Miner miner) {
-        this.statsThreadPool.execute(() -> {
-            final MinerID minerID = miner.getMinerID();
-            try {
-                this.statsCache.add(
-                        minerID,
-                        miner.getStats());
-                LOG.debug("Cached metrics for {}", miner);
-            } catch (final Exception e) {
-                LOG.warn("Failed to obtain metrics for {}",
-                        miner,
-                        e);
-                this.statsCache.invalidate(minerID);
-            }
-        });
+    private void updateMiner(
+            final Miner miner) {
+        final MinerID minerID = miner.getMinerID();
+        try {
+            this.statsCache.add(
+                    minerID,
+                    miner.getStats());
+            LOG.debug("Cached metrics for {}", miner);
+        } catch (final Exception e) {
+            LOG.warn("Failed to obtain metrics for {}",
+                    miner,
+                    e);
+            this.statsCache.invalidate(minerID);
+        }
     }
 }
