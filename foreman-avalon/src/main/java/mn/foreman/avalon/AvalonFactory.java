@@ -5,6 +5,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.model.SkipOnFailMiner;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -18,6 +19,24 @@ import java.util.Map;
  */
 public class AvalonFactory
         extends CgMinerFactory {
+
+    /** The maximum number of interations to skip when failing. */
+    private final int maxSkipCount;
+
+    /** Constructor. */
+    public AvalonFactory() {
+        this(10);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param maxSkipCount The maximum number of iterations to skip when
+     *                     failing.
+     */
+    public AvalonFactory(final int maxSkipCount) {
+        this.maxSkipCount = maxSkipCount;
+    }
 
     @Override
     protected Miner create(
@@ -41,20 +60,22 @@ public class AvalonFactory
                                                 builder)),
                         () -> null,
                         cgContext);
-        return new CgMiner.Builder(cgContext, statsWhitelist)
-                .setApiIp(apiIp)
-                .setApiPort(apiPort)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .addCommand(CgMinerCommand.POOLS)
-                                .addCommand(CgMinerCommand.SUMMARY)
-                                .addCommand(CgMinerCommand.STATS)
-                                .build(),
-                        new MultiResponseStrategy(
-                                Arrays.asList(
-                                        new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(cgContext)),
-                                        responseStrategy)))
-                .build();
+        return new SkipOnFailMiner(
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .addCommand(CgMinerCommand.POOLS)
+                                        .addCommand(CgMinerCommand.SUMMARY)
+                                        .addCommand(CgMinerCommand.STATS)
+                                        .build(),
+                                new MultiResponseStrategy(
+                                        Arrays.asList(
+                                                new PoolsResponseStrategy(
+                                                        new MrrRigIdCallback(cgContext)),
+                                                responseStrategy)))
+                        .build(),
+                this.maxSkipCount);
     }
 }

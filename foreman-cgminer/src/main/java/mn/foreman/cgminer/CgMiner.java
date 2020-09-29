@@ -287,10 +287,10 @@ public class CgMiner
         private String apiPort;
 
         /** The connection timeout. */
-        private int connectTimeout = 10;
+        private int connectTimeout = 100;
 
         /** The connection timeout units. */
-        private TimeUnit connectTimeoutUnits = TimeUnit.SECONDS;
+        private TimeUnit connectTimeoutUnits = TimeUnit.MILLISECONDS;
 
         /** The requests. */
         private List<Request> requests = new LinkedList<>();

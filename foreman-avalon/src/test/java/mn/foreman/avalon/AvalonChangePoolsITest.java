@@ -42,7 +42,7 @@ public class AvalonChangePoolsITest
                         () -> new FakeRpcMinerServer(
                                 4028,
                                 rpcHandlers)),
-                new AvalonFactory(),
+                new AvalonFactory(0),
                 TestUtils.toPoolJson(),
                 true);
     }

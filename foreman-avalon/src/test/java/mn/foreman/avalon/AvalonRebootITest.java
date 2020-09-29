@@ -42,7 +42,7 @@ public class AvalonRebootITest
                         () -> new FakeRpcMinerServer(
                                 4028,
                                 rpcHandlers)),
-                new AvalonFactory(),
+                new AvalonFactory(0),
                 Collections.emptyMap(),
                 true,
                 true);
