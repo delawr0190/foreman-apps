@@ -1,6 +1,7 @@
 package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.model.Miner;
+import mn.foreman.model.MinerID;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.pickaxe.cache.StatsCache;
@@ -11,10 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -32,6 +30,9 @@ public class PostCommandProcessorImpl
     /** The sender for pushing metrics to the dashboard. */
     private final MetricsSender metricsSender;
 
+    /** The miner blacklist. */
+    private final Set<MinerID> minerBlacklist;
+
     /** The miners. */
     private final AtomicReference<List<Miner>> miners;
 
@@ -41,15 +42,18 @@ public class PostCommandProcessorImpl
     /**
      * Constructor.
      *
-     * @param statsCache    The stats cache.
-     * @param miners        The miners.
-     * @param metricsSender The sender for pushing metrics to the dashboard.
+     * @param statsCache     The stats cache.
+     * @param minerBlacklist The miner blacklist.
+     * @param miners         The miners.
+     * @param metricsSender  The sender for pushing metrics to the dashboard.
      */
     public PostCommandProcessorImpl(
             final StatsCache statsCache,
+            final Set<MinerID> minerBlacklist,
             final AtomicReference<List<Miner>> miners,
             final MetricsSender metricsSender) {
         this.statsCache = statsCache;
+        this.minerBlacklist = minerBlacklist;
         this.miners = miners;
         this.metricsSender = metricsSender;
     }
@@ -72,9 +76,11 @@ public class PostCommandProcessorImpl
             try {
                 final MinerStats stats = miner.getStats();
                 LOG.info("Sending stats for {}: {}", miner, stats);
+                final MinerID minerID = miner.getMinerID();
                 this.statsCache.add(
-                        miner.getMinerID(),
+                        minerID,
                         stats);
+                this.minerBlacklist.remove(minerID);
                 this.metricsSender.sendMetrics(
                         ZonedDateTime.now(),
                         Collections.singletonList(

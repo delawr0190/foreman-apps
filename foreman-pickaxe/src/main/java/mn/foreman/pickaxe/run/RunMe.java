@@ -22,6 +22,7 @@ import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
@@ -51,6 +53,10 @@ public class RunMe {
                         "FOREMAN_BASE_URL",
                         "https://dashboard.foreman.mn");
     }
+
+    /** The blacklisted miners. */
+    private final Set<MinerID> blacklistedMiners =
+            Sets.newConcurrentHashSet();
 
     /** The {@link Configuration}. */
     private final Configuration configuration;
@@ -135,6 +141,7 @@ public class RunMe {
 
         startConfigQuerying();
         startUpdateMiners();
+        startBlacklistFlush();
 
         // Only query for commands if pickaxe is running for command and control
         if (this.configuration.isControl()) {
@@ -176,6 +183,18 @@ public class RunMe {
                 uri);
     }
 
+    /** Clears the {@link #blacklistedMiners} periodically. */
+    private void startBlacklistFlush() {
+        this.threadPool.scheduleWithFixedDelay(
+                () -> {
+                    LOG.info("Flushing blacklist");
+                    this.blacklistedMiners.clear();
+                },
+                0,
+                5,
+                TimeUnit.MINUTES);
+    }
+
     /**
      * Schedules command and control querying.
      *
@@ -188,6 +207,7 @@ public class RunMe {
                         new AsicStrategyFactory(
                                 new PostCommandProcessorImpl(
                                         this.statsCache,
+                                        this.blacklistedMiners,
                                         this.miners,
                                         metricsSender)));
         this.threadPool.scheduleWithFixedDelay(
@@ -236,6 +256,7 @@ public class RunMe {
                                 newMiners)) {
                             LOG.debug("A new configuration has been obtained");
                             this.miners.set(newMiners);
+                            this.blacklistedMiners.clear();
                         } else {
                             LOG.debug("No configuration changes were observed");
                         }
@@ -282,19 +303,23 @@ public class RunMe {
      */
     private void updateMiners(
             final List<Miner> miners) {
-        miners.forEach(miner -> {
-            final MinerID minerID = miner.getMinerID();
-            try {
-                this.statsCache.add(
-                        minerID,
-                        miner.getStats());
-                LOG.debug("Cached metrics for {}", miner);
-            } catch (final Exception e) {
-                LOG.warn("Failed to obtain metrics for {}",
-                        miner,
-                        e);
-                this.statsCache.invalidate(minerID);
-            }
-        });
+        miners
+                .stream()
+                .filter(miner -> !this.blacklistedMiners.contains(miner.getMinerID()))
+                .forEach(miner -> {
+                    final MinerID minerID = miner.getMinerID();
+                    try {
+                        this.statsCache.add(
+                                minerID,
+                                miner.getStats());
+                        LOG.debug("Cached metrics for {}", miner);
+                    } catch (final Exception e) {
+                        LOG.warn("Failed to obtain metrics for {}",
+                                miner,
+                                e);
+                        this.blacklistedMiners.add(minerID);
+                        this.statsCache.invalidate(minerID);
+                    }
+                });
     }
 }
