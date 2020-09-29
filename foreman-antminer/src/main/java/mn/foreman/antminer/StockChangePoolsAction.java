@@ -7,6 +7,7 @@ import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,6 +17,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Collectors;
 
 /**
  * An {@link FirmwareAwareAction} provides an {@link AbstractChangePoolsAction}
@@ -27,6 +29,9 @@ public class StockChangePoolsAction
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(FirmwareAwareAction.class);
+
+    /** The mapper for json processing. */
+    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     /** The props. */
     private final List<ConfValue> props;
@@ -110,6 +115,37 @@ public class StockChangePoolsAction
     }
 
     /**
+     * Creates a pool map from the provided pool.
+     *
+     * @param pool The pool.
+     *
+     * @return The pool config.
+     */
+    private static Map<String, String> toPool(final Pool pool) {
+        return ImmutableMap.of(
+                "url",
+                pool.getUrl(),
+                "user",
+                pool.getUsername(),
+                "pass",
+                pool.getPassword());
+    }
+
+    /**
+     * Creates pools from the pools.
+     *
+     * @param pools The source pools.
+     *
+     * @return The new pools.
+     */
+    private static List<Map<String, String>> toPools(final List<Pool> pools) {
+        return pools
+                .stream()
+                .map(StockChangePoolsAction::toPool)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * Changes the configuration.
      *
      * @param parameters The parameters.
@@ -133,14 +169,33 @@ public class StockChangePoolsAction
             final String password,
             final List<Pool> pools)
             throws Exception {
-        final List<Map<String, Object>> content = new LinkedList<>();
-        this.props.forEach(
-                confValue ->
-                        confValue.getAndSet(
-                                parameters,
-                                minerConf,
-                                pools,
-                                content));
+        List<Map<String, Object>> contentList = null;
+        String payload = null;
+        if (minerConf.containsKey("bitmain-work-mode")) {
+            final Map<String, Object> json =
+                    ImmutableMap.of(
+                            "bitmain-fan-ctrl",
+                            Boolean.valueOf(minerConf.getOrDefault("bitmain-fan-ctrl", "false").toString()),
+                            "bitmain-fan-pwm",
+                            minerConf.getOrDefault("bitmain-fan-pwm", "100"),
+                            "miner-mode",
+                            minerConf.getOrDefault("bitmain-work-mode", "0"),
+                            "freq-level",
+                            minerConf.getOrDefault("bitmain-freq-level", "100"),
+                            "pools",
+                            toPools(pools));
+            payload = MAPPER.writeValueAsString(json);
+        } else {
+            final List<Map<String, Object>> content = new LinkedList<>();
+            this.props.forEach(
+                    confValue ->
+                            confValue.getAndSet(
+                                    parameters,
+                                    minerConf,
+                                    pools,
+                                    content));
+            contentList = content;
+        }
 
         final AtomicReference<String> response = new AtomicReference<>();
         Query.digestPost(
@@ -150,7 +205,8 @@ public class StockChangePoolsAction
                 "/cgi-bin/set_miner_conf.cgi",
                 username,
                 password,
-                content,
+                contentList,
+                payload,
                 (integer, s) -> response.set(s));
 
         final String responseString = response.get();

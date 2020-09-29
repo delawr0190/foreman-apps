@@ -2,10 +2,8 @@ package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
 import mn.foreman.model.AsicAction;
-import mn.foreman.model.error.MinerException;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 /** A strategy that performs an antminer reboot. */
 public class StockRebootAction
@@ -27,17 +25,12 @@ public class StockRebootAction
     public boolean run(
             final String ip,
             final int port,
-            final Map<String, Object> parameters)
-            throws MinerException {
-        final AtomicReference<Integer> statusCode =
-                new AtomicReference<>();
-
+            final Map<String, Object> parameters) {
         try {
             final String username =
                     (String) parameters.getOrDefault("username", "");
             final String password =
                     (String) parameters.getOrDefault("password", "");
-
             Query.digestGet(
                     ip,
                     port,
@@ -45,16 +38,11 @@ public class StockRebootAction
                     "/cgi-bin/reboot.cgi",
                     username,
                     password,
-                    (code, s) -> statusCode.set(code));
+                    (code, s) -> {
+                    });
         } catch (final Exception e) {
-            throw new MinerException(e);
+            // Ignore
         }
-
-        final Integer code = statusCode.get();
-
-        // Can't validate the code because the miner returns status 500, and it
-        // seems like that will most likely change at some point or not be
-        // cross-fork compatible
-        return code != null;
+        return true;
     }
 }

@@ -17,6 +17,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.DigestScheme;
 import org.apache.http.impl.client.BasicAuthCache;
@@ -153,6 +154,7 @@ public class Query {
                 password,
                 false,
                 null,
+                null,
                 responseProcessor);
     }
 
@@ -166,6 +168,7 @@ public class Query {
      * @param username          The username.
      * @param password          The password.
      * @param content           The content.
+     * @param payload           The payload.
      * @param responseProcessor The response processor.
      *
      * @throws Exception on failure to connect.
@@ -178,6 +181,7 @@ public class Query {
             final String username,
             final String password,
             final List<Map<String, Object>> content,
+            final String payload,
             final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         doDigest(
@@ -189,6 +193,7 @@ public class Query {
                 password,
                 true,
                 content,
+                payload,
                 responseProcessor);
     }
 
@@ -291,6 +296,7 @@ public class Query {
                 null,
                 true,
                 content,
+                null,
                 responseProcessor);
     }
 
@@ -658,6 +664,7 @@ public class Query {
      * @param password          The password.
      * @param isPost            Whether or not the request is a post.
      * @param content           The content.
+     * @param payload           The payload.
      * @param responseProcessor What to do with the response.
      *
      * @throws Exception on failure to connect.
@@ -671,6 +678,7 @@ public class Query {
             final String password,
             final boolean isPost,
             final List<Map<String, Object>> content,
+            final String payload,
             final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         final URI uri =
@@ -750,6 +758,10 @@ public class Query {
                                     "UTF-8");
                     LOG.debug("Entity: {}", entity);
                     httpPost.setEntity(entity);
+                } else if (payload != null) {
+                    httpPost.setEntity(new StringEntity(payload));
+                    httpPost.setHeader("Accept", "application/json");
+                    httpPost.setHeader("Content-type", "application/json");
                 }
                 httpRequest = httpPost;
             }

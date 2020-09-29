@@ -35,7 +35,9 @@ public class AntminerRebootITest
                 new AntminerFactory(BigDecimal.ONE),
                 new StockRebootAction("antMiner Configuration"),
                 httpHandlers,
-                rpcHandlers);
+                rpcHandlers,
+                true,
+                true);
     }
 
     /**
