@@ -21,6 +21,7 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,7 +146,7 @@ public class RunMe {
             final List<StatsBatch> batches =
                     StatsBatch.toBatches(
                             this.statsCache.getMetrics(),
-                            100);
+                            300);
             batches
                     .parallelStream()
                     .forEach(batch ->
@@ -254,11 +255,15 @@ public class RunMe {
                     try {
                         LOG.debug("Updating miner stats cache");
                         final List<Miner> miners = this.miners.get();
+                        final List<List<Miner>> partitionedMiners =
+                                Lists.partition(
+                                        miners,
+                                        25);
                         this.statsThreadPool
                                 .submit(() ->
-                                        miners
+                                        partitionedMiners
                                                 .parallelStream()
-                                                .forEach(this::updateMiner))
+                                                .forEach(this::updateMiners))
                                 .get();
                     } catch (final Exception e) {
                         LOG.warn("Exception occurred while updating", e);
@@ -273,21 +278,23 @@ public class RunMe {
      * Fires a job for each miner that will query and update the cached stats
      * for it.
      *
-     * @param miner The miner.
+     * @param miners The miners.
      */
-    private void updateMiner(
-            final Miner miner) {
-        final MinerID minerID = miner.getMinerID();
-        try {
-            this.statsCache.add(
-                    minerID,
-                    miner.getStats());
-            LOG.debug("Cached metrics for {}", miner);
-        } catch (final Exception e) {
-            LOG.warn("Failed to obtain metrics for {}",
-                    miner,
-                    e);
-            this.statsCache.invalidate(minerID);
-        }
+    private void updateMiners(
+            final List<Miner> miners) {
+        miners.forEach(miner -> {
+            final MinerID minerID = miner.getMinerID();
+            try {
+                this.statsCache.add(
+                        minerID,
+                        miner.getStats());
+                LOG.debug("Cached metrics for {}", miner);
+            } catch (final Exception e) {
+                LOG.warn("Failed to obtain metrics for {}",
+                        miner,
+                        e);
+                this.statsCache.invalidate(minerID);
+            }
+        });
     }
 }

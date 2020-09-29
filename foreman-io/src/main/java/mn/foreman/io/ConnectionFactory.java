@@ -134,6 +134,25 @@ public class ConnectionFactory {
     }
 
     /**
+     * Creates a raw java socket connection.
+     *
+     * @param request             The request.
+     * @param connectTimeout      The connect timeout.
+     * @param connectTimeoutUnits The connect timeout (units).
+     *
+     * @return The connection.
+     */
+    public static Connection createRawConnection(
+            final ApiRequest request,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits) {
+        return new SocketApiConnection(
+                request,
+                connectTimeout,
+                connectTimeoutUnits);
+    }
+
+    /**
      * Creates a {@link Connection} to a miner that has a REST interface.
      *
      * @param request             The request.

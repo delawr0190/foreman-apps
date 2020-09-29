@@ -42,14 +42,21 @@ public class CgMiner
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMiner.class);
 
+    /** The mapper. */
+    private static final ObjectMapper MAPPER;
+
+    static {
+        MAPPER = new ObjectMapper();
+        MAPPER.configure(
+                JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
+                true);
+    }
+
     /** The connection timeout. */
     private final int connectTimeout;
 
     /** The connection timeout units. */
     private final TimeUnit connectTimeoutUnits;
-
-    /** The mapper. */
-    private final ObjectMapper objectMapper;
 
     /** The requests. */
     private final List<Request> requests;
@@ -66,10 +73,6 @@ public class CgMiner
         this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
-        this.objectMapper = new ObjectMapper();
-        this.objectMapper.configure(
-                JsonParser.Feature.ALLOW_UNQUOTED_CONTROL_CHARS,
-                true);
     }
 
     @Override
@@ -119,6 +122,13 @@ public class CgMiner
         return patchingStrategy.patch(goodJson);
     }
 
+    /**
+     * Converts the provided data to a response.
+     *
+     * @param request  The request.
+     * @param response The response.
+     * @param dest     Where to store the response.
+     */
     @SuppressWarnings("unchecked")
     private static void toResponse(
             final CgMinerRequest request,
@@ -197,7 +207,7 @@ public class CgMiner
 
         try {
             final String message =
-                    this.objectMapper.writeValueAsString(request);
+                    "{\"command\":\"" + request.toCommand() + "\"}";
             LOG.debug("Sending message ({}) to {}:{}",
                     message,
                     this.apiIp,
@@ -210,7 +220,7 @@ public class CgMiner
                             message);
 
             final Connection connection =
-                    ConnectionFactory.createJsonConnection(
+                    ConnectionFactory.createRawConnection(
                             apiRequest,
                             this.connectTimeout,
                             this.connectTimeoutUnits);
@@ -227,7 +237,7 @@ public class CgMiner
                                     responseString,
                                     patchingStrategy);
                     final Map<String, Object> responseMap =
-                            this.objectMapper.readValue(
+                            MAPPER.readValue(
                                     responseString,
                                     new TypeReference<Map<String, Object>>() {
                                     });

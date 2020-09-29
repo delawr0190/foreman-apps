@@ -75,7 +75,6 @@ class AvalonUtils {
                         .filter(e -> e.getKey().startsWith("MM ID"))
                         .map(Map.Entry::getValue)
                         .collect(Collectors.toList());
-
         addFans(
                 stats,
                 builder);

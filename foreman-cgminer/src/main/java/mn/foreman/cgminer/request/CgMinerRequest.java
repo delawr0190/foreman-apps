@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A {@link CgMinerRequest} represents a command to be sent to cgminer.
@@ -75,6 +76,18 @@ public class CgMinerRequest {
      */
     public boolean isMulti() {
         return this.commands.size() > 1;
+    }
+
+    /**
+     * Returns the request as a single command.
+     *
+     * @return The command.
+     */
+    public String toCommand() {
+        return this.commands
+                .stream()
+                .map(CgMinerCommand::getCommand)
+                .collect(Collectors.joining("+"));
     }
 
     @Override
