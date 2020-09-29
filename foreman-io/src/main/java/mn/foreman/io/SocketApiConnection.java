@@ -51,7 +51,7 @@ public class SocketApiConnection
                             this.apiRequest.getPort());
             socket.setTcpNoDelay(true);
             socket.setSoTimeout(this.socketTimeout);
-            socket.connect(socketAddress, this.socketTimeout);
+            socket.connect(socketAddress, 200);
 
             try (final PrintWriter printWriter =
                          new PrintWriter(
