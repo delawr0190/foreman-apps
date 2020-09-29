@@ -8,6 +8,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -20,31 +21,18 @@ import java.util.List;
 public class CgMinerRequest {
 
     /** The {@link CgMinerCommand}. */
-    private final CgMinerCommand command;
-
-    /** The parameters. */
-    private final List<String> parameters;
+    private final List<CgMinerCommand> commands;
 
     /**
      * Constructor.
      *
-     * @param command    The command.
-     * @param parameters The parameters.
+     * @param commands The commands.
      */
-    private CgMinerRequest(
-            final CgMinerCommand command,
-            final List<String> parameters) {
+    private CgMinerRequest(final List<CgMinerCommand> commands) {
         Validate.notNull(
-                command,
-                "command cannot be null");
-        if (command.isParameterRequired()) {
-            final int expected = command.getNumParameters();
-            Validate.isTrue(
-                    expected == parameters.size(),
-                    "too few parameters provided");
-        }
-        this.command = command;
-        this.parameters = new ArrayList<>(parameters);
+                commands,
+                "commands cannot be null");
+        this.commands = new ArrayList<>(commands);
     }
 
     @Override
@@ -58,8 +46,7 @@ public class CgMinerRequest {
             final CgMinerRequest request = (CgMinerRequest) other;
             isEqual =
                     new EqualsBuilder()
-                            .append(this.command, request.command)
-                            .append(this.parameters, request.parameters)
+                            .append(this.commands, request.commands)
                             .isEquals();
         }
         return isEqual;
@@ -70,63 +57,56 @@ public class CgMinerRequest {
      *
      * @return The {@link CgMinerCommand}.
      */
-    public CgMinerCommand getCommand() {
-        return this.command;
-    }
-
-    /**
-     * Returns the parameters.
-     *
-     * @return The parameters.
-     */
-    public List<String> getParameters() {
-        return this.parameters;
+    public List<CgMinerCommand> getCommands() {
+        return Collections.unmodifiableList(this.commands);
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
-                .append(this.command)
-                .append(this.parameters)
+                .append(this.commands)
                 .hashCode();
+    }
+
+    /**
+     * Returns whether or not this was a multi-request.
+     *
+     * @return Whether or not this was a multi-request.
+     */
+    public boolean isMulti() {
+        return this.commands.size() > 1;
     }
 
     @Override
     public String toString() {
         return String.format(
-                "%s [ command=%s, parameters=%s ]",
+                "%s [ commands=%s ]",
                 getClass().getSimpleName(),
-                this.command,
-                this.parameters);
+                this.commands);
     }
 
     /** A builder for creating {@link CgMinerRequest requests}. */
     public static class Builder
             extends AbstractBuilder<CgMinerRequest> {
 
-        /** The command parameters. */
-        private final List<String> parameters = new LinkedList<>();
-
         /** The {@link CgMinerCommand}. */
-        private CgMinerCommand command;
+        private final List<CgMinerCommand> commands = new LinkedList<>();
 
         /**
-         * Adds the provided parameter.
+         * Adds the {@link CgMinerCommand}.
          *
-         * @param parameter The parameter.
+         * @param command The command.
          *
          * @return The builder instance.
          */
-        public Builder addParameter(final String parameter) {
-            this.parameters.add(parameter);
+        public Builder addCommand(final CgMinerCommand command) {
+            this.commands.add(command);
             return this;
         }
 
         @Override
         public CgMinerRequest build() {
-            return new CgMinerRequest(
-                    this.command,
-                    this.parameters);
+            return new CgMinerRequest(this.commands);
         }
 
         /**
@@ -137,7 +117,8 @@ public class CgMinerRequest {
          * @return The builder instance.
          */
         public Builder setCommand(final CgMinerCommand command) {
-            this.command = command;
+            this.commands.clear();
+            this.commands.add(command);
             return this;
         }
     }

@@ -3,8 +3,6 @@ package mn.foreman.antminer.response.braiins;
 import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.ResponseStrategy;
-import mn.foreman.cgminer.request.CgMinerCommand;
-import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -46,24 +44,22 @@ public class BraiinsResponseStrategy
             final MinerStats.Builder builder,
             final CgMinerResponse response)
             throws MinerException {
-        final CgMinerRequest request =
-                response.getRequest();
-        final CgMinerCommand command =
-                request.getCommand();
         final Map<String, List<Map<String, String>>> values =
                 response.getValues();
-        switch (command) {
-            case SUMMARY:
-                processSummary(values.get("SUMMARY"));
-                break;
-            case FANS:
-                processFans(values.get("FANS"));
-                break;
-            case TEMPS:
-                processTemps(
-                        values.get("TEMPS"),
-                        builder);
-                break;
+        for (final String key : values.keySet()) {
+            switch (key) {
+                case "SUMMARY":
+                    processSummary(values.get("SUMMARY"));
+                    break;
+                case "FANS":
+                    processFans(values.get("FANS"));
+                    break;
+                case "TEMPS":
+                    processTemps(
+                            values.get("TEMPS"),
+                            builder);
+                    break;
+            }
         }
     }
 
