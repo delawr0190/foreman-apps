@@ -1,4 +1,4 @@
-package mn.foreman.pickaxe.cache;
+package mn.foreman.model.cache;
 
 import mn.foreman.model.MinerID;
 import mn.foreman.model.miners.MinerStats;

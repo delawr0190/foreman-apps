@@ -1,15 +1,13 @@
 package mn.foreman.util;
 
 import mn.foreman.model.*;
+import mn.foreman.model.cache.SelfExpiringStatsCache;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -203,7 +201,11 @@ public abstract class AbstractAsyncActionITest {
                                 TimeUnit.SECONDS,
                                 THREAD_POOL,
                                 this.minerFactory,
-                                this.action);
+                                this.action,
+                                new HashSet<>(),
+                                new SelfExpiringStatsCache(
+                                        1,
+                                        TimeUnit.SECONDS));
                 asicAction.runAction(
                         "127.0.0.1",
                         port,

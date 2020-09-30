@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -54,6 +55,7 @@ public class FirmwareAwareAction
 
         final AtomicReference<AntminerType> typeReference =
                 new AtomicReference<>();
+        final AtomicBoolean completed = new AtomicBoolean(false);
 
         final CgMiner cgMiner =
                 new CgMiner.Builder()
@@ -75,29 +77,34 @@ public class FirmwareAwareAction
 
         try {
             cgMiner.getStats();
+            completed.set(true);
         } catch (final Exception e) {
             // Ignore - expected
         }
 
-        final AntminerType type = typeReference.get();
-        if (type != null) {
-            if (type.isBraiins()) {
-                LOG.info("Miner is bOS firmware");
-                success =
-                        this.braiinsAction.run(
-                                ip,
-                                port,
-                                args);
+        if (completed.get()) {
+            final AntminerType type = typeReference.get();
+            if (type != null) {
+                if (type.isBraiins()) {
+                    LOG.info("Miner is bOS firmware");
+                    success =
+                            this.braiinsAction.run(
+                                    ip,
+                                    port,
+                                    args);
+                } else {
+                    LOG.info("Miner is stock firmware");
+                    success =
+                            this.antminerAction.run(
+                                    ip,
+                                    port,
+                                    args);
+                }
             } else {
-                LOG.info("Miner is stock firmware");
-                success =
-                        this.antminerAction.run(
-                                ip,
-                                port,
-                                args);
+                throw new MinerException("Unexpected Antminer type");
             }
         } else {
-            throw new MinerException("Unexpected Antminer type");
+            throw new MinerException("Miner is unreachable");
         }
 
         return success;

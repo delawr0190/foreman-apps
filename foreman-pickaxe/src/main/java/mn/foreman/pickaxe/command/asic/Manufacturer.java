@@ -25,7 +25,9 @@ import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.innosilicon.InnosiliconType;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.MinerID;
 import mn.foreman.model.NullAsicAction;
+import mn.foreman.model.cache.StatsCache;
 import mn.foreman.multminer.MultMinerChangePoolsAction;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.multminer.MultMinerFactory;
@@ -43,10 +45,10 @@ import mn.foreman.whatsminer.WhatsminerTypeFactory;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.function.Function;
+import java.util.concurrent.ScheduledExecutorService;
 
 /** An enumeration containing all of the known manufacturers. */
 public enum Manufacturer {
@@ -64,9 +66,11 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
                     new AntminerTypeFactory()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new AntminerFactory(BigDecimal.ONE),
                             new FirmwareAwareAction(
                                     new AsicSeerDecorator(
@@ -88,9 +92,11 @@ public enum Manufacturer {
                                                             AntminerConfValue.FAN_PWM,
                                                             AntminerConfValue.FREQ))),
                                     new BraiinsChangePoolsAction())),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new AntminerFactory(BigDecimal.ONE),
                             new FirmwareAwareAction(
                                     new StockRebootAction("antMiner Configuration"),
@@ -102,15 +108,19 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.STATS,
                     new AvalonTypeFactory()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new AvalonFactory(),
                             new AvalonChangePoolsAction(
                                     new AvalonRebootAction())),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new AvalonFactory(),
                             new AvalonRebootAction())),
 
@@ -120,14 +130,18 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
                     new BaikalTypeFactory()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new BaikalFactory(),
                             new BaikalChangePoolsAction()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new BaikalFactory(),
                             new BaikalRebootAction())),
 
@@ -137,9 +151,11 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.VERSION,
                     new BlackminerTypeFactory()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new BlackminerFactory(),
                             new StockChangePoolsAction(
                                     "blackMiner Configuration",
@@ -159,9 +175,11 @@ public enum Manufacturer {
                                             BlackminerConfValue.FAN_PWM,
                                             BlackminerConfValue.FREQ,
                                             BlackminerConfValue.COIN_TYPE))),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new BlackminerFactory(),
                             new StockRebootAction("blackMiner Configuration"))),
 
@@ -179,14 +197,18 @@ public enum Manufacturer {
             new DragonmintDetectionStrategy<>(
                     DragonmintType::forType,
                     "DragonMint"),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new DragonmintFactory(),
                             new DragonmintChangePoolsAction()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new DragonmintFactory(),
                             new DragonmintRebootAction())),
 
@@ -210,14 +232,18 @@ public enum Manufacturer {
             new DragonmintDetectionStrategy<>(
                     InnosiliconType::forType,
                     "Innosilicon"),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintChangePoolsAction()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintRebootAction())),
 
@@ -225,14 +251,18 @@ public enum Manufacturer {
     MULTMINER(
             "multminer",
             new MultMinerDetectionStrategy(),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new MultMinerFactory(),
                             new MultMinerChangePoolsAction()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new MultMinerFactory(),
                             new MultMinerRebootAction())),
 
@@ -240,14 +270,18 @@ public enum Manufacturer {
     OBELISK(
             "obelisk",
             new ObeliskDetectionStrategy<>(),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new ObeliskFactory(),
                             new ObeliskChangePoolsAction()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new ObeliskFactory(),
                             new ObeliskRebootAction())),
 
@@ -264,9 +298,11 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.DEVS,
                     new StrongUTypeFactory()),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new StrongUFactory(),
                             new StockChangePoolsAction(
                                     "stuMiner Configuration",
@@ -291,9 +327,11 @@ public enum Manufacturer {
                                             StrongUConfValue.START_VOLT,
                                             StrongUConfValue.PLL_START,
                                             StrongUConfValue.PLL_STEP))),
-            scheduledThreadPoolExecutor ->
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
+                            blacklist,
+                            statsCache,
                             new StrongUFactory(),
                             new StockRebootAction(
                                     "stuMiner Configuration"))),
@@ -304,13 +342,6 @@ public enum Manufacturer {
             new CgMinerDetectionStrategy(
                     CgMinerCommand.STATS,
                     new WhatsminerTypeFactory()));
-
-    /** The thread pool to use for querying for miner status. */
-    private static final ScheduledThreadPoolExecutor THREAD_POOL =
-            new ScheduledThreadPoolExecutor(
-                    Runtime
-                            .getRuntime()
-                            .availableProcessors());
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =
@@ -325,7 +356,7 @@ public enum Manufacturer {
     }
 
     /** The strategy for changing pools. */
-    private final Function<ScheduledThreadPoolExecutor, AsicAction> changePoolsStrategy;
+    private final ActionSupplier changePoolsStrategy;
 
     /** The strategy for detecting. */
     private final DetectionStrategy detectionStrategy;
@@ -334,7 +365,7 @@ public enum Manufacturer {
     private final String name;
 
     /** The strategy for rebooting. */
-    private final Function<ScheduledThreadPoolExecutor, AsicAction> rebootStrategy;
+    private final ActionSupplier rebootStrategy;
 
     /**
      * Constructor.
@@ -348,8 +379,8 @@ public enum Manufacturer {
         this(
                 name,
                 detectionStrategy,
-                executor -> new NullAsicAction(),
-                executor -> new NullAsicAction());
+                (executor, blacklist, statsCache) -> new NullAsicAction(),
+                (executor, blacklist, statsCache) -> new NullAsicAction());
     }
 
     /**
@@ -363,8 +394,8 @@ public enum Manufacturer {
     Manufacturer(
             final String name,
             final DetectionStrategy detectionStrategy,
-            final Function<ScheduledThreadPoolExecutor, AsicAction> changePoolsStrategy,
-            final Function<ScheduledThreadPoolExecutor, AsicAction> rebootStrategy) {
+            final ActionSupplier changePoolsStrategy,
+            final ActionSupplier rebootStrategy) {
         this.name = name;
         this.detectionStrategy = detectionStrategy;
         this.changePoolsStrategy = changePoolsStrategy;
@@ -385,10 +416,20 @@ public enum Manufacturer {
     /**
      * Returns the strategy for changing pools.
      *
+     * @param threadPool The thread pool.
+     * @param blacklist  The blacklist.
+     * @param statsCache The stats cache.
+     *
      * @return The strategy for changing pools.
      */
-    public AsicAction getChangePoolsAction() {
-        return this.changePoolsStrategy.apply(THREAD_POOL);
+    public AsicAction getChangePoolsAction(
+            final ScheduledExecutorService threadPool,
+            final Set<MinerID> blacklist,
+            final StatsCache statsCache) {
+        return this.changePoolsStrategy.create(
+                threadPool,
+                blacklist,
+                statsCache);
     }
 
     /**
@@ -412,9 +453,38 @@ public enum Manufacturer {
     /**
      * Returns the action for rebooting.
      *
+     * @param threadPool The thread pool.
+     * @param blacklist  The blacklist.
+     * @param statsCache The stats cache.
+     *
      * @return The action for rebooting.
      */
-    public AsicAction getRebootAction() {
-        return this.rebootStrategy.apply(THREAD_POOL);
+    public AsicAction getRebootAction(
+            final ScheduledExecutorService threadPool,
+            final Set<MinerID> blacklist,
+            final StatsCache statsCache) {
+        return this.rebootStrategy.create(
+                threadPool,
+                blacklist,
+                statsCache);
+    }
+
+    /** Provides a supplier for creating {@link AsicAction actions}. */
+    @FunctionalInterface
+    private interface ActionSupplier {
+
+        /**
+         * Creates an {@link AsicAction}.
+         *
+         * @param threadPool The thread pool.
+         * @param blacklist  The blacklist.
+         * @param statsCache The cache.
+         *
+         * @return The action.
+         */
+        AsicAction create(
+                ScheduledExecutorService threadPool,
+                Set<MinerID> blacklist,
+                StatsCache statsCache);
     }
 }

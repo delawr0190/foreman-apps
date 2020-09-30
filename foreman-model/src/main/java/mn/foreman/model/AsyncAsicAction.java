@@ -1,15 +1,18 @@
 package mn.foreman.model;
 
+import mn.foreman.model.cache.StatsCache;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
+import mn.foreman.model.miners.MinerStats;
 
 import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -25,6 +28,9 @@ public class AsyncAsicAction
     private static final Logger LOG =
             LoggerFactory.getLogger(AsyncAsicAction.class);
 
+    /** The blacklist. */
+    private final Set<MinerID> blacklist;
+
     /** The action to perform. */
     private final CompletableAction completableAction;
 
@@ -37,8 +43,11 @@ public class AsyncAsicAction
     /** The factory for creating miners that can be used to obtain metrics. */
     private final MinerFactory minerFactory;
 
+    /** The cache. */
+    private final StatsCache statsCache;
+
     /** The thread pool. */
-    private final ScheduledThreadPoolExecutor threadPool;
+    private final ScheduledExecutorService threadPool;
 
     /** The units. */
     private final TimeUnit units;
@@ -59,20 +68,26 @@ public class AsyncAsicAction
      * @param minerFactory      The factory for creating a miner to use to
      *                          obtain stats.
      * @param completableAction The completable action.
+     * @param blacklist         The blacklist.
+     * @param statsCache        The stats cache.
      */
     public AsyncAsicAction(
             final long delay,
             final long interval,
             final TimeUnit units,
-            final ScheduledThreadPoolExecutor threadPool,
+            final ScheduledExecutorService threadPool,
             final MinerFactory minerFactory,
-            final CompletableAction completableAction) {
+            final CompletableAction completableAction,
+            final Set<MinerID> blacklist,
+            final StatsCache statsCache) {
         this.delay = delay;
         this.interval = interval;
         this.units = units;
         this.threadPool = threadPool;
         this.minerFactory = minerFactory;
         this.completableAction = completableAction;
+        this.blacklist = blacklist;
+        this.statsCache = statsCache;
     }
 
     @Override
@@ -91,12 +106,23 @@ public class AsyncAsicAction
                             (Integer) args.get("deadlineMillis");
             final Map<String, Object> newParams =
                     toParams(args);
+            final MinerID minerID =
+                    new SimpleMinerID(
+                            newParams.get("apiIp").toString(),
+                            Integer.parseInt(
+                                    newParams.get("apiPort").toString()));
+            LOG.info("Blacklisting {} while waiting for a reboot", minerID);
+            this.blacklist.add(minerID);
+            this.statsCache.invalidate(minerID);
+
+            final Miner miner = this.minerFactory.create(newParams);
             this.task =
                     this.threadPool.scheduleAtFixedRate(
                             () -> evaluateMiner(
                                     deadlineInMillis,
-                                    newParams,
-                                    callback),
+                                    miner,
+                                    callback,
+                                    minerID),
                             this.delay,
                             this.interval,
                             this.units);
@@ -129,24 +155,30 @@ public class AsyncAsicAction
      * Checks to see if the miner has returned yet.
      *
      * @param deadlineInMillis The deadline.
-     * @param params           The parameters.
+     * @param miner            The miner.
      * @param doneCallback     The callback for when the reboot operation is
      *                         complete.
+     * @param minerID          The miner ID.
      */
     private void evaluateMiner(
             final long deadlineInMillis,
-            final Map<String, Object> params,
-            final CompletionCallback doneCallback) {
+            final Miner miner,
+            final CompletionCallback doneCallback,
+            final MinerID minerID) {
         final long now = System.currentTimeMillis();
         if (now < deadlineInMillis) {
-            final Miner miner = this.minerFactory.create(params);
             try {
-                miner.getStats();
+                final MinerStats stats = miner.getStats();
                 this.task.cancel(false);
+                this.blacklist.remove(minerID);
+                this.statsCache.add(
+                        minerID,
+                        stats);
                 doneCallback.success();
             } catch (final Exception e) {
                 // Miner isn't back yet - ignore
                 LOG.info("Miner isn't back yet - waiting");
+                this.blacklist.add(minerID);
             }
         } else {
             // Took too long to find the miner - abort

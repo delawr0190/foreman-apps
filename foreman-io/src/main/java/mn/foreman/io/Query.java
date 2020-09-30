@@ -731,8 +731,8 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
-                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
                                                 .build())
                                 .build();
                 context.setAuthCache(authCache);
@@ -744,8 +744,8 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
-                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
                                                 .build())
                                 .build();
             }

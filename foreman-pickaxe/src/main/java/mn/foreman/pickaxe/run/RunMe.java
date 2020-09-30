@@ -5,14 +5,14 @@ import mn.foreman.api.ForemanApiImpl;
 import mn.foreman.api.JdkWebUtil;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
+import mn.foreman.model.cache.SelfExpiringStatsCache;
+import mn.foreman.model.cache.StatsCache;
 import mn.foreman.model.command.Commands;
 import mn.foreman.model.error.MinerException;
-import mn.foreman.pickaxe.cache.SelfExpiringStatsCache;
-import mn.foreman.pickaxe.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandProcessor;
 import mn.foreman.pickaxe.command.CommandProcessorImpl;
 import mn.foreman.pickaxe.command.asic.AsicStrategyFactory;
-import mn.foreman.pickaxe.command.asic.PostCommandProcessorImpl;
+import mn.foreman.pickaxe.command.asic.NullPostProcessor;
 import mn.foreman.pickaxe.configuration.Configuration;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
 import mn.foreman.pickaxe.miners.remote.RemoteConfiguration;
@@ -145,25 +145,32 @@ public class RunMe {
 
         // Only query for commands if pickaxe is running for command and control
         if (this.configuration.isControl()) {
-            startCommandQuerying(metricsSender);
+            startCommandQuerying();
         }
 
         //noinspection InfiniteLoopStatement
         while (true) {
+            final long deadline =
+                    System.currentTimeMillis() + TimeUnit.MINUTES.toMillis(1);
             final List<StatsBatch> batches =
                     StatsBatch.toBatches(
                             this.statsCache.getMetrics(),
-                            300);
+                            200);
             batches
                     .parallelStream()
                     .forEach(batch ->
                             metricsSender.sendMetrics(
                                     batch.getBatchTime(),
                                     batch.getBatch()));
-            try {
-                TimeUnit.MINUTES.sleep(1);
-            } catch (final InterruptedException ie) {
-                // Ignore
+            final long now = System.currentTimeMillis();
+            if (now < deadline) {
+                try {
+                    TimeUnit.MILLISECONDS.sleep(deadline - now);
+                } catch (final InterruptedException ie) {
+                    // Ignore
+                }
+            } else {
+                LOG.info("Took too long to send metrics - going again");
             }
         }
     }
@@ -195,21 +202,16 @@ public class RunMe {
                 TimeUnit.MINUTES);
     }
 
-    /**
-     * Schedules command and control querying.
-     *
-     * @param metricsSender The metrics sender.
-     */
-    private void startCommandQuerying(final MetricsSender metricsSender) {
+    /** Schedules command and control querying. */
+    private void startCommandQuerying() {
         final CommandProcessor commandProcessor =
                 new CommandProcessorImpl(
                         this.foremanApi,
                         new AsicStrategyFactory(
-                                new PostCommandProcessorImpl(
-                                        this.statsCache,
-                                        this.blacklistedMiners,
-                                        this.miners,
-                                        metricsSender)));
+                                new NullPostProcessor(),
+                                this.threadPool,
+                                this.blacklistedMiners,
+                                this.statsCache));
         this.threadPool.scheduleWithFixedDelay(
                 () -> {
                     try {
@@ -221,6 +223,7 @@ public class RunMe {
                             commands
                                     .get()
                                     .commands
+                                    .parallelStream()
                                     .forEach(command -> {
                                         try {
                                             commandProcessor.runCommand(command);

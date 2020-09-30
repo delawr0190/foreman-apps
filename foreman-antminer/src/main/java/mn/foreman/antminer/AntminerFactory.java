@@ -58,14 +58,10 @@ public class AntminerFactory
                                         CgMinerCommand.STATS,
                                         new RateMultiplyingDecorator(
                                                 "STATS",
-                                                "GHS av",
+                                                "GHS 5s",
                                                 this.multiplier,
-                                                new RateMultiplyingDecorator(
-                                                        "STATS",
-                                                        "GHS 5s",
-                                                        this.multiplier,
-                                                        new StatsResponseStrategy(
-                                                                context))))));
+                                                new StatsResponseStrategy(
+                                                        context)))));
 
         final ResponseStrategy braiinsStrategy =
                 new BraiinsResponseStrategy(

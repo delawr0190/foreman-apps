@@ -1,5 +1,7 @@
 package mn.foreman.pickaxe.command.asic;
 
+import mn.foreman.model.MinerID;
+import mn.foreman.model.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
 import mn.foreman.pickaxe.command.StrategyFactory;
@@ -9,6 +11,8 @@ import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.concurrent.ScheduledExecutorService;
 
 /**
  * An {@link AsicStrategyFactory} provides a {@link StrategyFactory}
@@ -18,16 +22,34 @@ import java.util.Optional;
 public class AsicStrategyFactory
         implements StrategyFactory {
 
+    /** The blacklist. */
+    private final Set<MinerID> blacklist;
+
     /** The post processor for rebooting. */
     private final PostCommandProcessor postRebootProcessor;
+
+    /** The stats cache. */
+    private final StatsCache statsCache;
+
+    /** The thread pool to use for actions. */
+    private final ScheduledExecutorService threadPool;
 
     /**
      * Constructor.
      *
      * @param postRebootProcessor The post processor for rebooting.
+     * @param blacklist           The blacklist.
+     * @param statsCache          The cache.
      */
-    public AsicStrategyFactory(final PostCommandProcessor postRebootProcessor) {
+    public AsicStrategyFactory(
+            final PostCommandProcessor postRebootProcessor,
+            final ScheduledExecutorService threadPool,
+            final Set<MinerID> blacklist,
+            final StatsCache statsCache) {
         this.postRebootProcessor = postRebootProcessor;
+        this.threadPool = threadPool;
+        this.blacklist = blacklist;
+        this.statsCache = statsCache;
     }
 
     @Override
@@ -45,14 +67,22 @@ public class AsicStrategyFactory
                         Optional.of(
                                 new RebootingCommandStrategy(
                                         this.postRebootProcessor,
-                                        Manufacturer::getChangePoolsAction));
+                                        manufacturer ->
+                                                manufacturer.getChangePoolsAction(
+                                                        this.threadPool,
+                                                        this.blacklist,
+                                                        this.statsCache)));
                 break;
             case "reboot":
                 strategy =
                         Optional.of(
                                 new RebootingCommandStrategy(
                                         this.postRebootProcessor,
-                                        Manufacturer::getRebootAction));
+                                        manufacturer ->
+                                                manufacturer.getRebootAction(
+                                                        this.threadPool,
+                                                        this.blacklist,
+                                                        this.statsCache)));
                 break;
             case "digest":
                 strategy = Optional.of(new DigestStrategy());
