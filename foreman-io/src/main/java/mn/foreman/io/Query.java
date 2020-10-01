@@ -155,7 +155,9 @@ public class Query {
                 false,
                 null,
                 null,
-                responseProcessor);
+                responseProcessor,
+                1,
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -194,7 +196,9 @@ public class Query {
                 true,
                 content,
                 payload,
-                responseProcessor);
+                responseProcessor,
+                20,
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -297,7 +301,9 @@ public class Query {
                 true,
                 content,
                 null,
-                responseProcessor);
+                responseProcessor,
+                20,
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -656,16 +662,18 @@ public class Query {
     /**
      * Runs a digest request.
      *
-     * @param host              The host.
-     * @param port              The port.
-     * @param realm             The realm.
-     * @param path              The path.
-     * @param username          The username.
-     * @param password          The password.
-     * @param isPost            Whether or not the request is a post.
-     * @param content           The content.
-     * @param payload           The payload.
-     * @param responseProcessor What to do with the response.
+     * @param host               The host.
+     * @param port               The port.
+     * @param realm              The realm.
+     * @param path               The path.
+     * @param username           The username.
+     * @param password           The password.
+     * @param isPost             Whether or not the request is a post.
+     * @param content            The content.
+     * @param payload            The payload.
+     * @param responseProcessor  What to do with the response.
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout units.
      *
      * @throws Exception on failure to connect.
      */
@@ -679,7 +687,9 @@ public class Query {
             final boolean isPost,
             final List<Map<String, Object>> content,
             final String payload,
-            final BiConsumer<Integer, String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits)
             throws Exception {
         final URI uri =
                 new URI(
@@ -732,7 +742,7 @@ public class Query {
                                         RequestConfig
                                                 .custom()
                                                 .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
-                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                                                .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
                                                 .build())
                                 .build();
                 context.setAuthCache(authCache);
@@ -745,7 +755,7 @@ public class Query {
                                         RequestConfig
                                                 .custom()
                                                 .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
-                                                .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                                                .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
                                                 .build())
                                 .build();
             }
@@ -910,7 +920,7 @@ public class Query {
                         .setDefaultRequestConfig(
                                 RequestConfig
                                         .custom()
-                                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                                        .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
                                         .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
                                         .build())
                         .build();
