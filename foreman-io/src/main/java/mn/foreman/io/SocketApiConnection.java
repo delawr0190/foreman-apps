@@ -78,7 +78,7 @@ public class SocketApiConnection
                 LOG.warn("Exception occurred while sending/receiving", e);
             }
         } catch (final Exception e) {
-            LOG.warn("Exception occurred while connecting", e);
+            LOG.info("Exception occurred while connecting", e);
         }
         this.apiRequest.completed();
     }

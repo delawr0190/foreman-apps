@@ -317,7 +317,7 @@ public class RunMe {
                                 miner.getStats());
                         LOG.debug("Cached metrics for {}", miner);
                     } catch (final Exception e) {
-                        LOG.warn("Failed to obtain metrics for {}",
+                        LOG.info("Failed to obtain metrics for {}",
                                 miner,
                                 e);
                         this.blacklistedMiners.add(minerID);
