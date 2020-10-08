@@ -165,25 +165,27 @@ public class AsyncAsicAction
             final Miner miner,
             final CompletionCallback doneCallback,
             final MinerID minerID) {
-        final long now = System.currentTimeMillis();
-        if (now < deadlineInMillis) {
-            try {
-                final MinerStats stats = miner.getStats();
-                this.task.cancel(false);
-                this.blacklist.remove(minerID);
-                this.statsCache.add(
-                        minerID,
-                        stats);
-                doneCallback.success();
-            } catch (final Exception e) {
-                // Miner isn't back yet - ignore
-                LOG.info("Miner isn't back yet - waiting");
-                this.blacklist.add(minerID);
-            }
-        } else {
-            // Took too long to find the miner - abort
+        try {
+            final MinerStats stats = miner.getStats();
             this.task.cancel(false);
-            doneCallback.failed("Miner never returned");
+            this.blacklist.remove(minerID);
+            this.statsCache.add(
+                    minerID,
+                    stats);
+            doneCallback.success();
+        } catch (final Exception e) {
+            // Miner isn't back yet - ignore
+            LOG.info("Miner isn't back yet - waiting");
+            this.blacklist.add(minerID);
+        }
+
+        if (!this.task.isCancelled()) {
+            final long now = System.currentTimeMillis();
+            if (now >= deadlineInMillis) {
+                // Took too long to find the miner - abort
+                this.task.cancel(false);
+                doneCallback.failed("Miner never returned");
+            }
         }
     }
 }
