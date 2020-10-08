@@ -1,11 +1,9 @@
 package mn.foreman.antminer;
 
-import mn.foreman.antminer.response.VersionResponseStrategy;
 import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
-import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -87,17 +85,11 @@ public class AntminerFactory
                                         CgMinerCommand.TEMPS,
                                         braiinsStrategy)));
 
-        return new CgMiner.Builder()
-                .setApiIp(apiIp)
-                .setApiPort(apiPort)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.VERSION)
-                                .build(),
-                        new VersionResponseStrategy(
-                                antminer,
-                                braiins))
-                .build();
+        return new VersionDecorator(
+                apiIp,
+                apiPort,
+                antminer,
+                braiins);
     }
 
     /**
