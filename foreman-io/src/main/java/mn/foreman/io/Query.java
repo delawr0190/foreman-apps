@@ -741,7 +741,7 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(50))
                                                 .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
                                                 .build())
                                 .build();
@@ -754,7 +754,7 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(50))
                                                 .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
                                                 .build())
                                 .build();
@@ -920,7 +920,7 @@ public class Query {
                         .setDefaultRequestConfig(
                                 RequestConfig
                                         .custom()
-                                        .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                                        .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(50))
                                         .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
                                         .build())
                         .build();
