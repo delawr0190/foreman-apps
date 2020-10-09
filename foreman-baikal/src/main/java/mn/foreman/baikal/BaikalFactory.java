@@ -30,30 +30,33 @@ public class BaikalFactory
         final Context context = new Context();
         final PoolCallback mrrRigIdCallback =
                 new MrrRigIdCallback(context);
-        return new CgMiner.Builder(context, statsWhitelist)
-                .setApiIp(apiIp)
-                .setApiPort(apiPort)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        new PoolsResponseStrategy(
-                                poolInfo -> {
-                                    mrrRigIdCallback.foundPool(poolInfo);
-                                    poolAlgos.put(
-                                            poolInfo.get("POOL"),
-                                            poolInfo.getOrDefault(
-                                                    "Algorithm",
-                                                    ""));
-                                }))
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.DEVS)
-                                .build(),
-                        new DevsResponseStrategy(
-                                "Temperature",
-                                poolAlgos,
-                                context))
-                .build();
+        return new BaikalDecorator(
+                new CgMiner.Builder(context, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        poolInfo -> {
+                                            mrrRigIdCallback.foundPool(poolInfo);
+                                            poolAlgos.put(
+                                                    poolInfo.get("POOL"),
+                                                    poolInfo.getOrDefault(
+                                                            "Algorithm",
+                                                            ""));
+                                        }))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.DEVS)
+                                        .build(),
+                                new DevsResponseStrategy(
+                                        "Temperature",
+                                        poolAlgos,
+                                        context))
+                        .build(),
+                new BaikalDetectionStrategy(
+                        config.getOrDefault("webPort", "80").toString()));
     }
 }

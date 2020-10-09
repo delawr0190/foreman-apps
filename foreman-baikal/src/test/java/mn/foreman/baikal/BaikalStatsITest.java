@@ -6,6 +6,9 @@ import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.util.AbstractApiITest;
+import mn.foreman.util.http.FakeHttpMinerServer;
+import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
@@ -17,6 +20,7 @@ import org.junit.runners.Parameterized;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
@@ -27,11 +31,13 @@ public class BaikalStatsITest
     /**
      * Constructor.
      *
-     * @param handlers The handlers.
-     * @param stats    The stats.
+     * @param rpcHandlers  The RPC handlers.
+     * @param httpHandlers The HTTP handlers.
+     * @param stats        The stats.
      */
     public BaikalStatsITest(
-            final Map<String, HandlerInterface> handlers,
+            final Map<String, HandlerInterface> rpcHandlers,
+            final Map<String, ServerHandler> httpHandlers,
             final MinerStats stats) {
         super(
                 new BaikalFactory()
@@ -41,13 +47,19 @@ public class BaikalStatsITest
                                         "127.0.0.1",
                                         "apiPort",
                                         "4028",
+                                        "webPort",
+                                        "8080",
                                         "statsWhitelist",
                                         Arrays.asList(
                                                 "DEVS.1.No Device",
                                                 "DEVS.1.Device Hardware%"))),
-                new FakeRpcMinerServer(
-                        4028,
-                        handlers),
+                Arrays.asList(
+                        new FakeRpcMinerServer(
+                                4028,
+                                rpcHandlers),
+                        new FakeHttpMinerServer(
+                                8080,
+                                httpHandlers)),
                 stats);
     }
 
@@ -247,6 +259,7 @@ public class BaikalStatsITest
                                                         "  ],\n" +
                                                         "  \"id\": 1\n" +
                                                         "}")),
+                                Collections.emptyMap(),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(4028)
@@ -834,6 +847,7 @@ public class BaikalStatsITest
                                                         "  ],\n" +
                                                         "  \"id\": 1\n" +
                                                         "}")),
+                                Collections.emptyMap(),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")
                                         .setApiPort(4028)
@@ -956,6 +970,31 @@ public class BaikalStatsITest
                                                                         false,
                                                                         "DEVS.1.Device Hardware%",
                                                                         new BigDecimal("0")))
+                                                        .build())
+                                        .build()
+                        },
+                        {
+                                // Baikal (not hashing)
+                                ImmutableMap.of(
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "")),
+                                ImmutableMap.of(
+                                        "/login.php",
+                                        new HttpHandler(
+                                                "",
+                                                "<html></html>")),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(BigDecimal.ZERO)
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(0)
+                                                                        .setSpeedUnits("%")
+                                                                        .build())
                                                         .build())
                                         .build()
                         }

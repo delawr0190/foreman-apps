@@ -7,9 +7,9 @@ import mn.foreman.avalon.AvalonFactory;
 import mn.foreman.avalon.AvalonRebootAction;
 import mn.foreman.avalon.AvalonTypeFactory;
 import mn.foreman.baikal.BaikalChangePoolsAction;
+import mn.foreman.baikal.BaikalDetectionStrategy;
 import mn.foreman.baikal.BaikalFactory;
 import mn.foreman.baikal.BaikalRebootAction;
-import mn.foreman.baikal.BaikalTypeFactory;
 import mn.foreman.blackminer.BlackminerConfValue;
 import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
@@ -127,9 +127,7 @@ public enum Manufacturer {
     /** Baikal. */
     BAIKAL(
             "baikal",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.DEVS,
-                    new BaikalTypeFactory()),
+            new BaikalDetectionStrategy("80"),
             (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,

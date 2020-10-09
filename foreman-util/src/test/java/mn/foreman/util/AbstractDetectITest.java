@@ -6,8 +6,10 @@ import mn.foreman.model.DetectionStrategy;
 import com.google.common.collect.ImmutableMap;
 import org.junit.Test;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static org.junit.Assert.assertEquals;
@@ -43,6 +45,12 @@ public abstract class AbstractDetectITest {
     /** The port. */
     private final int port;
 
+    /** The pre-args hook. */
+    private final BiFunction<
+            Integer,
+            Map<String, Object>,
+            Map<String, Object>> preArgsHook;
+
     /** The fake server supplier. */
     private final Supplier<FakeMinerServer> serverSupplier;
 
@@ -63,12 +71,45 @@ public abstract class AbstractDetectITest {
             final Map<String, Object> args,
             final Supplier<FakeMinerServer> serverSupplier,
             final Detection detection) {
+        this(
+                detectionStrategy,
+                ip,
+                port,
+                args,
+                serverSupplier,
+                detection,
+                (integer, stringObjectMap) -> stringObjectMap);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param detectionStrategy The detection strategy.
+     * @param ip                The ip.
+     * @param port              The port.
+     * @param args              The arguments.
+     * @param serverSupplier    A {@link Supplier} for making servers.
+     * @param detection         The expected detection.
+     * @param preArgsHook       The pre-args hook.
+     */
+    public AbstractDetectITest(
+            final DetectionStrategy detectionStrategy,
+            final String ip,
+            final int port,
+            final Map<String, Object> args,
+            final Supplier<FakeMinerServer> serverSupplier,
+            final Detection detection,
+            final BiFunction<
+                    Integer,
+                    Map<String, Object>,
+                    Map<String, Object>> preArgsHook) {
         this.detectionStrategy = detectionStrategy;
         this.ip = ip;
         this.port = port;
         this.args = args;
         this.serverSupplier = serverSupplier;
         this.detection = detection;
+        this.preArgsHook = preArgsHook;
     }
 
     /**
@@ -132,12 +173,16 @@ public abstract class AbstractDetectITest {
         try (final FakeMinerServer fakeMinerServer =
                      this.serverSupplier.get()) {
             fakeMinerServer.start();
+            final Map<String, Object> args =
+                    this.preArgsHook.apply(
+                            port,
+                            new HashMap<>(this.args));
             assertEquals(
                     expectedDetection,
                     this.detectionStrategy.detect(
                             this.ip,
                             port,
-                            this.args).orElse(null));
+                            args).orElse(null));
             if (expectedDetection != null) {
                 assertTrue(
                         fakeMinerServer.waitTillDone(
