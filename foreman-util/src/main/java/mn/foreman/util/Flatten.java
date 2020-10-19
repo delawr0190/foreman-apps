@@ -47,6 +47,9 @@ public class Flatten {
     private static boolean isWhitelisted(
             final Map.Entry<String, Object> entry,
             final List<String> whitelist) {
-        return whitelist.contains(entry.getKey()) || whitelist.contains("all");
+        final String key = entry.getKey();
+        return whitelist.contains(key) ||
+                whitelist.contains(key.toLowerCase().replace(" ", "_")) ||
+                whitelist.contains("all");
     }
 }
