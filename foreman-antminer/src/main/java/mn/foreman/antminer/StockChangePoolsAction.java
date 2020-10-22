@@ -81,7 +81,8 @@ public class StockChangePoolsAction
                         try {
                             minerConfRef.set(
                                     objectMapper.readValue(
-                                            s,
+                                            // Patch fan-ctrl, if needed
+                                            s.replace(": ,", ": false,"),
                                             new TypeReference<Map<String, Object>>() {
 
                                             }));
