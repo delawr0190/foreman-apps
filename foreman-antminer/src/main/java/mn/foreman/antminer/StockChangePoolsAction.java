@@ -147,6 +147,29 @@ public class StockChangePoolsAction
     }
 
     /**
+     * Obtains a valid conf value.
+     *
+     * @param conf         The conf.
+     * @param key          The key.
+     * @param defaultValue The default value.
+     *
+     * @return The valid value.
+     */
+    private static String toValid(
+            final Map<String, Object> conf,
+            final String key,
+            final String defaultValue) {
+        String currentValue =
+                conf.getOrDefault(
+                        key,
+                        defaultValue).toString();
+        if (currentValue.isEmpty()) {
+            currentValue = defaultValue;
+        }
+        return currentValue;
+    }
+
+    /**
      * Changes the configuration.
      *
      * @param parameters The parameters.
@@ -176,13 +199,26 @@ public class StockChangePoolsAction
             final Map<String, Object> json =
                     ImmutableMap.of(
                             "bitmain-fan-ctrl",
-                            Boolean.valueOf(minerConf.getOrDefault("bitmain-fan-ctrl", "false").toString()),
+                            Boolean.valueOf(
+                                    toValid(
+                                            minerConf,
+                                            "bitmain-fan-ctrl",
+                                            "false")),
                             "bitmain-fan-pwm",
-                            minerConf.getOrDefault("bitmain-fan-pwm", "100"),
+                            toValid(
+                                    minerConf,
+                                    "bitmain-fan-pwm",
+                                    "100"),
                             "miner-mode",
-                            minerConf.getOrDefault("bitmain-work-mode", "0"),
+                            toValid(
+                                    minerConf,
+                                    "bitmain-work-mode",
+                                    "0"),
                             "freq-level",
-                            minerConf.getOrDefault("bitmain-freq-level", "100"),
+                            toValid(
+                                    minerConf,
+                                    "bitmain-freq-level",
+                                    "100"),
                             "pools",
                             toPools(pools));
             payload = MAPPER.writeValueAsString(json);

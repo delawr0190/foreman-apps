@@ -558,14 +558,14 @@ public class AntminerChangePoolsITest
                                                         "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
                                                         "\"api-allow\" : \"A:0/0,W:*\",\n" +
                                                         "\"bitmain-fan-ctrl\" : ,\n" +
-                                                        "\"bitmain-fan-pwm\" : \"100\",\n" +
+                                                        "\"bitmain-fan-pwm\" : \"\",\n" +
                                                         "\"bitmain-use-vil\" : true,\n" +
                                                         "\"bitmain-freq\" : \"500\",\n" +
                                                         "\"bitmain-voltage\" : \"1280\",\n" +
                                                         "\"bitmain-ccdelay\" : \"1\",\n" +
                                                         "\"bitmain-pwth\" : \"1\",\n" +
-                                                        "\"bitmain-work-mode\" : \"0\",\n" +
-                                                        "\"bitmain-freq-level\" : \"100\"\n" +
+                                                        "\"bitmain-work-mode\" : \"\",\n" +
+                                                        "\"bitmain-freq-level\" : \"\"" +
                                                         "}",
                                                 AntminerChangePoolsITest::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
