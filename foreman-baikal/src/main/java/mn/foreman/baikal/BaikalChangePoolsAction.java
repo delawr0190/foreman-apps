@@ -85,7 +85,10 @@ public class BaikalChangePoolsAction
             final Map<String, Object> params) {
         final Map<String, Object> newPool = new HashMap<>();
         newPool.put("url", pool.getUrl());
-        newPool.put("algo", params.get("algo_" + index).toString());
+        newPool.put("algo",
+                params.getOrDefault(
+                        "algo_" + index,
+                        params.get("algo" + index)).toString());
         newPool.put("user", pool.getUsername());
         newPool.put("pass", pool.getPassword());
         newPool.put("extranonce", true);
