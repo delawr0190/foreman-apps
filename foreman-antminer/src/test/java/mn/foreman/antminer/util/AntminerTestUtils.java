@@ -14,6 +14,25 @@ import java.util.Map;
 public class AntminerTestUtils {
 
     /**
+     * Factory method that creates the typical factory reset handlers.
+     *
+     * @param realm The realm.
+     *
+     * @return The handlers.
+     */
+    public static Map<String, ServerHandler> toFactoryResetHandlers(final String realm) {
+        return ImmutableMap.of(
+                "/cgi-bin/reset_conf.cgi",
+                new HttpHandler(
+                        "",
+                        "",
+                        exchange -> AntminerTestUtils.validateDigest(
+                                exchange,
+                                realm),
+                        HttpStatus.SC_OK));
+    }
+
+    /**
      * Factory method that creates the typical reboot handlers.
      *
      * @param realm The realm.

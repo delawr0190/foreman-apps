@@ -23,19 +23,13 @@ import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.ApiType;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.innosilicon.InnosiliconType;
-import mn.foreman.model.AsicAction;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MinerID;
-import mn.foreman.model.NullAsicAction;
+import mn.foreman.model.*;
 import mn.foreman.model.cache.StatsCache;
 import mn.foreman.multminer.MultMinerChangePoolsAction;
 import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.multminer.MultMinerFactory;
 import mn.foreman.multminer.MultMinerRebootAction;
-import mn.foreman.obelisk.ObeliskChangePoolsAction;
-import mn.foreman.obelisk.ObeliskDetectionStrategy;
-import mn.foreman.obelisk.ObeliskFactory;
-import mn.foreman.obelisk.ObeliskRebootAction;
+import mn.foreman.obelisk.*;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.strongu.StrongUConfValue;
 import mn.foreman.strongu.StrongUFactory;
@@ -100,7 +94,38 @@ public enum Manufacturer {
                             new AntminerFactory(BigDecimal.ONE),
                             new FirmwareAwareAction(
                                     new StockRebootAction("antMiner Configuration"),
-                                    new BraiinsRebootAction()))),
+                                    new BraiinsRebootAction())),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new AntminerFactory(BigDecimal.ONE),
+                                    new StockFactoryResetAction(
+                                            "antMiner Configuration")),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new AntminerFactory(BigDecimal.ONE),
+                                    new StockChangePoolsAction(
+                                            "antMiner Configuration",
+                                            Arrays.asList(
+                                                    AntminerConfValue.POOL_1_URL,
+                                                    AntminerConfValue.POOL_1_USER,
+                                                    AntminerConfValue.POOL_1_PASS,
+                                                    AntminerConfValue.POOL_2_URL,
+                                                    AntminerConfValue.POOL_2_USER,
+                                                    AntminerConfValue.POOL_2_PASS,
+                                                    AntminerConfValue.POOL_3_URL,
+                                                    AntminerConfValue.POOL_3_USER,
+                                                    AntminerConfValue.POOL_3_PASS,
+                                                    AntminerConfValue.NO_BEEPER,
+                                                    AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                                    AntminerConfValue.FAN_CTRL,
+                                                    AntminerConfValue.FAN_PWM,
+                                                    AntminerConfValue.FREQ))))),
 
     /** Avalon. */
     AVALON(
@@ -179,7 +204,39 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new BlackminerFactory(),
-                            new StockRebootAction("blackMiner Configuration"))),
+                            new StockRebootAction("blackMiner Configuration")),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new BlackminerFactory(),
+                                    new StockFactoryResetAction(
+                                            "blackMiner Configuration")),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new BlackminerFactory(),
+                                    new StockChangePoolsAction(
+                                            "blackMiner Configuration",
+                                            Arrays.asList(
+                                                    BlackminerConfValue.POOL_1_URL,
+                                                    BlackminerConfValue.POOL_1_USER,
+                                                    BlackminerConfValue.POOL_1_PASS,
+                                                    BlackminerConfValue.POOL_2_URL,
+                                                    BlackminerConfValue.POOL_2_USER,
+                                                    BlackminerConfValue.POOL_2_PASS,
+                                                    BlackminerConfValue.POOL_3_URL,
+                                                    BlackminerConfValue.POOL_3_USER,
+                                                    BlackminerConfValue.POOL_3_PASS,
+                                                    BlackminerConfValue.NO_BEEPER,
+                                                    BlackminerConfValue.NO_TEMP_OVER_CTRL,
+                                                    BlackminerConfValue.FAN_CTRL,
+                                                    BlackminerConfValue.FAN_PWM,
+                                                    BlackminerConfValue.FREQ,
+                                                    BlackminerConfValue.COIN_TYPE))))),
 
     /** Dayun. */
     DAYUN(
@@ -208,7 +265,21 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new DragonmintFactory(),
-                            new DragonmintRebootAction())),
+                            new DragonmintRebootAction()),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new DragonmintFactory(),
+                                    new DragonmintFactoryResetAction()),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new DragonmintFactory(),
+                                    new DragonmintChangePoolsAction()))),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -243,7 +314,21 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new InnosiliconFactory(ApiType.HS_API),
-                            new DragonmintRebootAction())),
+                            new DragonmintRebootAction()),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new InnosiliconFactory(ApiType.HS_API),
+                                    new DragonmintFactoryResetAction()),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new InnosiliconFactory(ApiType.HS_API),
+                                    new DragonmintChangePoolsAction()))),
 
     /** MultMiner. */
     MULTMINER(
@@ -281,7 +366,21 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new ObeliskFactory(),
-                            new ObeliskRebootAction())),
+                            new ObeliskRebootAction()),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new ObeliskFactory(),
+                                    new ObeliskFactoryResetAction()),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new ObeliskFactory(),
+                                    new ObeliskChangePoolsAction()))),
 
     /** Spondoolies. */
     SPONDOOLIES(
@@ -332,7 +431,44 @@ public enum Manufacturer {
                             statsCache,
                             new StrongUFactory(),
                             new StockRebootAction(
-                                    "stuMiner Configuration"))),
+                                    "stuMiner Configuration")),
+            (scheduledThreadPoolExecutor, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new StrongUFactory(),
+                                    new StockFactoryResetAction(
+                                            "stuMiner Configuration")),
+                            AsyncActionFactory.toAsync(
+                                    scheduledThreadPoolExecutor,
+                                    blacklist,
+                                    statsCache,
+                                    new StrongUFactory(),
+                                    new StockChangePoolsAction(
+                                            "stuMiner Configuration",
+                                            Arrays.asList(
+                                                    StrongUConfValue.POOL_1_URL,
+                                                    StrongUConfValue.POOL_1_USER,
+                                                    StrongUConfValue.POOL_1_PASS,
+                                                    StrongUConfValue.POOL_2_URL,
+                                                    StrongUConfValue.POOL_2_USER,
+                                                    StrongUConfValue.POOL_2_PASS,
+                                                    StrongUConfValue.POOL_3_URL,
+                                                    StrongUConfValue.POOL_3_USER,
+                                                    StrongUConfValue.POOL_3_PASS,
+                                                    StrongUConfValue.NO_BEEPER,
+                                                    StrongUConfValue.NO_TEMP_OVER_CTRL,
+                                                    StrongUConfValue.FAN_PWM,
+                                                    StrongUConfValue.FREQ_1,
+                                                    StrongUConfValue.FREQ_2,
+                                                    StrongUConfValue.FREQ_3,
+                                                    StrongUConfValue.FREQ_4,
+                                                    StrongUConfValue.WORK_VOLT,
+                                                    StrongUConfValue.START_VOLT,
+                                                    StrongUConfValue.PLL_START,
+                                                    StrongUConfValue.PLL_STEP))))),
 
     /** Whatsminer. */
     WHATSMINER(
@@ -359,6 +495,9 @@ public enum Manufacturer {
     /** The strategy for detecting. */
     private final DetectionStrategy detectionStrategy;
 
+    /** The strategy for performing a factory reset. */
+    private final ActionSupplier factoryResetStrategy;
+
     /** The name. */
     private final String name;
 
@@ -378,6 +517,7 @@ public enum Manufacturer {
                 name,
                 detectionStrategy,
                 (executor, blacklist, statsCache) -> new NullAsicAction(),
+                (executor, blacklist, statsCache) -> new NullAsicAction(),
                 (executor, blacklist, statsCache) -> new NullAsicAction());
     }
 
@@ -394,10 +534,34 @@ public enum Manufacturer {
             final DetectionStrategy detectionStrategy,
             final ActionSupplier changePoolsStrategy,
             final ActionSupplier rebootStrategy) {
+        this(
+                name,
+                detectionStrategy,
+                changePoolsStrategy,
+                rebootStrategy,
+                (executor, blacklist, statsCache) -> new NullAsicAction());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param name                 The name.
+     * @param detectionStrategy    The strategy for detecting.
+     * @param changePoolsStrategy  The strategy for changing pools.
+     * @param rebootStrategy       The strategy for rebooting.
+     * @param factoryResetStrategy The strategy for factory resets.
+     */
+    Manufacturer(
+            final String name,
+            final DetectionStrategy detectionStrategy,
+            final ActionSupplier changePoolsStrategy,
+            final ActionSupplier rebootStrategy,
+            final ActionSupplier factoryResetStrategy) {
         this.name = name;
         this.detectionStrategy = detectionStrategy;
         this.changePoolsStrategy = changePoolsStrategy;
         this.rebootStrategy = rebootStrategy;
+        this.factoryResetStrategy = factoryResetStrategy;
     }
 
     /**
@@ -437,6 +601,25 @@ public enum Manufacturer {
      */
     public DetectionStrategy getDetectionStrategy() {
         return this.detectionStrategy;
+    }
+
+    /**
+     * Returns the strategy for factory resets.
+     *
+     * @param threadPool The thread pool.
+     * @param blacklist  The blacklist.
+     * @param statsCache The stats cache.
+     *
+     * @return The action for factory resets.
+     */
+    public AsicAction getFactoryResetStrategy(
+            final ScheduledExecutorService threadPool,
+            final Set<MinerID> blacklist,
+            final StatsCache statsCache) {
+        return this.factoryResetStrategy.create(
+                threadPool,
+                blacklist,
+                statsCache);
     }
 
     /**

@@ -90,6 +90,17 @@ public class AsicStrategyFactory
             case "raw-stats":
                 strategy = Optional.of(new RawStatsStrategy());
                 break;
+            case "factory-reset":
+                strategy =
+                        Optional.of(
+                                new RebootingCommandStrategy(
+                                        this.postRebootProcessor,
+                                        manufacturer ->
+                                                manufacturer.getFactoryResetStrategy(
+                                                        this.threadPool,
+                                                        this.blacklist,
+                                                        this.statsCache)));
+                break;
             default:
                 break;
         }
