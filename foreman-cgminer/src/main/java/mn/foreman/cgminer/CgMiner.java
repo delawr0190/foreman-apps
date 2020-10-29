@@ -108,6 +108,8 @@ public class CgMiner
             final ResponsePatchingStrategy patchingStrategy)
             throws IOException {
         String goodJson = json;
+
+        // Patch miners returning invalid json objects
         final int errorObjectEnd = json.indexOf("}{");
         if (errorObjectEnd >= 0) {
             final int errorObjectStart =
@@ -118,6 +120,11 @@ public class CgMiner
                     json.substring(0, errorObjectStart) +
                             json.substring(
                                     errorObjectEnd + 1);
+        }
+
+        // Patch miners returning 'nan'
+        if (goodJson.contains("nan,")) {
+            goodJson = goodJson.replace("nan,", "0,");
         }
         return patchingStrategy.patch(goodJson);
     }
