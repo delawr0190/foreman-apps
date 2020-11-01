@@ -17,13 +17,17 @@ public class ObeliskFactory
     @SuppressWarnings("unchecked")
     @Override
     public Miner create(final Map<String, Object> config) {
+        final String ip = config.get("apiIp").toString();
         return new Obelisk(
-                config.get("apiIp").toString(),
+                ip,
                 Integer.parseInt(config.get("apiPort").toString()),
                 config.get("username").toString(),
                 config.get("password").toString(),
                 (List<String>) config.getOrDefault(
                         "statsWhitelist",
-                        Collections.emptyList()));
+                        Collections.emptyList()),
+                new ObeliskMacStrategy(
+                        ip,
+                        Integer.parseInt(config.getOrDefault("port", "80").toString())));
     }
 }

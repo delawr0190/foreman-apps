@@ -3,6 +3,7 @@ package mn.foreman.dragonmint;
 import mn.foreman.dragonmint.json.Summary;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
+import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -55,16 +56,19 @@ public class Dragonmint
      * @param username       The username.
      * @param password       The password.
      * @param statsWhitelist The stats whitelist.
+     * @param macStrategy    The MAC strategy.
      */
     Dragonmint(
             final String apiIp,
             final int apiPort,
             final String username,
             final String password,
-            final List<String> statsWhitelist) {
+            final List<String> statsWhitelist,
+            final MacStrategy macStrategy) {
         super(
                 apiIp,
-                apiPort);
+                apiPort,
+                macStrategy);
         this.username = username;
         this.password = password;
         this.statsWhitelist = new ArrayList<>(statsWhitelist);

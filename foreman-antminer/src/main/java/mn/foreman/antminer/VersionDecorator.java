@@ -12,7 +12,11 @@ import mn.foreman.model.error.EmptySiteException;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -23,6 +27,10 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class VersionDecorator
         implements Miner {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(VersionDecorator.class);
 
     /** Query the version every 20 minutes. */
     private static final long VERSION_QUERY_INTERVAL =
@@ -79,6 +87,30 @@ public class VersionDecorator
     @Override
     public String getIp() {
         return this.antminer.getIp();
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        Optional<String> mac = Optional.empty();
+
+        try {
+            if (shouldQueryVersion()) {
+                this.version.getStats();
+            }
+
+            final AntminerType currentType = this.type.get();
+            if (currentType != null) {
+                if (currentType.isBraiins()) {
+                    mac = this.braiins.getMacAddress();
+                } else {
+                    mac = this.antminer.getMacAddress();
+                }
+            }
+        } catch (final Exception e) {
+            LOG.debug("Failed to obtain MAC", e);
+        }
+
+        return mac;
     }
 
     @Override

@@ -8,6 +8,8 @@ import mn.foreman.model.miners.MinerStats;
 
 import org.apache.commons.lang3.Validate;
 
+import java.util.Optional;
+
 /**
  * A {@link VersionDecorator} provides a decorator implementation that will
  * query a lolminer, determining the software version and querying the
@@ -52,6 +54,11 @@ public class VersionDecorator
     @Override
     public String getIp() {
         return this.v4Miner.getIp();
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        return Optional.empty();
     }
 
     @Override

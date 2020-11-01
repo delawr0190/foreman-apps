@@ -4,8 +4,10 @@ import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.MacStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.model.NullMacStrategy;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -59,7 +61,13 @@ public class AntminerFactory
                                                 "GHS 5s",
                                                 this.multiplier,
                                                 new StatsResponseStrategy(
-                                                        context)))));
+                                                        context)))),
+                        new StockMacStrategy(
+                                apiIp,
+                                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                                "antMiner Configuration",
+                                config.getOrDefault("username", "").toString(),
+                                config.getOrDefault("password", "").toString()));
 
         final ResponseStrategy braiinsStrategy =
                 new BraiinsResponseStrategy(
@@ -83,7 +91,8 @@ public class AntminerFactory
                                         braiinsStrategy),
                                 ImmutableMap.of(
                                         CgMinerCommand.TEMPS,
-                                        braiinsStrategy)));
+                                        braiinsStrategy)),
+                        new NullMacStrategy());
 
         return new VersionDecorator(
                 apiIp,
@@ -100,6 +109,7 @@ public class AntminerFactory
      * @param context        The context.
      * @param statsWhitelist The whitelist.
      * @param requests       The requests.
+     * @param macStrategy    The MAC strategy.
      *
      * @return The new miner.
      */
@@ -108,11 +118,13 @@ public class AntminerFactory
             final String apiPort,
             final Context context,
             final List<String> statsWhitelist,
-            final List<Map<CgMinerCommand, ResponseStrategy>> requests) {
+            final List<Map<CgMinerCommand, ResponseStrategy>> requests,
+            final MacStrategy macStrategy) {
         return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequests(requests)
+                .setMacStrategy(macStrategy)
                 .build();
     }
 }

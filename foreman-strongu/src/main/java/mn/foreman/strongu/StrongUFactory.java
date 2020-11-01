@@ -1,5 +1,6 @@
 package mn.foreman.strongu;
 
+import mn.foreman.antminer.StockMacStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
@@ -59,6 +60,13 @@ public class StrongUFactory
                                 .setCommand(CgMinerCommand.DEVS)
                                 .build(),
                         responseStrategy)
+                .setMacStrategy(
+                        new StockMacStrategy(
+                                apiIp,
+                                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                                "stuMiner Configuration",
+                                config.getOrDefault("username", "").toString(),
+                                config.getOrDefault("password", "").toString()))
                 .build();
     }
 }

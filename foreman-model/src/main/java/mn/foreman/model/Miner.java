@@ -3,6 +3,8 @@ package mn.foreman.model;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import java.util.Optional;
+
 /**
  * A common interface to all {@link Miner miners} that provide the ability to
  * remotely obtain metrics.
@@ -22,6 +24,13 @@ public interface Miner {
      * @return The miner's IP.
      */
     String getIp();
+
+    /**
+     * Returns the MAC address, if present.
+     *
+     * @return The MAC address.
+     */
+    Optional<String> getMacAddress();
 
     /**
      * Returns the ID.

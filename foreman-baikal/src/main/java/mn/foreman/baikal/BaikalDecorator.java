@@ -81,6 +81,11 @@ public class BaikalDecorator
     }
 
     @Override
+    public Optional<String> getMacAddress() {
+        return this.baikal.getMacAddress();
+    }
+
+    @Override
     public MinerID getMinerID() {
         return this.baikal.getMinerID();
     }

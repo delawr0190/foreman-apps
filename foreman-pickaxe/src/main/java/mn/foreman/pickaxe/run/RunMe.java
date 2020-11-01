@@ -21,16 +21,15 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
@@ -63,6 +62,13 @@ public class RunMe {
 
     /** The {@link ForemanApi}. */
     private final ForemanApi foremanApi;
+
+    /** Cache MAC addresses for 6 hours. */
+    private final Cache<MinerID, String> macCache =
+            CacheBuilder
+                    .newBuilder()
+                    .expireAfterWrite(6, TimeUnit.HOURS)
+                    .build();
 
     /** The factory for creating all of the {@link Miner miners}. */
     private final MinerConfiguration minerConfiguration;
@@ -142,6 +148,7 @@ public class RunMe {
         startConfigQuerying();
         startUpdateMiners();
         startBlacklistFlush();
+        startMacQuerying();
 
         // Only query for commands if pickaxe is running for command and control
         if (this.configuration.isControl()) {
@@ -269,6 +276,49 @@ public class RunMe {
                 },
                 0,
                 2,
+                TimeUnit.MINUTES);
+    }
+
+    /** Starts the thread that will periodically query for MAC addresses. */
+    private void startMacQuerying() {
+        this.threadPool.scheduleWithFixedDelay(
+                () -> {
+                    LOG.info("Starting MAC querying...");
+                    try {
+                        final Map<Miner, String> newMacs = new HashMap<>();
+                        this.miners
+                                .get()
+                                .stream()
+                                .filter(miner -> !this.blacklistedMiners.contains(miner.getMinerID()))
+                                .filter(miner -> this.macCache.getIfPresent(miner.getMinerID()) == null)
+                                .forEach(miner -> {
+                                    try {
+                                        LOG.info("Attempting to obtain MAC for {}", miner);
+                                        final MinerID minerID = miner.getMinerID();
+                                        miner
+                                                .getMacAddress()
+                                                .map(String::toLowerCase)
+                                                .ifPresent(mac -> {
+                                                    newMacs.put(
+                                                            miner,
+                                                            mac);
+                                                    this.macCache.put(
+                                                            minerID,
+                                                            mac);
+                                                });
+                                    } catch (final Exception e) {
+                                        LOG.warn("Exception occurred while querying for MAC", e);
+                                    }
+                                });
+                        this.foremanApi
+                                .pickaxe()
+                                .updateMacs(newMacs);
+                    } catch (final Exception e) {
+                        LOG.warn("Exception occurred while querying MACs", e);
+                    }
+                },
+                1,
+                5,
                 TimeUnit.MINUTES);
     }
 

@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -75,6 +76,11 @@ public class CoinTypeDecorator
     @Override
     public String getIp() {
         return this.real.getIp();
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        return this.real.getMacAddress();
     }
 
     @Override

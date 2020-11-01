@@ -14,7 +14,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 /** Tests obelisk stats obtaining. */
 @RunWith(Parameterized.class)
@@ -66,7 +69,7 @@ public class ObeliskStatsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static List<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {

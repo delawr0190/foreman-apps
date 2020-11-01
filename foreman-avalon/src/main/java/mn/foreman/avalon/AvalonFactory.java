@@ -55,6 +55,10 @@ public class AvalonFactory
                                         new PoolsResponseStrategy(
                                                 new MrrRigIdCallback(cgContext)),
                                         responseStrategy)))
+                .setMacStrategy(
+                        new AvalonMacStrategy(
+                                apiIp,
+                                Integer.parseInt(config.getOrDefault("port", "80").toString())))
                 .build();
     }
 }

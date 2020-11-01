@@ -1,5 +1,6 @@
 package mn.foreman.blackminer;
 
+import mn.foreman.antminer.StockMacStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
@@ -41,6 +42,14 @@ public class BlackminerFactory
                                                 builder)),
                         () -> null,
                         cgContext);
+
+        final String username =
+                config.getOrDefault("username", "").toString();
+        final String password =
+                config.getOrDefault("password", "").toString();
+        final int port =
+                Integer.parseInt(config.getOrDefault("port", "80").toString());
+
         return new CoinTypeDecorator(
                 new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
@@ -61,10 +70,17 @@ public class BlackminerFactory
                                         .setCommand(CgMinerCommand.STATS)
                                         .build(),
                                 responseStrategy)
+                        .setMacStrategy(
+                                new StockMacStrategy(
+                                        apiIp,
+                                        port,
+                                        "blackMiner Configuration",
+                                        username,
+                                        password))
                         .build(),
-                config.getOrDefault("username", "").toString(),
-                config.getOrDefault("password", "").toString(),
-                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                username,
+                password,
+                port,
                 new ObjectMapper());
     }
 }

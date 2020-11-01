@@ -17,13 +17,21 @@ public class DragonmintFactory
     @SuppressWarnings("unchecked")
     @Override
     public Miner create(final Map<String, Object> config) {
+        final String ip = config.get("apiIp").toString();
+        final String username = config.get("username").toString();
+        final String password = config.get("password").toString();
         return new Dragonmint(
-                config.get("apiIp").toString(),
+                ip,
                 Integer.parseInt(config.get("apiPort").toString()),
-                config.get("username").toString(),
-                config.get("password").toString(),
+                username,
+                password,
                 (List<String>) config.getOrDefault(
                         "statsWhitelist",
-                        Collections.emptyList()));
+                        Collections.emptyList()),
+                new DragonmintMacStrategy(
+                        ip,
+                        Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                        username,
+                        password));
     }
 }

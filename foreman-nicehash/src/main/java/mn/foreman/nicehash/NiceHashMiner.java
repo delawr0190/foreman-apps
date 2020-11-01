@@ -12,6 +12,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -81,6 +82,11 @@ public class NiceHashMiner
     @Override
     public String getIp() {
         return this.apiIp;
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        return Optional.empty();
     }
 
     @Override

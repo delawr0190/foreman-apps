@@ -49,4 +49,17 @@ public class Overview {
     /** The type. */
     @JsonProperty("type")
     public String type;
+
+    /** The version. */
+    @JsonProperty("version")
+    public Version version;
+
+    /** The version definition. */
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class Version {
+
+        /** The MAC address. */
+        @JsonProperty("ethaddr")
+        public String mac;
+    }
 }

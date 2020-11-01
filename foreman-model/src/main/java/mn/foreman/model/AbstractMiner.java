@@ -9,6 +9,8 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * An {@link AbstractMiner} provides an abstract class representing a remote
  * miner.
@@ -26,6 +28,9 @@ public abstract class AbstractMiner
     /** The API port. */
     protected final int apiPort;
 
+    /** Obtains the MAC address. */
+    private final MacStrategy macStrategy;
+
     /**
      * Constructor.
      *
@@ -35,6 +40,23 @@ public abstract class AbstractMiner
     protected AbstractMiner(
             final String apiIp,
             final int apiPort) {
+        this(
+                apiIp,
+                apiPort,
+                new NullMacStrategy());
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param apiIp       The api IP.
+     * @param apiPort     The api port.
+     * @param macStrategy The MAC strategy.
+     */
+    protected AbstractMiner(
+            final String apiIp,
+            final int apiPort,
+            final MacStrategy macStrategy) {
         Validate.notEmpty(
                 apiIp,
                 "apiIp cannot be empty");
@@ -43,6 +65,7 @@ public abstract class AbstractMiner
                 "apiPort must be > 0");
         this.apiIp = apiIp;
         this.apiPort = apiPort;
+        this.macStrategy = macStrategy;
     }
 
     @Override
@@ -72,6 +95,11 @@ public abstract class AbstractMiner
     @Override
     public String getIp() {
         return this.apiIp;
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        return this.macStrategy.getMacAddress();
     }
 
     @Override

@@ -1,10 +1,12 @@
 package mn.foreman.api;
 
+import mn.foreman.model.Miner;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.command.CommandUpdate;
 import mn.foreman.model.command.Commands;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -53,4 +55,13 @@ public interface Pickaxe {
      * @return The commands to execute, if any.
      */
     Optional<Commands> getCommands();
+
+    /**
+     * Sets the MACs for the provided miners..
+     *
+     * @param newMacs The new MACs.
+     *
+     * @return Whether or not the command was successful.
+     */
+    boolean updateMacs(Map<Miner, String> newMacs);
 }

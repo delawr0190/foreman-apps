@@ -3,6 +3,7 @@ package mn.foreman.innosilicon;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.dragonmint.DragonmintMacStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.FanInfo;
@@ -64,6 +65,12 @@ public class InnosiliconFactory
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
                         responseStrategy)
+                .setMacStrategy(
+                        new DragonmintMacStrategy(
+                                apiIp,
+                                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                                config.getOrDefault("username", "").toString(),
+                                config.getOrDefault("password", "").toString()))
                 .build();
     }
 

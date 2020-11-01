@@ -9,6 +9,8 @@ import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.AbstractBuilder;
 import mn.foreman.model.AbstractMiner;
+import mn.foreman.model.MacStrategy;
+import mn.foreman.model.NullMacStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
@@ -69,7 +71,8 @@ public class CgMiner
     private CgMiner(final Builder builder) {
         super(
                 builder.apiIp,
-                Integer.parseInt(builder.apiPort));
+                Integer.parseInt(builder.apiPort),
+                builder.macStrategy);
         this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
@@ -299,6 +302,9 @@ public class CgMiner
         /** The connection timeout units. */
         private TimeUnit connectTimeoutUnits = TimeUnit.SECONDS;
 
+        /** The MAC strategy. */
+        private MacStrategy macStrategy = new NullMacStrategy();
+
         /** The requests. */
         private List<Request> requests = new LinkedList<>();
 
@@ -446,6 +452,18 @@ public class CgMiner
                 final TimeUnit connectTimeoutUnits) {
             this.connectTimeout = connectTimeout;
             this.connectTimeoutUnits = connectTimeoutUnits;
+            return this;
+        }
+
+        /**
+         * Sets the MAC strategy
+         *
+         * @param macStrategy The MAC strategy.
+         *
+         * @return This builder instance.
+         */
+        public Builder setMacStrategy(final MacStrategy macStrategy) {
+            this.macStrategy = macStrategy;
             return this;
         }
     }

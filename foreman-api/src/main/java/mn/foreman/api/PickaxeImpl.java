@@ -1,17 +1,23 @@
 package mn.foreman.api;
 
+import mn.foreman.model.Miner;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
 import mn.foreman.model.command.CommandUpdate;
 import mn.foreman.model.command.Commands;
+import mn.foreman.model.mac.MacUpdate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.ImmutableMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /** A simple {@link Pickaxe} implementation. */
 public class PickaxeImpl
@@ -126,6 +132,46 @@ public class PickaxeImpl
                     Commands.class);
         }
         return Optional.empty();
+    }
+
+    @Override
+    public boolean updateMacs(final Map<Miner, String> newMacs) {
+        boolean updated = false;
+        final Map<String, List<MacUpdate>> macUpdates =
+                ImmutableMap.of(
+                        "updates",
+                        newMacs
+                                .entrySet()
+                                .stream()
+                                .map(entry -> {
+                                    final Miner miner = entry.getKey();
+                                    return MacUpdate
+                                            .builder()
+                                            .ip(miner.getIp())
+                                            .apiPort(miner.getApiPort())
+                                            .mac(entry.getValue())
+                                            .build();
+                                })
+                                .collect(Collectors.toList()));
+        if (!macUpdates.isEmpty()) {
+            try {
+                final Optional<String> response =
+                        this.webUtil.post(
+                                String.format(
+                                        "/api/pickaxe/%s/macs",
+                                        this.pickaxeId),
+                                this.objectMapper.writeValueAsString(macUpdates));
+                if (response.isPresent()) {
+                    updated = true;
+                }
+            } catch (final JsonProcessingException e) {
+                LOG.warn("Exception occurred while parsing json", e);
+            }
+        } else {
+            // Nothing to do, so successful
+            updated = true;
+        }
+        return updated;
     }
 
     /**

@@ -25,6 +25,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Info {
 
+    /** The MAC address. */
+    @JsonProperty("macAddress")
+    public String mac;
+
     /** The model. */
     @JsonProperty("model")
     public String model;

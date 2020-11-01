@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -92,6 +93,11 @@ public class ChiselMinerDecorator
     @Override
     public String getIp() {
         return this.realMiner.getIp();
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        return this.realMiner.getMacAddress();
     }
 
     @Override
