@@ -10,6 +10,7 @@ import mn.foreman.model.mac.MacUpdate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -137,9 +138,8 @@ public class PickaxeImpl
     @Override
     public boolean updateMacs(final Map<Miner, String> newMacs) {
         boolean updated = false;
-        final Map<String, List<MacUpdate>> macUpdates =
-                ImmutableMap.of(
-                        "updates",
+        final List<List<MacUpdate>> macUpdates =
+                Lists.partition(
                         newMacs
                                 .entrySet()
                                 .stream()
@@ -152,20 +152,27 @@ public class PickaxeImpl
                                             .mac(entry.getValue())
                                             .build();
                                 })
-                                .collect(Collectors.toList()));
+                                .collect(Collectors.toList()),
+                        100);
         if (!macUpdates.isEmpty()) {
-            try {
-                final Optional<String> response =
-                        this.webUtil.post(
-                                String.format(
-                                        "/api/pickaxe/%s/macs",
-                                        this.pickaxeId),
-                                this.objectMapper.writeValueAsString(macUpdates));
-                if (response.isPresent()) {
-                    updated = true;
+            for (final List<MacUpdate> update : macUpdates) {
+                try {
+                    final Optional<String> response =
+                            this.webUtil.post(
+                                    String.format(
+                                            "/api/pickaxe/%s/macs",
+                                            this.pickaxeId),
+                                    this.objectMapper.writeValueAsString(
+                                            ImmutableMap.of(
+                                                    "updates",
+                                                    update)));
+                    if (response.isPresent()) {
+                        LOG.info("Received response: {}", response);
+                        updated = true;
+                    }
+                } catch (final JsonProcessingException e) {
+                    LOG.warn("Exception occurred while parsing json", e);
                 }
-            } catch (final JsonProcessingException e) {
-                LOG.warn("Exception occurred while parsing json", e);
             }
         } else {
             // Nothing to do, so successful
