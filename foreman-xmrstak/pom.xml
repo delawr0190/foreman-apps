@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.23.2</version>
+        <version>3.23.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>foreman-xmrstak</artifactId>
-    <version>3.23.2</version>
+    <version>3.23.3-SNAPSHOT</version>
     <name>foreman: foreman-xmrstak</name>
 
     <packaging>jar</packaging>
