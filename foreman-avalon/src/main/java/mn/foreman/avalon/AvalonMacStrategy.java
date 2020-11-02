@@ -68,6 +68,7 @@ public class AvalonMacStrategy
                                      inputStreamReader)) {
                     final String response =
                             IOUtils.toString(reader);
+                    LOG.info("Obtained Avalon response: {}", response);
                     mac = toMac(response);
                 }
             } else {
@@ -79,7 +80,13 @@ public class AvalonMacStrategy
         return Optional.ofNullable(mac);
     }
 
-
+    /**
+     * Converts the response to a MAC.
+     *
+     * @param response The response.
+     *
+     * @return The MAC.
+     */
     private static String toMac(final String response) {
         String macString = response;
         final int macStart = macString.indexOf(MAC_KEY);

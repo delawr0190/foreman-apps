@@ -307,7 +307,9 @@ public class RunMe {
                                                             mac);
                                                 });
                                     } catch (final Exception e) {
-                                        LOG.warn("Exception occurred while querying for MAC", e);
+                                        LOG.warn("Exception occurred while querying for MAC: {}",
+                                                miner,
+                                                e);
                                     }
                                 });
                         this.foremanApi

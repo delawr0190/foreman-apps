@@ -80,7 +80,7 @@ public class StockMacStrategy
                                             s,
                                             new TypeReference<Map<String, Object>>() {
                                             });
-                            mac.set(conf.getOrDefault("macaddr", "").toString());
+                            mac.set(toMac(conf));
                         } catch (final IOException e) {
                             LOG.warn("Exception occurred while querying", e);
                         }
@@ -89,5 +89,22 @@ public class StockMacStrategy
             // Ignore if we can't get the MAC
         }
         return Optional.of(mac.get());
+    }
+
+    /**
+     * Gets the MAC if it exists.
+     *
+     * @param values The values.
+     *
+     * @return The MAC.
+     */
+    private static String toMac(final Map<String, Object> values) {
+        if (values.containsKey("macaddr")) {
+            return values.get("macaddr").toString();
+        } else if (values.containsKey("conf_macaddr")) {
+            return values.get("conf_macaddr").toString();
+        } else {
+            return null;
+        }
     }
 }

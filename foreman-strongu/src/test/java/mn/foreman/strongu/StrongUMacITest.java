@@ -25,22 +25,18 @@ public class StrongUMacITest
                                         new HttpHandler(
                                                 "",
                                                 "{\n" +
-                                                        "\"nettype\":\"DHCP\",\n" +
-                                                        "\"netdevice\":\"eth0\",\n" +
-                                                        "\"macaddr\":\"C4:F3:12:B3:9F:FC\",\n" +
-                                                        "\"ipaddress\":\"192.168.1.189\",\n" +
-                                                        "\"netmask\":\"255.255.255.0\",\n" +
                                                         "\"conf_nettype\":\"DHCP\",\n" +
-                                                        "\"conf_hostname\":\"stuMiner\",\n" +
-                                                        "\"conf_ipaddress\":\"\",\n" +
-                                                        "\"conf_netmask\":\"\",\n" +
-                                                        "\"conf_gateway\":\"\",\n" +
-                                                        "\"conf_dnsservers\":\"\"\n" +
+                                                        "\"conf_ntpserver\":\"pool.ntp.org\",\n" +
+                                                        "\"conf_ipaddress\":\"10.16.232.52\",\n" +
+                                                        "\"conf_netmask\":\"255.255.252.0\",\n" +
+                                                        "\"conf_gateway\":\"10.16.232.3\",\n" +
+                                                        "\"conf_dnsservers\":\"10.16.232.3\",\n" +
+                                                        "\"conf_macaddr\":\"00:8F:A6:97:59:C5\"\n" +
                                                         "}",
                                                 exchange ->
                                                         AntminerTestUtils.validateDigest(
                                                                 exchange,
                                                                 "stuMiner Configuration"))))),
-                "C4:F3:12:B3:9F:FC");
+                "00:8F:A6:97:59:C5");
     }
 }
