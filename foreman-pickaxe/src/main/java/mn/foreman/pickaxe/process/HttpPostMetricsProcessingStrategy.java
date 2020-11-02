@@ -66,7 +66,7 @@ public class HttpPostMetricsProcessingStrategy
                 RequestConfig.custom()
                         .setConnectTimeout(SOCKET_TIMEOUT)
                         .setConnectionRequestTimeout(SOCKET_TIMEOUT)
-                        .setSocketTimeout(SOCKET_TIMEOUT)
+                        .setSocketTimeout((int) TimeUnit.MINUTES.toMillis(1))
                         .build();
 
         try (final CloseableHttpClient httpClient =
