@@ -44,14 +44,54 @@ public class AvalonMacStrategy
 
     @Override
     public Optional<String> getMacAddress() {
+        Optional<String> mac = query("/get_minerinfo.cgi");
+        if (!mac.isPresent()) {
+            mac = query("/updatedashboard.cgi");
+        }
+        return mac;
+    }
+
+    /**
+     * Converts the response to a MAC.
+     *
+     * @param response The response.
+     *
+     * @return The MAC.
+     */
+    private static String toMac(final String response) {
+        String macString = response;
+        final int macStart = macString.indexOf(MAC_KEY);
+
+        // Remove up to the start of the MAC value
+        macString =
+                macString.substring(macStart + MAC_KEY.length());
+
+        // Remove after the end of the MAC value
+        macString =
+                macString.substring(
+                        0,
+                        macString.indexOf(","));
+
+        return macString.replace("\"", "");
+    }
+
+    /**
+     * Queries for the MAC.
+     *
+     * @param uri The URI.
+     *
+     * @return The MAC.
+     */
+    private Optional<String> query(final String uri) {
         String mac = null;
         try {
             final URL url =
                     new URL(
                             String.format(
-                                    "http://%s:%d/get_minerinfo.cgi",
+                                    "http://%s:%d%s",
                                     this.ip,
-                                    this.port));
+                                    this.port,
+                                    uri));
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
@@ -78,29 +118,5 @@ public class AvalonMacStrategy
             LOG.warn("Failed to obtain MAC", e);
         }
         return Optional.ofNullable(mac);
-    }
-
-    /**
-     * Converts the response to a MAC.
-     *
-     * @param response The response.
-     *
-     * @return The MAC.
-     */
-    private static String toMac(final String response) {
-        String macString = response;
-        final int macStart = macString.indexOf(MAC_KEY);
-
-        // Remove up to the start of the MAC value
-        macString =
-                macString.substring(macStart + MAC_KEY.length());
-
-        // Remove after the end of the MAC value
-        macString =
-                macString.substring(
-                        0,
-                        macString.indexOf(","));
-
-        return macString.replace("\"", "");
     }
 }
