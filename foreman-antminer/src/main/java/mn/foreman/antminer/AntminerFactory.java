@@ -7,7 +7,6 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
-import mn.foreman.model.NullMacStrategy;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -42,6 +41,10 @@ public class AntminerFactory
             final String apiPort,
             final List<String> statsWhitelist,
             final Map<String, Object> config) {
+        final int port = Integer.parseInt(config.getOrDefault("port", "80").toString());
+        final String username = config.getOrDefault("username", "").toString();
+        final String password = config.getOrDefault("password", "").toString();
+
         final Context context = new Context();
         final CgMiner antminer =
                 toMiner(
@@ -64,10 +67,10 @@ public class AntminerFactory
                                                         context)))),
                         new StockMacStrategy(
                                 apiIp,
-                                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                                port,
                                 "antMiner Configuration",
-                                config.getOrDefault("username", "").toString(),
-                                config.getOrDefault("password", "").toString()));
+                                username,
+                                password));
 
         final ResponseStrategy braiinsStrategy =
                 new BraiinsResponseStrategy(
@@ -92,7 +95,11 @@ public class AntminerFactory
                                 ImmutableMap.of(
                                         CgMinerCommand.TEMPS,
                                         braiinsStrategy)),
-                        new NullMacStrategy());
+                        new BraiinsMacStrategy(
+                                apiIp,
+                                port,
+                                username,
+                                password));
 
         return new VersionDecorator(
                 apiIp,
