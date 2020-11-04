@@ -102,30 +102,34 @@ public enum Manufacturer {
                                     blacklist,
                                     statsCache,
                                     new AntminerFactory(BigDecimal.ONE),
-                                    new StockFactoryResetAction(
-                                            "antMiner Configuration")),
+                                    new FirmwareAwareAction(
+                                            new StockFactoryResetAction(
+                                                    "antMiner Configuration"),
+                                            new BraiinsFactoryResetAction())),
                             AsyncActionFactory.toAsync(
                                     scheduledThreadPoolExecutor,
                                     blacklist,
                                     statsCache,
                                     new AntminerFactory(BigDecimal.ONE),
-                                    new StockChangePoolsAction(
-                                            "antMiner Configuration",
-                                            Arrays.asList(
-                                                    AntminerConfValue.POOL_1_URL,
-                                                    AntminerConfValue.POOL_1_USER,
-                                                    AntminerConfValue.POOL_1_PASS,
-                                                    AntminerConfValue.POOL_2_URL,
-                                                    AntminerConfValue.POOL_2_USER,
-                                                    AntminerConfValue.POOL_2_PASS,
-                                                    AntminerConfValue.POOL_3_URL,
-                                                    AntminerConfValue.POOL_3_USER,
-                                                    AntminerConfValue.POOL_3_PASS,
-                                                    AntminerConfValue.NO_BEEPER,
-                                                    AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                                    AntminerConfValue.FAN_CTRL,
-                                                    AntminerConfValue.FAN_PWM,
-                                                    AntminerConfValue.FREQ))))),
+                                    new FirmwareAwareAction(
+                                            new StockChangePoolsAction(
+                                                    "antMiner Configuration",
+                                                    Arrays.asList(
+                                                            AntminerConfValue.POOL_1_URL,
+                                                            AntminerConfValue.POOL_1_USER,
+                                                            AntminerConfValue.POOL_1_PASS,
+                                                            AntminerConfValue.POOL_2_URL,
+                                                            AntminerConfValue.POOL_2_USER,
+                                                            AntminerConfValue.POOL_2_PASS,
+                                                            AntminerConfValue.POOL_3_URL,
+                                                            AntminerConfValue.POOL_3_USER,
+                                                            AntminerConfValue.POOL_3_PASS,
+                                                            AntminerConfValue.NO_BEEPER,
+                                                            AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                                            AntminerConfValue.FAN_CTRL,
+                                                            AntminerConfValue.FAN_PWM,
+                                                            AntminerConfValue.FREQ)),
+                                            new BraiinsChangePoolsAction())))),
 
     /** Avalon. */
     AVALON(

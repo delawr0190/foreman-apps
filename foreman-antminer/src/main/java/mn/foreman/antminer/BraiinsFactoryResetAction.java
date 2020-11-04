@@ -8,29 +8,26 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Map;
 
-/**
- * A {@link BraiinsRebootAction} provides an action implementation that will
- * perform a reboot on a bOS miner over SSH.
- */
-public class BraiinsRebootAction
+/** A strategy that performs an antminer factory reset. */
+public class BraiinsFactoryResetAction
         implements AsicAction.CompletableAction {
 
     /** The logger for this class. */
     private static final Logger LOG =
-            LoggerFactory.getLogger(BraiinsRebootAction.class);
+            LoggerFactory.getLogger(BraiinsFactoryResetAction.class);
 
     @Override
     public boolean run(
             final String ip,
             final int port,
-            final Map<String, Object> args)
+            final Map<String, Object> parameters)
             throws MinerException {
         BraiinsUtils.runMinerCommand(
                 ip,
-                args.getOrDefault("username", "").toString(),
-                args.getOrDefault("password", "").toString(),
-                "reboot");
-        LOG.info("Miner has rebooted");
+                parameters.getOrDefault("username", "").toString(),
+                parameters.getOrDefault("password", "").toString(),
+                "miner factory_reset");
+        LOG.info("Factory reset has been started");
         return true;
     }
 }

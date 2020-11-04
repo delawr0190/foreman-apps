@@ -3,6 +3,10 @@ package mn.foreman.antminer;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
+import com.jcraft.jsch.Channel;
+import com.jcraft.jsch.ChannelExec;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.CookieStore;
@@ -21,17 +25,26 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.io.InputStream;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 /** Utilities for interacting with a bOS miner. */
 class BraiinsUtils {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(BraiinsUtils.class);
+
+    /** The default SSH port. */
+    private static final int SSH_PORT = 22;
 
     /**
      * Queries a bOS miner, performing a login operation first to obtain a
@@ -103,6 +116,81 @@ class BraiinsUtils {
                     callback);
         } else {
             throw new MinerException("Failed to obtain config data");
+        }
+    }
+
+    /**
+     * Runs a command over SSH.
+     *
+     * @param ip       The IP.
+     * @param username The username.
+     * @param password The password.
+     * @param command  The command.
+     *
+     * @throws MinerException on failure.
+     */
+    static void runMinerCommand(
+            final String ip,
+            final String username,
+            final String password,
+            final String command)
+            throws MinerException {
+        Session session = null;
+        Channel channel = null;
+
+        try {
+            final Properties config = new Properties();
+            config.put("StrictHostKeyChecking", "no");
+
+            final JSch jsch = new JSch();
+            session =
+                    jsch.getSession(
+                            username,
+                            ip,
+                            SSH_PORT);
+            session.setPassword(password);
+            session.setConfig(config);
+            session.connect();
+
+            final ByteArrayOutputStream byteArrayOutputStream =
+                    new ByteArrayOutputStream();
+
+            channel = session.openChannel("exec");
+            ((ChannelExec) channel).setCommand(command);
+            channel.setInputStream(null);
+            ((ChannelExec) channel).setErrStream(byteArrayOutputStream);
+
+            final InputStream in = channel.getInputStream();
+            channel.connect();
+
+            final byte[] tmp = new byte[1024];
+            while (!channel.isClosed()) {
+                while (in.available() > 0) {
+                    int i = in.read(tmp, 0, 1024);
+                    if (i < 0) {
+                        break;
+                    }
+                    LOG.info("SSH read: {}", new String(tmp, 0, i));
+                }
+
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (final Exception e) {
+                    // Ignore
+                }
+            }
+
+            LOG.info("SSH channel closed (status={})",
+                    channel.getExitStatus());
+        } catch (final Exception e) {
+            throw new MinerException("Failed to connect to miner SSH");
+        } finally {
+            if (channel != null) {
+                channel.disconnect();
+            }
+            if (session != null) {
+                session.disconnect();
+            }
         }
     }
 
