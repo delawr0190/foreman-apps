@@ -4,7 +4,7 @@ jdk:
 
 install: mvn install --settings .travis.settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
 
-script: mvn verify --settings .travis.settings.xml -DskipTests=true -q
+script: mvn verify --settings .travis.settings.xml -q
 
 before_deploy:
   - mkdir build
@@ -13,6 +13,11 @@ before_deploy:
   - cp -ra foreman-pickaxe/target/*.zip build/.
 
 deploy:
+  - provider: script
+    script: mvn deploy --settings .travis.settings.xml -DskipTests=true -q
+    skip_cleanup: true
+    on:
+      tags: true
   - provider: gcs
     access_key_id: $GCS_ACCESS_KEY_ID
     secret_access_key: $GCS_SECRET_ACCESS_KEY
@@ -20,7 +25,7 @@ deploy:
     local_dir: "build"
     skip_cleanup: true
     on:
-      branch: develop
+      tags: true
   - provider: releases
     api_key: $GITHUB_TOKEN
     file:
