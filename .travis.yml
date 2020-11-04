@@ -7,6 +7,7 @@ install: mvn install --settings .travis.settings.xml -DskipTests=true -Dmaven.ja
 script: mvn verify --settings .travis.settings.xml -q
 
 before_deploy:
+  - rm -rf build
   - mkdir build
   - cp -ra foreman-pickaxe/target/*.tar.bz2 build/.
   - cp -ra foreman-pickaxe/target/*.tar.gz build/.
