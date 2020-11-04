@@ -4,14 +4,20 @@ jdk:
 
 install: mvn install --settings .travis.settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
 
-script: mvn verify --settings .travis.settings.xml .travis.settings.xml -DskipTests=true -q
+script: mvn verify --settings .travis.settings.xml -DskipTests=true -q
+
+before_deploy:
+  - mkdir build
+  - cp -ra foreman-pickaxe/target/*.tar.bz2 build/.
+  - cp -ra foreman-pickaxe/target/*.tar.gz build/.
+  - cp -ra foreman-pickaxe/target/*.zip build/.
 
 deploy:
   - provider: gcs
     access_key_id: $GCS_ACCESS_KEY_ID
     secret_access_key: $GCS_SECRET_ACCESS_KEY
     bucket: "pickaxe-releases"
-    local_dir: "foreman-pickaxe/target"
+    local_dir: "build"
     skip_cleanup: true
     on:
       branch: develop
