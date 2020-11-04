@@ -28,3 +28,14 @@ deploy:
     on:
       tags: true
     name: $TRAVIS_BRANCH
+  - provider: gcs
+    access_key_id: $GCS_ACCESS_KEY_ID
+    secret_access_key: $GCS_SECRET_ACCESS_KEY
+    bucket: pickaxe-releases
+    file:
+      - "foreman-pickaxe/target/*.tar.bz2"
+      - "foreman-pickaxe/target/*.tar.gz"
+      - "foreman-pickaxe/target/*.zip"
+    skip_cleanup: true
+    on:
+      tags: true
