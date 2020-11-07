@@ -129,6 +129,11 @@ public class CgMiner
         if (goodJson.contains("nan,")) {
             goodJson = goodJson.replace("nan,", "0,");
         }
+
+        // Patch invalid escapes
+        if (goodJson.contains("\\'")) {
+            goodJson = goodJson.replace("\\'", "");
+        }
         return patchingStrategy.patch(goodJson);
     }
 

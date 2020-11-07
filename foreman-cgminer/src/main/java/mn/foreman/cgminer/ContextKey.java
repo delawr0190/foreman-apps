@@ -6,6 +6,9 @@ public enum ContextKey {
     /** Raw json stats. */
     RAW_STATS("raw_stats"),
 
+    /** The mac address. */
+    MAC("mac"),
+
     /** MRR rig id. */
     MRR_RIG_ID("mrr_rig_id");
 

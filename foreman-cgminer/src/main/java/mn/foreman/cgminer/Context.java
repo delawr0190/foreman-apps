@@ -41,7 +41,9 @@ public class Context {
     public void addSimple(
             final ContextKey key,
             final String value) {
-        this.simpleContext.put(key, value);
+        if (value != null) {
+            this.simpleContext.put(key, value);
+        }
     }
 
     /** Clears the context. */

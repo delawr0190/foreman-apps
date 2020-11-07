@@ -10,6 +10,7 @@ import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
@@ -25,14 +26,15 @@ public class WhatsminerFactory
             final List<String> statsWhitelist,
             final Map<String, Object> config) {
         final Context cgContext = new Context();
-        final ResponseStrategy responseStrategy =
+        final ResponseStrategy oldFirmwareStrategy =
                 new AggregatingResponseStrategy<>(
                         ImmutableMap.of(
                                 "SUMMARY",
                                 (values, builder, context) ->
                                         WhatsminerUtils.updateSummary(
                                                 values,
-                                                builder),
+                                                builder,
+                                                cgContext),
                                 "STATS",
                                 (values, builder, context) ->
                                         WhatsminerUtils.updateStats(
@@ -40,25 +42,74 @@ public class WhatsminerFactory
                                                 builder)),
                         () -> null,
                         cgContext);
-        return new CgMiner.Builder(cgContext, statsWhitelist)
-                .setApiIp(apiIp)
-                .setApiPort(apiPort)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.POOLS)
-                                .build(),
-                        new PoolsResponseStrategy(
-                                new MrrRigIdCallback(cgContext)))
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.SUMMARY)
-                                .build(),
-                        responseStrategy)
-                .addRequest(
-                        new CgMinerRequest.Builder()
-                                .setCommand(CgMinerCommand.STATS)
-                                .build(),
-                        responseStrategy)
-                .build();
+
+        final ResponseStrategy newFirmwareStrategy =
+                new AggregatingResponseStrategy<>(
+                        ImmutableMap.of(
+                                "SUMMARY",
+                                (values, builder, context) ->
+                                        WhatsminerUtils.updateSummary(
+                                                values,
+                                                builder,
+                                                cgContext),
+                                "DEVS",
+                                (values, builder, context) ->
+                                        WhatsminerUtils.updateDevs(
+                                                values,
+                                                builder)),
+                        () -> null,
+                        cgContext);
+
+        return new FirmwareAwareMiner(
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                oldFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.STATS)
+                                        .build(),
+                                oldFirmwareStrategy)
+                        .build(),
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.DEVS)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .setMacStrategy(
+                                new NewFirmwareMacStrategy(
+                                        apiIp,
+                                        Integer.parseInt(apiPort)))
+                        .build());
     }
 }
