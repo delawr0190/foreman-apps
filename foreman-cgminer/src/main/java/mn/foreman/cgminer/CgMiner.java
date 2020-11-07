@@ -147,23 +147,28 @@ public class CgMiner
         final CgMinerResponse.Builder builder =
                 new CgMinerResponse.Builder()
                         .setRequest(request);
-        ((List<Map<String, String>>) response.get("STATUS"))
-                .forEach(builder::addStatus);
-        response.entrySet()
-                .stream()
-                .filter(entry -> !entry.getKey().equals("id"))
-                .filter(entry -> !entry.getKey().equals("STATUS"))
-                .forEach(
-                        entry -> {
-                            final List<Map<String, Object>> values =
-                                    (List<Map<String, Object>>) entry.getValue();
-                            values.forEach(
-                                    value ->
-                                            builder.addObjectValues(
-                                                    entry.getKey(),
-                                                    value));
-                        });
-        dest.add(builder.build());
+        final Object rawStatus = response.get("STATUS");
+        if (rawStatus instanceof List) {
+            ((List<Map<String, String>>) response.get("STATUS"))
+                    .forEach(builder::addStatus);
+            response.entrySet()
+                    .stream()
+                    .filter(entry -> !entry.getKey().equals("id"))
+                    .filter(entry -> !entry.getKey().equals("STATUS"))
+                    .forEach(
+                            entry -> {
+                                final List<Map<String, Object>> values =
+                                        (List<Map<String, Object>>) entry.getValue();
+                                values.forEach(
+                                        value ->
+                                                builder.addObjectValues(
+                                                        entry.getKey(),
+                                                        value));
+                            });
+            dest.add(builder.build());
+        } else {
+            LOG.warn("Obtained a failed response: {}", rawStatus);
+        }
     }
 
     /**
@@ -241,6 +246,7 @@ public class CgMiner
                     this.connectTimeoutUnits)) {
                 String responseString =
                         apiRequest.getResponse();
+                LOG.debug("Received response: {}", responseString);
                 if (responseString != null && !responseString.isEmpty()) {
                     responseString =
                             patchJson(
