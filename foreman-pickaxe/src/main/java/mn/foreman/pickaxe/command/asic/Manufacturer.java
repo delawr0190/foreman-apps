@@ -34,6 +34,8 @@ import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.strongu.StrongUConfValue;
 import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.strongu.StrongUTypeFactory;
+import mn.foreman.whatsminer.FirmwareAwareDetectionStrategy;
+import mn.foreman.whatsminer.WhatsminerDetectionStrategy;
 import mn.foreman.whatsminer.WhatsminerTypeFactory;
 
 import java.math.BigDecimal;
@@ -477,9 +479,11 @@ public enum Manufacturer {
     /** Whatsminer. */
     WHATSMINER(
             "whatsminer",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.STATS,
-                    new WhatsminerTypeFactory()));
+            new FirmwareAwareDetectionStrategy(
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.STATS,
+                            new WhatsminerTypeFactory()),
+                    new WhatsminerDetectionStrategy()));
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =
