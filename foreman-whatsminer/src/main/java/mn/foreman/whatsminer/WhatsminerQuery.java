@@ -14,6 +14,8 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -21,11 +23,9 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -35,10 +35,6 @@ import java.util.function.BiConsumer;
 
 /** Utilities for interacting with a whatsminer. */
 class WhatsminerQuery {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(WhatsminerQuery.class);
 
     /**
      * Queries a Whatsminer, performing a login operation first to obtain a
@@ -147,6 +143,11 @@ class WhatsminerQuery {
                              .setDefaultRequestConfig(requestConfig)
                              .setDefaultCookieStore(cookieStore)
                              .disableAutomaticRetries()
+                             .setSSLContext(
+                                     new SSLContextBuilder()
+                                             .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
+                                             .build())
+                             .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                              .build()) {
             final String url =
                     toUrl(
@@ -190,8 +191,8 @@ class WhatsminerQuery {
                         statusLine.getStatusCode(),
                         responseBody);
             }
-        } catch (final IOException ioe) {
-            throw new MinerException(ioe);
+        } catch (final Exception e) {
+            throw new MinerException(e);
         }
     }
 
