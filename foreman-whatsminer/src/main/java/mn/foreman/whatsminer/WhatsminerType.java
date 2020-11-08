@@ -39,19 +39,19 @@ public enum WhatsminerType
     WHATSMINER_M21S("WhatsMiner M21S", "whatsminer-m21s"),
 
     /** M30S. */
-    WHATSMINER_M30S(444, "WhatsMiner M30S", "whastminer-m30s"),
+    WHATSMINER_M30S(444, "WhatsMiner M30S", "whatsminer-m30s"),
 
     /** M30S+. */
-    WHATSMINER_M30SP("WhatsMiner M30S+", "whastminer-m30s+"),
+    WHATSMINER_M30SP("WhatsMiner M30S+", "whatsminer-m30s+"),
 
     /** M30S++. */
-    WHATSMINER_M30SPP("WhatsMiner M30S++", "whastminer-m30s++"),
+    WHATSMINER_M30SPP("WhatsMiner M30S++", "whatsminer-m30s++"),
 
     /** M31S. */
-    WHATSMINER_M31S("WhatsMiner M31S", "whastminer-m31s"),
+    WHATSMINER_M31S("WhatsMiner M31S", "whatsminer-m31s"),
 
     /** M32. */
-    WHATSMINER_M32("WhatsMiner M32", "whastminer-m32");
+    WHATSMINER_M32("WhatsMiner M32", "whatsminer-m32");
 
     /** All of the types, by number of chips, mapped to their type. */
     private static final Map<Integer, Map<Boolean, WhatsminerType>> TYPE_MAP =

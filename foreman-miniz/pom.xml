@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.25.2</version>
+        <version>3.25.3-SNAPSHOT</version>
     </parent>
 
     <artifactId>foreman-miniz</artifactId>
-    <version>3.25.2</version>
+    <version>3.25.3-SNAPSHOT</version>
     <name>foreman: foreman-miniz</name>
 
     <packaging>jar</packaging>
