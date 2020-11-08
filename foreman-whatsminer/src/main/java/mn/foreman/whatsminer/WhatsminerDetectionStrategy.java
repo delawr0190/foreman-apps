@@ -33,13 +33,12 @@ public class WhatsminerDetectionStrategy
         try {
             WhatsminerQuery.query(
                     ip,
-                    Integer.parseInt(args.getOrDefault("webPort", "80").toString()),
+                    Integer.parseInt(args.getOrDefault("webPort", "443").toString()),
                     args.getOrDefault("username", "").toString(),
                     args.getOrDefault("password", "").toString(),
                     "/cgi-bin/luci/admin/status/overview",
                     true,
                     Collections.emptyList(),
-                    null,
                     (statusCode, data) -> {
                         if (statusCode == HttpStatus.SC_OK) {
                             final int versionStart = data.indexOf("WhatsMiner M");

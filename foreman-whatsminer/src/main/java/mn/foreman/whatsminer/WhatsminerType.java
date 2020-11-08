@@ -14,23 +14,44 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum WhatsminerType
         implements MinerType {
 
-    /** The Whatsminer D1V1. */
-    WHATSMINER_D1V1(180, "WhatsMiner D1", "whatsminer-d1"),
+    /** D1. */
+    WHATSMINER_D1(180, "WhatsMiner D1", "whatsminer-d1"),
 
-    /** The Whatsminer M3V1. */
-    WHATSMINER_M3V1(189, "WhatsMiner M3", "whatsminer-m3"),
+    /** M3. */
+    WHATSMINER_M3(189, "WhatsMiner M3", "whatsminer-m3"),
 
-    /** The Whatsminer M3V2. */
-    WHATSMINER_M3V2(198, "WhatsMiner M3", "whatsminer-m3"),
+    /** M3X. */
+    WHATSMINER_M3X(198, "WhatsMiner M3X", "whatsminer-m3x"),
 
-    /** The Whatsminer M10V1. */
-    WHATSMINER_M10V1(315, true, "WhatsMiner M10", "whatsminer-m10"),
+    /** M10. */
+    WHATSMINER_M10(315, true, "WhatsMiner M10", "whatsminer-m10"),
 
-    /** The Whatsminer M20S. */
+    /** M10S. */
+    WHATSMINER_M10S("WhatsMiner M10S", "whatsminer-m10s"),
+
+    /** M20S. */
     WHATSMINER_M20S(315, "WhatsMiner M20S", "whatsminer-m20s"),
 
-    /** The Whatsminer M30S. */
-    WHATSMINER_M30S(444, "WhatsMiner M30S", "whastminer-m30s");
+    /** M21. */
+    WHATSMINER_M21("WhatsMiner M21", "whatsminer-m21"),
+
+    /** M20S. */
+    WHATSMINER_M21S("WhatsMiner M21S", "whatsminer-m21s"),
+
+    /** M30S. */
+    WHATSMINER_M30S(444, "WhatsMiner M30S", "whastminer-m30s"),
+
+    /** M30S+. */
+    WHATSMINER_M30SP("WhatsMiner M30S+", "whastminer-m30s+"),
+
+    /** M30S++. */
+    WHATSMINER_M30SPP("WhatsMiner M30S++", "whastminer-m30s++"),
+
+    /** M31S. */
+    WHATSMINER_M31S("WhatsMiner M31S", "whastminer-m31s"),
+
+    /** M32. */
+    WHATSMINER_M32("WhatsMiner M32", "whastminer-m32");
 
     /** All of the types, by number of chips, mapped to their type. */
     private static final Map<Integer, Map<Boolean, WhatsminerType>> TYPE_MAP =
@@ -62,6 +83,22 @@ public enum WhatsminerType
 
     /** The version. */
     private final String version;
+
+    /**
+     * Constructor.
+     *
+     * @param version The version.
+     * @param slug    The miner slug.
+     */
+    WhatsminerType(
+            final String version,
+            final String slug) {
+        this(
+                -1,
+                false,
+                version,
+                slug);
+    }
 
     /**
      * Constructor.

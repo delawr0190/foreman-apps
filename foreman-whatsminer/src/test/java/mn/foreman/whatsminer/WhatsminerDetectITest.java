@@ -88,7 +88,7 @@ public class WhatsminerDetectITest
                                                 throw new AssertionError(e);
                                             }
                                         }),
-                                WhatsminerType.WHATSMINER_M3V1
+                                WhatsminerType.WHATSMINER_M3
                         },
                         {
                                 // Whatsminer M20S (old firmware)
@@ -124,7 +124,7 @@ public class WhatsminerDetectITest
                                                 new FakeHttpMinerServer(
                                                         8080,
                                                         ImmutableMap.of(
-                                                                "/cgi-bin/luci/admin/status/cgminerstatus",
+                                                                "/cgi-bin/luci/",
                                                                 new HttpHandler(
                                                                         "luci_username=username&luci_password=password",
                                                                         Collections.emptyMap(),

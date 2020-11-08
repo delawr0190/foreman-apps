@@ -16,8 +16,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustAllStrategy;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -25,30 +23,36 @@ import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 
 /** Utilities for interacting with a whatsminer. */
 class WhatsminerQuery {
 
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(WhatsminerQuery.class);
+
     /**
      * Queries a Whatsminer, performing a login operation first to obtain a
      * session cookie.
      *
-     * @param ip             The ip.
-     * @param port           The port.
-     * @param username       The username.
-     * @param password       The password.
-     * @param uri            The uri.
-     * @param isGet          Whether or not a GET is being performed.
-     * @param urlParams      The URL parameters.
-     * @param requestContent The request content (json), if present.
-     * @param callback       The callback for processing the response.
+     * @param ip        The ip.
+     * @param port      The port.
+     * @param username  The username.
+     * @param password  The password.
+     * @param uri       The uri.
+     * @param isGet     Whether or not a GET is being performed.
+     * @param urlParams The URL parameters.
+     * @param callback  The callback for processing the response.
      *
      * @throws MinerException on failure.
      */
@@ -60,7 +64,6 @@ class WhatsminerQuery {
             final String uri,
             final boolean isGet,
             final List<Map<String, Object>> urlParams,
-            final String requestContent,
             final BiConsumer<Integer, String> callback)
             throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
@@ -68,6 +71,9 @@ class WhatsminerQuery {
                 RequestConfig
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
+                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(5))
+                        .setCircularRedirectsAllowed(true)
                         .build();
 
         // Login first
@@ -75,7 +81,7 @@ class WhatsminerQuery {
         query(
                 ip,
                 port,
-                "/cgi-bin/luci/admin/status/cgminerstatus",
+                "/cgi-bin/luci/",
                 false,
                 Arrays.asList(
                         ImmutableMap.of(
@@ -88,11 +94,12 @@ class WhatsminerQuery {
                                 "luci_password",
                                 "value",
                                 password)),
-                requestContent,
                 requestConfig,
                 cookieStore,
-                (statusCode, data) ->
-                        loggedIn.set(statusCode == HttpStatus.SC_MOVED_TEMPORARILY || statusCode == HttpStatus.SC_OK));
+                (statusCode, data) -> {
+                    LOG.debug("Code: {}", statusCode);
+                    loggedIn.set(statusCode != HttpStatus.SC_FORBIDDEN);
+                });
         if (loggedIn.get()) {
             query(
                     ip,
@@ -100,7 +107,6 @@ class WhatsminerQuery {
                     uri,
                     isGet,
                     urlParams,
-                    requestContent,
                     requestConfig,
                     cookieStore,
                     callback);
@@ -113,15 +119,14 @@ class WhatsminerQuery {
      * Queries a Whatsminer miner, performing a login operation first to obtain
      * a session cookie.
      *
-     * @param ip             The ip.
-     * @param port           The port.
-     * @param uri            The uri.
-     * @param isGet          Whether or not a GET is being performed.
-     * @param urlParams      The URL parameters.
-     * @param requestContent The request content (json), if present.
-     * @param requestConfig  The request config.
-     * @param cookieStore    The cookie store.
-     * @param callback       The callback for processing the response.
+     * @param ip            The ip.
+     * @param port          The port.
+     * @param uri           The uri.
+     * @param isGet         Whether or not a GET is being performed.
+     * @param urlParams     The URL parameters.
+     * @param requestConfig The request config.
+     * @param cookieStore   The cookie store.
+     * @param callback      The callback for processing the response.
      *
      * @throws MinerException on failure.
      */
@@ -131,7 +136,6 @@ class WhatsminerQuery {
             final String uri,
             final boolean isGet,
             final List<Map<String, Object>> urlParams,
-            final String requestContent,
             final RequestConfig requestConfig,
             final CookieStore cookieStore,
             final BiConsumer<Integer, String> callback)
@@ -139,7 +143,6 @@ class WhatsminerQuery {
         try (final CloseableHttpClient client =
                      HttpClients
                              .custom()
-                             .setRedirectStrategy(new LaxRedirectStrategy())
                              .setDefaultRequestConfig(requestConfig)
                              .setDefaultCookieStore(cookieStore)
                              .disableAutomaticRetries()
@@ -148,6 +151,7 @@ class WhatsminerQuery {
                                              .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
                                              .build())
                              .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
+                             .setRedirectStrategy(new LaxRedirectStrategy())
                              .build()) {
             final String url =
                     toUrl(
@@ -172,11 +176,6 @@ class WhatsminerQuery {
                             new UrlEncodedFormEntity(
                                     params,
                                     "UTF-8"));
-                } else if (requestContent != null) {
-                    post.setEntity(
-                            new StringEntity(
-                                    requestContent,
-                                    ContentType.APPLICATION_JSON));
                 }
                 httpRequest = post;
             }
@@ -209,10 +208,9 @@ class WhatsminerQuery {
             final String ip,
             final int port,
             final String uri) {
-        return String.format(
-                "http://%s:%d%s",
-                ip,
-                port,
-                uri);
+        if (port == 443) {
+            return String.format("https://%s%s", ip, uri);
+        }
+        return String.format("http://%s:%d%s", ip, port, uri);
     }
 }

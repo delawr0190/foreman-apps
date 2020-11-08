@@ -78,6 +78,8 @@ class BraiinsUtils {
                 RequestConfig
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
+                        .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
+                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
                         .build();
 
         // Login first
