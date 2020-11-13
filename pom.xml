@@ -43,7 +43,7 @@
         <jcraft.version>0.1.55</jcraft.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <jsoup.version>1.13.1</jsoup.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <logback.version>1.2.3</logback.version>
         <lombok.version>1.18.12</lombok.version>
         <netty.version>4.1.42.Final</netty.version>
