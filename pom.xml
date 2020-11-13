@@ -42,6 +42,7 @@
         <jackson-databind.version>2.9.10.5</jackson-databind.version>
         <jcraft.version>0.1.55</jcraft.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
+        <jsoup.version>1.13.1</jsoup.version>
         <junit.version>4.12</junit.version>
         <logback.version>1.2.3</logback.version>
         <lombok.version>1.18.12</lombok.version>
@@ -406,6 +407,11 @@
                 <artifactId>httpclient</artifactId>
                 <version>${apache-httpclient.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.apache.httpcomponents</groupId>
+                <artifactId>httpmime</artifactId>
+                <version>${apache-httpclient.version}</version>
+            </dependency>
 
             <!-- Netty -->
             <dependency>
@@ -449,6 +455,11 @@
                 <groupId>com.jcraft</groupId>
                 <artifactId>jsch</artifactId>
                 <version>${jcraft.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
             </dependency>
 
             <!-- JSON -->

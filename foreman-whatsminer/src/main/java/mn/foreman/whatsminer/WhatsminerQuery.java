@@ -3,6 +3,8 @@ package mn.foreman.whatsminer;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
+import lombok.Builder;
+import lombok.Data;
 import org.apache.http.HttpStatus;
 import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
@@ -16,6 +18,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.apache.http.conn.ssl.TrustAllStrategy;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -33,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /** Utilities for interacting with a whatsminer. */
 class WhatsminerQuery {
@@ -45,14 +49,11 @@ class WhatsminerQuery {
      * Queries a Whatsminer, performing a login operation first to obtain a
      * session cookie.
      *
-     * @param ip        The ip.
-     * @param port      The port.
-     * @param username  The username.
-     * @param password  The password.
-     * @param uri       The uri.
-     * @param isGet     Whether or not a GET is being performed.
-     * @param urlParams The URL parameters.
-     * @param callback  The callback for processing the response.
+     * @param ip       The ip.
+     * @param port     The port.
+     * @param username The username.
+     * @param password The password.
+     * @param queries  The queries.
      *
      * @throws MinerException on failure.
      */
@@ -61,10 +62,7 @@ class WhatsminerQuery {
             final int port,
             final String username,
             final String password,
-            final String uri,
-            final boolean isGet,
-            final List<Map<String, Object>> urlParams,
-            final BiConsumer<Integer, String> callback)
+            final List<Query> queries)
             throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
         final RequestConfig requestConfig =
@@ -83,6 +81,8 @@ class WhatsminerQuery {
                 port,
                 "/cgi-bin/luci/",
                 false,
+                false,
+                null,
                 Arrays.asList(
                         ImmutableMap.of(
                                 "key",
@@ -94,6 +94,8 @@ class WhatsminerQuery {
                                 "luci_password",
                                 "value",
                                 password)),
+                maps -> {
+                },
                 requestConfig,
                 cookieStore,
                 (statusCode, data) -> {
@@ -101,15 +103,20 @@ class WhatsminerQuery {
                     loggedIn.set(statusCode != HttpStatus.SC_FORBIDDEN);
                 });
         if (loggedIn.get()) {
-            query(
-                    ip,
-                    port,
-                    uri,
-                    isGet,
-                    urlParams,
-                    requestConfig,
-                    cookieStore,
-                    callback);
+            for (final Query query : queries) {
+                query(
+                        ip,
+                        port,
+                        query.uri,
+                        query.isGet,
+                        query.isMultipartForm,
+                        query.boundary,
+                        query.urlParams,
+                        query.paramEnricher,
+                        requestConfig,
+                        cookieStore,
+                        query.callback);
+            }
         } else {
             throw new MinerException("Failed to obtain config data");
         }
@@ -119,14 +126,17 @@ class WhatsminerQuery {
      * Queries a Whatsminer miner, performing a login operation first to obtain
      * a session cookie.
      *
-     * @param ip            The ip.
-     * @param port          The port.
-     * @param uri           The uri.
-     * @param isGet         Whether or not a GET is being performed.
-     * @param urlParams     The URL parameters.
-     * @param requestConfig The request config.
-     * @param cookieStore   The cookie store.
-     * @param callback      The callback for processing the response.
+     * @param ip              The ip.
+     * @param port            The port.
+     * @param uri             The uri.
+     * @param isGet           Whether or not a GET is being performed.
+     * @param isMultipartForm Whether or not a multipart form.
+     * @param boundary        The form boundary.
+     * @param urlParams       The URL parameters.
+     * @param paramEnricher   The enricher.
+     * @param requestConfig   The request config.
+     * @param cookieStore     The cookie store.
+     * @param callback        The callback for processing the response.
      *
      * @throws MinerException on failure.
      */
@@ -135,7 +145,10 @@ class WhatsminerQuery {
             final int port,
             final String uri,
             final boolean isGet,
+            final boolean isMultipartForm,
+            final String boundary,
             final List<Map<String, Object>> urlParams,
+            final Consumer<List<Map<String, Object>>> paramEnricher,
             final RequestConfig requestConfig,
             final CookieStore cookieStore,
             final BiConsumer<Integer, String> callback)
@@ -163,19 +176,35 @@ class WhatsminerQuery {
                 httpRequest = new HttpGet(url);
             } else {
                 final HttpPost post = new HttpPost(url);
-                if (!urlParams.isEmpty()) {
-                    final List<NameValuePair> params = new ArrayList<>();
-                    urlParams
-                            .stream()
-                            .map(map ->
-                                    new BasicNameValuePair(
-                                            map.get("key").toString(),
-                                            map.get("value").toString()))
-                            .forEach(params::add);
-                    post.setEntity(
-                            new UrlEncodedFormEntity(
-                                    params,
-                                    "UTF-8"));
+                if (paramEnricher != null) {
+                    paramEnricher.accept(urlParams);
+                }
+                if (isMultipartForm) {
+                    final MultipartEntityBuilder builder =
+                            MultipartEntityBuilder.create();
+                    urlParams.forEach(param ->
+                            builder.addTextBody(
+                                    param.get("key").toString(),
+                                    param.get("value").toString()));
+                    if (boundary != null) {
+                        builder.setBoundary(boundary);
+                    }
+                    post.setEntity(builder.build());
+                } else {
+                    if (!urlParams.isEmpty()) {
+                        final List<NameValuePair> params = new ArrayList<>();
+                        urlParams
+                                .stream()
+                                .map(map ->
+                                        new BasicNameValuePair(
+                                                map.get("key").toString(),
+                                                map.get("value").toString()))
+                                .forEach(params::add);
+                        post.setEntity(
+                                new UrlEncodedFormEntity(
+                                        params,
+                                        "UTF-8"));
+                    }
                 }
                 httpRequest = post;
             }
@@ -212,5 +241,32 @@ class WhatsminerQuery {
             return String.format("https://%s%s", ip, uri);
         }
         return String.format("http://%s:%d%s", ip, port, uri);
+    }
+
+    /** A query to run against a WhatsMiner. */
+    @Data
+    @Builder
+    public static class Query {
+
+        /** The boundary. */
+        private final String boundary;
+
+        /** The callback. */
+        private final BiConsumer<Integer, String> callback;
+
+        /** Whether or not a GET. */
+        private final boolean isGet;
+
+        /** If a POST, whether or not a multipart form. */
+        private final boolean isMultipartForm;
+
+        /** The param enricher. */
+        private final Consumer<List<Map<String, Object>>> paramEnricher;
+
+        /** The URI. */
+        private final String uri;
+
+        /** The params. */
+        private final List<Map<String, Object>> urlParams;
     }
 }

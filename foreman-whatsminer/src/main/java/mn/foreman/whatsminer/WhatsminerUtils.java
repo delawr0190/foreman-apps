@@ -5,12 +5,48 @@ import mn.foreman.cgminer.ContextKey;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.asic.Asic;
 
+import org.apache.http.HttpStatus;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /** Utility methods for parsing Whatsminer miner response values. */
 class WhatsminerUtils {
+
+    /**
+     * Creates a token query.
+     *
+     * @param uri   The uri.
+     * @param token The token to set.
+     *
+     * @return The query.
+     */
+    static WhatsminerQuery.Query queryToken(
+            final String uri,
+            final AtomicReference<String> token) {
+        return WhatsminerQuery.Query
+                .builder()
+                .uri(uri)
+                .isGet(true)
+                .isMultipartForm(false)
+                .urlParams(Collections.emptyList())
+                .callback((code, data) -> {
+                    if (code == HttpStatus.SC_OK) {
+                        final Document document =
+                                Jsoup.parse(data);
+                        final Element input =
+                                document.select("input[name=token]").first();
+                        token.set(input.attr("value"));
+                    }
+                })
+                .build();
+    }
 
     /**
      * Updates the builder with devs.

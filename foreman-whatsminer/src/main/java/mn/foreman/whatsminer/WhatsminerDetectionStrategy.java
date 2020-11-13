@@ -36,22 +36,27 @@ public class WhatsminerDetectionStrategy
                     Integer.parseInt(args.getOrDefault("webPort", "443").toString()),
                     args.getOrDefault("username", "").toString(),
                     args.getOrDefault("password", "").toString(),
-                    "/cgi-bin/luci/admin/status/overview",
-                    true,
-                    Collections.emptyList(),
-                    (statusCode, data) -> {
-                        if (statusCode == HttpStatus.SC_OK) {
-                            final int versionStart = data.indexOf("WhatsMiner M");
-                            final String version =
-                                    data.substring(
-                                            versionStart,
-                                            data.indexOf(
-                                                    "<",
-                                                    versionStart));
-                            WhatsminerType.fromVersion(version)
-                                    .ifPresent(typeRef::set);
-                        }
-                    });
+                    Collections.singletonList(
+                            WhatsminerQuery.Query
+                                    .builder()
+                                    .uri("/cgi-bin/luci/admin/status/overview")
+                                    .isGet(true)
+                                    .isMultipartForm(false)
+                                    .urlParams(Collections.emptyList())
+                                    .callback((statusCode, data) -> {
+                                        if (statusCode == HttpStatus.SC_OK) {
+                                            final int versionStart = data.indexOf("WhatsMiner M");
+                                            final String version =
+                                                    data.substring(
+                                                            versionStart,
+                                                            data.indexOf(
+                                                                    "<",
+                                                                    versionStart));
+                                            WhatsminerType.fromVersion(version)
+                                                    .ifPresent(typeRef::set);
+                                        }
+                                    })
+                                    .build()));
         } catch (final MinerException me) {
             LOG.debug("No miner found on {}:{}", ip, port, me);
         }

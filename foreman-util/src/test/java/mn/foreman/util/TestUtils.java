@@ -3,10 +3,25 @@ package mn.foreman.util;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Map;
 
 /** Test utility functions. */
 public class TestUtils {
+
+    /**
+     * Creates test pool json.
+     *
+     * @param extra The extra.
+     *
+     * @return The test data.
+     */
+    public static Map<String, Object> toPoolJson(
+            final Map<String, Object> extra) {
+        final Map<String, Object> params = new HashMap<>(toPoolJson());
+        params.putAll(extra);
+        return params;
+    }
 
     /**
      * Creates test pool json.
