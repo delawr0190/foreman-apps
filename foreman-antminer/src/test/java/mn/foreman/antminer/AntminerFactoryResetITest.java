@@ -2,12 +2,12 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.util.TestUtils;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 
 /** Test factory resetting an Antminer. */
 public class AntminerFactoryResetITest
@@ -16,7 +16,10 @@ public class AntminerFactoryResetITest
     /** Constructor. */
     public AntminerFactoryResetITest() {
         super(
-                Collections.emptyMap(),
+                TestUtils.toPoolJson(
+                        ImmutableMap.of(
+                                "webPort",
+                                "8080")),
                 new AntminerFactory(BigDecimal.ONE),
                 new StockFactoryResetAction("antMiner Configuration"),
                 AntminerTestUtils.toFactoryResetHandlers("antMiner Configuration"),

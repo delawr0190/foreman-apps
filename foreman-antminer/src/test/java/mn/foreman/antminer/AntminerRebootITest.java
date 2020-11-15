@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
@@ -13,7 +14,6 @@ import org.junit.runners.Parameterized;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 /** Test changing pools on an Antminer. */
@@ -31,7 +31,10 @@ public class AntminerRebootITest
             final Map<String, ServerHandler> httpHandlers,
             final Map<String, HandlerInterface> rpcHandlers) {
         super(
-                Collections.emptyMap(),
+                TestUtils.toPoolJson(
+                        ImmutableMap.of(
+                                "webPort",
+                                "8080")),
                 new AntminerFactory(BigDecimal.ONE),
                 new StockRebootAction("antMiner Configuration"),
                 httpHandlers,
