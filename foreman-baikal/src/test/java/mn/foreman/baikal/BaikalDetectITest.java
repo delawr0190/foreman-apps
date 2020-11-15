@@ -12,6 +12,7 @@ import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /** Tests detection of a Baikal. */
@@ -32,7 +33,7 @@ public class BaikalDetectITest
                 new BaikalDetectionStrategy("80"),
                 "127.0.0.1",
                 4028,
-                DEFAULT_ARGS,
+                args(),
                 () -> new FakeHttpMinerServer(
                         8080,
                         handlers),
@@ -40,12 +41,7 @@ public class BaikalDetectITest
                         .minerType(type)
                         .ipAddress("127.0.0.1")
                         .port(4028)
-                        .parameters(
-                                ImmutableMap.of(
-                                        "arg1",
-                                        "val1",
-                                        "webPort",
-                                        "8080"))
+                        .parameters(args())
                         .build(),
                 (integer, stringObjectMap) -> {
                     stringObjectMap.put(
@@ -75,5 +71,16 @@ public class BaikalDetectITest
                                 BaikalType.GENERIC
                         }
                 });
+    }
+
+    /**
+     * Creates test args.
+     *
+     * @return Test args.
+     */
+    private static Map<String, Object> args() {
+        final Map<String, Object> args = new HashMap<>(DEFAULT_ARGS);
+        args.put("webPort", "8080");
+        return args;
     }
 }

@@ -36,27 +36,30 @@ public class AntminerChangePoolsITest
             final Map<String, HandlerInterface> rpcHandlers,
             final boolean foundResult) {
         super(
-                TestUtils.toPoolJson(),
+                TestUtils.toPoolJson(
+                        ImmutableMap.of(
+                                "webPort",
+                                "8080")),
                 new AntminerFactory(BigDecimal.ONE),
                 new FirmwareAwareAction(
-                        new AsicSeerDecorator(
-                                new StockChangePoolsAction(
-                                        "antMiner Configuration",
-                                        Arrays.asList(
-                                                AntminerConfValue.POOL_1_URL,
-                                                AntminerConfValue.POOL_1_USER,
-                                                AntminerConfValue.POOL_1_PASS,
-                                                AntminerConfValue.POOL_2_URL,
-                                                AntminerConfValue.POOL_2_USER,
-                                                AntminerConfValue.POOL_2_PASS,
-                                                AntminerConfValue.POOL_3_URL,
-                                                AntminerConfValue.POOL_3_USER,
-                                                AntminerConfValue.POOL_3_PASS,
-                                                AntminerConfValue.NO_BEEPER,
-                                                AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                                AntminerConfValue.FAN_CTRL,
-                                                AntminerConfValue.FAN_PWM,
-                                                AntminerConfValue.FREQ))),
+                        "antMiner Configuration",
+                        new StockChangePoolsAction(
+                                "antMiner Configuration",
+                                Arrays.asList(
+                                        AntminerConfValue.POOL_1_URL,
+                                        AntminerConfValue.POOL_1_USER,
+                                        AntminerConfValue.POOL_1_PASS,
+                                        AntminerConfValue.POOL_2_URL,
+                                        AntminerConfValue.POOL_2_USER,
+                                        AntminerConfValue.POOL_2_PASS,
+                                        AntminerConfValue.POOL_3_URL,
+                                        AntminerConfValue.POOL_3_USER,
+                                        AntminerConfValue.POOL_3_PASS,
+                                        AntminerConfValue.NO_BEEPER,
+                                        AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                        AntminerConfValue.FAN_CTRL,
+                                        AntminerConfValue.FAN_PWM,
+                                        AntminerConfValue.FREQ)),
                         new BraiinsChangePoolsAction()),
                 httpHandlers,
                 rpcHandlers,
@@ -583,6 +586,103 @@ public class AntminerChangePoolsITest
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315222,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://us.litecoinpool.org:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":24933,\"Accepted\":47384,\"Rejected\":212,\"Discarded\":230740,\"Stale\":15,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"obmllc.l3_1\",\"Last Share Time\":\"0:00:23\",\"Diff\":\"65.5K\",\"Diff1 Shares\":11805080,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":2988769280.00000000,\"Difficulty Rejected\":13254656.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":65536.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"us.litecoinpool.org\",\"Has GBT\":false,\"Best Share\":11224839560,\"Pool Rejected%\":0.4415,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                true
+                        },
+                        {
+                                // Antminer S17 (asicdip)
+                                ImmutableMap.of(
+                                        "/cgi-bin/get_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "{\n" +
+                                                        "\"pools\" : [\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"stratum+tcp://sha256.eu.mine.zpool.ca:3333\",\n" +
+                                                        "\"user\" : \"xxx.S17\",\n" +
+                                                        "\"pass\" : \"c=BTC\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"\",\n" +
+                                                        "\"user\" : \"\",\n" +
+                                                        "\"pass\" : \"\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"\",\n" +
+                                                        "\"user\" : \"\",\n" +
+                                                        "\"pass\" : \"\"\n" +
+                                                        "}\n" +
+                                                        "]\n" +
+                                                        ",\n" +
+                                                        "\"api-listen\" : true,\n" +
+                                                        "\"api-network\" : true,\n" +
+                                                        "\"api-groups\" : \"A:stats:pools:chip:chiphw:devs:summary:version:dosleep:switchpool\",\n" +
+                                                        "\"api-allow\" : \"A:0/0,W:W:127.0.0.1/24\",\n" +
+                                                        "\"bitmain-use-vil\" : true,\n" +
+                                                        "\"bitmain-freq\" : \"565\",\n" +
+                                                        "\"bitmain-minhr\" : \"0\",\n" +
+                                                        "\"bitmain-tempoff\" : \"0\",\n" +
+                                                        "\"altdfno\" : \"1\",\n" +
+                                                        "\"bitmain-autotune-profile\" : \"disabled\",\n" +
+                                                        "\"bitmain-autofix-period\" : \"0\",\n" +
+                                                        "\"lower-profile-if-temp-above\" : \"85\",\n" +
+                                                        "\"lower-profile-if-fan-pwm-above\" : \"90\",\n" +
+                                                        "\"raise-profile-if-fan-pwm-below\" : \"50\",\n" +
+                                                        "\"raise-profile-if-temp-below\" : \"60\",\n" +
+                                                        "\"raise-profile-up-to\" : \"disabled\",\n" +
+                                                        "\"bitmain-trigger-reboot\" : \"0\",\n" +
+                                                        "\"bitmain-freq1\" : \"565\",\n" +
+                                                        "\"bitmain-freq2\" : \"565\",\n" +
+                                                        "\"bitmain-freq3\" : \"565\",\n" +
+                                                        "\"bitmain-voltage\" : \"1930\",\n" +
+                                                        "\"bitmain-chip-freq1\" : \"615:615:610:615:615:605:605:605:605:605:595:595:595:605:595:600:600:600:605:600:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615\",\n" +
+                                                        "\"bitmain-chip-freq2\" : \"620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620:620\",\n" +
+                                                        "\"bitmain-chip-freq3\" : \"615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:535:545:545:545:545:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615\",\n" +
+                                                        "\"multi-version\" : \"4\"\n" +
+                                                        "}",
+                                                AntminerChangePoolsITest::validateDigest),
+                                        "/cgi-bin/get_system_info.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "{\n" +
+                                                        "\"minertype\":\"Antminer S17+ (vnish 2.0.3)\",\n" +
+                                                        "\"nettype\":\"DHCP\",\n" +
+                                                        "\"netdevice\":\"eth0\",\n" +
+                                                        "\"macaddr\":\"56:86:4D:32:D2:EF\",\n" +
+                                                        "\"hostname\":\"S17\",\n" +
+                                                        "\"ipaddress\":\"192.168.0.101\",\n" +
+                                                        "\"netmask\":\"255.255.255.0\",\n" +
+                                                        "\"gateway\":\"\",\n" +
+                                                        "\"dnsservers\":\"\",\n" +
+                                                        "\"curtime\":\"14:32:38\",\n" +
+                                                        "\"uptime\":\"25\",\n" +
+                                                        "\"loadaverage\":\"0.62, 0.18, 0.08\",\n" +
+                                                        "\"mem_total\":\"233744\",\n" +
+                                                        "\"mem_used\":\"113632\",\n" +
+                                                        "\"mem_free\":\"120112\",\n" +
+                                                        "\"mem_buffers\":\"764\",\n" +
+                                                        "\"mem_cached\":\"0\",\n" +
+                                                        "\"system_mode\":\"GNU/Linux\",\n" +
+                                                        "\"ant_hwv\":\"35.0.1.3\",\n" +
+                                                        "\"system_kernel_version\":\"Linux 4.6.0-xilinx-gff8137b-dirty #25 SMP PREEMPT Fri Nov 23 15:30:52 CST 2018\",\n" +
+                                                        "\"system_filesystem_version\":\"Sat Aug 15 18:55:51 CST 2020\",\n" +
+                                                        "\"bmminer_version\":\"4.11.1\"\n" +
+                                                        "}",
+                                                AntminerChangePoolsITest::validateDigest),
+                                        "/cgi-bin/set_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=565",
+                                                "ok",
+                                                AntminerChangePoolsITest::validateDigest)),
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\":\"S\",\"When\":1605446911,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.11.1\"}],\"VERSION\": [{\"CGMiner\":\"4.11.1\",\"API\":\"3.7\"}],\"id\":1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\":\"S\",\"When\":1605446911,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.11.1\"}],\"STATS\": [{\"Cgminer\":\"4.11.1\",\"Miner\":\"35.0.1.3\",\"CompileTime\":\"Sat Aug 15 18:55:51 CST 2020\",\"Type\":\"Antminer S17+ (vnish 2.0.3)\"},{\"STATS\":0,\"ID\":\"BTM_S17P_0\",\"Elapsed\":1201,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"77458.73\",\"GHS av\":77544.32,\"miner_count\":3,\"total_acn\":195,\"frequency\":565,\"total_freqavg\":610.26,\"total_rateideal\":79968.00,\"total_rate\":77458.73,\"state\":\"mining\",\"fan_num\":4,\"fan_mode\":0,\"fan_pwm\":100,\"fan1\":6120,\"fan2\":6120,\"fan3\":5160,\"fan4\":5160,\"temp_num\":3,\"temp1\":66,\"temp2\":65,\"temp3\":62,\"temp2_1\":81,\"temp2_2\":80,\"temp2_3\":76,\"temp3_1\":81,\"temp3_2\":80,\"temp3_3\":76,\"temp_pcb1\":\"55-66-51-60\",\"temp_pcb2\":\"55-65-52-64\",\"temp_pcb3\":\"51-62-51-62\",\"temp_chip1\":\"75-81-71-75\",\"temp_chip2\":\"74-80-71-80\",\"temp_chip3\":\"70-76-71-75\",\"chain_acn1\":65,\"chain_acn2\":65,\"chain_acn3\":65,\"chain_vol1\":19300,\"chain_vol2\":19300,\"chain_vol3\":19300,\"freq_avg1\":606.54,\"freq_avg2\":620.00,\"freq_avg3\":604.23,\"chain_rateideal1\":26493.60,\"chain_rateideal2\":27081.60,\"chain_rateideal3\":26392.80,\"chain_rate1\":24326.87,\"chain_rate2\":26800.28,\"chain_rate3\":26331.57,\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":0,\"chain_acs1\":\"xxxxx ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo\",\"chain_acs2\":\"ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo\",\"chain_acs3\":\"ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo ooooo\",\"chain_consumption1\":991,\"chain_consumption2\":1013,\"chain_consumption3\":987,\"miner_version\":\"35.0.1.3\",\"build_version\":\"2.0.3\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\":\"S\",\"When\":1605446911,\"Code\":7,\"Msg\":\"5 Pool(s)\",\"Description\":\"cgminer 4.11.1\"}],\"POOLS\": [{\"POOL\":0,\"URL\":\"stratum+tcp://sha256.eu.mine.zpool.ca:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":171,\"Accepted\":145,\"Rejected\":0,\"Works\":330851,\"Discarded\":971,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx.S17\",\"Last Share Time\":\"0:00:01\",\"Diff\":\"149K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":19976288.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":149440.00000000,\"Work Difficulty\":149440.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"sha256.eu.mine.zpool.ca\",\"Stratum Difficulty\":149440.00000000,\"Has Vmask\":true,\"Has GBT\":false,\"Best Share\":165807125,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":177,\"Current Block Height\":358628,\"Current Block Version\":536870912},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has Vmask\":false,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":0},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has Vmask\":false,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":0},{\"POOL\":3,\"URL\":\"DevFee\",\"Status\":\"Alive\",\"Priority\":3,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":39,\"Accepted\":2320,\"Rejected\":0,\"Works\":5747,\"Discarded\":0,\"Stale\":0,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"DevFee\",\"Last Share Time\":\"0:01:36\",\"Diff\":\"8.19K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":349888.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":4096.00000000,\"Work Difficulty\":8192.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has Vmask\":true,\"Has GBT\":false,\"Best Share\":100348,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":657040,\"Current Block Version\":536870912},{\"POOL\":4,\"URL\":\"DevFee\",\"Status\":\"Alive\",\"Priority\":4,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":60,\"Accepted\":84,\"Rejected\":0,\"Works\":2673,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"DevFee\",\"Last Share Time\":\"0:04:39\",\"Diff\":\"2.05K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":172032.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":2048.00000000,\"Work Difficulty\":2048.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has Vmask\":true,\"Has GBT\":false,\"Best Share\":289329,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":2,\"Current Block Height\":657040,\"Current Block Version\":536870912}],\"id\":1}")),
                                 true
                         }
                 });

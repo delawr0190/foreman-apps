@@ -91,13 +91,21 @@ public class StatsResponseStrategy
         }
         asicBuilder.setFanInfo(fanBuilder.build());
 
-        // Temps
-        final List<String> tempPrefixes =
-                Arrays.asList(
-                        "temp",
-                        "temp2_",
-                        "temp3_",
-                        "temp4_");
+        // Take chip and PCB temps before defaults
+        final List<String> tempPrefixes;
+        if (values.containsKey("temp_pcb1")) {
+            tempPrefixes =
+                    Arrays.asList(
+                            "temp_pcb",
+                            "temp_chip");
+        } else {
+            tempPrefixes =
+                    Arrays.asList(
+                            "temp",
+                            "temp2_",
+                            "temp3_",
+                            "temp4_");
+        }
         for (final String prefix : tempPrefixes) {
             for (int i = 1; i <= 32; i++) {
                 asicBuilder.addTemp(values.get(prefix + i));

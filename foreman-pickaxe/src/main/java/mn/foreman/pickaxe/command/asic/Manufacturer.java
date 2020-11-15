@@ -57,9 +57,7 @@ public enum Manufacturer {
     /** Antminer. */
     ANTMINER(
             "antminer",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.VERSION,
-                    new AntminerTypeFactory()),
+            new AntminerDetectionStrategy("antMiner Configuration"),
             (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             scheduledThreadPoolExecutor,
@@ -67,24 +65,24 @@ public enum Manufacturer {
                             statsCache,
                             new AntminerFactory(BigDecimal.ONE),
                             new FirmwareAwareAction(
-                                    new AsicSeerDecorator(
-                                            new StockChangePoolsAction(
-                                                    "antMiner Configuration",
-                                                    Arrays.asList(
-                                                            AntminerConfValue.POOL_1_URL,
-                                                            AntminerConfValue.POOL_1_USER,
-                                                            AntminerConfValue.POOL_1_PASS,
-                                                            AntminerConfValue.POOL_2_URL,
-                                                            AntminerConfValue.POOL_2_USER,
-                                                            AntminerConfValue.POOL_2_PASS,
-                                                            AntminerConfValue.POOL_3_URL,
-                                                            AntminerConfValue.POOL_3_USER,
-                                                            AntminerConfValue.POOL_3_PASS,
-                                                            AntminerConfValue.NO_BEEPER,
-                                                            AntminerConfValue.NO_TEMP_OVER_CTRL,
-                                                            AntminerConfValue.FAN_CTRL,
-                                                            AntminerConfValue.FAN_PWM,
-                                                            AntminerConfValue.FREQ))),
+                                    "antMiner Configuration",
+                                    new StockChangePoolsAction(
+                                            "antMiner Configuration",
+                                            Arrays.asList(
+                                                    AntminerConfValue.POOL_1_URL,
+                                                    AntminerConfValue.POOL_1_USER,
+                                                    AntminerConfValue.POOL_1_PASS,
+                                                    AntminerConfValue.POOL_2_URL,
+                                                    AntminerConfValue.POOL_2_USER,
+                                                    AntminerConfValue.POOL_2_PASS,
+                                                    AntminerConfValue.POOL_3_URL,
+                                                    AntminerConfValue.POOL_3_USER,
+                                                    AntminerConfValue.POOL_3_PASS,
+                                                    AntminerConfValue.NO_BEEPER,
+                                                    AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                                    AntminerConfValue.FAN_CTRL,
+                                                    AntminerConfValue.FAN_PWM,
+                                                    AntminerConfValue.FREQ)),
                                     new BraiinsChangePoolsAction())),
             (scheduledThreadPoolExecutor, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
@@ -93,6 +91,7 @@ public enum Manufacturer {
                             statsCache,
                             new AntminerFactory(BigDecimal.ONE),
                             new FirmwareAwareAction(
+                                    "antMiner Configuration",
                                     new StockRebootAction("antMiner Configuration"),
                                     new BraiinsRebootAction())),
             (scheduledThreadPoolExecutor, blacklist, statsCache) ->
@@ -103,6 +102,7 @@ public enum Manufacturer {
                                     statsCache,
                                     new AntminerFactory(BigDecimal.ONE),
                                     new FirmwareAwareAction(
+                                            "antMiner Configuration",
                                             new StockFactoryResetAction(
                                                     "antMiner Configuration"),
                                             new BraiinsFactoryResetAction())),
@@ -112,6 +112,7 @@ public enum Manufacturer {
                                     statsCache,
                                     new AntminerFactory(BigDecimal.ONE),
                                     new FirmwareAwareAction(
+                                            "antMiner Configuration",
                                             new StockChangePoolsAction(
                                                     "antMiner Configuration",
                                                     Arrays.asList(

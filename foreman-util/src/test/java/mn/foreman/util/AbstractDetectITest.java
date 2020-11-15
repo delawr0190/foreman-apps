@@ -29,6 +29,8 @@ public abstract class AbstractDetectITest {
     /** Default arguments. */
     protected static Map<String, Object> DEFAULT_ARGS =
             ImmutableMap.of(
+                    "port",
+                    "8080",
                     "arg1",
                     "val1");
 
@@ -207,15 +209,33 @@ public abstract class AbstractDetectITest {
      */
     public AbstractDetectITest(
             final DetectionStrategy detectionStrategy,
+            final List<Supplier<FakeMinerServer>> serverSupplier,
+            final Detection detection) {
+        this(
+                detectionStrategy,
+                DEFAULT_IP,
+                DEFAULT_PORT,
+                DEFAULT_ARGS,
+                serverSupplier,
+                detection);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param detectionStrategy The detection strategy.
+     * @param serverSupplier    A {@link Supplier} for making servers.
+     * @param detection         The expected detection.
+     */
+    public AbstractDetectITest(
+            final DetectionStrategy detectionStrategy,
             final Supplier<FakeMinerServer> serverSupplier,
             final Detection detection) {
         this(
                 detectionStrategy,
                 DEFAULT_IP,
                 DEFAULT_PORT,
-                ImmutableMap.of(
-                        "arg1",
-                        "val1"),
+                DEFAULT_ARGS,
                 serverSupplier,
                 detection);
     }

@@ -145,6 +145,12 @@ public class AsyncAsicAction
                 params.get("ip"),
                 "apiPort",
                 params.get("apiPort"),
+                "port",
+                params.getOrDefault(
+                        "port",
+                        params.getOrDefault(
+                                "webPort",
+                                "80")),
                 "username",
                 params.getOrDefault("username", ""),
                 "password",

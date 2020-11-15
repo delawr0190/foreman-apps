@@ -340,7 +340,15 @@ public class Asic {
          */
         public Builder addTemp(final String temp) {
             if ((temp != null) && !temp.isEmpty()) {
-                return addTemp(Double.valueOf(temp).intValue());
+                final String[] temps;
+                if (temp.contains("-")) {
+                    temps = temp.split("-");
+                } else {
+                    temps = new String[]{temp};
+                }
+                Arrays
+                        .stream(temps)
+                        .forEach(s -> addTemp(Double.valueOf(s).intValue()));
             }
             return this;
         }

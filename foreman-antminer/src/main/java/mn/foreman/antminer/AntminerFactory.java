@@ -104,6 +104,10 @@ public class AntminerFactory
         return new VersionDecorator(
                 apiIp,
                 apiPort,
+                Integer.toString(port),
+                "antMiner Configuration",
+                username,
+                password,
                 antminer,
                 braiins);
     }

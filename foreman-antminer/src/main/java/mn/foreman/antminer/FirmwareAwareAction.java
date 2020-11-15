@@ -1,10 +1,6 @@
 package mn.foreman.antminer;
 
-import mn.foreman.cgminer.CgMiner;
-import mn.foreman.cgminer.request.CgMinerCommand;
-import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.AsicAction;
-import mn.foreman.model.error.EmptySiteException;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
 
@@ -32,15 +28,21 @@ public class FirmwareAwareAction
     /** The action for braiins firmware antminers. */
     private final AsicAction.CompletableAction braiinsAction;
 
+    /** The realm. */
+    private final String realm;
+
     /**
      * Constructor.
      *
+     * @param realm          The realm.
      * @param antminerAction The antminer action.
      * @param braiinsAction  The braiins action.
      */
     public FirmwareAwareAction(
+            final String realm,
             final AsicAction.CompletableAction antminerAction,
             final AsicAction.CompletableAction braiinsAction) {
+        this.realm = realm;
         this.antminerAction = antminerAction;
         this.braiinsAction = braiinsAction;
     }
@@ -53,34 +55,19 @@ public class FirmwareAwareAction
             throws NotAuthenticatedException, MinerException {
         boolean success;
 
+        final AtomicBoolean completed = new AtomicBoolean(false);
         final AtomicReference<AntminerType> typeReference =
                 new AtomicReference<>();
-        final AtomicBoolean completed = new AtomicBoolean(false);
 
-        final CgMiner cgMiner =
-                new CgMiner.Builder()
-                        .setApiIp(ip)
-                        .setApiPort(args.get("apiPort").toString())
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.VERSION)
-                                        .build(),
-                                (builder, response) -> {
-                                    try {
-                                        AntminerUtils.toType(response.getValues())
-                                                .ifPresent(typeReference::set);
-                                    } catch (final EmptySiteException e) {
-                                        throw new MinerException(e);
-                                    }
-                                })
-                        .build();
-
-        try {
-            cgMiner.getStats();
-            completed.set(true);
-        } catch (final Exception e) {
-            // Ignore - expected
-        }
+        AntminerUtils.getType(
+                ip,
+                Integer.parseInt(args.getOrDefault("apiPort", "4028").toString()),
+                port,
+                args.getOrDefault("username", "root").toString(),
+                args.getOrDefault("password", "root").toString(),
+                this.realm,
+                s -> completed.set(true))
+                .ifPresent(typeReference::set);
 
         if (completed.get()) {
             final AntminerType type = typeReference.get();

@@ -1,21 +1,14 @@
 package mn.foreman.antminer;
 
 import mn.foreman.cgminer.CgMiner;
-import mn.foreman.cgminer.Context;
-import mn.foreman.cgminer.ResponseStrategy;
-import mn.foreman.cgminer.request.CgMinerCommand;
-import mn.foreman.cgminer.request.CgMinerRequest;
-import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
-import mn.foreman.model.error.EmptySiteException;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -42,12 +35,27 @@ public class VersionDecorator
     /** The miner for querying braiins. */
     private final CgMiner braiins;
 
+    /** The API IP. */
+    private final String ip;
+
+    /** The password. */
+    private final String password;
+
+    /** The API port. */
+    private final int port;
+
+    /** The realm. */
+    private final String realm;
+
     /** The current type. */
     private final AtomicReference<AntminerType> type =
             new AtomicReference<>();
 
-    /** The miner for obtaining the version. */
-    private final CgMiner version;
+    /** The username. */
+    private final String username;
+
+    /** The web port. */
+    private final int webPort;
 
     /** When the next version query should be ran. */
     private long nextQueryTime = System.currentTimeMillis();
@@ -57,26 +65,30 @@ public class VersionDecorator
      *
      * @param ip       The IP.
      * @param port     The port.
+     * @param webPort  The web port.
+     * @param realm    The realm.
+     * @param username The username.
+     * @param password The password.
      * @param antminer The antminer.
      * @param braiins  The braiins.
      */
     VersionDecorator(
             final String ip,
             final String port,
+            final String webPort,
+            final String realm,
+            final String username,
+            final String password,
             final CgMiner antminer,
             final CgMiner braiins) {
+        this.ip = ip;
+        this.port = Integer.parseInt(port);
+        this.webPort = Integer.parseInt(webPort);
+        this.realm = realm;
+        this.username = username;
+        this.password = password;
         this.antminer = antminer;
         this.braiins = braiins;
-        this.version =
-                new CgMiner.Builder(new Context(), Collections.emptyList())
-                        .setApiIp(ip)
-                        .setApiPort(port)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.VERSION)
-                                        .build(),
-                                new VersionStrategy())
-                        .build();
     }
 
     @Override
@@ -95,7 +107,7 @@ public class VersionDecorator
 
         try {
             if (shouldQueryVersion()) {
-                this.version.getStats();
+                updateType();
             }
 
             final AntminerType currentType = this.type.get();
@@ -121,7 +133,7 @@ public class VersionDecorator
     @Override
     public MinerStats getStats() throws MinerException {
         if (shouldQueryVersion()) {
-            this.version.getStats();
+            updateType();
         }
 
         final AntminerType currentType = this.type.get();
@@ -145,24 +157,27 @@ public class VersionDecorator
         return ((this.type.get() == null) || (this.nextQueryTime <= System.currentTimeMillis()));
     }
 
-    /** Captures the version and stores it. */
-    private class VersionStrategy
-            implements ResponseStrategy {
-
-        @Override
-        public void processResponse(
-                final MinerStats.Builder builder,
-                final CgMinerResponse response) {
-            try {
-                AntminerUtils.toType(response.getValues())
-                        .ifPresent(type -> {
-                            VersionDecorator.this.type.set(type);
-                            VersionDecorator.this.nextQueryTime =
-                                    System.currentTimeMillis() + VERSION_QUERY_INTERVAL;
-                        });
-            } catch (final EmptySiteException ese) {
-                // Ignore
-            }
-        }
+    /**
+     * Updates the type.
+     *
+     * @throws MinerException on failure.
+     */
+    private void updateType() throws MinerException {
+        AntminerUtils.getType(
+                this.ip,
+                this.port,
+                this.webPort,
+                this.realm,
+                this.username,
+                this.password,
+                s -> {
+                })
+                .ifPresent(type -> {
+                    this.type.set(type);
+                    this.nextQueryTime =
+                            System.currentTimeMillis() + VERSION_QUERY_INTERVAL;
+                });
     }
+
+
 }
