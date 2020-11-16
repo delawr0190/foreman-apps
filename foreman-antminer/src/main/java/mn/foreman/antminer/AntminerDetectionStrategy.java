@@ -35,9 +35,9 @@ public class AntminerDetectionStrategy
                             ip,
                             port,
                             Integer.parseInt(args.getOrDefault("webPort", "80").toString()),
+                            this.realm,
                             args.getOrDefault("username", "root").toString(),
                             args.getOrDefault("password", "root").toString(),
-                            this.realm,
                             s -> {
                             });
             if (type.isPresent()) {

@@ -180,7 +180,6 @@ public class AntminerUtils {
      */
     private static boolean isKnown(final Map<String, String> values) {
         return values.containsKey(TYPE) || toBraiinsType(values).isPresent();
-
     }
 
     /**

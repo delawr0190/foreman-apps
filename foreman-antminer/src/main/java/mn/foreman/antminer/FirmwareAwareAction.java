@@ -63,9 +63,9 @@ public class FirmwareAwareAction
                 ip,
                 Integer.parseInt(args.getOrDefault("apiPort", "4028").toString()),
                 port,
+                this.realm,
                 args.getOrDefault("username", "root").toString(),
                 args.getOrDefault("password", "root").toString(),
-                this.realm,
                 s -> completed.set(true))
                 .ifPresent(typeReference::set);
 
