@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -341,7 +342,7 @@ public class Asic {
         public Builder addTemp(final String temp) {
             if ((temp != null) && !temp.isEmpty()) {
                 final String[] temps;
-                if (temp.contains("-")) {
+                if (StringUtils.countMatches(temp, "-") > 1) {
                     temps = temp.split("-");
                 } else {
                     temps = new String[]{temp};

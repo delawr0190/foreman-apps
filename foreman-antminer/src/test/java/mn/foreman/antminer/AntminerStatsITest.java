@@ -15,10 +15,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /** Runs an integration tests using {@link CgMiner} against a fake API. */
 @RunWith(Parameterized.class)
@@ -737,6 +734,56 @@ public class AntminerStatsITest
                                                                         new BigDecimal("57"),
                                                                         "STATS.1.temp7",
                                                                         new BigDecimal("49")))
+                                                        .build())
+                                        .build()
+                        },
+                        {
+                                // Antminer S9 (bad temps)
+                                BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1605578750,\"Code\":22,\"Msg\":\"BMMiner versions\",\"Description\":\"bmminer 1.0.0\"}],\"VERSION\":[{\"BMMiner\":\"2.0.0\",\"API\":\"3.1\",\"Miner\":\"30.0.1.3\",\"CompileTime\":\"Wed Jul 31 16:18:27 CST 2019\",\"Type\":\"Antminer S9\\nV1.3.58\",\"VER\":\"200215\"}],\"id\":1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1605578750,\"Code\":70,\"Msg\":\"BMMiner stats\",\"Description\":\"bmminer 1.0.0\"}],\"STATS\":[{\"BMMiner\":\"2.0.0\",\"Miner\":\"30.0.1.3\",\"CompileTime\":\"Wed Jul 31 16:18:27 CST 2019\",\"Type\":\"Antminer S9\\nV1.3.58\"}{\"STATS\":0,\"ID\":\"BC50\",\"Elapsed\":293628,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"13883.81\",\"GHS av\":13890.36,\"miner_count\":3,\"frequency\":645,\"fan_num\":2,\"fan1\":0,\"fan2\":0,\"fan3\":0,\"fan4\":0,\"fan5\":3720,\"fan6\":2400,\"fan7\":0,\"fan8\":0,\"temp_num\":3,\"temp1\":0,\"temp2\":0,\"temp3\":0,\"temp4\":0,\"temp5\":0,\"temp6\":75,\"temp7\":0,\"temp8\":73,\"temp9\":0,\"temp10\":0,\"temp11\":0,\"temp12\":0,\"temp13\":0,\"temp14\":0,\"temp15\":0,\"temp16\":0,\"temp2_1\":0,\"temp2_2\":0,\"temp2_3\":0,\"temp2_4\":0,\"temp2_5\":0,\"temp2_6\":62,\"temp2_7\":-83,\"temp2_8\":62,\"temp2_9\":0,\"temp2_10\":0,\"temp2_11\":0,\"temp2_12\":0,\"temp2_13\":0,\"temp2_14\":0,\"temp2_15\":0,\"temp2_16\":0,\"temp3_1\":0,\"temp3_2\":0,\"temp3_3\":0,\"temp3_4\":0,\"temp3_5\":0,\"temp3_6\":0,\"temp3_7\":0,\"temp3_8\":0,\"temp3_9\":0,\"temp3_10\":0,\"temp3_11\":0,\"temp3_12\":0,\"temp3_13\":0,\"temp3_14\":0,\"temp3_15\":0,\"temp3_16\":0,\"freq_avg1\":0.00,\"freq_avg2\":0.00,\"freq_avg3\":0.00,\"freq_avg4\":0.00,\"freq_avg5\":0.00,\"freq_avg6\":649.10,\"freq_avg7\":650.40,\"freq_avg8\":647.00,\"freq_avg9\":0.00,\"freq_avg10\":0.00,\"freq_avg11\":0.00,\"freq_avg12\":0.00,\"freq_avg13\":0.00,\"freq_avg14\":0.00,\"freq_avg15\":0.00,\"freq_avg16\":0.00,\"total_rateideal\":13862.52,\"total_freqavg\":645.90,\"total_acn\":189,\"total_rate\":13883.81,\"chain_rateideal1\":0.00,\"chain_rateideal2\":0.00,\"chain_rateideal3\":0.00,\"chain_rateideal4\":0.00,\"chain_rateideal5\":0.00,\"chain_rateideal6\":4620.34,\"chain_rateideal7\":4620.87,\"chain_rateideal8\":4621.31,\"chain_rateideal9\":0.00,\"chain_rateideal10\":0.00,\"chain_rateideal11\":0.00,\"chain_rateideal12\":0.00,\"chain_rateideal13\":0.00,\"chain_rateideal14\":0.00,\"chain_rateideal15\":0.00,\"chain_rateideal16\":0.00,\"temp_max\":62,\"Device Hardware%\":0.0184,\"no_matching_work\":178540,\"chain_acn1\":0,\"chain_acn2\":0,\"chain_acn3\":0,\"chain_acn4\":0,\"chain_acn5\":0,\"chain_acn6\":63,\"chain_acn7\":63,\"chain_acn8\":63,\"chain_acn9\":0,\"chain_acn10\":0,\"chain_acn11\":0,\"chain_acn12\":0,\"chain_acn13\":0,\"chain_acn14\":0,\"chain_acn15\":0,\"chain_acn16\":0,\"chain_acs1\":\"\",\"chain_acs2\":\"\",\"chain_acs3\":\"\",\"chain_acs4\":\"\",\"chain_acs5\":\"\",\"chain_acs6\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo ooooooo\",\"chain_acs7\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo ooooooo\",\"chain_acs8\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo ooooooo\",\"chain_acs9\":\"\",\"chain_acs10\":\"\",\"chain_acs11\":\"\",\"chain_acs12\":\"\",\"chain_acs13\":\"\",\"chain_acs14\":\"\",\"chain_acs15\":\"\",\"chain_acs16\":\"\",\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":0,\"chain_hw4\":0,\"chain_hw5\":0,\"chain_hw6\":3085,\"chain_hw7\":289,\"chain_hw8\":175165,\"chain_hw9\":0,\"chain_hw10\":0,\"chain_hw11\":0,\"chain_hw12\":0,\"chain_hw13\":0,\"chain_hw14\":0,\"chain_hw15\":0,\"chain_hw16\":0,\"chain_rate1\":\"\",\"chain_rate2\":\"\",\"chain_rate3\":\"\",\"chain_rate4\":\"\",\"chain_rate5\":\"\",\"chain_rate6\":\"4618.85\",\"chain_rate7\":\"4624.55\",\"chain_rate8\":\"4640.41\",\"chain_rate9\":\"\",\"chain_rate10\":\"\",\"chain_rate11\":\"\",\"chain_rate12\":\"\",\"chain_rate13\":\"\",\"chain_rate14\":\"\",\"chain_rate15\":\"\",\"chain_rate16\":\"\",\"chain_xtime6\":\"{X0=58,X1=59,X2=58,X3=60,X4=61,X5=58,X6=58,X7=58,X8=60,X9=59,X10=60,X11=55,X12=60,X13=58,X14=58,X15=58,X16=57,X17=59,X18=57,X19=59,X20=58,X21=59,X22=56,X23=57,X24=59,X25=59,X26=58,X27=60,X28=57,X29=55,X30=56,X31=59,X32=59,X33=60,X34=59,X35=58,X36=56,X37=59,X38=60,X39=56,X40=58,X41=58,X42=59,X43=58,X44=58,X45=58,X46=59,X47=58,X48=59,X49=59,X50=57,X51=58,X52=57,X53=58,X54=60,X55=59,X56=59,X57=57,X58=58,X59=59,X60=56,X61=59,X62=57}\",\"chain_xtime7\":\"{X0=58,X1=59,X2=57,X3=59,X4=58,X5=57,X6=66,X7=59,X8=58,X9=58,X10=58,X11=60,X12=58,X13=59,X14=58,X15=58,X16=57,X17=59,X18=59,X19=59,X20=57,X21=58,X22=56,X23=59,X24=58,X25=58,X26=57,X27=57,X28=59,X29=59,X30=58,X31=58,X32=59,X33=56,X34=58,X35=58,X36=57,X37=58,X38=59,X39=58,X40=57,X41=59,X42=59,X43=58,X44=56,X45=59,X46=60,X47=60,X48=56,X49=59,X50=57,X51=60,X52=58,X53=57,X54=60,X55=58,X56=58,X57=57,X58=58,X59=59,X60=59,X61=58,X62=58}\",\"chain_xtime8\":\"{X0=60,X1=57,X2=57,X3=58,X4=57,X5=59,X6=60,X7=58,X8=58,X9=60,X10=59,X11=58,X12=58,X13=60,X14=57,X15=60,X16=59,X17=56,X18=57,X19=59,X20=58,X21=60,X22=58,X23=58,X24=58,X25=60,X26=57,X27=59,X28=58,X29=56,X30=58,X31=58,X32=57,X33=59,X34=58,X35=60,X36=59,X37=56,X38=58,X39=59,X40=58,X41=58,X42=59,X43=58,X44=58,X45=56,X46=58,X47=58,X48=61,X49=55,X50=59,X51=59,X52=57,X53=58,X54=60,X55=57,X56=59,X57=57,X58=58,X59=57,X60=56,X61=58,X62=58}\",\"chain_offside_6\":\"0\",\"chain_offside_7\":\"0\",\"chain_offside_8\":\"0\",\"chain_opencore_6\":\"0\",\"chain_opencore_7\":\"0\",\"chain_opencore_8\":\"0\",\"miner_version\":\"30.0.1.3\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1605578750,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"bmminer 1.0.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://ss.antpool.com:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":6639,\"Accepted\":22673,\"Rejected\":8,\"Discarded\":136532,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":\"0:00:05\",\"Diff\":\"32.8K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":859832320.00000000,\"Difficulty Rejected\":393216.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":32768.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"ss.antpool.com\",\"Has GBT\":false,\"Best Share\":970349963,\"Pool Rejected%\":0.0457,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"stratum+tcp://ss.antpool.com:443\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1761,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":\"0\",\"Diff\":\"32.8K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                Collections.emptyList(),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("ss.antpool.com:3333")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(22673, 8, 0)
+                                                        .build())
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("ss.antpool.com:443")
+                                                        .setStatus(true, true)
+                                                        .setPriority(1)
+                                                        .setCounts(0, 0, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("13883810000000.00"))
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(3720)
+                                                                        .addSpeed(2400)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(75)
+                                                        .addTemp(73)
+                                                        .addTemp(62)
+                                                        .addTemp(-83)
+                                                        .addTemp(62)
+                                                        .hasErrors(false)
                                                         .build())
                                         .build()
                         }
