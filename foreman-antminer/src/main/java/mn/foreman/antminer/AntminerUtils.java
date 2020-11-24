@@ -38,6 +38,56 @@ public class AntminerUtils {
     }
 
     /**
+     * Returns a system attribute.
+     *
+     * @param ip       The IP.
+     * @param port     The port.
+     * @param username The username.
+     * @param password The password.
+     * @param realm    The realm.
+     * @param key      The key.
+     *
+     * @return The attribute value.
+     */
+    public static Optional<String> getSystemAttribute(
+            final String ip,
+            final int port,
+            final String username,
+            final String password,
+            final String realm,
+            final String key) {
+        final AtomicReference<String> attribute = new AtomicReference<>();
+        try {
+            Query.digestGet(
+                    ip,
+                    port,
+                    realm,
+                    "/cgi-bin/get_system_info.cgi",
+                    username,
+                    password,
+                    (code, s) -> {
+                        try {
+                            final Map<String, Object> conf =
+                                    OBJECT_MAPPER.readValue(
+                                            s,
+                                            new TypeReference<Map<String, Object>>() {
+                                            });
+                            final String typeValue =
+                                    conf.getOrDefault(
+                                            key,
+                                            "").toString();
+                            attribute.set(typeValue);
+                        } catch (final Exception e) {
+                            // Ignore if we can't get
+                        }
+                    });
+        } catch (final Exception e) {
+            // Ignore if we can't get
+        }
+        return Optional.ofNullable(attribute.get());
+    }
+
+    /**
      * Gets the type.
      *
      * @param ip           The ip.
@@ -83,34 +133,17 @@ public class AntminerUtils {
 
                                     if (type.get() == null) {
                                         // Attempt to use the system info
-                                        try {
-                                            Query.digestGet(
-                                                    ip,
-                                                    webPort,
-                                                    realm,
-                                                    "/cgi-bin/get_system_info.cgi",
-                                                    username,
-                                                    password,
-                                                    (code, s) -> {
-                                                        try {
-                                                            final Map<String, Object> conf =
-                                                                    OBJECT_MAPPER.readValue(
-                                                                            s,
-                                                                            new TypeReference<Map<String, Object>>() {
-                                                                            });
-                                                            final String typeValue =
-                                                                    conf.getOrDefault(
-                                                                            "minertype",
-                                                                            "").toString();
-                                                            typeCallback.accept(typeValue);
-                                                            AntminerType.forModel("Type", typeValue).ifPresent(type::set);
-                                                        } catch (final Exception e) {
-                                                            // Ignore if we can't get the MAC
-                                                        }
-                                                    });
-                                        } catch (final Exception e) {
-                                            // Ignore
-                                        }
+                                        getSystemAttribute(
+                                                ip,
+                                                webPort,
+                                                realm,
+                                                username,
+                                                password,
+                                                "minertype").ifPresent(
+                                                value -> {
+                                                    typeCallback.accept(value);
+                                                    AntminerType.forModel("Type", value).ifPresent(type::set);
+                                                });
                                     }
 
                                     finalType.set(type.get());

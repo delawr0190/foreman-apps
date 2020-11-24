@@ -4,6 +4,7 @@ import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.error.MinerException;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -28,27 +29,56 @@ public class AntminerDetectionStrategy
             final String ip,
             final int port,
             final Map<String, Object> args) {
+        final boolean hostnamePreferred =
+                Boolean.parseBoolean(
+                        args.getOrDefault(
+                                "hostname_preferred",
+                                "false").toString());
+
         Detection detection = null;
         try {
+            final int webPort =
+                    Integer.parseInt(args.getOrDefault("webPort", "80").toString());
+            final String username =
+                    args.getOrDefault("username", "root").toString();
+            final String password =
+                    args.getOrDefault("password", "root").toString();
+
             final Optional<AntminerType> type =
                     AntminerUtils.getType(
                             ip,
                             port,
-                            Integer.parseInt(args.getOrDefault("webPort", "80").toString()),
+                            webPort,
                             this.realm,
-                            args.getOrDefault("username", "root").toString(),
-                            args.getOrDefault("password", "root").toString(),
+                            username,
+                            password,
                             s -> {
                             });
             if (type.isPresent()) {
                 final AntminerType realType = type.get();
+
+                final Map<String, Object> newArgs = new HashMap<>(args);
+                if (hostnamePreferred) {
+                    AntminerUtils.getSystemAttribute(
+                            ip,
+                            webPort,
+                            username,
+                            password,
+                            this.realm,
+                            "hostname")
+                            .ifPresent(hostname ->
+                                    newArgs.put(
+                                            "hostname",
+                                            hostname));
+                }
+
                 detection =
                         Detection
                                 .builder()
                                 .ipAddress(ip)
                                 .port(port)
                                 .minerType(realType)
-                                .parameters(args)
+                                .parameters(newArgs)
                                 .build();
             }
         } catch (final MinerException e) {
