@@ -846,7 +846,6 @@ public class AntminerStatsITest
                                                         .addTemp(33)
                                                         .addTemp(52)
                                                         .addTemp(45)
-                                                        .addTemp(481)
                                                         .addTemp(48)
                                                         .hasErrors(false)
                                                         .build())
