@@ -14,16 +14,19 @@ import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
-/** Runs an integration tests using {@link Srbminer} against a fake API. */
+/** Runs an integration tests using {@link SrbminerOld} against a fake API. */
 public class SrbMiner_1_7_9_ITest
         extends AbstractApiITest {
 
     /** Constructor. */
     public SrbMiner_1_7_9_ITest() {
         super(
-                new Srbminer(
-                        "127.0.0.1",
-                        21555),
+                new SrbminerFactory().create(
+                        ImmutableMap.of(
+                                "apiIp",
+                                "127.0.0.1",
+                                "apiPort",
+                                "21555")),
                 new FakeHttpMinerServer(
                         21555,
                         ImmutableMap.of(

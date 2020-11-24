@@ -1,5 +1,7 @@
 package mn.foreman.srbminer.json;
 
+import mn.foreman.srbminer.json.old.Response;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;
 

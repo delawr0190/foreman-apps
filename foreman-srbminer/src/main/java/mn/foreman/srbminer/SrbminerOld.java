@@ -9,7 +9,7 @@ import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.rig.FreqInfo;
 import mn.foreman.model.miners.rig.Gpu;
 import mn.foreman.model.miners.rig.Rig;
-import mn.foreman.srbminer.json.Response;
+import mn.foreman.srbminer.json.old.Response;
 import mn.foreman.util.PoolUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * <h1>Overview</h1>
  *
- * A {@link Srbminer} represents a remote srbminer instance.
+ * A {@link SrbminerOld} represents a remote srbminer instance.
  *
  * <p>This class relies on the srbminer-api being enabled and configured to
  * allow the server that this application is running on to access it.  If this
@@ -33,7 +33,7 @@ import java.util.List;
  * <li>http://{@link #apiIp}:{@link #apiPort}/</li>
  * </ul>
  */
-public class Srbminer
+public class SrbminerOld
         extends AbstractMiner {
 
     /**
@@ -42,7 +42,7 @@ public class Srbminer
      * @param apiIp   The API IP.
      * @param apiPort The API port.
      */
-    Srbminer(
+    SrbminerOld(
             final String apiIp,
             final int apiPort) {
         super(

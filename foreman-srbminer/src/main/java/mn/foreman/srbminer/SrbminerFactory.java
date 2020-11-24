@@ -14,8 +14,14 @@ public class SrbminerFactory
 
     @Override
     public Miner create(final Map<String, Object> config) {
-        return new Srbminer(
-                config.get("apiIp").toString(),
-                Integer.parseInt(config.get("apiPort").toString()));
+        final String apiIp = config.get("apiIp").toString();
+        final int apiPort = Integer.parseInt(config.get("apiPort").toString());
+        return new VersionDecorator(
+                new SrbminerOld(
+                        apiIp,
+                        apiPort),
+                new SrbminerNew(
+                        apiIp,
+                        apiPort));
     }
 }

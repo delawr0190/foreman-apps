@@ -1,4 +1,4 @@
-package mn.foreman.srbminer.json;
+package mn.foreman.srbminer.json.old;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
