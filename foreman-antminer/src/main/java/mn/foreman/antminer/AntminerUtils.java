@@ -136,9 +136,9 @@ public class AntminerUtils {
                                         getSystemAttribute(
                                                 ip,
                                                 webPort,
-                                                realm,
                                                 username,
                                                 password,
+                                                realm,
                                                 "minertype").ifPresent(
                                                 value -> {
                                                     typeCallback.accept(value);
