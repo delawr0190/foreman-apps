@@ -5,6 +5,8 @@ import mn.foreman.model.error.MinerException;
 import mn.foreman.trex.json.Summary;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A {@link TelnetJsonStrategy} provides a {@link ApiStrategy} implementation
@@ -13,6 +15,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
  */
 public class TelnetJsonStrategy
         implements ApiStrategy {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(TelnetJsonStrategy.class);
 
     @Override
     public Summary getSummary(
@@ -27,6 +33,7 @@ public class TelnetJsonStrategy
                     new TypeReference<Summary>() {
                     });
         } catch (final Exception e) {
+            LOG.warn("Failed to obtain summary", e);
             throw new MinerException(e);
         }
     }

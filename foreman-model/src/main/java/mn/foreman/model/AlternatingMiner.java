@@ -3,6 +3,9 @@ package mn.foreman.model;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,6 +15,10 @@ import java.util.List;
  */
 public class AlternatingMiner
         extends AbstractMiner {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(AlternatingMiner.class);
 
     /** The candidates. */
     private final List<Miner> candidates;
@@ -52,6 +59,7 @@ public class AlternatingMiner
                     .addAsics(minerStats.getAsics())
                     .addRigs(minerStats.getRigs());
         } else {
+            LOG.warn("Failed to find a valid candidate");
             throw new MinerException("Failed to find a valid candidate");
         }
     }
