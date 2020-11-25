@@ -17,6 +17,8 @@ public class EthminerFactory
         return new Ethminer(
                 config.get("apiIp").toString(),
                 Integer.parseInt(config.get("apiPort").toString()),
-                config.get("apiPassword").toString());
+                config.containsKey("apiPassword")
+                        ? config.get("apiPassword").toString()
+                        : null);
     }
 }
