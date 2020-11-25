@@ -283,7 +283,7 @@ public class AntminerDetectITest
      */
     private static Map<String, Object> toHostnameArgs(final String hostname) {
         final Map<String, Object> args = new HashMap<>(DEFAULT_ARGS);
-        args.put("hostname_preferred", "true");
+        args.put("hostnamePreferred", "true");
         if (hostname != null) {
             args.put("hostname", hostname);
         }

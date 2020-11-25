@@ -32,7 +32,7 @@ public class AntminerDetectionStrategy
         final boolean hostnamePreferred =
                 Boolean.parseBoolean(
                         args.getOrDefault(
-                                "hostname_preferred",
+                                "hostnamePreferred",
                                 "false").toString());
 
         Detection detection = null;
