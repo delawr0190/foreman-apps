@@ -61,56 +61,7 @@ public class WhatsminerFactory
                         cgContext);
 
         return new FirmwareAwareMiner(
-                new CgMiner.Builder(cgContext, statsWhitelist)
-                        .setApiIp(apiIp)
-                        .setApiPort(apiPort)
-                        .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.POOLS)
-                                        .build(),
-                                new PoolsResponseStrategy(
-                                        new MrrRigIdCallback(cgContext)))
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.SUMMARY)
-                                        .build(),
-                                oldFirmwareStrategy)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.STATS)
-                                        .build(),
-                                oldFirmwareStrategy)
-                        .build(),
-                new CgMiner.Builder(cgContext, statsWhitelist)
-                        .setApiIp(apiIp)
-                        .setApiPort(apiPort)
-                        .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.POOLS)
-                                        .build(),
-                                new PoolsResponseStrategy(
-                                        new MrrRigIdCallback(cgContext)))
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.SUMMARY)
-                                        .build(),
-                                newFirmwareStrategy)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.DEVS)
-                                        .build(),
-                                newFirmwareStrategy)
-                        .setMacStrategy(
-                                new NewFirmwareMacStrategy(
-                                        apiIp,
-                                        Integer.parseInt(apiPort)))
-                        .build(),
+                // 202009
                 new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
@@ -138,6 +89,86 @@ public class WhatsminerFactory
                                 new NewFirmwareMacStrategy(
                                         apiIp,
                                         Integer.parseInt(apiPort)))
+                        .build(),
+                // 202008
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.EDEVS)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .setMacStrategy(
+                                new NewFirmwareMacStrategy(
+                                        apiIp,
+                                        Integer.parseInt(apiPort)))
+                        .build(),
+                // 202007
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.DEVS)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .setMacStrategy(
+                                new NewFirmwareMacStrategy(
+                                        apiIp,
+                                        Integer.parseInt(apiPort)))
+                        .build(),
+                // Old firmware
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                oldFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.STATS)
+                                        .build(),
+                                oldFirmwareStrategy)
                         .build());
     }
 }
