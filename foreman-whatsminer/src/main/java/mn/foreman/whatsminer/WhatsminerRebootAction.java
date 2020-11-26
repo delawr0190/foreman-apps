@@ -19,7 +19,7 @@ public class WhatsminerRebootAction
     @Override
     public boolean run(
             final String ip,
-            final int candidatePort,
+            final int port,
             final Map<String, Object> args)
             throws MinerException {
         final AtomicBoolean success = new AtomicBoolean(false);
@@ -28,9 +28,6 @@ public class WhatsminerRebootAction
         final String password = args.get("password").toString();
 
         final AtomicReference<String> tokenRef = new AtomicReference<>();
-
-        // Patch the port, if needed
-        final int port = (candidatePort == 80 ? 443 : candidatePort);
 
         WhatsminerQuery.query(
                 ip,
