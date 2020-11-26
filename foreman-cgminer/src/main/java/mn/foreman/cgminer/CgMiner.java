@@ -54,6 +54,9 @@ public class CgMiner
                 true);
     }
 
+    /** The command key. */
+    private final String commandKey;
+
     /** The connection timeout. */
     private final int connectTimeout;
 
@@ -73,6 +76,7 @@ public class CgMiner
                 builder.apiIp,
                 Integer.parseInt(builder.apiPort),
                 builder.macStrategy);
+        this.commandKey = builder.commandKey;
         this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
@@ -227,7 +231,7 @@ public class CgMiner
 
         try {
             final String message =
-                    "{\"command\":\"" + request.toCommand() + "\"}";
+                    "{\"" + this.commandKey + "\":\"" + request.toCommand() + "\"}";
             LOG.debug("Sending message ({}) to {}:{}",
                     message,
                     this.apiIp,
@@ -306,6 +310,9 @@ public class CgMiner
 
         /** The API port. */
         private String apiPort;
+
+        /** The command key. */
+        private String commandKey = "command";
 
         /** The connection timeout. */
         private int connectTimeout = 10;
@@ -447,6 +454,18 @@ public class CgMiner
          */
         public Builder setApiPort(final int apiPort) {
             this.apiPort = Integer.toString(apiPort);
+            return this;
+        }
+
+        /**
+         * Sets the command key.
+         *
+         * @param key The command key.
+         *
+         * @return This builder instance.
+         */
+        public Builder setCommandKey(final String key) {
+            this.commandKey = key;
             return this;
         }
 

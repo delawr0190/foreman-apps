@@ -110,6 +110,34 @@ public class WhatsminerFactory
                                 new NewFirmwareMacStrategy(
                                         apiIp,
                                         Integer.parseInt(apiPort)))
+                        .build(),
+                new CgMiner.Builder(cgContext, statsWhitelist)
+                        .setApiIp(apiIp)
+                        .setApiPort(apiPort)
+                        .setConnectTimeout(
+                                1,
+                                TimeUnit.SECONDS)
+                        .setCommandKey("cmd")
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.POOLS)
+                                        .build(),
+                                new PoolsResponseStrategy(
+                                        new MrrRigIdCallback(cgContext)))
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.SUMMARY)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .addRequest(
+                                new CgMinerRequest.Builder()
+                                        .setCommand(CgMinerCommand.EDEVS)
+                                        .build(),
+                                newFirmwareStrategy)
+                        .setMacStrategy(
+                                new NewFirmwareMacStrategy(
+                                        apiIp,
+                                        Integer.parseInt(apiPort)))
                         .build());
     }
 }

@@ -49,12 +49,11 @@ public class NewFirmwareMacStrategy
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.SUMMARY)
                                         .build(),
-                                (builder, response) -> {
-                                    WhatsminerUtils.updateSummary(
-                                            response.getValues(),
-                                            new Asic.Builder(),
-                                            context);
-                                })
+                                (builder, response) ->
+                                        WhatsminerUtils.updateSummary(
+                                                response.getValues(),
+                                                new Asic.Builder(),
+                                                context))
                         .build();
 
         try {

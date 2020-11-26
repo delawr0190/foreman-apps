@@ -5,6 +5,8 @@ import mn.foreman.model.MinerID;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -13,6 +15,12 @@ import java.util.Optional;
  */
 public class FirmwareAwareMiner
         implements Miner {
+
+    /** The alt new firmware. */
+    private final Miner altNewFirmware;
+
+    /** The firmware. */
+    private final List<Miner> firmwares;
 
     /** The new firmware. */
     private final Miner newFirmware;
@@ -23,14 +31,22 @@ public class FirmwareAwareMiner
     /**
      * Constructor.
      *
-     * @param oldFirmware The old firmware.
-     * @param newFirmware The new firmware.
+     * @param oldFirmware    The old firmware.
+     * @param newFirmware    The new firmware.
+     * @param altNewFirmware The alternative new firmware.
      */
     FirmwareAwareMiner(
             final Miner oldFirmware,
-            final Miner newFirmware) {
+            final Miner newFirmware,
+            final Miner altNewFirmware) {
         this.oldFirmware = oldFirmware;
         this.newFirmware = newFirmware;
+        this.altNewFirmware = altNewFirmware;
+        this.firmwares =
+                Arrays.asList(
+                        altNewFirmware,
+                        newFirmware,
+                        oldFirmware);
     }
 
     @Override
@@ -45,16 +61,17 @@ public class FirmwareAwareMiner
 
     @Override
     public Optional<String> getMacAddress() {
-        Optional<String> macAddress;
-        try {
-            macAddress = this.newFirmware.getMacAddress();
-            if (!macAddress.isPresent()) {
-                macAddress = this.oldFirmware.getMacAddress();
+        for (final Miner miner : this.firmwares) {
+            try {
+                final Optional<String> macAddress = miner.getMacAddress();
+                if (macAddress.isPresent()) {
+                    return macAddress;
+                }
+            } catch (final Exception e) {
+                // Ignore and try the next
             }
-        } catch (final Exception e) {
-            macAddress = this.oldFirmware.getMacAddress();
         }
-        return macAddress;
+        return Optional.empty();
     }
 
     @Override
@@ -66,9 +83,13 @@ public class FirmwareAwareMiner
     public MinerStats getStats()
             throws MinerException {
         try {
-            return this.newFirmware.getStats();
-        } catch (final Exception e) {
-            return this.oldFirmware.getStats();
+            return this.altNewFirmware.getStats();
+        } catch (final Exception e1) {
+            try {
+                return this.newFirmware.getStats();
+            } catch (final Exception e2) {
+                return this.oldFirmware.getStats();
+            }
         }
     }
 }
