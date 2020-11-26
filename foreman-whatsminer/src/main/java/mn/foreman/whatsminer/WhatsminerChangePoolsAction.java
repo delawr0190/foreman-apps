@@ -21,7 +21,7 @@ public class WhatsminerChangePoolsAction
     @Override
     protected boolean doChange(
             final String ip,
-            final int port,
+            final int candidatePort,
             final Map<String, Object> parameters,
             final List<Pool> pools)
             throws MinerException {
@@ -29,6 +29,9 @@ public class WhatsminerChangePoolsAction
 
         final String username = parameters.get("username").toString();
         final String password = parameters.get("password").toString();
+
+        // Patch the port, if needed
+        final int port = (candidatePort == 80 ? 443 : candidatePort);
 
         final AtomicReference<String> tokenRef = new AtomicReference<>();
 

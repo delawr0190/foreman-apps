@@ -10,6 +10,7 @@ import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.eval.EvalStrategy;
 import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
+import mn.foreman.pickaxe.command.asic.whatsminer.WhatsminerGetStrategy;
 
 import java.util.Optional;
 import java.util.Set;
@@ -104,6 +105,9 @@ public class AsicStrategyFactory
                 break;
             case "eval":
                 strategy = Optional.of(new EvalStrategy());
+                break;
+            case "whatsminer-get":
+                strategy = Optional.of(new WhatsminerGetStrategy());
                 break;
             default:
                 break;

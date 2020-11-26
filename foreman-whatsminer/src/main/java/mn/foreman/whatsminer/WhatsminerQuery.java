@@ -39,7 +39,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /** Utilities for interacting with a whatsminer. */
-class WhatsminerQuery {
+public class WhatsminerQuery {
 
     /** The logger for this class. */
     private static final Logger LOG =
@@ -57,7 +57,7 @@ class WhatsminerQuery {
      *
      * @throws MinerException on failure.
      */
-    static void query(
+    public static void query(
             final String ip,
             final int port,
             final String username,
