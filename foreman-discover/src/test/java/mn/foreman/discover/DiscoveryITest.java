@@ -42,6 +42,12 @@ public class DiscoveryITest {
                                 .build(),
                         Discovery
                                 .builder()
+                                .query("{\"command\":\"edevs\"}")
+                                .response("")
+                                .success(true)
+                                .build(),
+                        Discovery
+                                .builder()
                                 .query("{\"command\":\"summary\"}")
                                 .response("")
                                 .success(true)
@@ -87,6 +93,12 @@ public class DiscoveryITest {
                         Discovery
                                 .builder()
                                 .query("{\"command\":\"devs\"}")
+                                .response("")
+                                .success(false)
+                                .build(),
+                        Discovery
+                                .builder()
+                                .query("{\"command\":\"edevs\"}")
                                 .response("")
                                 .success(false)
                                 .build(),
