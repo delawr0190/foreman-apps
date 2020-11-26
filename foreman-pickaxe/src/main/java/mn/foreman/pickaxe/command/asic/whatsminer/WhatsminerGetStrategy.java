@@ -40,13 +40,9 @@ public class WhatsminerGetStrategy
                                 args,
                                 "port"));
         final String username =
-                safeGet(
-                        args,
-                        "username");
+                args.getOrDefault("username", "").toString();
         final String password =
-                safeGet(
-                        args,
-                        "password");
+                args.getOrDefault("password", "").toString();
         final String uri =
                 safeGet(
                         args,
