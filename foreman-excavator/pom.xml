@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.30.3-SNAPSHOT</version>
+        <version>3.30.3</version>
     </parent>
 
     <artifactId>foreman-excavator</artifactId>
-    <version>3.30.3-SNAPSHOT</version>
+    <version>3.30.3</version>
     <name>foreman: foreman-excavator</name>
 
     <packaging>jar</packaging>
