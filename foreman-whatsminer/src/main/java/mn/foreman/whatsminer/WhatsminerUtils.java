@@ -40,9 +40,22 @@ class WhatsminerUtils {
                     if (code == HttpStatus.SC_OK) {
                         final Document document =
                                 Jsoup.parse(data);
-                        final Element input =
-                                document.select("input[name=token]").first();
-                        token.set(input.attr("value"));
+                        final Element form =
+                                document.select("form").first();
+                        if (form != null) {
+                            final Element input =
+                                    document.select("input[name=token]").first();
+                            token.set(input.attr("value"));
+                        } else {
+                            // No form - attempt to extract from js
+                            final int start = data.indexOf("token");
+                            final int tokenStart = data.indexOf("'", start);
+                            final int tokenEnd = data.indexOf("'", tokenStart + 1);
+                            token.set(
+                                    data.substring(
+                                            tokenStart,
+                                            tokenEnd).replace("'", ""));
+                        }
                     }
                 })
                 .build();
