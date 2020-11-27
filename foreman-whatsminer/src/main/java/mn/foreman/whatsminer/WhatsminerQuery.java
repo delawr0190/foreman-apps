@@ -29,6 +29,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -101,6 +102,8 @@ public class WhatsminerQuery {
                 (statusCode, data) -> {
                     LOG.debug("Code: {}", statusCode);
                     loggedIn.set(statusCode != HttpStatus.SC_FORBIDDEN);
+                },
+                e -> {
                 });
         if (loggedIn.get()) {
             for (final Query query : queries) {
@@ -115,7 +118,8 @@ public class WhatsminerQuery {
                         query.paramEnricher,
                         requestConfig,
                         cookieStore,
-                        query.callback);
+                        query.callback,
+                        query.timeout);
             }
         } else {
             throw new MinerException("Failed to obtain config data");
@@ -137,6 +141,7 @@ public class WhatsminerQuery {
      * @param requestConfig   The request config.
      * @param cookieStore     The cookie store.
      * @param callback        The callback for processing the response.
+     * @param timeout         The timeout callback.
      *
      * @throws MinerException on failure.
      */
@@ -151,7 +156,8 @@ public class WhatsminerQuery {
             final Consumer<List<Map<String, Object>>> paramEnricher,
             final RequestConfig requestConfig,
             final CookieStore cookieStore,
-            final BiConsumer<Integer, String> callback)
+            final BiConsumer<Integer, String> callback,
+            final Consumer<SocketTimeoutException> timeout)
             throws MinerException {
         try (final CloseableHttpClient client =
                      HttpClients
@@ -209,15 +215,21 @@ public class WhatsminerQuery {
                 httpRequest = post;
             }
 
-            try (final CloseableHttpResponse response =
-                         client.execute(httpRequest)) {
-                final StatusLine statusLine =
-                        response.getStatusLine();
-                final String responseBody =
-                        EntityUtils.toString(response.getEntity());
-                callback.accept(
-                        statusLine.getStatusCode(),
-                        responseBody);
+            try {
+                try (final CloseableHttpResponse response =
+                             client.execute(httpRequest)) {
+                    final StatusLine statusLine =
+                            response.getStatusLine();
+                    final String responseBody =
+                            EntityUtils.toString(response.getEntity());
+                    callback.accept(
+                            statusLine.getStatusCode(),
+                            responseBody);
+                }
+            } catch (final SocketTimeoutException ste) {
+                if (timeout != null) {
+                    timeout.accept(ste);
+                }
             }
         } catch (final Exception e) {
             throw new MinerException(e);
@@ -262,6 +274,9 @@ public class WhatsminerQuery {
 
         /** The param enricher. */
         private final Consumer<List<Map<String, Object>>> paramEnricher;
+
+        /** The timeout callback. */
+        private final Consumer<SocketTimeoutException> timeout;
 
         /** The URI. */
         private final String uri;

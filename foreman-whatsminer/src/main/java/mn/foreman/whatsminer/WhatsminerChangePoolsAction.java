@@ -95,6 +95,7 @@ public class WhatsminerChangePoolsAction
                                                         tokenRef.get())))
                                 .callback((integer, s) ->
                                         success.set(integer == HttpStatus.SC_OK))
+                                .timeout(e -> success.set(true))
                                 .build()));
 
         return success.get();
