@@ -29,7 +29,7 @@ public class TelnetJsonStrategy
             return Query.jsonQuery(
                     apiIp,
                     apiPort,
-                    "summary",
+                    "summary\n",
                     new TypeReference<Summary>() {
                     });
         } catch (final Exception e) {
