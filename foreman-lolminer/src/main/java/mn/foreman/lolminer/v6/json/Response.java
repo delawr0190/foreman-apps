@@ -1,5 +1,6 @@
 package mn.foreman.lolminer.v6.json;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -87,6 +88,7 @@ public class Response {
         public String name;
 
         /** The temperature. */
+        @JsonAlias("Temp (deg C)")
         @JsonProperty("Temps (deg C)")
         public int temp;
     }
@@ -119,6 +121,10 @@ public class Response {
         /** The total number of submitted shares. */
         @JsonProperty("Submitted")
         public int submitted;
+
+        /** The units. */
+        @JsonProperty("Performance_Unit")
+        public String units;
 
         /** The connection uptime. */
         @JsonProperty("Uptime")

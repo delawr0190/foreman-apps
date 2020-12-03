@@ -81,9 +81,14 @@ public class Lolminer
                                 0)
                         .build());
 
+        final PerformanceUnit performanceUnit =
+                PerformanceUnit.toUnit(response.session.units);
+
         final Rig.Builder rigBuilder =
                 new Rig.Builder()
-                        .setHashRate(response.session.hashRate)
+                        .setHashRate(
+                                response.session.hashRate.multiply(
+                                        performanceUnit.getMultiplier()))
                         .addAttribute(
                                 "gpu_algo",
                                 response.mining.algorithm)
