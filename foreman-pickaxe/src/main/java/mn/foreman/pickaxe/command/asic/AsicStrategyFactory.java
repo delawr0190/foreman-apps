@@ -109,6 +109,16 @@ public class AsicStrategyFactory
             case "whatsminer-get":
                 strategy = Optional.of(new WhatsminerGetStrategy());
                 break;
+            case "network":
+                strategy = Optional.of(
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getNetworkStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache)));
+                break;
             default:
                 break;
         }

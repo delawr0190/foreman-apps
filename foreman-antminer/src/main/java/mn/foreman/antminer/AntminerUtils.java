@@ -10,7 +10,10 @@ import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -21,6 +24,10 @@ public class AntminerUtils {
 
     /** The known bOS types. */
     private static final List<AntminerType> BRAIINS_TYPES;
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(AntminerUtils.class);
 
     /** The mapper for parsing json. */
     private static final ObjectMapper OBJECT_MAPPER =
@@ -35,6 +42,52 @@ public class AntminerUtils {
                         .filter(AntminerType::isBraiins)
                         .collect(Collectors.toList());
         BRAIINS_TYPES = Collections.unmodifiableList(braiinsTypes);
+    }
+
+    /**
+     * Obtains the miner conf.
+     *
+     * @param ip       The IP.
+     * @param port     The port.
+     * @param realm    The realm.
+     * @param uri      The URI.
+     * @param username The username.
+     * @param password The password.
+     *
+     * @return The conf.
+     *
+     * @throws Exception on failure.
+     */
+    public static Map<String, Object> getConf(
+            final String ip,
+            final int port,
+            final String realm,
+            final String uri,
+            final String username,
+            final String password) throws Exception {
+        final AtomicReference<Map<String, Object>> minerConfRef =
+                new AtomicReference<>();
+        Query.digestGet(
+                ip,
+                port,
+                realm,
+                uri,
+                username,
+                password,
+                (code, s) -> {
+                    try {
+                        minerConfRef.set(
+                                OBJECT_MAPPER.readValue(
+                                        // Patch fan-ctrl, if needed
+                                        s.replace(": ,", ": false,"),
+                                        new TypeReference<Map<String, Object>>() {
+
+                                        }));
+                    } catch (final IOException e) {
+                        LOG.warn("Exception occurred while querying", e);
+                    }
+                });
+        return minerConfRef.get();
     }
 
     /**

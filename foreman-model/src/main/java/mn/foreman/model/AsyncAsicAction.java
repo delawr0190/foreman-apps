@@ -14,6 +14,7 @@ import java.util.Set;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 
 /**
  * An {@link AsyncAsicAction} provides an {@link AsicAction} that will perform
@@ -43,6 +44,12 @@ public class AsyncAsicAction
     /** The factory for creating miners that can be used to obtain metrics. */
     private final MinerFactory minerFactory;
 
+    /** The param hook. */
+    private final BiFunction<
+            Map<String, Object>,
+            Map<String, Object>,
+            Map<String, Object>> paramHook;
+
     /** The cache. */
     private final StatsCache statsCache;
 
@@ -70,6 +77,8 @@ public class AsyncAsicAction
      * @param completableAction The completable action.
      * @param blacklist         The blacklist.
      * @param statsCache        The stats cache.
+     * @param paramHook         The param hook.
+     * @param paramHook         The param hook.
      */
     public AsyncAsicAction(
             final long delay,
@@ -79,7 +88,11 @@ public class AsyncAsicAction
             final MinerFactory minerFactory,
             final CompletableAction completableAction,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final BiFunction<
+                    Map<String, Object>,
+                    Map<String, Object>,
+                    Map<String, Object>> paramHook) {
         this.delay = delay;
         this.interval = interval;
         this.units = units;
@@ -88,6 +101,7 @@ public class AsyncAsicAction
         this.completableAction = completableAction;
         this.blacklist = blacklist;
         this.statsCache = statsCache;
+        this.paramHook = paramHook;
     }
 
     @Override
@@ -115,7 +129,12 @@ public class AsyncAsicAction
             this.blacklist.add(minerID);
             this.statsCache.invalidate(minerID);
 
-            final Miner miner = this.minerFactory.create(newParams);
+            final Map<String, Object> alteredParams =
+                    this.paramHook.apply(
+                            args,
+                            newParams);
+
+            final Miner miner = this.minerFactory.create(alteredParams);
             this.task =
                     this.threadPool.scheduleAtFixedRate(
                             () -> evaluateMiner(

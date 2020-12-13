@@ -5,13 +5,9 @@ import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -25,10 +21,6 @@ import java.util.stream.Collectors;
  */
 public class StockChangePoolsAction
         extends AbstractChangePoolsAction {
-
-    /** The logger for this class. */
-    private static final Logger LOG =
-            LoggerFactory.getLogger(FirmwareAwareAction.class);
 
     /** The mapper for json processing. */
     private static final ObjectMapper MAPPER = new ObjectMapper();
@@ -61,36 +53,20 @@ public class StockChangePoolsAction
             throws MinerException {
         boolean success;
 
-        final ObjectMapper objectMapper = new ObjectMapper();
         try {
             final String username =
                     (String) parameters.getOrDefault("username", "");
             final String password =
                     (String) parameters.getOrDefault("password", "");
 
-            final AtomicReference<Map<String, Object>> minerConfRef =
-                    new AtomicReference<>();
-            Query.digestGet(
-                    ip,
-                    port,
-                    this.realm,
-                    "/cgi-bin/get_miner_conf.cgi",
-                    username,
-                    password,
-                    (code, s) -> {
-                        try {
-                            minerConfRef.set(
-                                    objectMapper.readValue(
-                                            // Patch fan-ctrl, if needed
-                                            s.replace(": ,", ": false,"),
-                                            new TypeReference<Map<String, Object>>() {
-
-                                            }));
-                        } catch (final IOException e) {
-                            LOG.warn("Exception occurred while querying", e);
-                        }
-                    });
-            final Map<String, Object> minerConf = minerConfRef.get();
+            final Map<String, Object> minerConf =
+                    AntminerUtils.getConf(
+                            ip,
+                            port,
+                            this.realm,
+                            "/cgi-bin/get_miner_conf.cgi",
+                            username,
+                            password);
             if (minerConf != null) {
                 success =
                         changeConf(

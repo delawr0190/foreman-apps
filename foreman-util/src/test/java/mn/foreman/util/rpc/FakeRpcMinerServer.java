@@ -27,7 +27,7 @@ public class FakeRpcMinerServer
 
     /** A reusable thread pool. */
     private static final Executor THREAD_POOL =
-            Executors.newSingleThreadExecutor();
+            Executors.newCachedThreadPool();
 
     /** A latch for waiting until the socket is closed. */
     private final CountDownLatch closeLatch =

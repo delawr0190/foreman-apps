@@ -10,6 +10,56 @@ import java.util.Map;
 public class TestUtils {
 
     /**
+     * Creates test network json.
+     *
+     * @param apiPort         The new API port.
+     * @param includeHostname Whether or not the hostname should be included.
+     * @param extra           The extra.
+     *
+     * @return The test data.
+     */
+    public static Map<String, Object> toNetworkJson(
+            final int apiPort,
+            final boolean includeHostname,
+            final Map<String, Object> extra) {
+        final Map<String, Object> params =
+                new HashMap<>(
+                        toNetworkJson(
+                                apiPort,
+                                includeHostname));
+        params.putAll(extra);
+        return params;
+    }
+
+    /**
+     * Creates test network json.
+     *
+     * @param apiPort         The API port.
+     * @param includeHostname Whether or not the hostname should be included.
+     *
+     * @return The test data.
+     */
+    public static Map<String, Object> toNetworkJson(
+            final int apiPort,
+            final boolean includeHostname) {
+        final Map<String, Object> network = new HashMap<>();
+        network.put("gateway", "192.168.1.1");
+        network.put("netmask", "255.255.255.0");
+        network.put("ip", "192.168.1.189");
+        network.put("dns", "192.168.1.1");
+        if (includeHostname) {
+            network.put("hostname", "hostname");
+        }
+        return ImmutableMap.of(
+                "newApiIp",
+                "127.0.0.1",
+                "newApiPort",
+                Integer.toString(apiPort),
+                "network",
+                network);
+    }
+
+    /**
      * Creates test pool json.
      *
      * @param extra The extra.

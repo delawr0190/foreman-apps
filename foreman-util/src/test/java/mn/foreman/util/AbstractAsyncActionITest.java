@@ -205,7 +205,8 @@ public abstract class AbstractAsyncActionITest {
                                 new HashSet<>(),
                                 new SelfExpiringStatsCache(
                                         1,
-                                        TimeUnit.SECONDS));
+                                        TimeUnit.SECONDS),
+                                AsyncAsicActionUtils::ipChangingHook);
                 asicAction.runAction(
                         "127.0.0.1",
                         port,
