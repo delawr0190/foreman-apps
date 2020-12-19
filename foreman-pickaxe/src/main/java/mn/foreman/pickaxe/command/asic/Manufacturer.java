@@ -320,7 +320,14 @@ public enum Manufacturer {
                                     statsCache,
                                     new DragonmintFactory(),
                                     new DragonmintChangePoolsAction())),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new DragonmintFactory(),
+                            new DragonmintNetworkAction(),
+                            AsyncAsicActionUtils::ipChangingHook)),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -378,7 +385,14 @@ public enum Manufacturer {
                                     statsCache,
                                     new InnosiliconFactory(ApiType.HS_API),
                                     new DragonmintChangePoolsAction())),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new InnosiliconFactory(ApiType.HS_API),
+                            new DragonmintNetworkAction(),
+                            AsyncAsicActionUtils::ipChangingHook)),
 
     /** MultMiner. */
     MULTMINER(
