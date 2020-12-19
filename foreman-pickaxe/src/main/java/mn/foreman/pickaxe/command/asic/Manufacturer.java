@@ -2,10 +2,7 @@ package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.aixin.AixinTypeFactory;
 import mn.foreman.antminer.*;
-import mn.foreman.avalon.AvalonChangePoolsAction;
-import mn.foreman.avalon.AvalonFactory;
-import mn.foreman.avalon.AvalonRebootAction;
-import mn.foreman.avalon.AvalonTypeFactory;
+import mn.foreman.avalon.*;
 import mn.foreman.baikal.BaikalChangePoolsAction;
 import mn.foreman.baikal.BaikalDetectionStrategy;
 import mn.foreman.baikal.BaikalFactory;
@@ -171,7 +168,15 @@ public enum Manufacturer {
                             new AvalonFactory(),
                             new AvalonRebootAction()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new AvalonFactory(),
+                            new AvalonNetworkAction(
+                                    new AvalonRebootAction()),
+                            AsyncAsicActionUtils::ipChangingHook)),
 
     /** Baikal. */
     BAIKAL(
@@ -447,7 +452,14 @@ public enum Manufacturer {
                                     statsCache,
                                     new ObeliskFactory(),
                                     new ObeliskChangePoolsAction())),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new ObeliskFactory(),
+                            new ObeliskNetworkAction(),
+                            AsyncAsicActionUtils::ipChangingHook)),
 
     /** Spondoolies. */
     SPONDOOLIES(
