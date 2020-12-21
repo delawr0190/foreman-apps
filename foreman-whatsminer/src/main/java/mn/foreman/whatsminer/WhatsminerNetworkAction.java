@@ -33,16 +33,16 @@ public class WhatsminerNetworkAction
                                     "ip",
                                     network.ipAddress)
                             .put(
-                                    "netmask",
+                                    "mask",
                                     network.netmask)
                             .put(
-                                    "gateway",
+                                    "gate",
                                     network.gateway)
                             .put(
                                     "dns",
                                     network.dns)
                             .put(
-                                    "hostname",
+                                    "host",
                                     network.hostname)
                             .build());
         } catch (final Exception e) {

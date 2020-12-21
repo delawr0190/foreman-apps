@@ -26,7 +26,7 @@ public class WhatsminerNetworkITest
                                         "{\"cmd\":\"get_token\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":\"S\",\"When\":1608417125,\"Code\":134,\"Msg\":{\"time\":\"6915\",\"salt\":\"BQ5hoXV9\",\"newsalt\":\"a5TtWui2\"},\"Description\":\"whatsminer v1.1\"}"),
-                                        "{\"enc\":1,\"data\":\"kVBW4uRI5N0QfUfzTDyHvom2D4UXJUo8p+GXwEYylLsrRY1a3qJyCOiNNXdlmn7FT4SmoEb2I/tmSe3/0BkO9PkkPxFk6bYu/+bgxw/WIe8UA9Mhnt6VPyzqPxwyPyu0yl5eaUuXpGS5NGifuyUAGq4g6kUULL2gbtXo12QXfwMNGIEd57NKcoyttCWYmhnIXpnvOdDql4mubthUjNAawg==\"}",
+                                        "{\"enc\":1,\"data\":\"kVBW4uRI5N0QfUfzTDyHvom2D4UXJUo8p+GXwEYylLsxf28p9p2B7L3ofKqGXcOecm5lFcrr0CYLZ/59KbFASqwGC5BPsJ2g3ghmV7fIbP4ZZQkFIWxLzz70zbx05FSeKQAnYbPFv3LVHWaCodkuYK102a70W8cJ7jVyFDQ1G1XTQWbmLHxlEVPIZTFKEkfCMcLiHeo/UR8uW2LlMiVRwQ==\"}",
                                         new RpcHandler(
                                                 "{\"enc\":\"99J8w83zIqB3/n9c5GlK0Ms8rMLrtR4I9L3mL3ihmpoy4J0v+AHcKtijbyE92q22MIKC6VKEUcYL2KQS50euQWMqSBlxCPx8YYy4oRkOE4C7kjyvgs9rRMH/mhiVH9k+\"}"))),
                         () -> new FakeRpcMinerServer(

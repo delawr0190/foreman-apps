@@ -4,7 +4,7 @@ package mn.foreman.whatsminer.latest;
 public enum Command {
 
     /** update_pools. */
-    UPDATE_POOLS("update_pool"),
+    UPDATE_POOLS("update_pools"),
 
     /** reboot. */
     REBOOT("reboot"),
