@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Performs a reboot of a Whatsminer miner. */
-public class WhatsminerRebootAction
+public class WhatsminerRebootActionOld
         implements AsicAction.CompletableAction {
 
     @Override

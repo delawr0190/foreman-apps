@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** A strategy for changing pools on Whatsminer miners. */
-public class WhatsminerChangePoolsAction
+public class WhatsminerChangePoolsActionOld
         extends AbstractChangePoolsAction {
 
     @Override

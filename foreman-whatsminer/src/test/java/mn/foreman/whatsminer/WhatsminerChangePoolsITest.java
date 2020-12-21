@@ -4,25 +4,65 @@ import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
+import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
+/** Tests changing pools on a Whatsminer. */
+@RunWith(Parameterized.class)
 public class WhatsminerChangePoolsITest
         extends AbstractAsyncActionITest {
 
-    public WhatsminerChangePoolsITest() {
+    /**
+     * Constructor.
+     *
+     * @param rpcHandlers  The RPC handlers.
+     * @param httpHandlers The HTTP handlers.
+     * @param json         The test json.
+     */
+    public WhatsminerChangePoolsITest(
+            final Map<String, HandlerInterface> rpcHandlers,
+            final Map<String, ServerHandler> httpHandlers,
+            final Map<String, Object> json) {
         super(
                 8080,
                 4028,
-                new WhatsminerChangePoolsAction(),
+                new WhatsminerFirmwareAwareAction(
+                        new WhatsminerChangePoolsActionOld(),
+                        new WhatsminerChangePoolsActionNew()),
                 Arrays.asList(
                         () -> new FakeRpcMinerServer(
                                 4028,
+                                rpcHandlers),
+                        () -> new FakeHttpMinerServer(
+                                8080,
+                                httpHandlers)),
+                new WhatsminerFactory(),
+                json,
+                true);
+    }
+
+    /**
+     * Test parameters
+     *
+     * @return The test parameters.
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> parameters() {
+        return Arrays.asList(
+                new Object[][]{
+                        {
+                                // Old firmware
                                 ImmutableMap.of(
                                         "{\"command\":\"summary\"}",
                                         new RpcHandler(
@@ -32,9 +72,7 @@ public class WhatsminerChangePoolsITest
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1604757733,\"Code\":9,\"Msg\":\"3 ASC(s)\",\"Description\":\"cgminer 4.9.2\"}],\"DEVS\":[{\"ASC\":0,\"Name\":\"SM\",\"ID\":0,\"Slot\":0,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":71.50,\"Chip Frequency\":617,\"Fan Speed In\":4950,\"Fan Speed Out\":4920,\"MHS av\":22711971.14,\"MHS 5s\":19540157.81,\"MHS 1m\":22079665.63,\"MHS 5m\":22534937.07,\"MHS 15m\":22613625.46,\"Accepted\":1626,\"Rejected\":9,\"Hardware Errors\":324,\"Utility\":1.47,\"Last Share Pool\":0,\"Last Share Time\":1604757724,\"Total MH\":1505682090973.0000,\"Diff1 Work\":1369410,\"Difficulty Accepted\":345293896.00000000,\"Difficulty Rejected\":1622162.00000000,\"Last Share Difficulty\":158554.00000000,\"Last Valid Work\":1604757733,\"Device Hardware%\":0.0237,\"Device Rejected%\":118.4570,\"Device Elapsed\":66295,\"Upfreq Complete\":1,\"Effective Chips\":111,\"PCB SN\":\"H3M14S6F200114K10102\",\"Chip Temp Min\":65.00,\"Chip Temp Max\":87.70,\"Chip Temp Avg\":80.36},{\"ASC\":1,\"Name\":\"SM\",\"ID\":1,\"Slot\":1,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":68.50,\"Chip Frequency\":632,\"Fan Speed In\":4950,\"Fan Speed Out\":4920,\"MHS av\":23220108.38,\"MHS 5s\":23015815.92,\"MHS 1m\":23470927.44,\"MHS 5m\":22962220.49,\"MHS 15m\":23064765.42,\"Accepted\":1793,\"Rejected\":13,\"Hardware Errors\":277,\"Utility\":1.62,\"Last Share Pool\":0,\"Last Share Time\":1604757702,\"Total MH\":1539368891060.0000,\"Diff1 Work\":1400047,\"Difficulty Accepted\":384509060.00000000,\"Difficulty Rejected\":2765638.00000000,\"Last Share Difficulty\":158554.00000000,\"Last Valid Work\":1604757733,\"Device Hardware%\":0.0198,\"Device Rejected%\":197.5389,\"Device Elapsed\":66295,\"Upfreq Complete\":1,\"Effective Chips\":111,\"PCB SN\":\"H3M14S6F200114K10107\",\"Chip Temp Min\":66.00,\"Chip Temp Max\":84.50,\"Chip Temp Avg\":76.77},{\"ASC\":2,\"Name\":\"SM\",\"ID\":2,\"Slot\":2,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":72.00,\"Chip Frequency\":619,\"Fan Speed In\":4950,\"Fan Speed Out\":4920,\"MHS av\":22778493.47,\"MHS 5s\":21747874.70,\"MHS 1m\":21710305.01,\"MHS 5m\":22328696.24,\"MHS 15m\":22611254.21,\"Accepted\":1599,\"Rejected\":7,\"Hardware Errors\":311,\"Utility\":1.45,\"Last Share Pool\":0,\"Last Share Time\":1604757717,\"Total MH\":1510092194243.0000,\"Diff1 Work\":1373421,\"Difficulty Accepted\":341850534.00000000,\"Difficulty Rejected\":1235344.00000000,\"Last Share Difficulty\":158554.00000000,\"Last Valid Work\":1604757733,\"Device Hardware%\":0.0226,\"Device Rejected%\":89.9465,\"Device Elapsed\":66295,\"Upfreq Complete\":1,\"Effective Chips\":111,\"PCB SN\":\"H3M14S6F200114K10115\",\"Chip Temp Min\":68.00,\"Chip Temp Max\":87.20,\"Chip Temp Avg\":80.90}],\"id\":1}"),
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1560974720,\"Code\":7,\"Msg\":\"2 Pool(s)\",\"Description\":\"cgminer 4.9.2\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://us-east.stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":3512,\"Accepted\":33825,\"Rejected\":185,\"Works\":788544801,\"Discarded\":2580368,\"Stale\":27,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"002m20s\",\"Last Share Time\":1560974720,\"Diff1 Shares\":1481234400,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":1473980432.00000000,\"Difficulty Rejected\":8081331.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":49174.00000000,\"Work Difficulty\":49174.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"us-east.stratum.slushpool.com\",\"Stratum Difficulty\":49174.00000000,\"Has GBT\":false,\"Best Share\":5452261792,\"Pool Rejected%\":0.5453,\"Pool Stale%\":0.0000,\"Bad Work\":183,\"Current Block Height\":581482,\"Current Block Version\":536870912},{\"POOL\":1,\"URL\":\"stratum+tcp://us-central01.miningrigrentals.com:50194\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxxx.yyyy\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912}],\"id\":1}"))),
-                        () -> new FakeHttpMinerServer(
-                                8080,
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1560974720,\"Code\":7,\"Msg\":\"2 Pool(s)\",\"Description\":\"cgminer 4.9.2\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://us-east.stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":3512,\"Accepted\":33825,\"Rejected\":185,\"Works\":788544801,\"Discarded\":2580368,\"Stale\":27,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"002m20s\",\"Last Share Time\":1560974720,\"Diff1 Shares\":1481234400,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":1473980432.00000000,\"Difficulty Rejected\":8081331.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":49174.00000000,\"Work Difficulty\":49174.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"us-east.stratum.slushpool.com\",\"Stratum Difficulty\":49174.00000000,\"Has GBT\":false,\"Best Share\":5452261792,\"Pool Rejected%\":0.5453,\"Pool Stale%\":0.0000,\"Bad Work\":183,\"Current Block Height\":581482,\"Current Block Version\":536870912},{\"POOL\":1,\"URL\":\"stratum+tcp://us-central01.miningrigrentals.com:50194\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxxx.yyyy\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912}],\"id\":1}")),
                                 ImmutableMap.of(
                                         "/cgi-bin/luci/",
                                         new HttpHandler(
@@ -317,14 +355,40 @@ public class WhatsminerChangePoolsITest
                                                         "Cookie",
                                                         "sysauth=c57ede0698febf098dca307d106376d0"),
                                                 "",
-                                                Collections.emptyMap())))),
-                new WhatsminerFactory(),
-                TestUtils.toPoolJson(
-                        ImmutableMap.of(
-                                "test",
-                                true,
-                                "boundary",
-                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF")),
-                true);
+                                                Collections.emptyMap())),
+                                TestUtils.toPoolJson(
+                                        ImmutableMap.of(
+                                                "test",
+                                                true,
+                                                "boundary",
+                                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF"))
+                        },
+                        {
+                                // New firmware
+                                ImmutableMap.of(
+                                        "{\"cmd\":\"get_token\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":\"S\",\"When\":1608417125,\"Code\":134,\"Msg\":{\"time\":\"6915\",\"salt\":\"BQ5hoXV9\",\"newsalt\":\"a5TtWui2\"},\"Description\":\"whatsminer v1.1\"}"),
+                                        "{\"enc\":1,\"data\":\"R5OGMYYYx2LtfDiwrwsQbdfSHzqnQdVxlDVmQFgdObhwa3zyWqoVkYxngY74kXe2goWcX8cTc8GcjaoREMBsE0aZTUO9DsdZLMdTaucglOTfd+/VGqiR4C3iiIwH4Edf6np14rTtVZlA2+eo0vVj03D8aMu3AcSns2n0wLjoBEyPZ1R6IPFfu83/DEDDOYd/aL7YbQfjUSeqSYaZAhEMpD0BUut62qJZTXPHdGWXrpqnLBj4Z9kvXB7uBR+7ThuFoHv3byowrVg8JAv4bz3RpPfn7Y9M55zkrkuUWOdMi4gq3RdxhOcLOMAxv2TnPQFaSB8dZwXBoa8vVwi2AJ7djN2VPiFxi2YCRIl+31bUKw1eh2q8+y5li9+j5PtU5dyF9C+TRv0B1X+JJr/neoS7tDXgq0Qn8JGMCoTdn6PsJm5+SIj61qtHlGyq3aalpbb5OENSNUQ/ROVi2N/YD/0tVUHLSqkq2Mnio4Vuv/KkBRFTxo0JOly1mcEw6iUdamMt\"}",
+                                        new RpcHandler(
+                                                "{\"enc\":\"99J8w83zIqB3/n9c5GlK0Ms8rMLrtR4I9L3mL3ihmpoy4J0v+AHcKtijbyE92q22MIKC6VKEUcYL2KQS50euQWMqSBlxCPx8YYy4oRkOE4C7kjyvgs9rRMH/mhiVH9k+\"}"),
+                                        "{\"cmd\":\"summary\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1606349344,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"cgminer 4.9.2\"}],\"SUMMARY\":[{\"Elapsed\":271950,\"MHS av\":78130188.72,\"MHS 5s\":78398752.21,\"MHS 1m\":78226283.81,\"MHS 5m\":78062260.38,\"MHS 15m\":78035812.17,\"Found Blocks\":0,\"Getworks\":9983,\"Accepted\":57681,\"Rejected\":23,\"Hardware Errors\":9653,\"Utility\":12.73,\"Discarded\":373254,\"Stale\":0,\"Get Failures\":0,\"Local Work\":2771704359,\"Remote Failures\":0,\"Network Blocks\":462,\"Total MH\":21247477854851.0000,\"Work Utility\":17054.14,\"Difficulty Accepted\":4940471970.00000000,\"Difficulty Rejected\":1908584.00000000,\"Difficulty Stale\":0.00000000,\"Best Share\":3846739891,\"Temperature\":70.00,\"freq_avg\":715,\"Fan Speed In\":3330,\"Fan Speed Out\":2760,\"Voltage\":1202,\"Power\":3583,\"Power_RT\":3584,\"Device Hardware%\":0.0125,\"Device Rejected%\":2.4691,\"Pool Rejected%\":0.0386,\"Pool Stale%\":0.0000,\"Last getwork\":0,\"Uptime\":273220,\"Chip Data\":\"HPAP04-20062018 BINV02-193004G\",\"Power Current\":284500,\"Power Fanspeed\":7520,\"Error Code Count\":0,\"Factory Error Code Count\":0,\"Security Mode\":0,\"Liquid Cooling\":false,\"Hash Stable\":true,\"Hash Stable Cost Seconds\":2171,\"Hash Deviation%\":-0.1253,\"Target Freq\":652,\"Target MHS\":71472240,\"Env Temp\":16.00,\"Power Mode\":\"Normal\",\"Firmware Version\":\"'20200722.19.REL'\",\"MAC\":\"C6:06:12:00:BB:AA\",\"Factory GHS\":75993,\"Power Limit\":3600,\"Power Voltage Input\":231.50,\"Power Current Input\":15.58,\"Chip Temp Min\":49.00,\"Chip Temp Max\":94.39,\"Chip Temp Avg\":78.49,\"Debug\":\"14.0_3564_344\"}],\"id\":1}"),
+                                        "{\"cmd\":\"edevs\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1606349344,\"Code\":9,\"Msg\":\"3 ASC(s)\",\"Description\":\"cgminer 4.9.2\"}],\"DEVS\":[{\"ASC\":0,\"Name\":\"SM\",\"ID\":0,\"Slot\":0,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":65.50,\"Chip Frequency\":718,\"Fan Speed In\":3330,\"Fan Speed Out\":2760,\"MHS av\":26128368.77,\"MHS 5s\":25432047.72,\"MHS 1m\":26121012.12,\"MHS 5m\":26082216.82,\"MHS 15m\":26075094.58,\"Accepted\":19306,\"Rejected\":5,\"Hardware Errors\":3449,\"Utility\":4.26,\"Last Share Pool\":0,\"Last Share Time\":1606349340,\"Total MH\":7105605360540.0000,\"Diff1 Work\":25850013,\"Difficulty Accepted\":1656092402.00000000,\"Difficulty Rejected\":426521.00000000,\"Last Share Difficulty\":87022.00000000,\"Last Valid Work\":1606349344,\"Device Hardware%\":0.0133,\"Device Rejected%\":1.6500,\"Device Elapsed\":271950,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"BAM1FS69630713X30153\",\"Chip Data\":\"HPAP04-20062018 BINV02-193004G\",\"Chip Temp Min\":56.00,\"Chip Temp Max\":86.83,\"Chip Temp Avg\":75.96,\"chip_vol_diff\":14},{\"ASC\":1,\"Name\":\"SM\",\"ID\":1,\"Slot\":1,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":65.50,\"Chip Frequency\":708,\"Fan Speed In\":3330,\"Fan Speed Out\":2760,\"MHS av\":25775347.26,\"MHS 5s\":25589195.43,\"MHS 1m\":25597242.82,\"MHS 5m\":25678145.03,\"MHS 15m\":25720275.43,\"Accepted\":18941,\"Rejected\":7,\"Hardware Errors\":3198,\"Utility\":4.18,\"Last Share Pool\":0,\"Last Share Time\":1606349340,\"Total MH\":7009601228708.0000,\"Diff1 Work\":25500772,\"Difficulty Accepted\":1617996433.00000000,\"Difficulty Rejected\":573971.00000000,\"Last Share Difficulty\":87022.00000000,\"Last Valid Work\":1606349344,\"Device Hardware%\":0.0125,\"Device Rejected%\":2.2508,\"Device Elapsed\":271950,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"BAM1FS69630713X30150\",\"Chip Data\":\"HPAP04-20062018 BINV02-193004G\",\"Chip Temp Min\":56.00,\"Chip Temp Max\":85.67,\"Chip Temp Avg\":75.17,\"chip_vol_diff\":13},{\"ASC\":2,\"Name\":\"SM\",\"ID\":2,\"Slot\":2,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":70.00,\"Chip Frequency\":719,\"Fan Speed In\":3330,\"Fan Speed Out\":2760,\"MHS av\":26226459.61,\"MHS 5s\":26729036.38,\"MHS 1m\":26446959.21,\"MHS 5m\":26290334.58,\"MHS 15m\":26236481.74,\"Accepted\":19434,\"Rejected\":11,\"Hardware Errors\":3006,\"Utility\":4.29,\"Last Share Pool\":0,\"Last Share Time\":1606349335,\"Total MH\":7132281161207.0000,\"Diff1 Work\":25947054,\"Difficulty Accepted\":1666383135.00000000,\"Difficulty Rejected\":908092.00000000,\"Last Share Difficulty\":87022.00000000,\"Last Valid Work\":1606349344,\"Device Hardware%\":0.0116,\"Device Rejected%\":3.4998,\"Device Elapsed\":271950,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"B5M1FS69630717K31306\",\"Chip Data\":\"HP5A04-20070734 BINV02-193004G\",\"Chip Temp Min\":49.00,\"Chip Temp Max\":94.39,\"Chip Temp Avg\":84.34,\"chip_vol_diff\":14}],\"id\":1}"),
+                                        "{\"cmd\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1606349344,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.2\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://ru-west.stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":9983,\"Accepted\":57681,\"Rejected\":23,\"Works\":-1520006932,\"Discarded\":373254,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":1606349340,\"Diff1 Shares\":77297833,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":4940471970.00000000,\"Difficulty Rejected\":1908584.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":87022.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"ru-west.stratum.slushpool.com\",\"Stratum Difficulty\":87022.00000000,\"Has GBT\":false,\"Best Share\":3846739891,\"Pool Rejected%\":0.0386,\"Pool Stale%\":0.0000,\"Bad Work\":462,\"Current Block Height\":658678,\"Current Block Version\":536870912},{\"POOL\":1,\"URL\":\"stratum+tcp://eu.stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912},{\"POOL\":2,\"URL\":\"stratum+tcp://eu.stratum.slushpool.com:3333\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912}],\"id\":1}")),
+                                Collections.emptyMap(),
+                                TestUtils.toPoolJson(
+                                        ImmutableMap.of(
+                                                "test",
+                                                true,
+                                                "boundary",
+                                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF"))
+                        }
+                });
     }
 }

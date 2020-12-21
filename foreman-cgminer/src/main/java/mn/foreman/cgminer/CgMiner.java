@@ -299,6 +299,9 @@ public class CgMiner
         /** The context. */
         private final Context context;
 
+        /** The requests. */
+        private final List<Request> requests = new LinkedList<>();
+
         /** The stats whitelist. */
         private final List<String> statsWhitelist;
 
@@ -322,9 +325,6 @@ public class CgMiner
 
         /** The MAC strategy. */
         private MacStrategy macStrategy = new NullMacStrategy();
-
-        /** The requests. */
-        private List<Request> requests = new LinkedList<>();
 
         /** Constructor. */
         public Builder() {

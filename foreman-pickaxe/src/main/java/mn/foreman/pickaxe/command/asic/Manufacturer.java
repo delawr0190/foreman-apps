@@ -577,16 +577,33 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new WhatsminerFactory(),
-                            new WhatsminerChangePoolsAction()),
+                            new WhatsminerFirmwareAwareAction(
+                                    new WhatsminerChangePoolsActionOld(),
+                                    new WhatsminerChangePoolsActionNew())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new WhatsminerFactory(),
-                            new WhatsminerRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction());
+                            new WhatsminerFirmwareAwareAction(
+                                    new WhatsminerRebootActionOld(),
+                                    new WhatsminerRebootActionNew())),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new WhatsminerFactory(),
+                            new WhatsminerFactoryResetStrategy()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new WhatsminerFactory(),
+                            new WhatsminerNetworkAction(),
+                            AsyncAsicActionUtils::ipChangingHook));
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =
