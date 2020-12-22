@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 
@@ -53,7 +54,9 @@ public class EvalStrategy
                         Query.delimiterQuery(
                                 ip,
                                 port,
-                                toRun);
+                                toRun,
+                                5,
+                                TimeUnit.MINUTES);
             } catch (final Exception e) {
                 response = ExceptionUtils.getStackTrace(e);
             }
