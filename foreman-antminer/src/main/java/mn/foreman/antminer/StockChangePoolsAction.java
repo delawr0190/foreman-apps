@@ -171,7 +171,7 @@ public class StockChangePoolsAction
             throws Exception {
         List<Map<String, Object>> contentList = null;
         String payload = null;
-        if (minerConf.containsKey("bitmain-work-mode")) {
+        if (minerConf.containsKey("bitmain-pwth")) {
             final Map<String, Object> json =
                     ImmutableMap.of(
                             "bitmain-fan-ctrl",

@@ -5,6 +5,7 @@ import mn.foreman.model.AbstractNetworkAction;
 import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.LinkedList;
@@ -17,6 +18,9 @@ import java.util.Map;
  */
 public class StockNetworkAction
         extends AbstractNetworkAction {
+
+    /** Mapper for reading and writing JSON. */
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /** The key. */
     private final String key;
@@ -50,69 +54,106 @@ public class StockNetworkAction
             final String password =
                     (String) parameters.getOrDefault("password", "");
 
-            final String previousHostname =
+            final Map<String, Object> systemInfo =
                     AntminerUtils.getConf(
                             ip,
                             port,
                             this.realm,
                             "/cgi-bin/get_system_info.cgi",
                             username,
-                            password)
+                            password);
+            final String previousHostname =
+                    systemInfo
                             .entrySet()
                             .stream()
                             .filter(entry -> entry.getKey().contains("hostname"))
                             .map(entry -> entry.getValue().toString())
                             .findFirst()
                             .orElseThrow(() -> new MinerException("Failed to obtain previous hostname"));
-            final List<Map<String, Object>> config = new LinkedList<>();
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_nettype",
-                                    this.key),
-                            "Static"));
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_hostname",
-                                    this.key),
-                            network.hostname != null && !network.hostname.isEmpty()
-                                    ? network.hostname
-                                    : previousHostname));
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_ipaddress",
-                                    this.key),
-                            network.ipAddress));
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_netmask",
-                                    this.key),
-                            network.netmask));
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_gateway",
-                                    this.key),
-                            network.gateway));
-            config.add(
-                    toConfig(
-                            toKey(
-                                    "_%s_conf_dnsservers",
-                                    this.key),
-                            network.dns));
+
+            final String newHostname =
+                    network.hostname != null && !network.hostname.isEmpty()
+                            ? network.hostname
+                            : previousHostname;
+
+            List<Map<String, Object>> config = null;
+            String payload = null;
+
+            if (systemInfo.getOrDefault(
+                    "minertype",
+                    "").toString().contains("S19")) {
+                // New miner with new firmware
+                final Map<String, Object> json =
+                        ImmutableMap.<String, Object>builder()
+                                .put(
+                                        "ipHost",
+                                        newHostname)
+                                .put(
+                                        "ipPro",
+                                        "2")
+                                .put(
+                                        "ipAddress",
+                                        network.ipAddress)
+                                .put(
+                                        "ipSub",
+                                        network.netmask)
+                                .put(
+                                        "ipGateway",
+                                        network.gateway)
+                                .put(
+                                        "ipDns",
+                                        network.dns)
+                                .build();
+                payload = OBJECT_MAPPER.writeValueAsString(json);
+            } else {
+                config = new LinkedList<>();
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_nettype",
+                                        this.key),
+                                "Static"));
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_hostname",
+                                        this.key),
+                                newHostname));
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_ipaddress",
+                                        this.key),
+                                network.ipAddress));
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_netmask",
+                                        this.key),
+                                network.netmask));
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_gateway",
+                                        this.key),
+                                network.gateway));
+                config.add(
+                        toConfig(
+                                toKey(
+                                        "_%s_conf_dnsservers",
+                                        this.key),
+                                network.dns));
+            }
 
             Query.digestPost(
                     ip,
                     port,
                     this.realm,
-                    "/cgi-bin/set_miner_conf.cgi",
+                    "/cgi-bin/set_network_info.cgi",
                     username,
                     password,
                     config,
-                    null,
+                    payload,
                     (integer, s) -> {
                     });
         } catch (final MinerException me) {
