@@ -29,11 +29,13 @@ public class WhatsminerChangePoolsITest
      * @param rpcHandlers  The RPC handlers.
      * @param httpHandlers The HTTP handlers.
      * @param json         The test json.
+     * @param foundResult  The found result.
      */
     public WhatsminerChangePoolsITest(
             final Map<String, HandlerInterface> rpcHandlers,
             final Map<String, ServerHandler> httpHandlers,
-            final Map<String, Object> json) {
+            final Map<String, Object> json,
+            final boolean foundResult) {
         super(
                 8080,
                 4028,
@@ -49,7 +51,7 @@ public class WhatsminerChangePoolsITest
                                 httpHandlers)),
                 new WhatsminerFactory(),
                 json,
-                true);
+                foundResult);
     }
 
     /**
@@ -361,7 +363,8 @@ public class WhatsminerChangePoolsITest
                                                 "test",
                                                 true,
                                                 "boundary",
-                                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF"))
+                                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF")),
+                                true
                         },
                         {
                                 // New firmware
@@ -385,9 +388,24 @@ public class WhatsminerChangePoolsITest
                                 TestUtils.toPoolJson(
                                         ImmutableMap.of(
                                                 "test",
-                                                true,
-                                                "boundary",
-                                                "FE88TWd2BJhcA6OQo2vVeNnHCsE_7l58U6UyXVZF"))
+                                                true)),
+                                true
+                        },
+                        {
+                                // New firmware (no write API)
+                                ImmutableMap.of(
+                                        "{\"cmd\":\"get_token\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":\"S\",\"When\":1608417125,\"Code\":134,\"Msg\":{\"time\":\"6915\",\"salt\":\"BQ5hoXV9\",\"newsalt\":\"a5TtWui2\"},\"Description\":\"whatsminer v1.1\"}"),
+                                        "{\"enc\":1,\"data\":\"R5OGMYYYx2LtfDiwrwsQbTU244uRzgVIlaFvSEbpLQ5GMvJfORE6HZyuV6jIx0kE/3kPtzw2FIa2R3Y51SrwpW4rr7h8WquXpp79sLEeOwc+ONuvSmVrsGJ8fM2lTNoAYWSZRBpwpj1oTcYGpLmQRZ/GwpSZrQFZytLIruOmjyo/Hd6if9ZBnDqTQjw/Worq+bI2JmGr86MQhP9lGfmSKLj9+tIJNBtMigKbIi5wdIYFjZfhaeVynUTncK4mLWKRA5rjURNFUGWzIB25Dl9TIG26oS9B33R9zmv4iTQc4K/k2e0UOmgceYxhccLTcXXjbLBpSgDoWem4uVZjV8T4fCsUwcMI854EfhKeeP/4wXFJItGXJgi8aay6LdjmURbTYTz5ymCL9vOBxhZpHsPruqn13MmON9ev8MzZJgiaZqsguiqWm0oSsc729ZlfXUqBXMN2TxhyfNjaUS7WA2cB3EyBsJYn9QtSTqiM2IulwJsqtzaRspkwIG0pBWfsKoIu\"}",
+                                        new RpcHandler(
+                                                "{\"enc\":\"jwpljNU3GQjm+Gw1ULwC2FgxzVupEfMpn9aFiu6gQL2LHWSEzVsEojYHuFXHujVzyHQ+1dZMbUMVhiinUgafXu8DR15ftrTzphRD27i0sy4Y+5U3mvzsNpL1oXkJla3PwlRI5VnizpWeiTt0ff3w4A==\"}")),
+                                Collections.emptyMap(),
+                                TestUtils.toPoolJson(
+                                        ImmutableMap.of(
+                                                "test",
+                                                true)),
+                                false
                         }
                 });
     }

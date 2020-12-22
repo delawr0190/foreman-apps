@@ -4,6 +4,8 @@ import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;
+import mn.foreman.whatsminer.latest.error.ApiException;
+import mn.foreman.whatsminer.latest.error.PermissionDeniedException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -26,8 +28,10 @@ public class WhatsminerRebootActionNew
                     args.getOrDefault("password", "").toString(),
                     Command.REBOOT,
                     Collections.emptyMap());
-        } catch (final Exception e) {
-            throw new MinerException(e);
+        } catch (final ApiException ae) {
+            throw new MinerException("Firmware outdated or bad password", ae);
+        } catch (final PermissionDeniedException pde) {
+            throw new MinerException("Write API must be enabled", pde);
         }
     }
 }

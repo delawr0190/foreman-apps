@@ -4,6 +4,8 @@ import mn.foreman.io.ApiRequest;
 import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
+import mn.foreman.whatsminer.latest.error.ApiException;
+import mn.foreman.whatsminer.latest.error.PermissionDeniedException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -47,7 +49,8 @@ public class WhatsminerApi {
      *
      * @return Whether or not the command was successful.
      *
-     * @throws ApiException on failure.
+     * @throws ApiException              on failure.
+     * @throws PermissionDeniedException on write API not enabled.
      */
     @SuppressWarnings("unchecked")
     public static boolean runCommand(
@@ -56,7 +59,7 @@ public class WhatsminerApi {
             final String password,
             final Command command,
             final Map<String, String> args)
-            throws ApiException {
+            throws ApiException, PermissionDeniedException {
         try {
             // Request token
             final Map<String, Object> result =
@@ -125,13 +128,13 @@ public class WhatsminerApi {
                             aesKey,
                             toDecrypt);
 
-            final Map<String, Object> finalResult = readMap(response);
-            Object status = finalResult.get("STATUS");
-            if (status instanceof List) {
-                status = ((List<Map<String, Object>>) status).get(0).get("STATUS");
-            }
-            return "S".equals(status);
-        } catch (final Exception e) {
+            return processResult(response);
+        } catch (final NoSuchAlgorithmException |
+                BadPaddingException |
+                InvalidKeyException |
+                NoSuchPaddingException |
+                IOException |
+                IllegalBlockSizeException e) {
             throw new ApiException(e);
         }
     }
@@ -251,6 +254,34 @@ public class WhatsminerApi {
     }
 
     /**
+     * Processes the result.
+     *
+     * @param response The result.
+     *
+     * @return Whether or not the command was successful.
+     *
+     * @throws IOException               on failure to read json.
+     * @throws PermissionDeniedException if the write API isn't enabled.
+     */
+    @SuppressWarnings("unchecked")
+    private static boolean processResult(final String response)
+            throws
+            IOException,
+            PermissionDeniedException {
+        final Map<String, Object> finalResult = readMap(response);
+        Object status = finalResult.get("STATUS");
+        if (status instanceof List) {
+            status = ((List<Map<String, Object>>) status).get(0).get("STATUS");
+        } else {
+            final String code = finalResult.get("Code").toString();
+            if ("45".equals(code)) {
+                throw new PermissionDeniedException("Write API must be enabled");
+            }
+        }
+        return "S".equals(status);
+    }
+
+    /**
      * Queries the miner.
      *
      * @param ip     The ip.
@@ -281,7 +312,7 @@ public class WhatsminerApi {
         if (apiRequest.waitForCompletion(
                 5,
                 TimeUnit.SECONDS)) {
-            result = Optional.of(apiRequest.getResponse());
+            result = Optional.ofNullable(apiRequest.getResponse());
         }
 
         return result;

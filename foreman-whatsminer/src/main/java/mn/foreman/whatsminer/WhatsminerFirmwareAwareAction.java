@@ -3,6 +3,7 @@ package mn.foreman.whatsminer;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
+import mn.foreman.whatsminer.latest.error.PermissionDeniedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +52,17 @@ public class WhatsminerFirmwareAwareAction
                     port,
                     args);
         } catch (final MinerException e) {
-            LOG.info("Not new firmware");
-            return this.oldFirmware.run(
-                    ip,
-                    port,
-                    args);
+            final Throwable cause = e.getCause();
+            if (cause instanceof PermissionDeniedException) {
+                LOG.warn("Write API isn't enabled");
+                throw e;
+            } else {
+                LOG.info("Not new firmware");
+                return this.oldFirmware.run(
+                        ip,
+                        port,
+                        args);
+            }
         }
     }
 }

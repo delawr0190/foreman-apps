@@ -2,9 +2,10 @@ package mn.foreman.whatsminer;
 
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
-import mn.foreman.whatsminer.latest.ApiException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;
+import mn.foreman.whatsminer.latest.error.ApiException;
+import mn.foreman.whatsminer.latest.error.PermissionDeniedException;
 
 import java.util.Collections;
 import java.util.Map;
@@ -27,8 +28,10 @@ public class WhatsminerFactoryResetStrategy
                     parameters.getOrDefault("password", "").toString(),
                     Command.FACTORY_RESET,
                     Collections.emptyMap());
-        } catch (final ApiException e) {
-            throw new MinerException("Firmware is too old or bad password", e);
+        } catch (final ApiException ae) {
+            throw new MinerException("Firmware outdated or bad password", ae);
+        } catch (final PermissionDeniedException pde) {
+            throw new MinerException("Write API must be enabled", pde);
         }
     }
 }

@@ -1,14 +1,14 @@
-package mn.foreman.whatsminer.latest;
+package mn.foreman.whatsminer.latest.error;
 
 /**
- * A {@link ApiException} represents an error that occurred while communicating
- * with a remote miner.
+ * An exception covering when the miner indicates that the API is not fully
+ * enabled.
  */
-public class ApiException
+public class PermissionDeniedException
         extends Exception {
 
     /** Constructor. */
-    public ApiException() {
+    public PermissionDeniedException() {
         super();
     }
 
@@ -17,7 +17,7 @@ public class ApiException
      *
      * @param message The message.
      */
-    public ApiException(final String message) {
+    public PermissionDeniedException(final String message) {
         super(message);
     }
 
@@ -27,7 +27,7 @@ public class ApiException
      * @param message The message.
      * @param cause   The cause.
      */
-    public ApiException(
+    public PermissionDeniedException(
             final String message,
             final Throwable cause) {
         super(message, cause);
@@ -38,7 +38,8 @@ public class ApiException
      *
      * @param cause The cause.
      */
-    public ApiException(final Throwable cause) {
+    public PermissionDeniedException(final Throwable cause) {
         super(cause);
     }
+
 }
