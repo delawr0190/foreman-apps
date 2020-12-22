@@ -30,6 +30,12 @@ import java.util.concurrent.TimeUnit;
 /** Utility for querying the Whatsminer API. */
 public class WhatsminerApi {
 
+    /** The connection timeout. */
+    private static final int CONNECTION_TIMEOUT = 30;
+
+    /** The connection timeout (units). */
+    private static final TimeUnit CONNECTION_TIMEOUT_UNITS = TimeUnit.SECONDS;
+
     /** The mapper for writing and reading json. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
@@ -305,13 +311,13 @@ public class WhatsminerApi {
         final Connection connection =
                 ConnectionFactory.createJsonConnection(
                         apiRequest,
-                        5,
-                        TimeUnit.SECONDS);
+                        CONNECTION_TIMEOUT,
+                        CONNECTION_TIMEOUT_UNITS);
         connection.query();
 
         if (apiRequest.waitForCompletion(
-                5,
-                TimeUnit.SECONDS)) {
+                CONNECTION_TIMEOUT,
+                CONNECTION_TIMEOUT_UNITS)) {
             result = Optional.ofNullable(apiRequest.getResponse());
         }
 
