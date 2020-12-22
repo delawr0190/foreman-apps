@@ -149,7 +149,7 @@ public class StockNetworkAction
                     ip,
                     port,
                     this.realm,
-                    "/cgi-bin/set_network_info.cgi",
+                    "/cgi-bin/set_network_conf.cgi",
                     username,
                     password,
                     config,

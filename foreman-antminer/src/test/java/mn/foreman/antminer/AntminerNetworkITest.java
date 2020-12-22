@@ -105,7 +105,7 @@ public class AntminerNetworkITest
                                                         "\"cgminer_version\":\"4.9.0\"\n" +
                                                         "}",
                                                 AntminerNetworkITest::validateDigest),
-                                        "/cgi-bin/set_network_info.cgi",
+                                        "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_conf_nettype=Static&_ant_conf_hostname=hostname&_ant_conf_ipaddress=192.168.1.189&_ant_conf_netmask=255.255.255.0&_ant_conf_gateway=192.168.1.1&_ant_conf_dnsservers=192.168.1.1",
                                                 "ok",
@@ -158,7 +158,7 @@ public class AntminerNetworkITest
                                                         "\"cgminer_version\":\"4.9.0\"\n" +
                                                         "}",
                                                 AntminerNetworkITest::validateDigest),
-                                        "/cgi-bin/set_network_info.cgi",
+                                        "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_conf_nettype=Static&_ant_conf_hostname=antMiner&_ant_conf_ipaddress=192.168.1.189&_ant_conf_netmask=255.255.255.0&_ant_conf_gateway=192.168.1.1&_ant_conf_dnsservers=192.168.1.1",
                                                 "ok",
@@ -213,7 +213,7 @@ public class AntminerNetworkITest
                                                         "\"firmware_type\":\"Release\"\n" +
                                                         "}",
                                                 AntminerNetworkITest::validateDigest),
-                                        "/cgi-bin/set_network_info.cgi",
+                                        "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "{\"ipHost\":\"Antminer\",\"ipPro\":\"2\",\"ipAddress\":\"192.168.1.189\",\"ipSub\":\"255.255.255.0\",\"ipGateway\":\"192.168.1.1\",\"ipDns\":\"192.168.1.1\"}",
                                                 "ok",
