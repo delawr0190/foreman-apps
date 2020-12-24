@@ -101,7 +101,7 @@ public class ObeliskQuery {
             final AtomicReference<String> sessionId) {
         // Update the session cookie
         for (final Map.Entry<String, String> entry : headers.entrySet()) {
-            if ("set-cookie".equals(entry.getKey().toLowerCase())) {
+            if ("set-cookie".equalsIgnoreCase(entry.getKey())) {
                 final String cookie = entry.getValue();
                 if (cookie.contains("sessionid")) {
                     sessionId.set(

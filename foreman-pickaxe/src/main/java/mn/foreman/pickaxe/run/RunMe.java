@@ -118,6 +118,7 @@ public class RunMe {
                         configuration.getApiKey());
         this.foremanApi =
                 new ForemanApiImpl(
+                        configuration.getClientId(),
                         configuration.getPickaxeId(),
                         new ObjectMapper(),
                         new JdkWebUtil(

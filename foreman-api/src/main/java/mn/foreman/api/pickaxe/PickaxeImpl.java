@@ -1,5 +1,7 @@
-package mn.foreman.api;
+package mn.foreman.api.pickaxe;
 
+import mn.foreman.api.JsonUtils;
+import mn.foreman.api.WebUtil;
 import mn.foreman.model.Miner;
 import mn.foreman.model.command.CommandDone;
 import mn.foreman.model.command.CommandStart;
@@ -8,13 +10,13 @@ import mn.foreman.model.command.Commands;
 import mn.foreman.model.mac.MacUpdate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -68,9 +70,11 @@ public class PickaxeImpl
                             this.objectMapper.writeValueAsString(done));
             if (response.isPresent()) {
                 result =
-                        fromJson(
+                        JsonUtils.fromJson(
                                 response.get(),
-                                CommandDone.Response.class);
+                                this.objectMapper,
+                                new TypeReference<CommandDone.Response>() {
+                                });
             }
         } catch (final JsonProcessingException e) {
             LOG.warn("Exception occurred while parsing json", e);
@@ -88,9 +92,11 @@ public class PickaxeImpl
                                 this.pickaxeId,
                                 start.id));
         if (response.isPresent()) {
-            return fromJson(
+            return JsonUtils.fromJson(
                     response.get(),
-                    CommandStart.Response.class);
+                    this.objectMapper,
+                    new TypeReference<CommandStart.Response>() {
+                    });
         }
         return Optional.empty();
     }
@@ -110,9 +116,11 @@ public class PickaxeImpl
                             this.objectMapper.writeValueAsString(update));
             if (response.isPresent()) {
                 result =
-                        fromJson(
+                        JsonUtils.fromJson(
                                 response.get(),
-                                CommandUpdate.Response.class);
+                                this.objectMapper,
+                                new TypeReference<CommandUpdate.Response>() {
+                                });
             }
         } catch (final JsonProcessingException e) {
             LOG.warn("Exception occurred while parsing json", e);
@@ -128,9 +136,11 @@ public class PickaxeImpl
                                 "/api/pickaxe/%s/commands",
                                 this.pickaxeId));
         if (response.isPresent()) {
-            return fromJson(
+            return JsonUtils.fromJson(
                     response.get(),
-                    Commands.class);
+                    this.objectMapper,
+                    new TypeReference<Commands>() {
+                    });
         }
         return Optional.empty();
     }
@@ -179,28 +189,5 @@ public class PickaxeImpl
             updated = true;
         }
         return updated;
-    }
-
-    /**
-     * Converts the provided json to the {@link T}.
-     *
-     * @param json  The json.
-     * @param clazz The {@link Class}.
-     * @param <T>   The response type.
-     *
-     * @return The response object.
-     */
-    private <T> Optional<T> fromJson(
-            final String json,
-            final Class<T> clazz) {
-        try {
-            return Optional.of(
-                    this.objectMapper.readValue(
-                            json,
-                            clazz));
-        } catch (final IOException e) {
-            LOG.warn("Exception occurred while parsing response");
-        }
-        return Optional.empty();
     }
 }

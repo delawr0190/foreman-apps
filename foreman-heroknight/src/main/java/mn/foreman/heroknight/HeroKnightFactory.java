@@ -1,9 +1,9 @@
-package mn.foreman.aixin;
+package mn.foreman.heroknight;
 
-import mn.foreman.heroknight.response.StatsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.heroknight.response.StatsResponseStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -12,9 +12,9 @@ import java.util.Map;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
- * a {@link Miner} that will query an aixin.
+ * a {@link Miner} that will query a heroknight.
  */
-public class AixinFactory
+public class HeroKnightFactory
         extends CgMinerFactory {
 
     @Override

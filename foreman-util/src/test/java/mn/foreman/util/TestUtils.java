@@ -80,6 +80,8 @@ public class TestUtils {
      */
     public static Map<String, Object> toPoolJson() {
         return ImmutableMap.of(
+                "test",
+                true,
                 "pools",
                 Arrays.asList(
                         ImmutableMap.of(

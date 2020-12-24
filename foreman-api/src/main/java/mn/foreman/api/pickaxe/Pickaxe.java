@@ -1,4 +1,4 @@
-package mn.foreman.api;
+package mn.foreman.api.pickaxe;
 
 import mn.foreman.model.Miner;
 import mn.foreman.model.command.CommandDone;

@@ -307,6 +307,41 @@ public class Query {
     }
 
     /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param content           The content.
+     * @param payload           The payload.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure.
+     */
+    public static void post(
+            final String host,
+            final int port,
+            final String path,
+            final List<Map<String, Object>> content,
+            final String payload,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                null,
+                path,
+                null,
+                null,
+                true,
+                content,
+                payload,
+                responseProcessor,
+                20,
+                TimeUnit.SECONDS);
+    }
+
+    /**
      * Performs a rest query with basic auth.
      *
      * @param host              The host.

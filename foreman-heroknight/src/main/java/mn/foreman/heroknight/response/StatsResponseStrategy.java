@@ -1,4 +1,4 @@
-package mn.foreman.aixin.response;
+package mn.foreman.heroknight.response;
 
 import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.ContextKey;
@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 /**
  * A {@link PoolsResponseStrategy} provides a {@link ResponseStrategy}
  * implementation that's capable of parsing a {@link CgMinerCommand#STATS}
- * response from an aixin.
+ * response from a heroknight.
  */
 public class StatsResponseStrategy
         implements ResponseStrategy {
@@ -118,8 +118,7 @@ public class StatsResponseStrategy
                             .stream()
                             .anyMatch(map ->
                                     Integer.parseInt(map.get("Num chips")) !=
-                                            Integer.parseInt(map.get("Num active " +
-                                                    "chips"))));
+                                            Integer.parseInt(map.get("Num active chips"))));
 
             // Context data
             this.context.getSimple(ContextKey.MRR_RIG_ID)

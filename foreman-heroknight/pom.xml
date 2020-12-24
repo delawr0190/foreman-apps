@@ -10,37 +10,36 @@
         <version>3.33.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>foreman-util</artifactId>
+    <artifactId>foreman-heroknight</artifactId>
     <version>3.33.0-SNAPSHOT</version>
-    <name>foreman: foreman-util</name>
+    <name>foreman: foreman-heroknight</name>
 
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.github.wnameless.json</groupId>
-            <artifactId>json-flattener</artifactId>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-cgminer</artifactId>
         </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-util</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
         </dependency>
-        
-        <dependency>
-            <groupId>mn.foreman</groupId>
-            <artifactId>foreman-model</artifactId>
-            <scope>test</scope>
-        </dependency>
-
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <scope>test</scope>
         </dependency>
+
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-util</artifactId>
             <scope>test</scope>
+            <classifier>tests</classifier>
         </dependency>
         <dependency>
             <groupId>junit</groupId>

@@ -83,6 +83,7 @@
         <module>foreman-futurebit</module>
         <module>foreman-gminer</module>
         <module>foreman-grinpro</module>
+        <module>foreman-heroknight</module>
         <module>foreman-hspminer</module>
         <module>foreman-hyperbit</module>
         <module>foreman-innosilicon</module>
@@ -252,6 +253,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-grinpro</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-heroknight</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
