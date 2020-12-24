@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.miners.remote;
 
-import mn.foreman.aixin.AixinFactory;
 import mn.foreman.antminer.AntminerFactory;
 import mn.foreman.autominer.AutoMinerFactory;
 import mn.foreman.autominer.MinerMapping;
@@ -22,6 +21,7 @@ import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.futurebit.FutureBitFactory;
 import mn.foreman.gminer.GminerFactory;
 import mn.foreman.grinpro.GrinProFactory;
+import mn.foreman.honorknight.HonorKnightFactory;
 import mn.foreman.hspminer.HspminerFactory;
 import mn.foreman.hyperbit.HyperbitFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
@@ -424,7 +424,7 @@ public enum ApiType {
     AIXIN_API(
             49,
             (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
-                return new AixinFactory();
+                return new HonorKnightFactory();
             }),
 
     /** hyperbit. */

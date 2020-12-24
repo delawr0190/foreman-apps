@@ -19,17 +19,26 @@ public abstract class AbstractMacITest {
 
     /** The arguments. */
     private static final Map<String, Object> ARGS =
-            ImmutableMap.of(
-                    "apiIp",
-                    "127.0.0.1",
-                    "apiPort",
-                    "4028",
-                    "port",
-                    "8080",
-                    "username",
-                    "username",
-                    "password",
-                    "password");
+            ImmutableMap.<String, Object>builder()
+                    .put(
+                            "apiIp",
+                            "127.0.0.1")
+                    .put(
+                            "apiPort",
+                            "4028")
+                    .put(
+                            "port",
+                            "8080")
+                    .put(
+                            "testPort",
+                            "8080")
+                    .put(
+                            "username",
+                            "username")
+                    .put(
+                            "password",
+                            "password")
+                    .build();
 
     /** The expected MAC. */
     private final String expectedMac;

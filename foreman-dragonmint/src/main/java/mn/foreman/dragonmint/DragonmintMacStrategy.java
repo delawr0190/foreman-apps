@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+/** Obtains the MAC for a dragonmint. */
 public class DragonmintMacStrategy
         implements MacStrategy {
 

@@ -10,25 +10,18 @@ import java.util.Map;
 public class TestUtils {
 
     /**
-     * Creates test network json.
+     * Creates sample detect json.
      *
-     * @param apiPort         The new API port.
-     * @param includeHostname Whether or not the hostname should be included.
-     * @param extra           The extra.
-     *
-     * @return The test data.
+     * @return The json.
      */
-    public static Map<String, Object> toNetworkJson(
-            final int apiPort,
-            final boolean includeHostname,
-            final Map<String, Object> extra) {
-        final Map<String, Object> params =
-                new HashMap<>(
-                        toNetworkJson(
-                                apiPort,
-                                includeHostname));
-        params.putAll(extra);
-        return params;
+    public static Map<String, Object> toDetectJson() {
+        return ImmutableMap.of(
+                "test",
+                "true",
+                "port",
+                "8080",
+                "arg1",
+                "val1");
     }
 
     /**
@@ -55,8 +48,32 @@ public class TestUtils {
                 "127.0.0.1",
                 "newApiPort",
                 Integer.toString(apiPort),
+                "test",
+                "true",
                 "network",
                 network);
+    }
+
+    /**
+     * Creates test network json.
+     *
+     * @param apiPort         The new API port.
+     * @param includeHostname Whether or not the hostname should be included.
+     * @param extra           The extra.
+     *
+     * @return The test data.
+     */
+    public static Map<String, Object> toNetworkJson(
+            final int apiPort,
+            final boolean includeHostname,
+            final Map<String, Object> extra) {
+        final Map<String, Object> params =
+                new HashMap<>(
+                        toNetworkJson(
+                                apiPort,
+                                includeHostname));
+        params.putAll(extra);
+        return params;
     }
 
     /**

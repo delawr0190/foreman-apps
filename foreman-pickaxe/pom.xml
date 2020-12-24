@@ -63,6 +63,10 @@
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>
+            <artifactId>foreman-cheetahminer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
             <artifactId>foreman-chisel</artifactId>
         </dependency>
         <dependency>
@@ -116,6 +120,10 @@
         <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-grinpro</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mn.foreman</groupId>
+            <artifactId>foreman-honorknight</artifactId>
         </dependency>
         <dependency>
             <groupId>mn.foreman</groupId>

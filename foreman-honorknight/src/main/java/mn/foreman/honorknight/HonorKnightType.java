@@ -1,4 +1,4 @@
-package mn.foreman.aixin;
+package mn.foreman.honorknight;
 
 import mn.foreman.model.MinerType;
 
@@ -6,22 +6,28 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * A {@link AixinType} provides a {@link MinerType} implementation that contains
- * all of the known Aixin types.
- */
-public enum AixinType
+/** All of the known honorknight models. */
+public enum HonorKnightType
         implements MinerType {
 
-    /** An A1. */
-    A1("A1", "aixin-a1");
+    /** K2. */
+    K2("K2", "honorknight-k2"),
+
+    /** K2.1. */
+    K2_1("K2.1", "honorknight-k2-1"),
+
+    /** K3. */
+    K3("K3", "honorknight-k3"),
+
+    /** K5. */
+    K5("K5", "honorknight-k5");
 
     /** All of the types, by indicator, mapped to their type. */
-    private static final Map<String, AixinType> TYPE_MAP =
+    private static final Map<String, HonorKnightType> TYPE_MAP =
             new ConcurrentHashMap<>();
 
     static {
-        for (final AixinType asicType : values()) {
+        for (final HonorKnightType asicType : values()) {
             TYPE_MAP.put(asicType.model, asicType);
         }
     }
@@ -38,7 +44,7 @@ public enum AixinType
      * @param model The indicator.
      * @param slug  The miner slug.
      */
-    AixinType(
+    HonorKnightType(
             final String model,
             final String slug) {
         this.model = model;
@@ -46,13 +52,13 @@ public enum AixinType
     }
 
     /**
-     * Converts the provided model to an {@link AixinType}.
+     * Converts the provided model to an {@link HonorKnightType}.
      *
      * @param type The type.
      *
-     * @return The corresponding {@link AixinType}.
+     * @return The corresponding {@link HonorKnightType}.
      */
-    public static Optional<AixinType> forType(final String type) {
+    public static Optional<HonorKnightType> forType(final String type) {
         if (type != null && !type.isEmpty()) {
             return TYPE_MAP.entrySet()
                     .stream()
@@ -64,8 +70,8 @@ public enum AixinType
     }
 
     @Override
-    public Category getCategory() {
-        return Category.ASIC;
+    public MinerType.Category getCategory() {
+        return MinerType.Category.ASIC;
     }
 
     @Override

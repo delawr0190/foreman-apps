@@ -1,6 +1,6 @@
 package mn.foreman.pickaxe.command.asic;
 
-import mn.foreman.aixin.AixinTypeFactory;
+import mn.foreman.aixin.AixinType;
 import mn.foreman.antminer.*;
 import mn.foreman.avalon.*;
 import mn.foreman.baikal.BaikalChangePoolsAction;
@@ -12,10 +12,12 @@ import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.cheetahminer.CheetahminerType;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.*;
 import mn.foreman.futurebit.FutureBitTypeFactory;
+import mn.foreman.honorknight.*;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.ApiType;
 import mn.foreman.innosilicon.InnosiliconFactory;
@@ -47,13 +49,30 @@ public enum Manufacturer {
     /** Aixin. */
     AIXIN(
             "aixin",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.DEVS,
-                    new AixinTypeFactory()),
+            new HonorKnightDetectionStrategy<>(
+                    AixinType::forType),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightChangePoolsAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightRebootAction()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightNetworkAction())),
 
     /** Antminer. */
     ANTMINER(
@@ -279,6 +298,34 @@ public enum Manufacturer {
                                     "bb"),
                             AsyncAsicActionUtils::ipChangingHook)),
 
+    /** Cheetahminer. */
+    CHEETAHMINER(
+            "cheetahminer",
+            new HonorKnightDetectionStrategy<>(
+                    CheetahminerType::forType),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightChangePoolsAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightRebootAction()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightNetworkAction())),
+
     /** Dayun. */
     DAYUN(
             "dayun",
@@ -344,6 +391,34 @@ public enum Manufacturer {
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
+    /** HonorKnight. */
+    HONORKNIGHT(
+            "honorknight",
+            new HonorKnightDetectionStrategy<>(
+                    HonorKnightType::forType),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightChangePoolsAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightRebootAction()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsyncActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new HonorKnightFactory(),
+                            new HonorKnightNetworkAction())),
 
     /** HyperBit. */
     HYPERBIT(
