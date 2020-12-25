@@ -28,7 +28,9 @@ public enum HonorKnightType
 
     static {
         for (final HonorKnightType asicType : values()) {
-            TYPE_MAP.put(asicType.model, asicType);
+            TYPE_MAP.put(
+                    asicType.model.toLowerCase(),
+                    asicType);
         }
     }
 
@@ -60,9 +62,10 @@ public enum HonorKnightType
      */
     public static Optional<HonorKnightType> forType(final String type) {
         if (type != null && !type.isEmpty()) {
+            final String typeLower = type.toLowerCase();
             return TYPE_MAP.entrySet()
                     .stream()
-                    .filter(entry -> type.equals(entry.getKey()))
+                    .filter(entry -> typeLower.equals(entry.getKey()))
                     .map(Map.Entry::getValue)
                     .findFirst();
         }
