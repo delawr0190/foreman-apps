@@ -96,7 +96,7 @@ public class AntminerDetectITest
                                 null
                         },
                         {
-                                // Antminer S17
+                                // Antminer S17 Pro
                                 Collections.singletonList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
                                                 4028,
@@ -104,7 +104,7 @@ public class AntminerDetectITest
                                                         "{\"command\":\"version\"}",
                                                         new RpcHandler(
                                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1576765845,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 1.0.0\"}],\"VERSION\":[{\"BMMiner\":\"1.0.0\",\"API\":\"3.1\",\"Miner\":\"19.10.1.3\",\"CompileTime\":\"Tue Aug 20 10:37:07 CST 2019\",\"Type\":\"Antminer S17 Pro\"}],\"id\":1}")))),
-                                AntminerType.ANTMINER_S17,
+                                AntminerType.ANTMINER_S17_PRO,
                                 DEFAULT_ARGS,
                                 null
                         },
