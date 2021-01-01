@@ -4,7 +4,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -111,6 +113,47 @@ public class JdkWebUtil
     public Optional<String> post(
             final String uri,
             final String body) {
+        final HttpPost httpPost =
+                new HttpPost(
+                        String.format(
+                                "%s%s",
+                                this.foremanUrl,
+                                uri));
+        return writeableOp(
+                uri,
+                body,
+                httpPost);
+    }
+
+    @Override
+    public Optional<String> put(
+            final String uri,
+            final String body) {
+        final HttpPut httpPut =
+                new HttpPut(
+                        String.format(
+                                "%s%s",
+                                this.foremanUrl,
+                                uri));
+        return writeableOp(
+                uri,
+                body,
+                httpPut);
+    }
+
+    /**
+     * Runs the provided entity request.
+     *
+     * @param uri         The URI.
+     * @param body        The body.
+     * @param requestBase The request base.
+     *
+     * @return The response content.
+     */
+    private Optional<String> writeableOp(
+            final String uri,
+            final String body,
+            final HttpEntityEnclosingRequestBase requestBase) {
         String response = null;
 
         final RequestConfig requestConfig =
@@ -129,28 +172,21 @@ public class JdkWebUtil
             final StringEntity stringEntity =
                     new StringEntity(body);
 
-            final HttpPost httpPost =
-                    new HttpPost(
-                            String.format(
-                                    "%s%s",
-                                    this.foremanUrl,
-                                    uri));
-
             LOG.debug("Querying {}{} with {}",
                     this.foremanUrl,
                     uri,
                     body);
 
-            httpPost.setEntity(stringEntity);
-            httpPost.setHeader(
+            requestBase.setEntity(stringEntity);
+            requestBase.setHeader(
                     "Content-Type",
                     "application/json");
-            httpPost.setHeader(
+            requestBase.setHeader(
                     "Authorization",
                     "Token " + this.apiToken);
 
             try (final CloseableHttpResponse httpResponse =
-                         httpClient.execute(httpPost)) {
+                         httpClient.execute(requestBase)) {
                 final int statusCode =
                         httpResponse
                                 .getStatusLine()

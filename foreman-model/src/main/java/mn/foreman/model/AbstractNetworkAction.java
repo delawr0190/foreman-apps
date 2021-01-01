@@ -58,7 +58,7 @@ public abstract class AbstractNetworkAction
                 .hostname(network.getOrDefault("hostname", ""))
                 .gateway(network.getOrDefault("gateway", ""))
                 .netmask(network.getOrDefault("netmask", ""))
-                .ipAddress(network.getOrDefault("ip", ""))
+                .ipAddress(network.getOrDefault("ipAddress", ""))
                 .dns(network.getOrDefault("dns", ""))
                 .build();
     }

@@ -3,15 +3,20 @@ package mn.foreman.api.miners;
 import mn.foreman.api.JsonUtils;
 import mn.foreman.api.WebUtil;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public class MinersImpl
         implements Miners {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(MinersImpl.class);
 
     /** The client ID. */
     private final String clientId;
@@ -74,5 +79,47 @@ public class MinersImpl
                                 this.objectMapper,
                                 new TypeReference<Miner>() {
                                 }));
+    }
+
+    @Override
+    public Optional<Miner> update(
+            final int minerId,
+            final String name,
+            final String apiIp,
+            final String platform,
+            final String minerType,
+            final String serial) {
+        Optional<Miner> result = Optional.empty();
+        try {
+            final Map<String, String> args = new HashMap<>();
+            args.put("name", name);
+            args.put("platform", platform);
+            args.put("minerType", minerType);
+            if (apiIp != null) {
+                args.put("apiIp", apiIp);
+            }
+            if (serial != null) {
+                args.put("serial", serial);
+            }
+            final Optional<String> response =
+                    this.webUtil.put(
+                            String.format(
+                                    "/api/miners/%s/%s/%d",
+                                    this.clientId,
+                                    this.pickaxeId,
+                                    minerId),
+                            this.objectMapper.writeValueAsString(args));
+            if (response.isPresent()) {
+                result =
+                        JsonUtils.fromJson(
+                                response.get(),
+                                this.objectMapper,
+                                new TypeReference<Miner>() {
+                                });
+            }
+        } catch (final JsonProcessingException e) {
+            LOG.warn("Exception occurred while parsing json", e);
+        }
+        return result;
     }
 }

@@ -3,6 +3,7 @@ package mn.foreman.api;
 import mn.foreman.api.actions.Actions;
 import mn.foreman.api.miners.Miners;
 import mn.foreman.api.pickaxe.Pickaxe;
+import mn.foreman.api.sitemap.SiteMap;
 
 /**
  * A {@link ForemanApi} provides a mechanism for interacting with the Foreman
@@ -33,4 +34,12 @@ public interface ForemanApi {
      * @return The API handler.
      */
     Pickaxe pickaxe();
+
+    /**
+     * Creates a new {@link SiteMap} that can be leveraged to operate on the
+     * <code>/api/site-map</code> Foreman API endpoint.
+     *
+     * @return The API handler.
+     */
+    SiteMap siteMap();
 }

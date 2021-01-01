@@ -29,6 +29,26 @@ public interface Miners {
      */
     Optional<Miner> one(int minerId);
 
+    /**
+     * Updates the miner with the provided parameters.
+     *
+     * @param minerId   The miner ID.
+     * @param name      The name.
+     * @param apiIp     The API IP (leave null to not update).
+     * @param platform  The platform.
+     * @param minerType The miner type.
+     * @param serial    The serial (leave null to not update).
+     *
+     * @return The new {@link Miner}.
+     */
+    Optional<Miner> update(
+            int minerId,
+            String name,
+            String apiIp,
+            String platform,
+            String minerType,
+            String serial);
+
     /** A miner object. */
     @JsonIgnoreProperties(ignoreUnknown = true)
     class Miner {
@@ -49,8 +69,20 @@ public interface Miners {
         @JsonProperty("lastUpdated")
         public Instant lastUpdated;
 
+        /** The MAC address. */
+        @JsonProperty("mac")
+        public String mac;
+
         /** The miner name. */
         @JsonProperty("name")
         public String name;
+
+        /** The platform. */
+        @JsonProperty("platform")
+        public String platform;
+
+        /** The miner type. */
+        @JsonProperty("minerType")
+        public String type;
     }
 }

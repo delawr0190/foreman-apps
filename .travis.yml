@@ -2,7 +2,7 @@ language: java
 jdk:
   - openjdk8
 
-install: mvn install --settings .travis.settings.xml -DskipTests=true -Dmaven.javadoc.skip=true -B -V -q
+install: mvn install --settings .travis.settings.xml -DskipTests=true -Dassembly.skipAssembly=true -Dmaven.javadoc.skip=true -B -V -q
 
 script: mvn verify --settings .travis.settings.xml -q
 

@@ -38,4 +38,16 @@ public interface WebUtil {
     Optional<String> post(
             String uri,
             String body);
+
+    /**
+     * Performs a <code>PUT</code> operation against the provided URI.
+     *
+     * @param uri  The URI.
+     * @param body The body.
+     *
+     * @return The response content.
+     */
+    Optional<String> put(
+            String uri,
+            String body);
 }

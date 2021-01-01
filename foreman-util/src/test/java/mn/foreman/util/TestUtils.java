@@ -38,7 +38,7 @@ public class TestUtils {
         final Map<String, Object> network = new HashMap<>();
         network.put("gateway", "192.168.1.1");
         network.put("netmask", "255.255.255.0");
-        network.put("ip", "192.168.1.189");
+        network.put("ipAddress", "192.168.1.189");
         network.put("dns", "192.168.1.1");
         if (includeHostname) {
             network.put("hostname", "hostname");

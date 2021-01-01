@@ -6,6 +6,8 @@ import mn.foreman.api.miners.Miners;
 import mn.foreman.api.miners.MinersImpl;
 import mn.foreman.api.pickaxe.Pickaxe;
 import mn.foreman.api.pickaxe.PickaxeImpl;
+import mn.foreman.api.sitemap.SiteMap;
+import mn.foreman.api.sitemap.SiteMapImpl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -64,6 +66,13 @@ public class ForemanApiImpl
     public Pickaxe pickaxe() {
         return new PickaxeImpl(
                 this.pickaxeId,
+                this.objectMapper,
+                this.webUtil);
+    }
+
+    @Override
+    public SiteMap siteMap() {
+        return new SiteMapImpl(
                 this.objectMapper,
                 this.webUtil);
     }
