@@ -53,6 +53,9 @@ public enum AntminerType
     /** Antminer S17e. */
     ANTMINER_S17E("Antminer S17e", "antminer-s17e"),
 
+    /** Antminer S17 Pro. */
+    ANTMINER_S17_PRO("Antminer S17 Pro", "antminer-s17-pro"),
+
     /** Antminer T9. */
     ANTMINER_T9("Antminer T9", "antminer-t9"),
 
@@ -61,6 +64,15 @@ public enum AntminerType
 
     /** Antminer T17. */
     ANTMINER_T17("Antminer T17", "antminer-t17"),
+
+    /** Antminer T17+. */
+    ANTMINER_T17P("Antminer T17+", "antminer-t17p"),
+
+    /** Antminer T17e. */
+    ANTMINER_T17E("Antminer T17e", "antminer-t17e"),
+
+    /** Antminer T19. */
+    ANTMINER_T19("Antminer T19", "antminer-t19"),
 
     /** Antminer X3. */
     ANTMINER_X3("Antminer X3", "antminer-x3"),
@@ -92,8 +104,14 @@ public enum AntminerType
     /** Antminer S19 Pro. */
     ANTMINER_S19_PRO("Antminer S19 Pro", "antminer-s19-pro"),
 
+    /** Antminer S19j Pro. */
+    ANTMINER_S19J_PRO("Antminer S19j Pro", "antminer-s19j-pro"),
+
     /** Antminer Z15. */
-    ANTMINER_Z15("Antminer Z15", "antminer-z15");
+    ANTMINER_Z15("Antminer Z15", "antminer-z15"),
+
+    /** Antminer G2. */
+    ANTMINER_G2("Antminer G2", "antminer-g2");
 
     /** All of the types, by string, mapped to their type. */
     private static final Map<String, AntminerType> TYPE_MAP =
