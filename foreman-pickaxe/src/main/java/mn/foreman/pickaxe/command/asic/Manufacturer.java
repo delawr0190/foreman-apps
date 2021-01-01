@@ -642,10 +642,10 @@ public enum Manufacturer {
     WHATSMINER(
             "whatsminer",
             new FirmwareAwareDetectionStrategy(
+                    new WhatsminerDetectionStrategy(),
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
-                            new WhatsminerTypeFactory()),
-                    new WhatsminerDetectionStrategy()),
+                            new WhatsminerTypeFactory())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,

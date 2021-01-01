@@ -3,6 +3,7 @@ package mn.foreman.whatsminer;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.model.Detection;
+import mn.foreman.model.FirmwareAwareDetectionStrategy;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.FakeMinerServer;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -39,10 +40,10 @@ public class WhatsminerDetectITest
             final WhatsminerType expectedType) {
         super(
                 new FirmwareAwareDetectionStrategy(
+                        new WhatsminerDetectionStrategy(),
                         new CgMinerDetectionStrategy(
                                 CgMinerCommand.STATS,
-                                new WhatsminerTypeFactory()),
-                        new WhatsminerDetectionStrategy()),
+                                new WhatsminerTypeFactory())),
                 fakeServers,
                 toArgs(),
                 Detection.builder()
