@@ -59,11 +59,11 @@ public class StockNetworkAction
         final String password =
                 (String) parameters.getOrDefault("password", "");
 
-        final Map<String, Object> systemInfo;
         List<Map<String, Object>> config = null;
         String payload = null;
+
         try {
-            systemInfo =
+            final Map<String, Object> systemInfo =
                     AntminerUtils.getConf(
                             ip,
                             port,
