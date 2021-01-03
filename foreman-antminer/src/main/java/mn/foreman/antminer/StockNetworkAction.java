@@ -7,6 +7,8 @@ import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,6 +20,10 @@ import java.util.Map;
  */
 public class StockNetworkAction
         extends AbstractNetworkAction {
+
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(StockNetworkAction.class);
 
     /** Mapper for reading and writing JSON. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -48,13 +54,16 @@ public class StockNetworkAction
             final Map<String, Object> parameters,
             final Network network)
             throws MinerException {
-        try {
-            final String username =
-                    (String) parameters.getOrDefault("username", "");
-            final String password =
-                    (String) parameters.getOrDefault("password", "");
+        final String username =
+                (String) parameters.getOrDefault("username", "");
+        final String password =
+                (String) parameters.getOrDefault("password", "");
 
-            final Map<String, Object> systemInfo =
+        final Map<String, Object> systemInfo;
+        List<Map<String, Object>> config = null;
+        String payload = null;
+        try {
+            systemInfo =
                     AntminerUtils.getConf(
                             ip,
                             port,
@@ -75,9 +84,6 @@ public class StockNetworkAction
                     network.hostname != null && !network.hostname.isEmpty()
                             ? network.hostname
                             : previousHostname;
-
-            List<Map<String, Object>> config = null;
-            String payload = null;
 
             if (systemInfo.getOrDefault(
                     "minertype",
@@ -144,7 +150,16 @@ public class StockNetworkAction
                                         this.key),
                                 network.dns));
             }
+        } catch (final Exception e) {
+            throw new MinerException(
+                    String.format(
+                            "Failed to obtain a response from miner at %s:%d",
+                            ip,
+                            port),
+                    e);
+        }
 
+        try {
             Query.digestPost(
                     ip,
                     port,
@@ -156,15 +171,11 @@ public class StockNetworkAction
                     payload,
                     (integer, s) -> {
                     });
-        } catch (final MinerException me) {
-            throw me;
         } catch (final Exception e) {
-            throw new MinerException(
-                    String.format(
-                            "Failed to obtain a response from miner at %s:%d",
-                            ip,
-                            port));
+            // Miner disconnects when the IP is changed
+            LOG.info("Exception occurred while updating settings", e);
         }
+
         return true;
     }
 
