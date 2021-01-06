@@ -28,7 +28,7 @@ public class NewFirmwareMacStrategy
      * @param ip   The IP.
      * @param port The port.
      */
-    NewFirmwareMacStrategy(
+    public NewFirmwareMacStrategy(
             final String ip,
             final int port) {
         this.ip = ip;

@@ -4,6 +4,7 @@ import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.model.Detection;
+import mn.foreman.model.NullMacStrategy;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -20,6 +21,7 @@ public class ZigZ1DetectITest
                 new CgMinerDetectionStrategy(
                         CgMinerCommand.STATS,
                         new DayunTypeFactory(),
+                        new NullMacStrategy(),
                         new StatsPatchingStrategy()),
                 () -> new FakeRpcMinerServer(
                         4028,

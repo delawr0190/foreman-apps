@@ -14,6 +14,9 @@ public class Detection {
     /** The miner IP address. */
     private final String ipAddress;
 
+    /** The MAC address. */
+    private final String macAddress;
+
     /** The type. */
     private final MinerType minerType;
 

@@ -37,20 +37,24 @@ public class WhatsminerDetectITest
      */
     public WhatsminerDetectITest(
             final List<Supplier<FakeMinerServer>> fakeServers,
-            final WhatsminerType expectedType) {
+            final WhatsminerType expectedType,
+            final boolean withMac) {
         super(
                 new FirmwareAwareDetectionStrategy(
-                        new WhatsminerDetectionStrategy(),
+                        new WhatsminerDetectionStrategy(
+                                new NewFirmwareMacStrategy(
+                                        "127.0.0.1",
+                                        4028)),
                         new CgMinerDetectionStrategy(
                                 CgMinerCommand.STATS,
                                 new WhatsminerTypeFactory())),
                 fakeServers,
-                toArgs(),
+                toArgs(withMac),
                 Detection.builder()
                         .minerType(expectedType)
                         .ipAddress("127.0.0.1")
                         .port(4028)
-                        .parameters(toArgs())
+                        .parameters(toArgs(withMac))
                         .build(),
                 (integer, stringObjectMap) -> {
                     stringObjectMap.put(
@@ -89,7 +93,8 @@ public class WhatsminerDetectITest
                                                 throw new AssertionError(e);
                                             }
                                         }),
-                                WhatsminerType.WHATSMINER_M3
+                                WhatsminerType.WHATSMINER_M3,
+                                false
                         },
                         {
                                 // Whatsminer M20S (old firmware)
@@ -109,7 +114,8 @@ public class WhatsminerDetectITest
                                                 throw new AssertionError(e);
                                             }
                                         }),
-                                WhatsminerType.WHATSMINER_M20S
+                                WhatsminerType.WHATSMINER_M20S,
+                                false
                         },
                         {
                                 // Whatsminer M20S (new firmware)
@@ -120,7 +126,10 @@ public class WhatsminerDetectITest
                                                         ImmutableMap.of(
                                                                 "{\"command\":\"stats\"}",
                                                                 new RpcHandler(
-                                                                        "{\"STATUS\":\"E\",\"When\":1604756008,\"Code\":14,\"Msg\":\"invalid cmd\",\"Description\":\"whatsminer v1.1\"}"))),
+                                                                        "{\"STATUS\":\"E\",\"When\":1604756008,\"Code\":14,\"Msg\":\"invalid cmd\",\"Description\":\"whatsminer v1.1\"}"),
+                                                                "{\"command\":\"summary\"}",
+                                                                new RpcHandler(
+                                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1604757733,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"cgminer 4.9.2\"}],\"SUMMARY\":[{\"Elapsed\":66295,\"MHS av\":68710597.19,\"MHS 5s\":64143777.95,\"MHS 1m\":67266447.69,\"MHS 5m\":67827446.38,\"MHS 15m\":68290183.07,\"Found Blocks\":25,\"Getworks\":10780,\"Accepted\":5018,\"Rejected\":29,\"Hardware Errors\":912,\"Utility\":4.54,\"Discarded\":8046935,\"Stale\":0,\"Get Failures\":0,\"Local Work\":527721521,\"Remote Failures\":0,\"Network Blocks\":4206,\"Total MH\":4555143176276.0000,\"Work Utility\":3749.51,\"Difficulty Accepted\":1071653490.00000000,\"Difficulty Rejected\":5623144.00000000,\"Difficulty Stale\":0.00000000,\"Best Share\":1003626349,\"Temperature\":72.00,\"freq_avg\":622,\"Fan Speed In\":4950,\"Fan Speed Out\":4920,\"Voltage\":1300,\"Power\":3491,\"Power_RT\":3482,\"Device Hardware%\":0.0220,\"Device Rejected%\":135.7304,\"Pool Rejected%\":0.5220,\"Pool Stale%\":0.0000,\"Last getwork\":0,\"Uptime\":66892,\"Chip Data\":\"HP3D04-20010214 C BINV04-192104B\",\"Power Current\":245,\"Power Fanspeed\":8880,\"Error Code Count\":0,\"Factory Error Code Count\":0,\"Security Mode\":0,\"Liquid Cooling\":false,\"Hash Stable\":true,\"Hash Stable Cost Seconds\":1498,\"Hash Deviation%\":-0.3372,\"Target Freq\":622,\"Target MHS\":68765832,\"Env Temp\":28.50,\"Power Mode\":\"Normal\",\"Firmware Version\":\"\\'20200917.22.REL\\'\",\"CB Platform\":\"ALLWINNER_H3\",\"CB Version\":\"V10\",\"MAC\":\"C4:11:04:01:3C:75\",\"Factory GHS\":67051,\"Power Limit\":3500,\"Chip Temp Min\":65.00,\"Chip Temp Max\":87.70,\"Chip Temp Avg\":79.34}],\"id\":1}"))),
                                         (Supplier<FakeMinerServer>) () ->
                                                 new FakeHttpMinerServer(
                                                         8080,
@@ -409,7 +418,8 @@ public class WhatsminerDetectITest
                                                                                 " </body>\n" +
                                                                                 "</html>",
                                                                         Collections.emptyMap())))),
-                                WhatsminerType.WHATSMINER_M20S
+                                WhatsminerType.WHATSMINER_M20S,
+                                true
                         }
                 });
     }
@@ -417,15 +427,27 @@ public class WhatsminerDetectITest
     /**
      * Creates test arguments.
      *
+     * @param withMac Whether or not the MAC will be found.
+     *
      * @return The arguments.
      */
-    private static Map<String, Object> toArgs() {
-        return ImmutableMap.of(
-                "username",
-                "username",
-                "password",
-                "password",
-                "webPort",
-                "8080");
+    private static Map<String, Object> toArgs(final boolean withMac) {
+        final ImmutableMap.Builder<String, Object> builder =
+                new ImmutableMap.Builder<String, Object>()
+                        .put(
+                                "username",
+                                "username")
+                        .put(
+                                "password",
+                                "password")
+                        .put(
+                                "webPort",
+                                "8080");
+        if (withMac) {
+            builder.put(
+                    "mac",
+                    "C4:11:04:01:3C:75");
+        }
+        return builder.build();
     }
 }

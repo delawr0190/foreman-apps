@@ -35,7 +35,7 @@ public class AvalonMacStrategy
      * @param ip   The IP.
      * @param port The port.
      */
-    AvalonMacStrategy(
+    public AvalonMacStrategy(
             final String ip,
             final int port) {
         this.ip = ip;

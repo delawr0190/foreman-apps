@@ -4,6 +4,7 @@ import mn.foreman.dragonmint.json.Overview;
 import mn.foreman.io.Query;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.MacStrategy;
 import mn.foreman.model.MinerType;
 import mn.foreman.model.error.MinerException;
 
@@ -11,6 +12,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -30,6 +32,9 @@ public class DragonmintDetectionStrategy<T extends MinerType>
     private static final Logger LOG =
             LoggerFactory.getLogger(DragonmintDetectionStrategy.class);
 
+    /** The strategy for detecting MACs. */
+    private final MacStrategy macStrategy;
+
     /** Type mapper. */
     private final Function<String, Optional<T>> mapper;
 
@@ -39,14 +44,17 @@ public class DragonmintDetectionStrategy<T extends MinerType>
     /**
      * Constructor.
      *
-     * @param mapper The type mapper.
-     * @param name   The name.
+     * @param mapper      The type mapper.
+     * @param name        The name.
+     * @param macStrategy The MAC strategy.
      */
     public DragonmintDetectionStrategy(
             final Function<String, Optional<T>> mapper,
-            final String name) {
+            final String name,
+            final MacStrategy macStrategy) {
         this.mapper = mapper;
         this.name = name;
+        this.macStrategy = macStrategy;
     }
 
     @Override
@@ -67,17 +75,22 @@ public class DragonmintDetectionStrategy<T extends MinerType>
                             },
                             1,
                             TimeUnit.SECONDS,
-                            s -> {});
+                            s -> {
+                            });
             final Optional<T> type =
                     this.mapper.apply(
                             overview.type);
             if (type.isPresent()) {
+                final Map<String, Object> newArgs = new HashMap<>(args);
+                this.macStrategy.getMacAddress()
+                        .ifPresent(mac -> newArgs.put("mac", mac));
+
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)
                                 .port(port)
                                 .minerType(type.get())
-                                .parameters(args)
+                                .parameters(newArgs)
                                 .build();
             }
         } catch (final MinerException me) {

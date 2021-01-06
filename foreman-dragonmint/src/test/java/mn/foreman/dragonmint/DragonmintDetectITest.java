@@ -16,7 +16,12 @@ public class DragonmintDetectITest
         super(
                 new DragonmintDetectionStrategy<>(
                         DragonmintType::forType,
-                        "DragonMint"),
+                        "DragonMint",
+                        new DragonmintMacStrategy(
+                                "127.0.0.1",
+                                8888,
+                                "username",
+                                "password")),
                 "127.0.0.1",
                 8888,
                 ImmutableMap.of(
@@ -66,7 +71,9 @@ public class DragonmintDetectITest
                                         "username",
                                         "username",
                                         "password",
-                                        "password"))
+                                        "password",
+                                        "mac",
+                                        "00:0a:35:00:00:00"))
                         .build());
     }
 }

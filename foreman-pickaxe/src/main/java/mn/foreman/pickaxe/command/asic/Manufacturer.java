@@ -11,6 +11,7 @@ import mn.foreman.blackminer.BlackminerConfValue;
 import mn.foreman.blackminer.BlackminerFactory;
 import mn.foreman.blackminer.BlackminerTypeFactory;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
+import mn.foreman.cgminer.NullPatchingStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cheetahminer.CheetahminerType;
 import mn.foreman.dayun.DayunTypeFactory;
@@ -37,11 +38,13 @@ import mn.foreman.whatsminer.*;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.function.Function;
 
 /** An enumeration containing all of the known manufacturers. */
 public enum Manufacturer {
@@ -49,8 +52,12 @@ public enum Manufacturer {
     /** Aixin. */
     AIXIN(
             "aixin",
-            new HonorKnightDetectionStrategy<>(
-                    AixinType::forType),
+            args ->
+                    new HonorKnightDetectionStrategy<>(
+                            AixinType::forType,
+                            new HonorKnightMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -77,7 +84,20 @@ public enum Manufacturer {
     /** Antminer. */
     ANTMINER(
             "antminer",
-            new AntminerDetectionStrategy("antMiner Configuration"),
+            args ->
+                    new AntminerDetectionStrategy(
+                            "antMiner Configuration",
+                            new StockMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    "antMiner Configuration",
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString()),
+                            new BraiinsMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -168,9 +188,14 @@ public enum Manufacturer {
     /** Avalon. */
     AVALON(
             "avalon",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.STATS,
-                    new AvalonTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.STATS,
+                            new AvalonTypeFactory(),
+                            new AvalonMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80),
+                            new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -200,7 +225,7 @@ public enum Manufacturer {
     /** Baikal. */
     BAIKAL(
             "baikal",
-            new BaikalDetectionStrategy("80"),
+            args -> new BaikalDetectionStrategy("80"),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -221,9 +246,17 @@ public enum Manufacturer {
     /** Blackminer. */
     BLACKMINER(
             "blackminer",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.VERSION,
-                    new BlackminerTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.VERSION,
+                            new BlackminerTypeFactory(),
+                            new StockMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    "blackMiner Configuration",
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString()),
+                            new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -301,8 +334,12 @@ public enum Manufacturer {
     /** Cheetahminer. */
     CHEETAHMINER(
             "cheetahminer",
-            new HonorKnightDetectionStrategy<>(
-                    CheetahminerType::forType),
+            args ->
+                    new HonorKnightDetectionStrategy<>(
+                            CheetahminerType::forType,
+                            new HonorKnightMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -329,10 +366,12 @@ public enum Manufacturer {
     /** Dayun. */
     DAYUN(
             "dayun",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.STATS,
-                    new DayunTypeFactory(),
-                    new StatsPatchingStrategy()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.STATS,
+                            new DayunTypeFactory(),
+                            new NullMacStrategy(),
+                            new StatsPatchingStrategy()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
@@ -341,9 +380,15 @@ public enum Manufacturer {
     /** Dragonmint. */
     DRAGONMINT(
             "dragonmint",
-            new DragonmintDetectionStrategy<>(
-                    DragonmintType::forType,
-                    "DragonMint"),
+            args ->
+                    new DragonmintDetectionStrategy<>(
+                            DragonmintType::forType,
+                            "DragonMint",
+                            new DragonmintMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -384,9 +429,10 @@ public enum Manufacturer {
     /** FutureBit. */
     FUTUREBIT(
             "futurebit",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.DEVS,
-                    new FutureBitTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.DEVS,
+                            new FutureBitTypeFactory()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
@@ -395,8 +441,12 @@ public enum Manufacturer {
     /** HonorKnight. */
     HONORKNIGHT(
             "honorknight",
-            new HonorKnightDetectionStrategy<>(
-                    HonorKnightType::forType),
+            args ->
+                    new HonorKnightDetectionStrategy<>(
+                            HonorKnightType::forType,
+                            new HonorKnightMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -423,9 +473,10 @@ public enum Manufacturer {
     /** HyperBit. */
     HYPERBIT(
             "hyperbit",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.DEVS,
-                    new HyperbitTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.DEVS,
+                            new HyperbitTypeFactory()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
@@ -434,9 +485,15 @@ public enum Manufacturer {
     /** Innosilicon. */
     INNOSILICON(
             "innosilicon",
-            new DragonmintDetectionStrategy<>(
-                    InnosiliconType::forType,
-                    "Innosilicon"),
+            args ->
+                    new DragonmintDetectionStrategy<>(
+                            InnosiliconType::forType,
+                            "Innosilicon",
+                            new DragonmintMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -477,7 +534,7 @@ public enum Manufacturer {
     /** MultMiner. */
     MULTMINER(
             "multminer",
-            new MultMinerDetectionStrategy(),
+            args -> new MultMinerDetectionStrategy(),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -498,7 +555,11 @@ public enum Manufacturer {
     /** Obelisk. */
     OBELISK(
             "obelisk",
-            new ObeliskDetectionStrategy<>(),
+            args ->
+                    new ObeliskDetectionStrategy<>(
+                            new ObeliskMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -539,9 +600,10 @@ public enum Manufacturer {
     /** Spondoolies. */
     SPONDOOLIES(
             "spondoolies",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.SUMMARY,
-                    new SpondooliesTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.SUMMARY,
+                            new SpondooliesTypeFactory()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
@@ -550,9 +612,17 @@ public enum Manufacturer {
     /** StrongU. */
     STRONGU(
             "strongu",
-            new CgMinerDetectionStrategy(
-                    CgMinerCommand.DEVS,
-                    new StrongUTypeFactory()),
+            args ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.DEVS,
+                            new StrongUTypeFactory(),
+                            new StockMacStrategy(
+                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    80,
+                                    "stuMiner Configuration",
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString()),
+                            new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -641,11 +711,19 @@ public enum Manufacturer {
     /** Whatsminer. */
     WHATSMINER(
             "whatsminer",
-            new FirmwareAwareDetectionStrategy(
-                    new WhatsminerDetectionStrategy(),
-                    new CgMinerDetectionStrategy(
-                            CgMinerCommand.STATS,
-                            new WhatsminerTypeFactory())),
+            args ->
+                    new FirmwareAwareDetectionStrategy(
+                            new WhatsminerDetectionStrategy(
+                                    new NewFirmwareMacStrategy(
+                                            args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                            4028)),
+                            new CgMinerDetectionStrategy(
+                                    CgMinerCommand.STATS,
+                                    new WhatsminerTypeFactory(),
+                                    new NewFirmwareMacStrategy(
+                                            args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                            4028),
+                                    new NullPatchingStrategy())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -696,7 +774,7 @@ public enum Manufacturer {
     private final ActionSupplier changePoolsStrategy;
 
     /** The strategy for detecting. */
-    private final DetectionStrategy detectionStrategy;
+    private final Function<Map<String, Object>, DetectionStrategy> detectionStrategy;
 
     /** The strategy for performing a factory reset. */
     private final ActionSupplier factoryResetStrategy;
@@ -722,7 +800,7 @@ public enum Manufacturer {
      */
     Manufacturer(
             final String name,
-            final DetectionStrategy detectionStrategy,
+            final Function<Map<String, Object>, DetectionStrategy> detectionStrategy,
             final ActionSupplier changePoolsStrategy,
             final ActionSupplier rebootStrategy,
             final ActionSupplier factoryResetStrategy,
@@ -768,10 +846,12 @@ public enum Manufacturer {
     /**
      * Returns the strategy.
      *
+     * @param args The args.
+     *
      * @return The strategy.
      */
-    public DetectionStrategy getDetectionStrategy() {
-        return this.detectionStrategy;
+    public DetectionStrategy getDetectionStrategy(final Map<String, Object> args) {
+        return this.detectionStrategy.apply(args);
     }
 
     /**

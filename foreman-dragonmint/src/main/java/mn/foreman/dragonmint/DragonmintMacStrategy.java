@@ -68,7 +68,7 @@ public class DragonmintMacStrategy
                             TimeUnit.SECONDS,
                             s -> {
                             });
-            mac = overview.version.mac;
+            mac = overview.version.mac.replace(" ", "");
         } catch (final MinerException e) {
             LOG.warn("Failed to obtain mac", e);
         }

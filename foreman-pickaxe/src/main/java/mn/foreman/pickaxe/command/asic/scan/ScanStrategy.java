@@ -146,7 +146,7 @@ public class ScanStrategy
                     stop,
                     port,
                     args,
-                    manufacturerType.getDetectionStrategy(),
+                    manufacturerType.getDetectionStrategy(args),
                     builder,
                     callback);
         }

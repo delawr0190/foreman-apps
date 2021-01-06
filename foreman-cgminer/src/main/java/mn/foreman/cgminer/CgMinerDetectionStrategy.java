@@ -2,9 +2,7 @@ package mn.foreman.cgminer;
 
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MinerType;
+import mn.foreman.model.*;
 import mn.foreman.model.error.EmptySiteException;
 import mn.foreman.model.error.MinerException;
 
@@ -32,6 +30,9 @@ public class CgMinerDetectionStrategy
     /** The command to run. */
     private final CgMinerCommand command;
 
+    /** The MAC strategy. */
+    private final MacStrategy macStrategy;
+
     /** The response strategy. */
     private final ResponsePatchingStrategy patchingStrategy;
 
@@ -44,14 +45,17 @@ public class CgMinerDetectionStrategy
      * @param command          The command.
      * @param typeFactory      The factory for converting to a {@link
      *                         MinerType}.
+     * @param macStrategy      The MAC strategy.
      * @param patchingStrategy The patching strategy.
      */
     public CgMinerDetectionStrategy(
             final CgMinerCommand command,
             final TypeFactory typeFactory,
+            final MacStrategy macStrategy,
             final ResponsePatchingStrategy patchingStrategy) {
         this.command = command;
         this.typeFactory = typeFactory;
+        this.macStrategy = macStrategy;
         this.patchingStrategy = patchingStrategy;
     }
 
@@ -67,6 +71,7 @@ public class CgMinerDetectionStrategy
         this(
                 command,
                 typeFactory,
+                new NullMacStrategy(),
                 new NullPatchingStrategy());
     }
 
@@ -107,12 +112,15 @@ public class CgMinerDetectionStrategy
             final Optional<MinerType> type =
                     this.typeFactory.toType(responseValues);
             if (type.isPresent()) {
+                final Map<String, Object> newArgs = new HashMap<>(args);
+                this.macStrategy.getMacAddress()
+                        .ifPresent(mac -> newArgs.put("mac", mac));
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)
                                 .port(port)
                                 .minerType(type.get())
-                                .parameters(args)
+                                .parameters(newArgs)
                                 .build();
             }
         } catch (final MinerException | EmptySiteException e) {

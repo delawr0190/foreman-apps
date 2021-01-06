@@ -30,7 +30,7 @@ public class ObeliskMacStrategy
      * @param ip   The IP.
      * @param port The port.
      */
-    ObeliskMacStrategy(
+    public ObeliskMacStrategy(
             final String ip,
             final int port) {
         this.ip = ip;

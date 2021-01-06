@@ -3,12 +3,14 @@ package mn.foreman.honorknight;
 import mn.foreman.honorknight.response.Overview;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.MacStrategy;
 import mn.foreman.model.MinerType;
 import mn.foreman.model.error.MinerException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,17 +23,23 @@ public class HonorKnightDetectionStrategy<T extends MinerType>
     private static final Logger LOG =
             LoggerFactory.getLogger(HonorKnightDetectionStrategy.class);
 
+    /** The strategy for finding MACs. */
+    private final MacStrategy macStrategy;
+
     /** A mapper for creating the miner type from the model. */
     private final Function<String, Optional<T>> mapper;
 
     /**
      * Constructor.
      *
-     * @param mapper The mapper.
+     * @param mapper      The mapper.
+     * @param macStrategy The MAC strategy.
      */
     public HonorKnightDetectionStrategy(
-            final Function<String, Optional<T>> mapper) {
+            final Function<String, Optional<T>> mapper,
+            final MacStrategy macStrategy) {
         this.mapper = mapper;
+        this.macStrategy = macStrategy;
     }
 
     @Override
@@ -52,12 +60,15 @@ public class HonorKnightDetectionStrategy<T extends MinerType>
                     this.mapper.apply(
                             overview.minerInfo.model);
             if (type.isPresent()) {
+                final Map<String, Object> newArgs = new HashMap<>(args);
+                this.macStrategy.getMacAddress()
+                        .ifPresent(mac -> newArgs.put("mac", mac));
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)
                                 .port(4028)
                                 .minerType(type.get())
-                                .parameters(args)
+                                .parameters(newArgs)
                                 .build();
             }
         } catch (final MinerException me) {

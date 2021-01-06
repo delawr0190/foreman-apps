@@ -2,15 +2,17 @@ package mn.foreman.antminer;
 
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /** A strategy for detecting Antminers. */
 public class AntminerDetectionStrategy
         implements DetectionStrategy {
+
+    /** The strategies for detecting MACs. */
+    private final List<MacStrategy> macStrategies;
 
     /** The realm. */
     private final String realm;
@@ -18,10 +20,14 @@ public class AntminerDetectionStrategy
     /**
      * Constructor.
      *
-     * @param realm The realm.
+     * @param realm         The realm.
+     * @param macStrategies The mac strategies.
      */
-    public AntminerDetectionStrategy(final String realm) {
+    public AntminerDetectionStrategy(
+            final String realm,
+            final MacStrategy... macStrategies) {
         this.realm = realm;
+        this.macStrategies = Arrays.asList(macStrategies);
     }
 
     @Override
@@ -71,6 +77,14 @@ public class AntminerDetectionStrategy
                                             "hostname",
                                             hostname));
                 }
+
+                this.macStrategies
+                        .stream()
+                        .map(MacStrategy::getMacAddress)
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
+                        .findFirst()
+                        .ifPresent(mac -> newArgs.put("mac", mac));
 
                 detection =
                         Detection
