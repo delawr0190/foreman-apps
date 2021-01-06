@@ -96,7 +96,7 @@ public class StockNetworkAction
                                         newHostname)
                                 .put(
                                         "ipPro",
-                                        "2")
+                                        2)
                                 .put(
                                         "ipAddress",
                                         network.ipAddress)

@@ -215,7 +215,7 @@ public class AntminerNetworkITest
                                                 AntminerNetworkITest::validateDigest),
                                         "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
-                                                "{\"ipHost\":\"Antminer\",\"ipPro\":\"2\",\"ipAddress\":\"192.168.1.189\",\"ipSub\":\"255.255.255.0\",\"ipGateway\":\"192.168.1.1\",\"ipDns\":\"192.168.1.1\"}",
+                                                "{\"ipHost\":\"Antminer\",\"ipPro\":2,\"ipAddress\":\"192.168.1.189\",\"ipSub\":\"255.255.255.0\",\"ipGateway\":\"192.168.1.1\",\"ipDns\":\"192.168.1.1\"}",
                                                 "ok",
                                                 AntminerNetworkITest::validateDigest)),
                                 ImmutableMap.of(
