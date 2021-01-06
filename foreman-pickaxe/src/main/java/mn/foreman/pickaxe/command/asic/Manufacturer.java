@@ -44,7 +44,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 /** An enumeration containing all of the known manufacturers. */
 public enum Manufacturer {
@@ -52,11 +52,11 @@ public enum Manufacturer {
     /** Aixin. */
     AIXIN(
             "aixin",
-            args ->
+            (args, ip) ->
                     new HonorKnightDetectionStrategy<>(
                             AixinType::forType,
                             new HonorKnightMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
@@ -84,17 +84,17 @@ public enum Manufacturer {
     /** Antminer. */
     ANTMINER(
             "antminer",
-            args ->
+            (args, ip) ->
                     new AntminerDetectionStrategy(
                             "antMiner Configuration",
                             new StockMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     "antMiner Configuration",
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString()),
                             new BraiinsMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString())),
@@ -188,12 +188,12 @@ public enum Manufacturer {
     /** Avalon. */
     AVALON(
             "avalon",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
                             new AvalonTypeFactory(),
                             new AvalonMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80),
                             new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache) ->
@@ -225,7 +225,7 @@ public enum Manufacturer {
     /** Baikal. */
     BAIKAL(
             "baikal",
-            args -> new BaikalDetectionStrategy("80"),
+            (args, ip) -> new BaikalDetectionStrategy("80"),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -246,12 +246,12 @@ public enum Manufacturer {
     /** Blackminer. */
     BLACKMINER(
             "blackminer",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.VERSION,
                             new BlackminerTypeFactory(),
                             new StockMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     "blackMiner Configuration",
                                     args.getOrDefault("username", "").toString(),
@@ -334,11 +334,11 @@ public enum Manufacturer {
     /** Cheetahminer. */
     CHEETAHMINER(
             "cheetahminer",
-            args ->
+            (args, ip) ->
                     new HonorKnightDetectionStrategy<>(
                             CheetahminerType::forType,
                             new HonorKnightMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
@@ -366,7 +366,7 @@ public enum Manufacturer {
     /** Dayun. */
     DAYUN(
             "dayun",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
                             new DayunTypeFactory(),
@@ -380,12 +380,12 @@ public enum Manufacturer {
     /** Dragonmint. */
     DRAGONMINT(
             "dragonmint",
-            args ->
+            (args, ip) ->
                     new DragonmintDetectionStrategy<>(
                             DragonmintType::forType,
                             "DragonMint",
                             new DragonmintMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString())),
@@ -429,7 +429,7 @@ public enum Manufacturer {
     /** FutureBit. */
     FUTUREBIT(
             "futurebit",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new FutureBitTypeFactory()),
@@ -441,11 +441,11 @@ public enum Manufacturer {
     /** HonorKnight. */
     HONORKNIGHT(
             "honorknight",
-            args ->
+            (args, ip) ->
                     new HonorKnightDetectionStrategy<>(
                             HonorKnightType::forType,
                             new HonorKnightMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
@@ -473,7 +473,7 @@ public enum Manufacturer {
     /** HyperBit. */
     HYPERBIT(
             "hyperbit",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new HyperbitTypeFactory()),
@@ -485,12 +485,12 @@ public enum Manufacturer {
     /** Innosilicon. */
     INNOSILICON(
             "innosilicon",
-            args ->
+            (args, ip) ->
                     new DragonmintDetectionStrategy<>(
                             InnosiliconType::forType,
                             "Innosilicon",
                             new DragonmintMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString())),
@@ -534,7 +534,7 @@ public enum Manufacturer {
     /** MultMiner. */
     MULTMINER(
             "multminer",
-            args -> new MultMinerDetectionStrategy(),
+            (args, ip) -> new MultMinerDetectionStrategy(),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -555,10 +555,10 @@ public enum Manufacturer {
     /** Obelisk. */
     OBELISK(
             "obelisk",
-            args ->
+            (args, ip) ->
                     new ObeliskDetectionStrategy<>(
                             new ObeliskMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
@@ -600,7 +600,7 @@ public enum Manufacturer {
     /** Spondoolies. */
     SPONDOOLIES(
             "spondoolies",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.SUMMARY,
                             new SpondooliesTypeFactory()),
@@ -612,12 +612,12 @@ public enum Manufacturer {
     /** StrongU. */
     STRONGU(
             "strongu",
-            args ->
+            (args, ip) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new StrongUTypeFactory(),
                             new StockMacStrategy(
-                                    args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                    ip,
                                     80,
                                     "stuMiner Configuration",
                                     args.getOrDefault("username", "").toString(),
@@ -711,17 +711,17 @@ public enum Manufacturer {
     /** Whatsminer. */
     WHATSMINER(
             "whatsminer",
-            args ->
+            (args, ip) ->
                     new FirmwareAwareDetectionStrategy(
                             new WhatsminerDetectionStrategy(
                                     new NewFirmwareMacStrategy(
-                                            args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                            ip,
                                             4028)),
                             new CgMinerDetectionStrategy(
                                     CgMinerCommand.STATS,
                                     new WhatsminerTypeFactory(),
                                     new NewFirmwareMacStrategy(
-                                            args.getOrDefault("apiIp", args.get("ip")).toString(),
+                                            ip,
                                             4028),
                                     new NullPatchingStrategy())),
             (threadPool, blacklist, statsCache) ->
@@ -774,7 +774,7 @@ public enum Manufacturer {
     private final ActionSupplier changePoolsStrategy;
 
     /** The strategy for detecting. */
-    private final Function<Map<String, Object>, DetectionStrategy> detectionStrategy;
+    private final BiFunction<Map<String, Object>, String, DetectionStrategy> detectionStrategy;
 
     /** The strategy for performing a factory reset. */
     private final ActionSupplier factoryResetStrategy;
@@ -800,7 +800,7 @@ public enum Manufacturer {
      */
     Manufacturer(
             final String name,
-            final Function<Map<String, Object>, DetectionStrategy> detectionStrategy,
+            final BiFunction<Map<String, Object>, String, DetectionStrategy> detectionStrategy,
             final ActionSupplier changePoolsStrategy,
             final ActionSupplier rebootStrategy,
             final ActionSupplier factoryResetStrategy,
@@ -847,11 +847,16 @@ public enum Manufacturer {
      * Returns the strategy.
      *
      * @param args The args.
+     * @param ip   The IP.
      *
      * @return The strategy.
      */
-    public DetectionStrategy getDetectionStrategy(final Map<String, Object> args) {
-        return this.detectionStrategy.apply(args);
+    public DetectionStrategy getDetectionStrategy(
+            final Map<String, Object> args,
+            final String ip) {
+        return this.detectionStrategy.apply(
+                args,
+                ip);
     }
 
     /**

@@ -134,37 +134,32 @@ public class ScanStrategy
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
-        final Optional<Manufacturer> type =
-                Manufacturer.fromName(manufacturer);
-        if (type.isPresent()) {
-            final Manufacturer manufacturerType =
-                    type.get();
-            runScan(
-                    foremanApi,
-                    command.id,
-                    start,
-                    stop,
-                    port,
-                    args,
-                    manufacturerType.getDetectionStrategy(args),
-                    builder,
-                    callback);
-        }
+        Manufacturer
+                .fromName(manufacturer)
+                .ifPresent(value -> runScan(
+                        foremanApi,
+                        command.id,
+                        start,
+                        stop,
+                        port,
+                        args,
+                        value,
+                        builder,
+                        callback));
     }
 
     /**
      * Scans for miners.
      *
-     * @param foremanApi        The Foreman API handle.
-     * @param id                The command ID.
-     * @param start             Where to start.
-     * @param stop              Where to stop.
-     * @param port              The port to inspect.
-     * @param args              The arguments.
-     * @param builder           The builder to use for creating the final
-     *                          result.
-     * @param detectionStrategy The strategy to use for detecting miners.
-     * @param callback          The callback.
+     * @param foremanApi   The Foreman API handle.
+     * @param id           The command ID.
+     * @param start        Where to start.
+     * @param stop         Where to stop.
+     * @param port         The port to inspect.
+     * @param args         The arguments.
+     * @param builder      The builder to use for creating the final result.
+     * @param manufacturer The manufacturer.
+     * @param callback     The callback.
      */
     private void runScan(
             final ForemanApi foremanApi,
@@ -173,7 +168,7 @@ public class ScanStrategy
             final long stop,
             final int port,
             final Map<String, Object> args,
-            final DetectionStrategy detectionStrategy,
+            final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
         if (stop - start <= 65_536) {
@@ -184,7 +179,7 @@ public class ScanStrategy
                     stop,
                     port,
                     args,
-                    detectionStrategy,
+                    manufacturer,
                     builder,
                     callback);
         } else {
@@ -202,16 +197,15 @@ public class ScanStrategy
     /**
      * Scans a valid range.
      *
-     * @param foremanApi        The Foreman API handle.
-     * @param id                The command ID.
-     * @param start             Where to start.
-     * @param stop              Where to stop.
-     * @param port              The port to inspect.
-     * @param args              The arguments.
-     * @param builder           The builder to use for creating the final
-     *                          result.
-     * @param detectionStrategy The strategy to use for detecting miners.
-     * @param callback          The callback.
+     * @param foremanApi   The Foreman API handle.
+     * @param id           The command ID.
+     * @param start        Where to start.
+     * @param stop         Where to stop.
+     * @param port         The port to inspect.
+     * @param args         The arguments.
+     * @param builder      The builder to use for creating the final result.
+     * @param manufacturer The manufacturer.
+     * @param callback     The callback.
      */
     private void scanInRange(
             final ForemanApi foremanApi,
@@ -220,12 +214,16 @@ public class ScanStrategy
             final long stop,
             final int port,
             final Map<String, Object> args,
-            final DetectionStrategy detectionStrategy,
+            final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
         final List<Object> miners = new LinkedList<>();
         for (long i = start; i <= stop; i++) {
             final String ip = ipFromLong(i);
+            final DetectionStrategy detectionStrategy =
+                    manufacturer.getDetectionStrategy(
+                            args,
+                            ip);
             final Optional<Detection> detectionOpt =
                     detectionStrategy.detect(
                             ip,
