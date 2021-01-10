@@ -224,11 +224,18 @@ public class ScanStrategy
                     manufacturer.getDetectionStrategy(
                             args,
                             ip);
-            final Optional<Detection> detectionOpt =
-                    detectionStrategy.detect(
-                            ip,
-                            port,
-                            args);
+
+            Optional<Detection> detectionOpt = Optional.empty();
+            try {
+                 detectionOpt =
+                        detectionStrategy.detect(
+                                ip,
+                                port,
+                                args);
+            } catch (final Exception e) {
+                LOG.warn("Exception occurred while querying", e);
+            }
+
             LOG.debug("Scanning {}:{}", ip, port);
 
             final Map<String, Object> update = new HashMap<>();

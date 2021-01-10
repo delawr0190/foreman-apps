@@ -6,6 +6,7 @@ import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
 
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,13 +73,17 @@ public class CgminerDiscoverStrategy
                     LOG.info("Failed to connect to {}:{}", ip, port);
                     builder
                             .success(false)
-                            .response("");
+                            .response(
+                                    String.format(
+                                            "Failed to connect to %s:%d",
+                                            ip,
+                                            port));
                 }
             } catch (final Exception e) {
                 LOG.info("Exception occurred while querying", e);
                 builder
                         .success(false)
-                        .response("");
+                        .response(ExceptionUtils.getStackTrace(e));
             }
 
             discoveries.add(builder.build());
