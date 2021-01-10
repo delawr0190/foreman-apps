@@ -3,9 +3,10 @@ package mn.foreman.honorknight;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
-import mn.foreman.honorknight.response.StatsResponseStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.util.List;
 import java.util.Map;
@@ -23,8 +24,24 @@ public class HonorKnightFactory
             final String apiPort,
             final List<String> statsWhitelist,
             final Map<String, Object> config) {
-        final Context context = new Context();
-        return new CgMiner.Builder(context, statsWhitelist)
+        final Context cgContext = new Context();
+        final ResponseStrategy responseStrategy =
+                new AggregatingResponseStrategy<>(
+                        ImmutableMap.of(
+                                "STATS",
+                                (values, builder, context) ->
+                                        HonorKnightUtils.updateStats(
+                                                cgContext,
+                                                values,
+                                                builder),
+                                "DEVS",
+                                (values, builder, context) ->
+                                        HonorKnightUtils.updateEDevs(
+                                                values,
+                                                builder)),
+                        () -> null,
+                        cgContext);
+        return new CgMiner.Builder(cgContext, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
                 .addRequest(
@@ -33,12 +50,17 @@ public class HonorKnightFactory
                                 .build(),
                         new PoolsResponseStrategy(
                                 new MrrRigIdCallback(
-                                        context)))
+                                        cgContext)))
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .setCommand(CgMinerCommand.STATS)
                                 .build(),
-                        new StatsResponseStrategy(context))
+                        responseStrategy)
+                .addRequest(
+                        new CgMinerRequest.Builder()
+                                .setCommand(CgMinerCommand.EDEVS)
+                                .build(),
+                        responseStrategy)
                 .setMacStrategy(
                         new HonorKnightMacStrategy(
                                 apiIp,
