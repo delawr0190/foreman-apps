@@ -72,62 +72,6 @@ public class DiscoveryITest {
                                 .build()));
     }
 
-    /** Tests against a miner that doesn't exist. */
-    @Test
-    public void testNotFound() {
-        runDiscovery(
-                4029,
-                Arrays.asList(
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"pools\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"stats\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"devs\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"edevs\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"summary\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"version\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"temps\"}")
-                                .response("")
-                                .success(false)
-                                .build(),
-                        Discovery
-                                .builder()
-                                .query("{\"command\":\"fans\"}")
-                                .response("")
-                                .success(false)
-                                .build()));
-    }
-
     /**
      * Runs a discovery test.
      *
