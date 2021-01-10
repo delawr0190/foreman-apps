@@ -88,7 +88,7 @@ public class StockMacStrategy
         } catch (final Exception e) {
             // Ignore if we can't get the MAC
         }
-        return Optional.of(mac.get());
+        return Optional.ofNullable(mac.get());
     }
 
     /**

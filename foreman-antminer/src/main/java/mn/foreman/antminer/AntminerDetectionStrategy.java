@@ -3,7 +3,6 @@ package mn.foreman.antminer;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MacStrategy;
-import mn.foreman.model.error.MinerException;
 
 import java.util.*;
 
@@ -95,7 +94,7 @@ public class AntminerDetectionStrategy
                                 .parameters(newArgs)
                                 .build();
             }
-        } catch (final MinerException e) {
+        } catch (final Exception e) {
             // Failed to find
         }
         return Optional.ofNullable(detection);
