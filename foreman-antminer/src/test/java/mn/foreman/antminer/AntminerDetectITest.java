@@ -35,7 +35,13 @@ public class AntminerDetectITest
             final Map<String, Object> args,
             final String hostname) {
         super(
-                new AntminerDetectionStrategy("antMiner Configuration"),
+                new AntminerDetectionStrategy(
+                        "antMiner Configuration",
+                        Collections.emptyList(),
+                        Arrays.asList(
+                                new StockHostnameStrategy(
+                                        "antMiner Configuration"),
+                                new BraiinsHostnameStrategy())),
                 servers,
                 args,
                 Detection.builder()

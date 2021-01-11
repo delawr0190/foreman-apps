@@ -10,6 +10,9 @@ import java.util.*;
 public class AntminerDetectionStrategy
         implements DetectionStrategy {
 
+    /** The hostname strategies. */
+    private final List<HostnameStrategy> hostnameStrategies;
+
     /** The strategies for detecting MACs. */
     private final List<MacStrategy> macStrategies;
 
@@ -19,14 +22,17 @@ public class AntminerDetectionStrategy
     /**
      * Constructor.
      *
-     * @param realm         The realm.
-     * @param macStrategies The mac strategies.
+     * @param realm              The realm.
+     * @param macStrategies      The mac strategies.
+     * @param hostnameStrategies The hostname strategies.
      */
     public AntminerDetectionStrategy(
             final String realm,
-            final MacStrategy... macStrategies) {
+            final List<MacStrategy> macStrategies,
+            final List<HostnameStrategy> hostnameStrategies) {
         this.realm = realm;
-        this.macStrategies = Arrays.asList(macStrategies);
+        this.macStrategies = new ArrayList<>(macStrategies);
+        this.hostnameStrategies = new ArrayList<>(hostnameStrategies);
     }
 
     @Override
@@ -64,17 +70,26 @@ public class AntminerDetectionStrategy
 
                 final Map<String, Object> newArgs = new HashMap<>(args);
                 if (hostnamePreferred) {
-                    AntminerUtils.getSystemAttribute(
-                            ip,
-                            webPort,
-                            username,
-                            password,
-                            this.realm,
-                            "hostname")
-                            .ifPresent(hostname ->
-                                    newArgs.put(
-                                            "hostname",
-                                            hostname));
+                    this.hostnameStrategies
+                            .stream()
+                            .map(hostnameStrategy -> {
+                                try {
+                                    return hostnameStrategy.getHostname(
+                                            ip,
+                                            port,
+                                            args);
+                                } catch (final Exception e) {
+                                    return Optional.empty();
+                                }
+                            })
+                            .filter(Optional::isPresent)
+                            .map(Optional::get)
+                            .findFirst()
+                            .ifPresent(
+                                    hostname ->
+                                            newArgs.put(
+                                                    "hostname",
+                                                    hostname));
                 }
 
                 this.macStrategies

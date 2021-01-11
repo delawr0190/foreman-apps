@@ -35,6 +35,7 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 /** Utilities for interacting with a bOS miner. */
 class BraiinsUtils {
@@ -128,6 +129,7 @@ class BraiinsUtils {
      * @param username The username.
      * @param password The password.
      * @param command  The command.
+     * @param response The response callback.
      *
      * @throws MinerException on failure.
      */
@@ -135,7 +137,8 @@ class BraiinsUtils {
             final String ip,
             final String username,
             final String password,
-            final String command)
+            final String command,
+            final Consumer<String> response)
             throws MinerException {
         Session session = null;
         Channel channel = null;
@@ -165,22 +168,22 @@ class BraiinsUtils {
             final InputStream in = channel.getInputStream();
             channel.connect();
 
-            final byte[] tmp = new byte[1024];
-            while (!channel.isClosed()) {
-                while (in.available() > 0) {
-                    int i = in.read(tmp, 0, 1024);
-                    if (i < 0) {
-                        break;
-                    }
-                    LOG.info("SSH read: {}", new String(tmp, 0, i));
+            final StringBuilder outBuff = new StringBuilder();
+
+            while (true) {
+                for (int c; ((c = in.read()) >= 0); ) {
+                    outBuff.append((char) c);
                 }
 
-                try {
-                    TimeUnit.SECONDS.sleep(1);
-                } catch (final Exception e) {
-                    // Ignore
+                if (channel.isClosed()) {
+                    if (in.available() > 0) {
+                        continue;
+                    }
+                    break;
                 }
             }
+
+            response.accept(outBuff.toString());
 
             LOG.info("SSH channel closed (status={})",
                     channel.getExitStatus());

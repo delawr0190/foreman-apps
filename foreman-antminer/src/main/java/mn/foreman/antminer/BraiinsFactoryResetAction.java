@@ -26,7 +26,9 @@ public class BraiinsFactoryResetAction
                 ip,
                 parameters.getOrDefault("username", "").toString(),
                 parameters.getOrDefault("password", "").toString(),
-                "miner factory_reset");
+                "miner factory_reset",
+                s -> {
+                });
         LOG.info("Factory reset has been started");
         return true;
     }

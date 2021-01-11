@@ -87,17 +87,22 @@ public enum Manufacturer {
             (args, ip) ->
                     new AntminerDetectionStrategy(
                             "antMiner Configuration",
-                            new StockMacStrategy(
-                                    ip,
-                                    80,
-                                    "antMiner Configuration",
-                                    args.getOrDefault("username", "").toString(),
-                                    args.getOrDefault("password", "").toString()),
-                            new BraiinsMacStrategy(
-                                    ip,
-                                    80,
-                                    args.getOrDefault("username", "").toString(),
-                                    args.getOrDefault("password", "").toString())),
+                            Arrays.asList(
+                                    new StockMacStrategy(
+                                            ip,
+                                            80,
+                                            "antMiner Configuration",
+                                            args.getOrDefault("username", "").toString(),
+                                            args.getOrDefault("password", "").toString()),
+                                    new BraiinsMacStrategy(
+                                            ip,
+                                            80,
+                                            args.getOrDefault("username", "").toString(),
+                                            args.getOrDefault("password", "").toString())),
+                            Arrays.asList(
+                                    new StockHostnameStrategy(
+                                            "antMiner Configuration"),
+                                    new BraiinsHostnameStrategy())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,

@@ -29,7 +29,9 @@ public class BraiinsRebootAction
                 ip,
                 args.getOrDefault("username", "").toString(),
                 args.getOrDefault("password", "").toString(),
-                "reboot");
+                "reboot",
+                s -> {
+                });
         LOG.info("Miner has rebooted");
         return true;
     }
