@@ -32,6 +32,9 @@ public enum WhatsminerType
     /** M20S. */
     WHATSMINER_M20S(315, "WhatsMiner M20S", "whatsminer-m20s"),
 
+    /** M20. */
+    WHATSMINER_M20("WhatsMiner M20", "whatsminer-m20"),
+
     /** M21. */
     WHATSMINER_M21("WhatsMiner M21", "whatsminer-m21"),
 
