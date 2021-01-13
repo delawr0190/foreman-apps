@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A {@link StockNetworkAction} provides a mechanism for setting the network
@@ -159,6 +160,8 @@ public class StockNetworkAction
                     e);
         }
 
+        final AtomicReference<String> errorMessage = new AtomicReference<>();
+
         try {
             Query.digestPost(
                     ip,
@@ -170,10 +173,18 @@ public class StockNetworkAction
                     config,
                     payload,
                     (integer, s) -> {
+                        if (s != null && s.contains("error")) {
+                            errorMessage.set(s);
+                        }
                     });
         } catch (final Exception e) {
             // Miner disconnects when the IP is changed
             LOG.info("Exception occurred while updating settings", e);
+        }
+
+        final String error = errorMessage.get();
+        if (error != null && !error.isEmpty()) {
+            throw new MinerException(error);
         }
 
         return true;
