@@ -3,6 +3,7 @@ package mn.foreman.whatsminer;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MacStrategy;
+import mn.foreman.model.error.MinerException;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -43,55 +44,10 @@ public class WhatsminerDetectionStrategy
 
         final AtomicReference<WhatsminerType> typeRef =
                 new AtomicReference<>();
-        query(
-                ip,
-                args,
-                "443",
-                typeRef);
-        if (typeRef.get() == null) {
-            query(
-                    ip,
-                    args,
-                    "80",
-                    typeRef);
-        }
-
-        final WhatsminerType whatsminerType =
-                typeRef.get();
-        if (whatsminerType != null) {
-            final Map<String, Object> newArgs = new HashMap<>(args);
-            this.macStrategy.getMacAddress()
-                    .ifPresent(mac -> newArgs.put("mac", mac));
-            detection =
-                    Detection
-                            .builder()
-                            .ipAddress(ip)
-                            .port(port)
-                            .minerType(whatsminerType)
-                            .parameters(newArgs)
-                            .build();
-        }
-
-        return Optional.ofNullable(detection);
-    }
-
-    /**
-     * Query the miner interface.
-     *
-     * @param ip      The ip.
-     * @param args    The args.
-     * @param webPort The default web port.
-     * @param typeRef The type to update.
-     */
-    private static void query(
-            final String ip,
-            final Map<String, Object> args,
-            final String webPort,
-            final AtomicReference<WhatsminerType> typeRef) {
         try {
             WhatsminerQuery.query(
                     ip,
-                    Integer.parseInt(args.getOrDefault("webPort", webPort).toString()),
+                    Integer.parseInt(args.getOrDefault("webPort", "443").toString()),
                     args.getOrDefault("username", "").toString(),
                     args.getOrDefault("password", "").toString(),
                     Collections.singletonList(
@@ -115,8 +71,26 @@ public class WhatsminerDetectionStrategy
                                         }
                                     })
                                     .build()));
-        } catch (final Exception e) {
-            LOG.debug("No miner found on {}:{}", ip, webPort, e);
+        } catch (final MinerException me) {
+            LOG.debug("No miner found on {}:{}", ip, port, me);
         }
+
+        final WhatsminerType whatsminerType =
+                typeRef.get();
+        if (whatsminerType != null) {
+            final Map<String, Object> newArgs = new HashMap<>(args);
+            this.macStrategy.getMacAddress()
+                    .ifPresent(mac -> newArgs.put("mac", mac));
+            detection =
+                    Detection
+                            .builder()
+                            .ipAddress(ip)
+                            .port(port)
+                            .minerType(whatsminerType)
+                            .parameters(newArgs)
+                            .build();
+        }
+
+        return Optional.ofNullable(detection);
     }
 }

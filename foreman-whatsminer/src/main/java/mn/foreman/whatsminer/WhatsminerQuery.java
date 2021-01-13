@@ -65,6 +65,52 @@ public class WhatsminerQuery {
             final String password,
             final List<Query> queries)
             throws MinerException {
+        // Test hook
+        if (port == 8080 || port == 8081) {
+            doQuery(
+                    ip,
+                    port,
+                    username,
+                    password,
+                    queries);
+        } else {
+            try {
+                doQuery(
+                        ip,
+                        443,
+                        username,
+                        password,
+                        queries);
+            } catch (final MinerException me) {
+                doQuery(
+                        ip,
+                        80,
+                        username,
+                        password,
+                        queries);
+            }
+        }
+    }
+
+    /**
+     * Queries a Whatsminer, performing a login operation first to obtain a
+     * session cookie.
+     *
+     * @param ip       The ip.
+     * @param port     The port.
+     * @param username The username.
+     * @param password The password.
+     * @param queries  The queries.
+     *
+     * @throws MinerException on failure.
+     */
+    private static void doQuery(
+            final String ip,
+            final int port,
+            final String username,
+            final String password,
+            final List<Query> queries)
+            throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
         final RequestConfig requestConfig =
                 RequestConfig
@@ -125,6 +171,7 @@ public class WhatsminerQuery {
             throw new MinerException("Failed to obtain config data");
         }
     }
+
 
     /**
      * Queries a Whatsminer miner, performing a login operation first to obtain
