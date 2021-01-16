@@ -17,9 +17,13 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
@@ -59,47 +63,29 @@ public class JdkWebUtil
 
     @Override
     public Optional<String> get(final String uri) {
-        String response = null;
-        try {
-            final URL url =
-                    new URL(
-                            String.format(
-                                    "%s%s",
-                                    this.foremanUrl,
-                                    uri));
+        return get(
+                uri,
+                Collections.emptyMap());
+    }
 
-            LOG.debug("Querying {}{}", this.foremanUrl, uri);
+    @Override
+    public Optional<String> get(
+            final String uri,
+            final boolean auth) {
+        return get(
+                uri,
+                auth,
+                Collections.emptyMap());
+    }
 
-            final HttpURLConnection connection =
-                    (HttpURLConnection) url.openConnection();
-
-            connection.setRequestMethod("GET");
-            connection.setRequestProperty(
-                    "Authorization",
-                    "Token " + this.apiToken);
-            connection.setConnectTimeout(SOCKET_TIMEOUT);
-            connection.setReadTimeout(SOCKET_TIMEOUT);
-
-            final int code = connection.getResponseCode();
-            if (code == HttpURLConnection.HTTP_OK) {
-                try (final InputStreamReader inputStreamReader =
-                             new InputStreamReader(
-                                     connection.getInputStream());
-                     final BufferedReader reader =
-                             new BufferedReader(
-                                     inputStreamReader)) {
-                    response =
-                            IOUtils.toString(reader);
-                    LOG.debug("Received response: {}", response);
-                }
-            } else {
-                LOG.warn("Failed to obtain commands: {}", code);
-            }
-        } catch (final Exception e) {
-            LOG.warn("Exception occurred during get", e);
-        }
-
-        return Optional.ofNullable(response);
+    @Override
+    public Optional<String> get(
+            final String uri,
+            final Map<String, String> params) {
+        return get(
+                uri,
+                true,
+                params);
     }
 
     @Override
@@ -139,6 +125,92 @@ public class JdkWebUtil
                 uri,
                 body,
                 httpPut);
+    }
+
+    /**
+     * Generates a parameter string.
+     *
+     * @param params The parameters.
+     *
+     * @return The query params.
+     *
+     * @throws UnsupportedEncodingException on failure.
+     */
+    private static String getParamsString(final Map<String, String> params)
+            throws UnsupportedEncodingException {
+        final StringBuilder result = new StringBuilder();
+
+        for (final Map.Entry<String, String> entry : params.entrySet()) {
+            result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+            result.append("=");
+            result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+            result.append("&");
+        }
+
+        final String resultString = result.toString();
+        return resultString.length() > 0
+                ? resultString.substring(0, resultString.length() - 1)
+                : resultString;
+    }
+
+    /**
+     * Performs a GET operation, with auth, if necessary.
+     *
+     * @param uri    The URI.
+     * @param auth   Whether or not to auth.
+     * @param params The parameters.
+     *
+     * @return The response.
+     */
+    private Optional<String> get(
+            final String uri,
+            final boolean auth,
+            final Map<String, String> params) {
+        String response = null;
+        try {
+            final URL url =
+                    new URL(
+                            String.format(
+                                    "%s%s%s",
+                                    this.foremanUrl,
+                                    uri,
+                                    !params.isEmpty()
+                                            ? "?" + getParamsString(params)
+                                            : ""));
+
+            LOG.debug("Querying {}{}", this.foremanUrl, uri);
+
+            final HttpURLConnection connection =
+                    (HttpURLConnection) url.openConnection();
+
+            connection.setRequestMethod("GET");
+            if (auth) {
+                connection.setRequestProperty(
+                        "Authorization",
+                        "Token " + this.apiToken);
+            }
+            connection.setConnectTimeout(SOCKET_TIMEOUT);
+            connection.setReadTimeout(SOCKET_TIMEOUT);
+
+            final int code = connection.getResponseCode();
+            if (code == HttpURLConnection.HTTP_OK) {
+                try (final InputStreamReader inputStreamReader =
+                             new InputStreamReader(
+                                     connection.getInputStream());
+                     final BufferedReader reader =
+                             new BufferedReader(
+                                     inputStreamReader)) {
+                    response = IOUtils.toString(reader);
+                    LOG.debug("Received response: {}", response);
+                }
+            } else {
+                LOG.warn("Failed to obtain commands: {}", code);
+            }
+        } catch (final Exception e) {
+            LOG.warn("Exception occurred during get", e);
+        }
+
+        return Optional.ofNullable(response);
     }
 
     /**

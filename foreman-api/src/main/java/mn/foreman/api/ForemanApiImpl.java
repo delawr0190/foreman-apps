@@ -4,8 +4,12 @@ import mn.foreman.api.actions.Actions;
 import mn.foreman.api.actions.ActionsImpl;
 import mn.foreman.api.miners.Miners;
 import mn.foreman.api.miners.MinersImpl;
+import mn.foreman.api.notifications.Notifications;
+import mn.foreman.api.notifications.NotificationsImpl;
 import mn.foreman.api.pickaxe.Pickaxe;
 import mn.foreman.api.pickaxe.PickaxeImpl;
+import mn.foreman.api.ping.Ping;
+import mn.foreman.api.ping.PingImpl;
 import mn.foreman.api.sitemap.SiteMap;
 import mn.foreman.api.sitemap.SiteMapImpl;
 
@@ -63,10 +67,25 @@ public class ForemanApiImpl
     }
 
     @Override
+    public Notifications notifications() {
+        return new NotificationsImpl(
+                this.clientId,
+                this.objectMapper,
+                this.webUtil);
+    }
+
+    @Override
     public Pickaxe pickaxe() {
         return new PickaxeImpl(
                 this.pickaxeId,
                 this.objectMapper,
+                this.webUtil);
+    }
+
+    @Override
+    public Ping ping() {
+        return new PingImpl(
+                this.clientId,
                 this.webUtil);
     }
 

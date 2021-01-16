@@ -1,5 +1,6 @@
 package mn.foreman.api;
 
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -16,6 +17,30 @@ public interface WebUtil {
      * @return The response content.
      */
     Optional<String> get(String uri);
+
+    /**
+     * Performs a <code>GET</code> operation against the provided URI.
+     *
+     * @param uri  The URI.
+     * @param auth Whether or not to auth.
+     *
+     * @return The response content.
+     */
+    Optional<String> get(
+            String uri,
+            boolean auth);
+
+    /**
+     * Performs a <code>GET</code> operation against the provided URI.
+     *
+     * @param uri    The URI.
+     * @param params The parameters.
+     *
+     * @return The response content.
+     */
+    Optional<String> get(
+            String uri,
+            Map<String, String> params);
 
     /**
      * Performs a <code>POST</code> operation against the provided URI.
