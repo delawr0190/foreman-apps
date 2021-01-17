@@ -1,7 +1,7 @@
 package mn.foreman.multminer;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;

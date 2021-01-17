@@ -37,6 +37,7 @@
         <commons-io.version>2.6</commons-io.version>
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
+        <foreman-java-api.version>1.0.0-SNAPSHOT</foreman-java-api.version>
         <guava.version>24.1.1-jre</guava.version>
         <jackson.version>2.9.10</jackson.version>
         <jackson-databind.version>2.9.10.5</jackson-databind.version>
@@ -59,7 +60,6 @@
 
     <modules>
         <module>foreman-aixin</module>
-        <module>foreman-api</module>
         <module>foreman-antminer</module>
         <module>foreman-autominer</module>
         <module>foreman-avalon</module>
@@ -122,11 +122,6 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-aixin</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>mn.foreman</groupId>
-                <artifactId>foreman-api</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -411,6 +406,12 @@
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-xmrstak</artifactId>
                 <version>${project.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>java-api</artifactId>
+                <version>${foreman-java-api.version}</version>
             </dependency>
 
             <!-- Apache -->

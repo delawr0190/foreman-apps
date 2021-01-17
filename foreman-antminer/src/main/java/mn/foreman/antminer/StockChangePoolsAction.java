@@ -1,8 +1,8 @@
 package mn.foreman.antminer;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

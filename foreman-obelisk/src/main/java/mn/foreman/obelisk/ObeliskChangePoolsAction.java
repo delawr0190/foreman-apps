@@ -1,7 +1,7 @@
 package mn.foreman.obelisk;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.obelisk.json.Dashboard;
 

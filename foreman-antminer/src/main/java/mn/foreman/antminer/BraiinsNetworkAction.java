@@ -1,8 +1,8 @@
 package mn.foreman.antminer;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 
 import java.util.Map;

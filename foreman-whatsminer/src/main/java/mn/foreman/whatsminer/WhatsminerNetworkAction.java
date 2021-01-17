@@ -1,7 +1,7 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;

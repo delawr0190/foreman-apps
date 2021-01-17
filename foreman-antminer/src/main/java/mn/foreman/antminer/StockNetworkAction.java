@@ -1,8 +1,8 @@
 package mn.foreman.antminer;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

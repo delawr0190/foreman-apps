@@ -1,5 +1,6 @@
 package mn.foreman.model;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.model.error.MinerException;
 
 import java.util.List;

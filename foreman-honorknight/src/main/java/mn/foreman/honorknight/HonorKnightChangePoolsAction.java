@@ -1,7 +1,7 @@
 package mn.foreman.honorknight;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 import mn.foreman.util.ParamUtils;
 
 import java.util.LinkedList;
@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A {@link HonorKnightChangePoolsAction} provides an {@link AbstractChangePoolsAction}
- * implementation that will change the pools in use by an honorknight device.
+ * A {@link HonorKnightChangePoolsAction} provides an {@link
+ * AbstractChangePoolsAction} implementation that will change the pools in use
+ * by an honorknight device.
  */
 public class HonorKnightChangePoolsAction
         extends AbstractChangePoolsAction {

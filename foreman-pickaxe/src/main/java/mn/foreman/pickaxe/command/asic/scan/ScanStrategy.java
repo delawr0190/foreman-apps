@@ -1,13 +1,13 @@
 package mn.foreman.pickaxe.command.asic.scan;
 
 import mn.foreman.api.ForemanApi;
+import mn.foreman.api.model.CommandDone;
+import mn.foreman.api.model.CommandStart;
+import mn.foreman.api.model.CommandUpdate;
+import mn.foreman.api.model.DoneStatus;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MinerType;
-import mn.foreman.model.command.CommandDone;
-import mn.foreman.model.command.CommandStart;
-import mn.foreman.model.command.CommandUpdate;
-import mn.foreman.model.command.DoneStatus;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.asic.Manufacturer;
 
@@ -227,7 +227,7 @@ public class ScanStrategy
 
             Optional<Detection> detectionOpt = Optional.empty();
             try {
-                 detectionOpt =
+                detectionOpt =
                         detectionStrategy.detect(
                                 ip,
                                 port,

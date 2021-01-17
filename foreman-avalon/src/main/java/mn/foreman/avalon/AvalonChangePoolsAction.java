@@ -1,8 +1,8 @@
 package mn.foreman.avalon;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;

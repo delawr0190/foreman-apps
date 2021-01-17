@@ -1,8 +1,8 @@
 package mn.foreman.avalon;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 
 import com.google.common.collect.ImmutableMap;
 import org.apache.http.HttpStatus;

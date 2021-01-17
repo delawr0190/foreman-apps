@@ -1,6 +1,6 @@
 package mn.foreman.antminer;
 
-import mn.foreman.model.Pool;
+import mn.foreman.api.model.Pool;
 
 import com.google.common.collect.ImmutableMap;
 

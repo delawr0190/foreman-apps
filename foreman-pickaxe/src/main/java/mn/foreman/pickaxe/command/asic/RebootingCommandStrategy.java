@@ -1,11 +1,11 @@
 package mn.foreman.pickaxe.command.asic;
 
 import mn.foreman.api.ForemanApi;
+import mn.foreman.api.model.CommandDone;
+import mn.foreman.api.model.CommandStart;
+import mn.foreman.api.model.DoneStatus;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.CompletionCallback;
-import mn.foreman.model.command.CommandDone;
-import mn.foreman.model.command.CommandStart;
-import mn.foreman.model.command.DoneStatus;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
 import mn.foreman.pickaxe.command.CommandStrategy;

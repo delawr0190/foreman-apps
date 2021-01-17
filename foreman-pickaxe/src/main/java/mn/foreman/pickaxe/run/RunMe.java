@@ -3,11 +3,12 @@ package mn.foreman.pickaxe.run;
 import mn.foreman.api.ForemanApi;
 import mn.foreman.api.ForemanApiImpl;
 import mn.foreman.api.JdkWebUtil;
+import mn.foreman.api.endpoints.miners.Miners;
+import mn.foreman.api.model.Commands;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.cache.SelfExpiringStatsCache;
 import mn.foreman.model.cache.StatsCache;
-import mn.foreman.model.command.Commands;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.pickaxe.command.CommandProcessor;
 import mn.foreman.pickaxe.command.CommandProcessorImpl;
@@ -286,7 +287,7 @@ public class RunMe {
                 () -> {
                     LOG.info("Starting MAC querying...");
                     try {
-                        final Map<Miner, String> newMacs = new HashMap<>();
+                        final Map<Miners.Miner, String> newMacs = new HashMap<>();
                         this.miners
                                 .get()
                                 .stream()
@@ -300,8 +301,12 @@ public class RunMe {
                                                 .getMacAddress()
                                                 .map(String::toLowerCase)
                                                 .ifPresent(mac -> {
+                                                    final Miners.Miner apiMiner =
+                                                            new Miners.Miner();
+                                                    apiMiner.apiIp = miner.getIp();
+                                                    apiMiner.apiPort = miner.getApiPort();
                                                     newMacs.put(
-                                                            miner,
+                                                            apiMiner,
                                                             mac);
                                                     this.macCache.put(
                                                             minerID,

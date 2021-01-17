@@ -1,6 +1,6 @@
 package mn.foreman.pickaxe.command.asic;
 
-import mn.foreman.model.command.CommandStart;
+import mn.foreman.api.model.CommandStart;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
 
 /** A {@link PostCommandProcessor} implementation that does nothing. */

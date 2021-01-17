@@ -1,7 +1,7 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
-import mn.foreman.model.Pool;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;

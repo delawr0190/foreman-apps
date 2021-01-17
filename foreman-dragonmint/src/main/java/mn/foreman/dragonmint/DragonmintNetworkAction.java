@@ -1,7 +1,7 @@
 package mn.foreman.dragonmint;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -25,25 +25,6 @@ public class DragonmintNetworkAction
 
     /** The mapper for creating JSON. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    /**
-     * Adds parameters to the params.
-     *
-     * @param key    The key.
-     * @param value  The value.
-     * @param params The params.
-     */
-    private static void addParam(
-            final String key,
-            final String value,
-            final List<Map<String, Object>> params) {
-        params.add(
-                ImmutableMap.of(
-                        "key",
-                        key,
-                        "value",
-                        value));
-    }
 
     @Override
     protected boolean doChange(
@@ -87,5 +68,24 @@ public class DragonmintNetworkAction
                 "/api/updateNetwork",
                 parameters,
                 content);
+    }
+
+    /**
+     * Adds parameters to the params.
+     *
+     * @param key    The key.
+     * @param value  The value.
+     * @param params The params.
+     */
+    private static void addParam(
+            final String key,
+            final String value,
+            final List<Map<String, Object>> params) {
+        params.add(
+                ImmutableMap.of(
+                        "key",
+                        key,
+                        "value",
+                        value));
     }
 }

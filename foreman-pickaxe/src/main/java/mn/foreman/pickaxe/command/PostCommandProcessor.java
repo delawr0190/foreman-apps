@@ -1,6 +1,6 @@
 package mn.foreman.pickaxe.command;
 
-import mn.foreman.model.command.CommandStart;
+import mn.foreman.api.model.CommandStart;
 
 /**
  * A callback mechanism for informing a listener that a command has been

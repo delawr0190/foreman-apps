@@ -1,7 +1,7 @@
 package mn.foreman.obelisk;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.obelisk.json.Dashboard;
 

@@ -1,8 +1,8 @@
 package mn.foreman.pickaxe.command;
 
 import mn.foreman.api.ForemanApi;
-import mn.foreman.model.command.CommandDone;
-import mn.foreman.model.command.CommandStart;
+import mn.foreman.api.model.CommandDone;
+import mn.foreman.api.model.CommandStart;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

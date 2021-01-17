@@ -1,9 +1,9 @@
 package mn.foreman.pickaxe.command.asic.digest;
 
 import mn.foreman.api.ForemanApi;
-import mn.foreman.model.command.CommandDone;
-import mn.foreman.model.command.CommandStart;
-import mn.foreman.model.command.DoneStatus;
+import mn.foreman.api.model.CommandDone;
+import mn.foreman.api.model.CommandStart;
+import mn.foreman.api.model.DoneStatus;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;

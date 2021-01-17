@@ -1,12 +1,12 @@
 package mn.foreman.pickaxe.command.asic.rawstats;
 
 import mn.foreman.api.ForemanApi;
+import mn.foreman.api.model.CommandDone;
+import mn.foreman.api.model.CommandStart;
+import mn.foreman.api.model.DoneStatus;
 import mn.foreman.claymore.TypeMapping;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
-import mn.foreman.model.command.CommandDone;
-import mn.foreman.model.command.CommandStart;
-import mn.foreman.model.command.DoneStatus;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.pickaxe.command.CommandStrategy;

@@ -2,7 +2,7 @@ package mn.foreman.strongu;
 
 import mn.foreman.antminer.ConfValue;
 import mn.foreman.antminer.ConfValueUtils;
-import mn.foreman.model.Pool;
+import mn.foreman.api.model.Pool;
 
 import com.google.common.collect.ImmutableMap;
 

@@ -1,6 +1,6 @@
 package mn.foreman.pickaxe.command;
 
-import mn.foreman.model.command.CommandStart;
+import mn.foreman.api.model.CommandStart;
 import mn.foreman.model.error.MinerException;
 
 /** Processes the provided command. */

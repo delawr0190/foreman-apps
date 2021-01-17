@@ -1,7 +1,7 @@
 package mn.foreman.honorknight;
 
+import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
-import mn.foreman.model.Network;
 import mn.foreman.util.ParamUtils;
 
 import java.util.LinkedList;
