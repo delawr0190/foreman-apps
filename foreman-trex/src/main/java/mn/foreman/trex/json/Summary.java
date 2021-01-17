@@ -291,6 +291,10 @@ public class Summary {
         @JsonProperty("device_id")
         public int deviceId;
 
+        /** The hash rate. */
+        @JsonProperty("hashrate")
+        public BigDecimal hashRate;
+
         /** The fan speed. */
         @JsonProperty("fan_speed")
         public int fanSpeed;

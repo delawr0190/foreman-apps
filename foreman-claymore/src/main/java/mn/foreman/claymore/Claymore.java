@@ -107,12 +107,26 @@ public class Claymore
         final String ethTotalShares = ethRateAndShares[1];
         final String ethRejectedShares = ethRateAndShares[2];
 
-        final int numGpus = results.get(3).split(";").length;
+        final String[] ethGpuRates = results.get(3).split(";");
+        final int numGpus = ethGpuRates.length;
+        final List<String> ethGpuHashRate = new LinkedList<>();
+        for (int i = 0; i < numGpus; i++) {
+            ethGpuHashRate.add(ethGpuRates[i]);
+        }
 
         final String[] dcrRateAndShares = results.get(4).split(";");
         final String dcrHashRate = dcrRateAndShares[0];
         final String dcrTotalShares = dcrRateAndShares[1];
         final String dcrRejectedShares = dcrRateAndShares[2];
+        
+        final String[] dcrGpuRates = results.get(5).split(";");
+        final List<String> dcrGpuHashRate = new LinkedList<>();
+        for (int i = 0; i < numGpus; i++) {
+            if(dcrGpuRates[i].equals("off"))
+            	dcrGpuHashRate.add("0");
+            else
+            	dcrGpuHashRate.add(dcrGpuRates[i]);
+        }
 
         final List<String> temps = new LinkedList<>();
         final List<String> fans = new LinkedList<>();
@@ -139,6 +153,7 @@ public class Claymore
                 results.get(0),
                 ethHashRate,
                 numGpus,
+                ethGpuHashRate,
                 temps,
                 fans,
                 statsBuilder);
@@ -146,6 +161,7 @@ public class Claymore
                 results.get(0),
                 dcrHashRate,
                 numGpus,
+                dcrGpuHashRate,
                 temps,
                 fans,
                 statsBuilder);
@@ -222,12 +238,13 @@ public class Claymore
     /**
      * Adds a {@link Rig} using the provided parameters.
      *
-     * @param identifier The identifier.
-     * @param hashRate   The hash rate.
-     * @param numGpus    The number of GPUs.
-     * @param temps      The temperatures.
-     * @param fans       The fans.
-     * @param builder    The builder to update.
+     * @param identifier  The identifier.
+     * @param hashRate    The hash rate.
+     * @param numGpus     The number of GPUs.
+     * @param gpuHashRate The hash rate of GPUs.
+     * @param temps       The temperatures.
+     * @param fans        The fans.
+     * @param builder     The builder to update.
      *
      * @throws MinerException on failure to identify the Claymore type.
      */
@@ -235,6 +252,7 @@ public class Claymore
             final String identifier,
             final String hashRate,
             final int numGpus,
+            final List<String> gpuHashRate,
             final List<String> temps,
             final List<String> fans,
             final MinerStats.Builder builder) throws MinerException {
@@ -256,6 +274,7 @@ public class Claymore
                                         .setIndex(Integer.toString(i))
                                         // Bus is not exposed in claymore
                                         .setBus("0")
+                                        .setHashRate(new BigDecimal(Iterables.get(gpuHashRate, i, "0")).multiply(multiplier))
                                         .setTemp(Iterables.get(temps, i, "0"))
                                         .setFans(
                                                 new FanInfo.Builder()

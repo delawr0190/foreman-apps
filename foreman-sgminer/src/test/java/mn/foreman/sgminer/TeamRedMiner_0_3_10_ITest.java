@@ -157,6 +157,7 @@ public class TeamRedMiner_0_3_10_ITest
                                                         .setName("GPU 0")
                                                         .setIndex(0)
                                                         .setBus(0)
+                                                        .setHashRate(new BigDecimal("1794000.000"))
                                                         .setTemp(69)
                                                         .setFans(
                                                                 new FanInfo.Builder()
