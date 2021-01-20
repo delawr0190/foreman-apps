@@ -40,7 +40,7 @@
         <foreman-java-api.version>1.0.0</foreman-java-api.version>
         <guava.version>24.1.1-jre</guava.version>
         <jackson.version>2.9.10</jackson.version>
-        <jackson-databind.version>2.9.10.5</jackson-databind.version>
+        <jackson-databind.version>2.9.10.7</jackson-databind.version>
         <jcraft.version>0.1.55</jcraft.version>
         <jopt-simple.version>5.0.4</jopt-simple.version>
         <jsoup.version>1.13.1</jsoup.version>
