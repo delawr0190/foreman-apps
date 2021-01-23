@@ -51,7 +51,7 @@ public class RunMe {
         FOREMAN_BASE_URL =
                 System.getProperty(
                         "FOREMAN_BASE_URL",
-                        "https://dashboard.foreman.mn");
+                        "https://api.foreman.mn");
     }
 
     /** The blacklisted miners. */
