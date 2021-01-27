@@ -58,6 +58,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 0")
+                                                        .setHashRate(new BigDecimal("29792000"))
                                                         .setTemp(50)
                                                         .setIndex(0)
                                                         .setBus(0)
@@ -76,6 +77,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 1")
+                                                        .setHashRate(new BigDecimal("29791000"))
                                                         .setTemp(46)
                                                         .setIndex(1)
                                                         .setBus(0)
@@ -94,6 +96,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 2")
+                                                        .setHashRate(new BigDecimal("29689000"))
                                                         .setTemp(47)
                                                         .setIndex(2)
                                                         .setBus(0)
@@ -112,6 +115,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 3")
+                                                        .setHashRate(new BigDecimal("29787000"))
                                                         .setTemp(47)
                                                         .setIndex(3)
                                                         .setBus(0)
@@ -130,6 +134,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 4")
+                                                        .setHashRate(new BigDecimal("29793000"))
                                                         .setTemp(48)
                                                         .setIndex(4)
                                                         .setBus(0)
@@ -148,6 +153,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 5")
+                                                        .setHashRate(new BigDecimal("29794000"))
                                                         .setTemp(48)
                                                         .setIndex(5)
                                                         .setBus(0)
@@ -166,6 +172,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 6")
+                                                        .setHashRate(new BigDecimal("29793000"))
                                                         .setTemp(47)
                                                         .setIndex(6)
                                                         .setBus(0)
@@ -184,6 +191,7 @@ public class PhoenixITest
                                         .addGpu(
                                                 new Gpu.Builder()
                                                         .setName("GPU 7")
+                                                        .setHashRate(new BigDecimal("29494000"))
                                                         .setTemp(48)
                                                         .setIndex(7)
                                                         .setBus(0)

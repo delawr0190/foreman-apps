@@ -1,15 +1,23 @@
 package mn.foreman.model.miners.rig;
 
 import mn.foreman.model.AbstractBuilder;
+import mn.foreman.model.miners.BigDecimalSerializer;
 import mn.foreman.model.miners.FanInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+import java.math.BigDecimal;
+
 /** A {@link Gpu} represents a single GPU in a {@link Rig}. */
 public class Gpu {
+
+    /** The hash rate. */
+    @JsonSerialize(using = BigDecimalSerializer.class)
+    private final BigDecimal hashRate;
 
     /** The bus index. */
     private final int bus;
@@ -32,6 +40,7 @@ public class Gpu {
     /**
      * Constructor.
      *
+     * @param hashRate The hash rate.
      * @param name     The name.
      * @param bus      The bus.
      * @param fans     The fans.
@@ -40,12 +49,16 @@ public class Gpu {
      * @param temp     The temp.
      */
     private Gpu(
+            @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("bus") final int bus,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("freqInfo") final FreqInfo freqInfo,
             @JsonProperty("index") final int index,
             @JsonProperty("name") final String name,
             @JsonProperty("temp") final int temp) {
+        Validate.notNull(
+                hashRate,
+                "Speed cannot be null");
         Validate.isTrue(
                 bus >= 0,
                 "Bus must be >= 0");
@@ -64,6 +77,7 @@ public class Gpu {
         Validate.notEmpty(
                 name,
                 "Name cannot be empty");
+        this.hashRate = hashRate;
         this.bus = bus;
         this.fans = fans;
         this.freqInfo = freqInfo;
@@ -83,6 +97,7 @@ public class Gpu {
             final Gpu gpu = (Gpu) other;
             isEqual =
                     new EqualsBuilder()
+                            .append(this.hashRate, gpu.hashRate)
                             .append(this.bus, gpu.bus)
                             .append(this.fans, gpu.fans)
                             .append(this.freqInfo, gpu.freqInfo)
@@ -92,6 +107,15 @@ public class Gpu {
                             .isEquals();
         }
         return isEqual;
+    }
+
+    /**
+     * Returns the hash rate.
+     *
+     * @return The hash rate.
+     */
+    public BigDecimal getHashRate() {
+        return this.hashRate;
     }
 
     /**
@@ -151,6 +175,7 @@ public class Gpu {
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
+                .append(this.hashRate)
                 .append(this.bus)
                 .append(this.fans)
                 .append(this.freqInfo)
@@ -164,6 +189,7 @@ public class Gpu {
     public String toString() {
         return String.format(
                 "%s [ " +
+                        "hashRate=%s, " +
                         "bus=%s, " +
                         "fans=%s, " +
                         "freqInfo=%s, " +
@@ -172,6 +198,7 @@ public class Gpu {
                         "temp=%s" +
                         " ]",
                 getClass().getSimpleName(),
+                this.hashRate,
                 this.bus,
                 this.fans,
                 this.freqInfo,
@@ -183,6 +210,9 @@ public class Gpu {
     /** A builder for creating {@link Gpu GPUs}. */
     public static class Builder
             extends AbstractBuilder<Gpu> {
+
+        /** The speed info. */
+        private BigDecimal hashRate;
 
         /** The bus separator. */
         private static final String BUS_SEPARATOR = ":";
@@ -208,12 +238,25 @@ public class Gpu {
         @Override
         public Gpu build() {
             return new Gpu(
+                    this.hashRate,
                     this.bus,
                     this.fans,
                     this.freqInfo,
                     this.index,
                     this.name,
                     this.temp);
+        }
+
+        /**
+         * Sets the hash rate.
+         *
+         * @param hashRate The hash rate.
+         *
+         * @return This builder instance.
+         */
+        public Builder setHashRate(final BigDecimal hashRate) {
+            this.hashRate = hashRate;
+            return this;
         }
 
         /**

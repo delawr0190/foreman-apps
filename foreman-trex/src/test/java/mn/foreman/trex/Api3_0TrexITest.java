@@ -96,6 +96,7 @@ public class Api3_0TrexITest
                                                         .setIndex(0)
                                                         .setBus(0)
                                                         .setName("GeForce GTX 1050 Ti")
+                                                        .setHashRate(new BigDecimal(7748158))
                                                         .setTemp(68)
                                                         .setFans(
                                                                 new FanInfo.Builder()

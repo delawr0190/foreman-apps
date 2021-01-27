@@ -100,10 +100,13 @@ public class DevsResponseStrategy
             rate = map.get(MHS_5_KEY);
         } else if (map.containsKey(MHS_30_KEY)) {
             rate = map.get(MHS_30_KEY);
-        } else {
+        } else if (map.containsKey(MHS_AV_KEY)) {
             rate = map.get(MHS_AV_KEY);
+        } else {
+            rate = "0.0";
         }
-        return new BigDecimal(rate);
+        return new BigDecimal(rate).multiply(
+                new BigDecimal(1000 * 1000));
     }
 
     /**
@@ -133,6 +136,7 @@ public class DevsResponseStrategy
                 .setName("GPU " + values.get("GPU"))
                 .setIndex(values.get("GPU"))
                 .setBus(0)
+                .setHashRate(getRate(values))
                 .setTemp(values.get("Temperature"))
                 .setFans(
                         new FanInfo.Builder()
@@ -160,9 +164,6 @@ public class DevsResponseStrategy
         return values
                 .stream()
                 .map(DevsResponseStrategy::getRate)
-                .map((value) ->
-                        value.multiply(
-                                new BigDecimal(1000 * 1000)))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 }

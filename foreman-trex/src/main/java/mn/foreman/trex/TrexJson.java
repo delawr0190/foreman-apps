@@ -122,6 +122,7 @@ public class TrexJson
                                 ((gpu.name != null) && (!StringUtils.isBlank(gpu.name)))
                                         ? gpu.name
                                         : "GPU " + gpu.deviceId)
+                        .setHashRate(gpu.hashRate)
                         .setTemp(gpu.temperature)
                         .setFreqInfo(
                                 new FreqInfo.Builder()
