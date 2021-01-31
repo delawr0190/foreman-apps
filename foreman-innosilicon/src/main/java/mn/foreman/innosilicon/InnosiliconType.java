@@ -55,8 +55,17 @@ public enum InnosiliconType
     /** Innosilicon A10. */
     A10("a10"),
 
-    /** Innosilicon A10 Pro. */
-    A10P("a10l"),
+    /** Innosilicon A10 Pro (5G). */
+    A10P5("a10l"),
+
+    /** Innosilicon A10 Pro (6G). */
+    A10P6("a10u"),
+
+    /** Innosilicon A10 Pro 720M (6G). */
+    A10P7206("a10s"),
+
+    /** Innosilicon A10 Pro 720M (7G). */
+    A10P7207("a10x"),
 
     /** Innosilicon T3-43T. */
     T3("t3"),
