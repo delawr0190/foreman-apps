@@ -221,7 +221,7 @@ public class RunMe {
                                 this.threadPool,
                                 this.blacklistedMiners,
                                 this.statsCache));
-        this.threadPool.scheduleWithFixedDelay(
+        this.threadPool.scheduleAtFixedRate(
                 () -> {
                     try {
                         final Optional<Commands> commands =
