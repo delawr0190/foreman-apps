@@ -227,6 +227,7 @@ public class DragonmintStatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("us-east.stratum.slushpool.com:3333")
+                                        .setWorker("brndnmtthws.dragon-0ade5")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,
@@ -239,6 +240,7 @@ public class DragonmintStatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("pool.ckpool.org:3333")
+                                        .setWorker("3GWdXx9dfLPvSe7d8UnxjnDnSAJodTTbrt.dragon-0ade5")
                                         .setPriority(1)
                                         .setStatus(
                                                 true,

@@ -129,6 +129,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("xxx:8080")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -213,6 +214,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("my.pool.com:18888")
+                                                        .setWorker("x")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -225,6 +227,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("my.pool.org:8888")
+                                                        .setWorker("x")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -237,6 +240,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("my.pool.net:4646")
+                                                        .setWorker("x")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,
@@ -322,6 +326,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("hns.pool.blackminer.com:9052")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -334,6 +339,7 @@ public class BlackminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum-us.hnspool.com:3001")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,

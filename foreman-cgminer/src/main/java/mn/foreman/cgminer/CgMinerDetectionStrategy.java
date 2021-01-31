@@ -5,6 +5,7 @@ import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.*;
 import mn.foreman.model.error.EmptySiteException;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.util.ArgUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * A {@link CgMinerDetectionStrategy} provides a {@link DetectionStrategy} for
@@ -84,6 +86,7 @@ public class CgMinerDetectionStrategy
         try {
             final Map<String, List<Map<String, String>>> responseValues =
                     new HashMap<>();
+            final AtomicReference<String> worker = new AtomicReference<>();
             final CgMiner cgMiner =
                     new CgMiner.Builder()
                             .setApiIp(ip)
@@ -103,6 +106,16 @@ public class CgMinerDetectionStrategy
                                                 response.getStatus());
                                     },
                                     this.patchingStrategy)
+                            .addRequest(
+                                    new CgMinerRequest.Builder()
+                                            .setCommand(CgMinerCommand.POOLS)
+                                            .build(),
+                                    new PoolsResponseStrategy(
+                                            poolInfo ->
+                                                    worker.compareAndSet(
+                                                            null,
+                                                            poolInfo.get("User"))
+                                    ))
                             .build();
 
             // Attempt to query the miner for stats.  If there's a response,
@@ -115,6 +128,14 @@ public class CgMinerDetectionStrategy
                 final Map<String, Object> newArgs = new HashMap<>(args);
                 this.macStrategy.getMacAddress()
                         .ifPresent(mac -> newArgs.put("mac", mac));
+
+                final String workerName = worker.get();
+                if (ArgUtils.isWorkerPreferred(args) && workerName != null) {
+                    newArgs.put(
+                            "hostname",
+                            workerName);
+                }
+
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)

@@ -87,6 +87,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("bitcoin.1viabtc.com:3333")
+                                                        .setWorker("xxxxxxxxxx")
                                                         .setStatus(true, false)
                                                         .setPriority(0)
                                                         .setCounts(0, 0, 0)
@@ -94,6 +95,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.eu.nicehash.com:3334")
+                                                        .setWorker("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(2628, 1, 2)
@@ -101,6 +103,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.usa.nicehash.com:3334")
+                                                        .setWorker("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")
                                                         .setStatus(true, true)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)
@@ -152,6 +155,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us-east.stratum.slushpool.com:3333")
+                                                        .setWorker("002m20s")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(33825, 185, 27)
@@ -159,6 +163,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us-central01.miningrigrentals.com:50194")
+                                                        .setWorker("xxxx.yyyy")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -208,6 +213,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us-east.stratum.slushpool.com:3333")
+                                                        .setWorker("002m20s")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(33825, 185, 27)
@@ -215,6 +221,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us-central01.miningrigrentals.com:50194")
+                                                        .setWorker("xxxx.yyyy")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -258,6 +265,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("ru-west.stratum.slushpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(57681, 23, 0)
@@ -265,6 +273,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.stratum.slushpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -272,6 +281,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.stratum.slushpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)
@@ -303,6 +313,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256asicboost.eu.nicehash.com:3368")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(1739, 1, 0)
@@ -310,6 +321,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256asicboost.hk.nicehash.com:3368")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -317,6 +329,7 @@ public class WhatsminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.stratum.slushpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)

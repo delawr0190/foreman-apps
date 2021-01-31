@@ -30,7 +30,15 @@ public class BaikalDetectITest
             final Map<String, ServerHandler> handlers,
             final BaikalType type) {
         super(
-                new BaikalDetectionStrategy("80"),
+                new BaikalDetectionStrategy(
+                        "80",
+                        new BaikalFactory()
+                                .create(
+                                        ImmutableMap.of(
+                                                "apiIp",
+                                                "127.0.0.1",
+                                                "apiPort",
+                                                "4028"))),
                 "127.0.0.1",
                 4028,
                 args(),

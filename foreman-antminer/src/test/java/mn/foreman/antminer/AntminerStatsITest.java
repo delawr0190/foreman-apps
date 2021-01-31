@@ -71,7 +71,7 @@ public class AntminerStatsITest
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1533152610,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.10.0\"}],\"STATS\":[{\"CGMiner\":\"4.10.0\",\"Miner\":\"1.0.0.9\",\"CompileTime\":\"Fri Jan 05 16:48:56 CST 2018\",\"Type\":\"Antminer D3 Blissz v2.06 beta\"}{\"STATS\":0,\"ID\":\"D10\",\"Elapsed\":54422,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"16346.64\",\"GHS av\":16868.38,\"miner_count\":3,\"frequency1\":\"450\",\"frequency2\":\"450\",\"frequency3\":\"450\",\"frequency4\":\"450\",\"fan_num\":2,\"fan1\":6030,\"fan2\":5790,\"temp_num\":3,\"temp1\":46,\"temp2\":46,\"temp3\":48,\"temp4\":0,\"temp2_1\":69,\"temp2_2\":67,\"temp2_3\":62,\"temp2_4\":0,\"temp_max\":48,\"Device Hardware%\":0.0001,\"no_matching_work\":4,\"chain_acn1\":60,\"chain_acn2\":60,\"chain_acn3\":60,\"chain_acn4\":0,\"chain_acs1\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs2\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs3\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs4\":\"\",\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":0,\"chain_hw4\":0,\"chain_rate1\":\"5287.83\",\"chain_rate2\":\"5631.41\",\"chain_rate3\":\"5427.41\",\"chain_rate4\":\"\"}],\"id\":1}"),
                                         "{\"command\":\"pools\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1533152695,\"Code\":7,\"Msg\":\"5 Pool(s)\",\"Description\":\"cgminer 4.10.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://dash-eu.coinmine.pl:6099\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1167,\"Accepted\":3038,\"Rejected\":8,\"Discarded\":28157,\"Stale\":5,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"Dash.default\",\"Last Share Time\":\"0:00:00\",\"Diff\":\" 69.2461\",\"Diff1 Shares\":6475798,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":198412.94104085,\"Difficulty Rejected\":604.97361199,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":69.24612531,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"dash-eu.coinmine.pl\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.3040,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"  0.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"  0.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},\n{\"POOL\":3,\"URL\":\"stratum+tcp://dash.suprnova.cc:9991\",\"Status\":\"Alive\",\"Priority\":9998,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"devFeeMiner.9\",\"Last Share Time\":\"0\",\"Diff\":\" 64.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\" 0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":4,\"URL\":\"stratum+tcp://dash-eu.coinmine.pl:6099\",\"Status\":\"Alive\",\"Priority\":9999,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"devFeeMiner.1\",\"Last Share Time\":\"0\",\"Diff\":\" 20.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\" 0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1533152695,\"Code\":7,\"Msg\":\"5 Pool(s)\",\"Description\":\"cgminer 4.10.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://dash-eu.coinmine.pl:6099\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1167,\"Accepted\":3038,\"Rejected\":8,\"Discarded\":28157,\"Stale\":5,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"Dash.default\",\"Last Share Time\":\"0:00:00\",\"Diff\":\" 69.2461\",\"Diff1 Shares\":6475798,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":198412.94104085,\"Difficulty Rejected\":604.97361199,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":69.24612531,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"dash-eu.coinmine.pl\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.3040,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"xxx\",\"Last Share Time\":\"0\",\"Diff\":\"  0.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"  0.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\"  0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},\n{\"POOL\":3,\"URL\":\"stratum+tcp://dash.suprnova.cc:9991\",\"Status\":\"Alive\",\"Priority\":9998,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"devFeeMiner.9\",\"Last Share Time\":\"0\",\"Diff\":\" 64.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\" 0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":4,\"URL\":\"stratum+tcp://dash-eu.coinmine.pl:6099\",\"Status\":\"Alive\",\"Priority\":9999,\"Quota\":0,\"Long Poll\":\"N\",\"Getworks\":1,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"devFeeMiner.1\",\"Last Share Time\":\"0\",\"Diff\":\" 20.0000\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":\" 0.0000\",\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
                                 Arrays.asList(
                                         "stats.0.temp1",
                                         "stats.0.temp2"),
@@ -81,6 +81,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash-eu.coinmine.pl:6099")
+                                                        .setWorker("Dash.default")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(3038, 8, 5)
@@ -88,6 +89,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash.suprnova.cc:9991")
+                                                        .setWorker("devFeeMiner.9")
                                                         .setStatus(true, true)
                                                         .setPriority(9998)
                                                         .setCounts(0, 0, 0)
@@ -95,6 +97,8 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash-eu.coinmine.pl:6099")
+                                                        .setWorker("devFeeMiner.1")
+                                                        .setWorker("devFeeMiner.1")
                                                         .setStatus(true, true)
                                                         .setPriority(9999)
                                                         .setCounts(0, 0, 0)
@@ -147,6 +151,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us1.ethpool.org:3333")
+                                                        .setWorker("#0x65CdB0EE9Ba1D9eFe2566965F8B089c2B9ffCE63.00B4C08382A1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(38, 0, 0)
@@ -229,6 +234,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us.litecoinpool.org:3333")
+                                                        .setWorker("obmllc.l3_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(47384, 212, 15)
@@ -283,6 +289,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us.litecoinpool.org:3333")
+                                                        .setWorker("obmllc.l3_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(47384, 212, 15)
@@ -337,6 +344,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("xxxxxx:3333")
+                                                        .setWorker("CosmosCapitalFund.COSMOSxCNKxS17Px00001")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(86241, 411, 116)
@@ -344,6 +352,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("xxxxxx:3333")
+                                                        .setWorker("CosmosCapitalFund.COSMOSxCNKxS17Px00001")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(63, 0, 2)
@@ -351,6 +360,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.slushpool.com:3333")
+                                                        .setWorker("CosmosCapitalFund.COSMOSxCNKxS17Px00001")
                                                         .setStatus(true, true)
                                                         .setPriority(2)
                                                         .setCounts(196, 5, 4)
@@ -429,6 +439,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:3333")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(152, 0, 0)
@@ -436,6 +447,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:443")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -443,6 +455,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:25")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)
@@ -498,6 +511,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:3333")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(68, 2, 0)
@@ -505,6 +519,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.slushpool.com:3333")
+                                                        .setWorker("!non-existent-user!")
                                                         .setStatus(true, false)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -554,6 +569,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash-eu.coinmine.pl:6099")
+                                                        .setWorker("Dash.default")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(3038, 8, 5)
@@ -561,6 +577,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash.suprnova.cc:9991")
+                                                        .setWorker("devFeeMiner.9")
                                                         .setStatus(true, true)
                                                         .setPriority(9998)
                                                         .setCounts(0, 0, 0)
@@ -568,6 +585,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("dash-eu.coinmine.pl:6099")
+                                                        .setWorker("devFeeMiner.1")
                                                         .setStatus(true, true)
                                                         .setPriority(9999)
                                                         .setCounts(0, 0, 0)
@@ -620,6 +638,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("solo.antpool.com:3333")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(135, 0, 0)
@@ -627,6 +646,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:3333")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -634,6 +654,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("cn.ss.btc.com:3333")
+                                                        .setWorker("antminer.1")
                                                         .setStatus(true, false)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)
@@ -641,6 +662,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("devfee")
+                                                        .setWorker("DevFee")
                                                         .setStatus(true, true)
                                                         .setPriority(993)
                                                         .setCounts(166, 0, 0)
@@ -693,6 +715,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("btc-us.f2pool.com:3333")
+                                                        .setWorker("asicseer.dcc9a2")
                                                         .setStatus(true, true)
                                                         .setPriority(3)
                                                         .setCounts(1, 0, 0)
@@ -700,6 +723,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("btc-us.f2pool.com:1314")
+                                                        .setWorker("asicseer.dcc9a2")
                                                         .setStatus(true, true)
                                                         .setPriority(4)
                                                         .setCounts(0, 0, 0)
@@ -707,6 +731,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("btc.viabtc.com:3333")
+                                                        .setWorker("asicseer.dcc9a2")
                                                         .setStatus(true, true)
                                                         .setPriority(5)
                                                         .setCounts(0, 0, 0)
@@ -757,6 +782,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("ss.antpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(22673, 8, 0)
@@ -764,6 +790,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("ss.antpool.com:443")
+                                                        .setWorker("xxx")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -807,6 +834,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:3333")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(0)
                                                         .setCounts(0, 0, 0)
@@ -814,6 +842,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:443")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, true)
                                                         .setPriority(1)
                                                         .setCounts(0, 0, 0)
@@ -821,6 +850,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:25")
+                                                        .setWorker("antminer_1")
                                                         .setStatus(true, false)
                                                         .setPriority(2)
                                                         .setCounts(0, 0, 0)
@@ -828,6 +858,7 @@ public class AntminerStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("*")
+                                                        .setWorker("*")
                                                         .setStatus(true, true)
                                                         .setPriority(998)
                                                         .setCounts(0, 0, 0)

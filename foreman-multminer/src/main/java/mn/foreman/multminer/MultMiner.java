@@ -142,6 +142,7 @@ public class MultMiner
             statsBuilder.addPool(
                     new Pool.Builder()
                             .setName(PoolUtils.sanitizeUrl(poolLine))
+                            .setWorker(pool.get(2))
                             .setPriority(priority)
                             .setStatus(
                                     true,

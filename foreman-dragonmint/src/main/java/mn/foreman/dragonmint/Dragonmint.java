@@ -182,6 +182,7 @@ public class Dragonmint
         statsBuilder.addPool(
                 new Pool.Builder()
                         .setName(PoolUtils.sanitizeUrl(pool.url))
+                        .setWorker(pool.user)
                         .setPriority(pool.priority)
                         .setStatus(
                                 !"Disabled".equals(pool.status),

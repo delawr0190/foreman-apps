@@ -79,6 +79,7 @@ public class PoolsResponseStrategy
             builder.addPool(
                     new Pool.Builder()
                             .setName(PoolUtils.sanitizeUrl(url))
+                            .setWorker(values.get("User"))
                             .setPriority(values.get("Priority"))
                             .setStatus(
                                     status.isEnabled(),

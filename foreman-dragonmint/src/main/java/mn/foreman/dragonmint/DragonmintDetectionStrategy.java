@@ -1,18 +1,21 @@
 package mn.foreman.dragonmint;
 
 import mn.foreman.dragonmint.json.Overview;
+import mn.foreman.dragonmint.json.Summary;
 import mn.foreman.io.Query;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.MinerType;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.util.ArgUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
@@ -84,6 +87,28 @@ public class DragonmintDetectionStrategy<T extends MinerType>
                 final Map<String, Object> newArgs = new HashMap<>(args);
                 this.macStrategy.getMacAddress()
                         .ifPresent(mac -> newArgs.put("mac", mac));
+
+                if (ArgUtils.isWorkerPreferred(args)) {
+                    final Summary summary =
+                            Query.restQuery(
+                                    ip,
+                                    port,
+                                    "/api/summary",
+                                    (String) args.getOrDefault("username", ""),
+                                    (String) args.getOrDefault("password", ""),
+                                    new TypeReference<Summary>() {
+                                    },
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    s -> {
+                                    });
+                    final List<Summary.Pool> pools = summary.pools;
+                    if (!pools.isEmpty()) {
+                        newArgs.put(
+                                "worker",
+                                pools.get(0).user);
+                    }
+                }
 
                 detection =
                         Detection.builder()

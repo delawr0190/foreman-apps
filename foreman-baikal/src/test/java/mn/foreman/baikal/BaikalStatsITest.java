@@ -266,6 +266,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("hub.miningpoolhub.com:17016")
+                                                        .setWorker("ZZZZZZZZZZZZZZZZZZZZZZZ")
                                                         .setPriority(3)
                                                         .setStatus(
                                                                 true,
@@ -278,6 +279,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("hub.miningpoolhub.com:17014")
+                                                        .setWorker("ZZZZZZZZZZZZZZZZZZZZZZZZ")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -854,6 +856,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("000:6003")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -866,6 +869,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("111:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -878,6 +882,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("222:6002")
+                                                        .setWorker("xxx")
                                                         .setPriority(3)
                                                         .setStatus(
                                                                 true,
@@ -890,6 +895,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("333:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(4)
                                                         .setStatus(
                                                                 true,
@@ -902,6 +908,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("444:3323")
+                                                        .setWorker("xxx")
                                                         .setPriority(91)
                                                         .setStatus(
                                                                 true,
@@ -914,6 +921,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("555:3343")
+                                                        .setWorker("xxx")
                                                         .setPriority(92)
                                                         .setStatus(
                                                                 true,
@@ -926,6 +934,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("666:3337")
+                                                        .setWorker("xxx")
                                                         .setPriority(600)
                                                         .setStatus(
                                                                 true,
@@ -938,6 +947,7 @@ public class BaikalStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("777:5334")
+                                                        .setWorker("xxx")
                                                         .setPriority(701)
                                                         .setStatus(
                                                                 true,

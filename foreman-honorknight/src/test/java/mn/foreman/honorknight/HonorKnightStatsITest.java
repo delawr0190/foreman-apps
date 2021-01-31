@@ -50,6 +50,7 @@ public class HonorKnightStatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("bitcoin.viabtc.com:3333")
+                                        .setWorker("xxx")
                                         .setStatus(true, true)
                                         .setPriority(0)
                                         .setCounts(3354, 25, 0)
@@ -57,6 +58,7 @@ public class HonorKnightStatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("bitcoin.viabtc.com:443")
+                                        .setWorker("xxx")
                                         .setStatus(true, true)
                                         .setPriority(1)
                                         .setCounts(0, 0, 0)
@@ -64,6 +66,7 @@ public class HonorKnightStatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("bch.viabtc.com:3333")
+                                        .setWorker("xxx")
                                         .setStatus(true, true)
                                         .setPriority(2)
                                         .setCounts(0, 0, 0)

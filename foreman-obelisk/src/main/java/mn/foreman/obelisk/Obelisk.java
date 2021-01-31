@@ -190,6 +190,7 @@ public class Obelisk
         statsBuilder.addPool(
                 new Pool.Builder()
                         .setName(PoolUtils.sanitizeUrl(pool.url))
+                        .setWorker(pool.worker)
                         .setStatus(
                                 !"Disabled".equals(pool.status),
                                 "Alive".equals(pool.status))

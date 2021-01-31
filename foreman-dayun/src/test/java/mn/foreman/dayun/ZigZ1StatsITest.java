@@ -46,6 +46,7 @@ public class ZigZ1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("hub.1miningpoolhub.com:20593")
+                                        .setWorker("xxxxxxx.z1")
                                         .setStatus(true, false)
                                         .setPriority(0)
                                         .setCounts(0, 0, 0)
@@ -53,6 +54,7 @@ public class ZigZ1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("lyra2rev2.eu.nicehash.com:3347")
+                                        .setWorker("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.z1")
                                         .setStatus(true, true)
                                         .setPriority(1)
                                         .setCounts(3389, 49, 1)
@@ -60,6 +62,7 @@ public class ZigZ1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("lyra2rev2.usa.nicehash.com:3347")
+                                        .setWorker("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx.z1")
                                         .setStatus(true, true)
                                         .setPriority(2)
                                         .setCounts(0, 0, 0)

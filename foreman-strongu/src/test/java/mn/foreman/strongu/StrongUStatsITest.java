@@ -77,6 +77,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("img.f2pool.com:4400")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -89,6 +90,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("img.f2pool.com:4400")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -101,6 +103,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("img.f2pool.com:4400")
+                                                        .setWorker("xxx")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,
@@ -149,6 +152,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.siaprimestats.com:3355")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -161,6 +165,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.siamining.com:3366")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -173,6 +178,7 @@ public class StrongUStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.siamining.com:3366")
+                                                        .setWorker("xxx")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,

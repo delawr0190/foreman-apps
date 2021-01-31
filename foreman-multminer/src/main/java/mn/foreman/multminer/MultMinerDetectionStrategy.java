@@ -1,16 +1,16 @@
 package mn.foreman.multminer;
 
 import mn.foreman.io.Query;
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MinerType;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.multminer.response.Stats;
+import mn.foreman.util.ArgUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -25,6 +25,18 @@ public class MultMinerDetectionStrategy
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(MultMinerDetectionStrategy.class);
+
+    /** The miner for obtaining stats. */
+    private final Miner miner;
+
+    /**
+     * Constructor.
+     *
+     * @param miner The miner for obtaining stats.
+     */
+    public MultMinerDetectionStrategy(final Miner miner) {
+        this.miner = miner;
+    }
 
     @Override
     public Optional<Detection> detect(
@@ -49,12 +61,18 @@ public class MultMinerDetectionStrategy
             final Optional<MultMinerType> type =
                     MultMinerType.forNumChips(numChips);
             if (type.isPresent()) {
+                final Map<String, Object> newArgs = new HashMap<>(args);
+                if (ArgUtils.isWorkerPreferred(newArgs)) {
+                    DetectionUtils.addWorkerFromStats(
+                            this.miner,
+                            newArgs);
+                }
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)
                                 .port(port)
                                 .minerType(type.get())
-                                .parameters(args)
+                                .parameters(newArgs)
                                 .build();
             }
         } catch (final MinerException me) {

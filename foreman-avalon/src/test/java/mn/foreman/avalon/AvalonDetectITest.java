@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /** Tests detection of avalon miners. */
@@ -50,8 +50,9 @@ public class AvalonDetectITest
      *
      * @return The test parameters.
      */
+    @SuppressWarnings("DuplicateExpressions")
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static List<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -188,6 +189,96 @@ public class AvalonDetectITest
                                                         "    }\n" +
                                                         "  ],\n" +
                                                         "  \"id\": 1\n" +
+                                                        "}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\n" +
+                                                        "  \"STATUS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"STATUS\": \"S\",\n" +
+                                                        "      \"When\": 1487889040,\n" +
+                                                        "      \"Code\": 7,\n" +
+                                                        "      \"Msg\": \"2 Pool(s)\",\n" +
+                                                        "      \"Description\": \"cgminer 4.10.0\"\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"POOLS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 0,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:3333\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 0,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 5,\n" +
+                                                        "      \"Accepted\": 19,\n" +
+                                                        "      \"Rejected\": 1,\n" +
+                                                        "      \"Works\": 2663,\n" +
+                                                        "      \"Discarded\": 62,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 1487889012,\n" +
+                                                        "      \"Diff1 Shares\": 1329000,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 819200,\n" +
+                                                        "      \"Difficulty Rejected\": 32768,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 131072,\n" +
+                                                        "      \"Work Difficulty\": 131072,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": true,\n" +
+                                                        "      \"Stratum URL\": \"stratum.antpool.com\",\n" +
+                                                        "      \"Stratum Difficulty\": 131072,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 1548937,\n" +
+                                                        "      \"Pool Rejected%\": 3.8462,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 556495,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
+                                                        "    },\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 1,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:443\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 1,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 3,\n" +
+                                                        "      \"Accepted\": 0,\n" +
+                                                        "      \"Rejected\": 0,\n" +
+                                                        "      \"Works\": 0,\n" +
+                                                        "      \"Discarded\": 0,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 0,\n" +
+                                                        "      \"Diff1 Shares\": 0,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 0,\n" +
+                                                        "      \"Difficulty Rejected\": 0,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 0,\n" +
+                                                        "      \"Work Difficulty\": 0,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": false,\n" +
+                                                        "      \"Stratum URL\": \"\",\n" +
+                                                        "      \"Stratum Difficulty\": 0,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 0,\n" +
+                                                        "      \"Pool Rejected%\": 0,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 0,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"id\": 1\n" +
                                                         "}")),
                                 AvalonType.AVALON_741
                         },
@@ -295,6 +386,96 @@ public class AvalonDetectITest
                                                         "    }\n" +
                                                         "  ],\n" +
                                                         "  \"id\": 1\n" +
+                                                        "}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\n" +
+                                                        "  \"STATUS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"STATUS\": \"S\",\n" +
+                                                        "      \"When\": 1487889040,\n" +
+                                                        "      \"Code\": 7,\n" +
+                                                        "      \"Msg\": \"2 Pool(s)\",\n" +
+                                                        "      \"Description\": \"cgminer 4.10.0\"\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"POOLS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 0,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:3333\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 0,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 5,\n" +
+                                                        "      \"Accepted\": 19,\n" +
+                                                        "      \"Rejected\": 1,\n" +
+                                                        "      \"Works\": 2663,\n" +
+                                                        "      \"Discarded\": 62,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 1487889012,\n" +
+                                                        "      \"Diff1 Shares\": 1329000,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 819200,\n" +
+                                                        "      \"Difficulty Rejected\": 32768,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 131072,\n" +
+                                                        "      \"Work Difficulty\": 131072,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": true,\n" +
+                                                        "      \"Stratum URL\": \"stratum.antpool.com\",\n" +
+                                                        "      \"Stratum Difficulty\": 131072,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 1548937,\n" +
+                                                        "      \"Pool Rejected%\": 3.8462,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 556495,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
+                                                        "    },\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 1,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:443\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 1,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 3,\n" +
+                                                        "      \"Accepted\": 0,\n" +
+                                                        "      \"Rejected\": 0,\n" +
+                                                        "      \"Works\": 0,\n" +
+                                                        "      \"Discarded\": 0,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 0,\n" +
+                                                        "      \"Diff1 Shares\": 0,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 0,\n" +
+                                                        "      \"Difficulty Rejected\": 0,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 0,\n" +
+                                                        "      \"Work Difficulty\": 0,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": false,\n" +
+                                                        "      \"Stratum URL\": \"\",\n" +
+                                                        "      \"Stratum Difficulty\": 0,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 0,\n" +
+                                                        "      \"Pool Rejected%\": 0,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 0,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"id\": 1\n" +
                                                         "}")),
                                 AvalonType.AVALON_841
                         },
@@ -358,6 +539,96 @@ public class AvalonDetectITest
                                                         "      \"Bytes Recv\": 6525984,\n" +
                                                         "      \"Net Bytes Sent\": 1999329,\n" +
                                                         "      \"Net Bytes Recv\": 6525984\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"id\": 1\n" +
+                                                        "}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\n" +
+                                                        "  \"STATUS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"STATUS\": \"S\",\n" +
+                                                        "      \"When\": 1487889040,\n" +
+                                                        "      \"Code\": 7,\n" +
+                                                        "      \"Msg\": \"2 Pool(s)\",\n" +
+                                                        "      \"Description\": \"cgminer 4.10.0\"\n" +
+                                                        "    }\n" +
+                                                        "  ],\n" +
+                                                        "  \"POOLS\": [\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 0,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:3333\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 0,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 5,\n" +
+                                                        "      \"Accepted\": 19,\n" +
+                                                        "      \"Rejected\": 1,\n" +
+                                                        "      \"Works\": 2663,\n" +
+                                                        "      \"Discarded\": 62,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 1487889012,\n" +
+                                                        "      \"Diff1 Shares\": 1329000,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 819200,\n" +
+                                                        "      \"Difficulty Rejected\": 32768,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 131072,\n" +
+                                                        "      \"Work Difficulty\": 131072,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": true,\n" +
+                                                        "      \"Stratum URL\": \"stratum.antpool.com\",\n" +
+                                                        "      \"Stratum Difficulty\": 131072,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 1548937,\n" +
+                                                        "      \"Pool Rejected%\": 3.8462,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 556495,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
+                                                        "    },\n" +
+                                                        "    {\n" +
+                                                        "      \"POOL\": 1,\n" +
+                                                        "      \"URL\": \"stratum+tcp:\\/\\/stratum.antpool.com:443\",\n" +
+                                                        "      \"Status\": \"Alive\",\n" +
+                                                        "      \"Priority\": 1,\n" +
+                                                        "      \"Quota\": 1,\n" +
+                                                        "      \"Long Poll\": \"N\",\n" +
+                                                        "      \"Getworks\": 3,\n" +
+                                                        "      \"Accepted\": 0,\n" +
+                                                        "      \"Rejected\": 0,\n" +
+                                                        "      \"Works\": 0,\n" +
+                                                        "      \"Discarded\": 0,\n" +
+                                                        "      \"Stale\": 0,\n" +
+                                                        "      \"Get Failures\": 0,\n" +
+                                                        "      \"Remote Failures\": 0,\n" +
+                                                        "      \"User\": \"Yop yop\",\n" +
+                                                        "      \"Last Share Time\": 0,\n" +
+                                                        "      \"Diff1 Shares\": 0,\n" +
+                                                        "      \"Proxy Type\": \"\",\n" +
+                                                        "      \"Proxy\": \"\",\n" +
+                                                        "      \"Difficulty Accepted\": 0,\n" +
+                                                        "      \"Difficulty Rejected\": 0,\n" +
+                                                        "      \"Difficulty Stale\": 0,\n" +
+                                                        "      \"Last Share Difficulty\": 0,\n" +
+                                                        "      \"Work Difficulty\": 0,\n" +
+                                                        "      \"Has Stratum\": true,\n" +
+                                                        "      \"Stratum Active\": false,\n" +
+                                                        "      \"Stratum URL\": \"\",\n" +
+                                                        "      \"Stratum Difficulty\": 0,\n" +
+                                                        "      \"Has GBT\": false,\n" +
+                                                        "      \"Best Share\": 0,\n" +
+                                                        "      \"Pool Rejected%\": 0,\n" +
+                                                        "      \"Pool Stale%\": 0,\n" +
+                                                        "      \"Bad Work\": 0,\n" +
+                                                        "      \"Current Block Height\": 0,\n" +
+                                                        "      \"Current Block Version\": 536870912\n" +
                                                         "    }\n" +
                                                         "  ],\n" +
                                                         "  \"id\": 1\n" +

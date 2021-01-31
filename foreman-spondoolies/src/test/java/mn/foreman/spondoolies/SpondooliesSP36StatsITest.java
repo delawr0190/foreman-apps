@@ -49,6 +49,7 @@ public class SpondooliesSP36StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("dash.coinmine.pl:6099")
+                                        .setWorker("xxx.001SPX36")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,
@@ -61,6 +62,7 @@ public class SpondooliesSP36StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("x11.usa.nicehash.com:3336")
+                                        .setWorker("xxx.001SPX36")
                                         .setPriority(1)
                                         .setStatus(
                                                 true,

@@ -16,7 +16,13 @@ public class MultMinerM1DetectITest
     /** Constructor. */
     public MultMinerM1DetectITest() {
         super(
-                new MultMinerDetectionStrategy(),
+                new MultMinerDetectionStrategy(
+                        new MultMinerFactory().create(
+                                ImmutableMap.of(
+                                        "apiIp",
+                                        "127.0.0.1",
+                                        "apiPort",
+                                        "8080"))),
                 "127.0.0.1",
                 8080,
                 DEFAULT_ARGS,

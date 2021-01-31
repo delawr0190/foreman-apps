@@ -150,6 +150,7 @@ public class InnosiliconStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("americas.equihash.mining-dutch.nl:6663")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -162,6 +163,7 @@ public class InnosiliconStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("solo-zen.2miners.com:7070")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -174,6 +176,7 @@ public class InnosiliconStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("us1.zhash.pro:8059")
+                                                        .setWorker("xxx")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,

@@ -1,12 +1,10 @@
 package mn.foreman.obelisk;
 
 import mn.foreman.io.Query;
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MacStrategy;
-import mn.foreman.model.MinerType;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.obelisk.json.Info;
+import mn.foreman.util.ArgUtils;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.slf4j.Logger;
@@ -33,13 +31,20 @@ public class ObeliskDetectionStrategy<T extends MinerType>
     /** The strategy for MACs. */
     private final MacStrategy macStrategy;
 
+    /** The miner. */
+    private final Miner miner;
+
     /**
      * Constructor.
      *
      * @param macStrategy The strategy.
+     * @param miner       The miner.
      */
-    public ObeliskDetectionStrategy(final MacStrategy macStrategy) {
+    public ObeliskDetectionStrategy(
+            final MacStrategy macStrategy,
+            final Miner miner) {
         this.macStrategy = macStrategy;
+        this.miner = miner;
     }
 
     @Override
@@ -63,6 +68,11 @@ public class ObeliskDetectionStrategy<T extends MinerType>
                 final Map<String, Object> newArgs = new HashMap<>(args);
                 this.macStrategy.getMacAddress()
                         .ifPresent(mac -> newArgs.put("mac", mac));
+                if (ArgUtils.isWorkerPreferred(newArgs)) {
+                    DetectionUtils.addWorkerFromStats(
+                            this.miner,
+                            newArgs);
+                }
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)

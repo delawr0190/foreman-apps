@@ -243,6 +243,7 @@ public class BwL21StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("us-central01.miningrigrentals.com:50934")
+                                        .setWorker("xxxx.yyyy")
                                         .setPriority(16777216)
                                         .setStatus(
                                                 true,
@@ -255,6 +256,7 @@ public class BwL21StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("prohashing.com:3333")
+                                        .setWorker("xxxx")
                                         .setPriority(16842753)
                                         .setStatus(
                                                 true,
@@ -267,6 +269,7 @@ public class BwL21StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("us.litecoinpool.org:3333")
+                                        .setWorker("xxxx")
                                         .setPriority(2)
                                         .setStatus(
                                                 true,

@@ -2,11 +2,15 @@ package mn.foreman.baikal;
 
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
+import mn.foreman.model.DetectionUtils;
+import mn.foreman.model.Miner;
+import mn.foreman.util.ArgUtils;
 
 import org.apache.http.HttpStatus;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -15,6 +19,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class BaikalDetectionStrategy
         implements DetectionStrategy {
 
+    /** The miner to obtain stats. */
+    private final Miner miner;
+
     /** The default web port. */
     private final String webPort;
 
@@ -22,9 +29,13 @@ public class BaikalDetectionStrategy
      * Constructor.
      *
      * @param webPort The default web port.
+     * @param miner   The miner to query to obtain the worker name.
      */
-    public BaikalDetectionStrategy(final String webPort) {
+    public BaikalDetectionStrategy(
+            final String webPort,
+            final Miner miner) {
         this.webPort = webPort;
+        this.miner = miner;
     }
 
     @Override
@@ -57,12 +68,20 @@ public class BaikalDetectionStrategy
 
         Detection detection = null;
         if (isBaikal.get()) {
+            final Map<String, Object> newArgs = new HashMap<>(args);
+
+            if (ArgUtils.isWorkerPreferred(args)) {
+                DetectionUtils.addWorkerFromStats(
+                        this.miner,
+                        newArgs);
+            }
+
             detection =
                     Detection.builder()
                             .ipAddress(ip)
                             .port(port)
                             .minerType(BaikalType.GENERIC)
-                            .parameters(args)
+                            .parameters(newArgs)
                             .build();
         }
         return Optional.ofNullable(detection);

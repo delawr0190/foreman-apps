@@ -116,6 +116,7 @@ public class ObeliskStatsITest
                                                         "  \"poolStatus\": [\n" +
                                                         "    {\n" +
                                                         "      \"url\": \"myurl.com:3333\",\n" +
+                                                        "      \"worker\": \"xxx\",\n" +
                                                         "      \"status\": \"Alive\",\n" +
                                                         "      \"accepted\": 1234,\n" +
                                                         "      \"rejected\": 5678\n" +
@@ -150,6 +151,7 @@ public class ObeliskStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("myurl.com:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -226,6 +228,7 @@ public class ObeliskStatsITest
                                                         "  \"poolStatus\": [\n" +
                                                         "    {\n" +
                                                         "      \"url\": \"myurl.com:3333\",\n" +
+                                                        "      \"worker\": \"xxx\",\n" +
                                                         "      \"status\": \"Alive\",\n" +
                                                         "      \"accepted\": 1234,\n" +
                                                         "      \"rejected\": 5678\n" +
@@ -256,6 +259,7 @@ public class ObeliskStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("myurl.com:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,

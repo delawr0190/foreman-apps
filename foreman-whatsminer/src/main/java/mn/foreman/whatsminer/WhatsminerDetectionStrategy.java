@@ -1,9 +1,8 @@
 package mn.foreman.whatsminer;
 
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MacStrategy;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.util.ArgUtils;
 
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
@@ -26,13 +25,20 @@ public class WhatsminerDetectionStrategy
     /** The strategy. */
     private final MacStrategy macStrategy;
 
+    /** The miner. */
+    private final Miner miner;
+
     /**
      * Constructor.
      *
      * @param macStrategy The strategy.
+     * @param miner       The miner.
      */
-    public WhatsminerDetectionStrategy(final MacStrategy macStrategy) {
+    public WhatsminerDetectionStrategy(
+            final MacStrategy macStrategy,
+            final Miner miner) {
         this.macStrategy = macStrategy;
+        this.miner = miner;
     }
 
     @Override
@@ -81,6 +87,13 @@ public class WhatsminerDetectionStrategy
             final Map<String, Object> newArgs = new HashMap<>(args);
             this.macStrategy.getMacAddress()
                     .ifPresent(mac -> newArgs.put("mac", mac));
+
+            if (ArgUtils.isWorkerPreferred(newArgs)) {
+                DetectionUtils.addWorkerFromStats(
+                        this.miner,
+                        newArgs);
+            }
+
             detection =
                     Detection
                             .builder()

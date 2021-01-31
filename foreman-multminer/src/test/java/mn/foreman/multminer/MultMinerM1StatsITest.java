@@ -48,6 +48,7 @@ public class MultMinerM1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("pplns.trb.stratum.hashpool.com:8208")
+                                        .setWorker("xxx")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,
@@ -60,6 +61,7 @@ public class MultMinerM1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("pplns.trb.stratum.hashpool.com:8208")
+                                        .setWorker("xxx")
                                         .setPriority(1)
                                         .setStatus(
                                                 true,
@@ -72,6 +74,7 @@ public class MultMinerM1StatsITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("solo.trb.stratum.hashpool.com:8208")
+                                        .setWorker("xxx")
                                         .setPriority(2)
                                         .setStatus(
                                                 true,

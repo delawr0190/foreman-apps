@@ -1,11 +1,9 @@
 package mn.foreman.honorknight;
 
 import mn.foreman.honorknight.response.Overview;
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MacStrategy;
-import mn.foreman.model.MinerType;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.util.ArgUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,17 +27,23 @@ public class HonorKnightDetectionStrategy<T extends MinerType>
     /** A mapper for creating the miner type from the model. */
     private final Function<String, Optional<T>> mapper;
 
+    /** The miner to query to obtain the worker name. */
+    private final Miner miner;
+
     /**
      * Constructor.
      *
      * @param mapper      The mapper.
      * @param macStrategy The MAC strategy.
+     * @param miner       The miner to query to obtain the worker name.
      */
     public HonorKnightDetectionStrategy(
             final Function<String, Optional<T>> mapper,
-            final MacStrategy macStrategy) {
+            final MacStrategy macStrategy,
+            final Miner miner) {
         this.mapper = mapper;
         this.macStrategy = macStrategy;
+        this.miner = miner;
     }
 
     @Override
@@ -63,6 +67,13 @@ public class HonorKnightDetectionStrategy<T extends MinerType>
                 final Map<String, Object> newArgs = new HashMap<>(args);
                 this.macStrategy.getMacAddress()
                         .ifPresent(mac -> newArgs.put("mac", mac));
+
+                if (ArgUtils.isWorkerPreferred(newArgs)) {
+                    DetectionUtils.addWorkerFromStats(
+                            this.miner,
+                            newArgs);
+                }
+
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)

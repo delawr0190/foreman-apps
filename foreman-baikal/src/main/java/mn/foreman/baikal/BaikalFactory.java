@@ -6,6 +6,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
+import mn.foreman.model.NullMiner;
 
 import java.util.List;
 import java.util.Map;
@@ -57,6 +58,7 @@ public class BaikalFactory
                                         context))
                         .build(),
                 new BaikalDetectionStrategy(
-                        config.getOrDefault("webPort", "80").toString()));
+                        config.getOrDefault("webPort", "80").toString(),
+                        new NullMiner()));
     }
 }

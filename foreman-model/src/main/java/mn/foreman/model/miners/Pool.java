@@ -45,10 +45,14 @@ public class Pool {
     /** The pool status (up or not). */
     private final Boolean status;
 
+    /** The worker. */
+    private final String worker;
+
     /**
      * Constructor.
      *
      * @param name     The pool name.
+     * @param worker   The worker.
      * @param enabled  Whether or not the pool is enabled.
      * @param status   Whether or not the pool is up.
      * @param priority The pool priority.
@@ -58,6 +62,7 @@ public class Pool {
      */
     private Pool(
             @JsonProperty("name") final String name,
+            @JsonProperty("worker") final String worker,
             @JsonProperty("enabled") final Boolean enabled,
             @JsonProperty("status") final Boolean status,
             @JsonProperty("priority") final int priority,
@@ -86,6 +91,7 @@ public class Pool {
                 0, Integer.MAX_VALUE, stale,
                 "stale must be positive");
         this.name = name;
+        this.worker = worker;
         this.enabled = enabled;
         this.status = status;
         this.priority = priority;
@@ -106,6 +112,7 @@ public class Pool {
             isEqual =
                     new EqualsBuilder()
                             .append(this.name, pool.name)
+                            .append(this.worker, pool.worker)
                             .append(this.enabled, pool.enabled)
                             .append(this.status, pool.status)
                             .append(this.priority, pool.priority)
@@ -180,10 +187,20 @@ public class Pool {
         return this.status;
     }
 
+    /**
+     * Returns the worker name.
+     *
+     * @return The worker name.
+     */
+    public String getWorker() {
+        return this.worker;
+    }
+
     @Override
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.name)
+                .append(this.worker)
                 .append(this.enabled)
                 .append(this.status)
                 .append(this.priority)
@@ -198,6 +215,7 @@ public class Pool {
         return String.format(
                 "%s [ " +
                         "name=%s, " +
+                        "worker=%s, " +
                         "enabled=%s, " +
                         "status=%s, " +
                         "priority=%d, " +
@@ -207,6 +225,7 @@ public class Pool {
                         "]",
                 getClass().getSimpleName(),
                 this.name,
+                this.worker,
                 this.enabled,
                 this.status,
                 this.priority,
@@ -240,6 +259,9 @@ public class Pool {
         /** Whether or not the pool is up. */
         private Boolean status = UNDEFINED_BOOL;
 
+        /** The pool worker. */
+        private String worker = UNDEFINED_STRING;
+
         /**
          * Builds a new {@link Pool}.
          *
@@ -249,6 +271,7 @@ public class Pool {
         public Pool build() {
             return new Pool(
                     this.name,
+                    this.worker,
                     this.enabled,
                     this.status,
                     this.priority,
@@ -345,6 +368,20 @@ public class Pool {
                 final Boolean status) {
             this.enabled = enabled;
             this.status = status;
+            return this;
+        }
+
+        /**
+         * Sets the worker name.
+         *
+         * @param worker The worker name.
+         *
+         * @return This builder instance.
+         */
+        public Builder setWorker(final String worker) {
+            if (worker != null && !worker.isEmpty()) {
+                this.worker = worker;
+            }
             return this;
         }
 

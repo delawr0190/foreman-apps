@@ -356,6 +356,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:3333")
+                                                        .setWorker("Yop yop")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -368,6 +369,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("stratum.antpool.com:443")
+                                                        .setWorker("Yop yop")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -682,6 +684,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.stratum.slushpool.com:3333")
+                                                        .setWorker("Foreman is great!")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -694,6 +697,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.stratum.slushpool.com:3333")
+                                                        .setWorker("Foreman is great!")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -1308,6 +1312,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.ss.btc.com:1800")
+                                                        .setWorker("WALLET.a2")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -1320,6 +1325,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.ss.btc.com:443")
+                                                        .setWorker("WALLET.a2")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -1332,6 +1338,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("eu.ss.btc.com:25")
+                                                        .setWorker("WALLET.a2")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,
@@ -1520,6 +1527,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.mining-dutch.nl:9996")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -1532,6 +1540,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.antpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -1544,6 +1553,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.mining-dutch.nl:9996")
+                                                        .setWorker("xxx")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,
@@ -1585,6 +1595,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.mining-dutch.nl:9996")
+                                                        .setWorker("xxx")
                                                         .setPriority(0)
                                                         .setStatus(
                                                                 true,
@@ -1597,6 +1608,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.antpool.com:3333")
+                                                        .setWorker("xxx")
                                                         .setPriority(1)
                                                         .setStatus(
                                                                 true,
@@ -1609,6 +1621,7 @@ public class AvalonStatsITest
                                         .addPool(
                                                 new Pool.Builder()
                                                         .setName("sha256.mining-dutch.nl:9996")
+                                                        .setWorker("xxx")
                                                         .setPriority(2)
                                                         .setStatus(
                                                                 true,

@@ -1,8 +1,7 @@
 package mn.foreman.antminer;
 
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MacStrategy;
+import mn.foreman.model.*;
+import mn.foreman.util.ArgUtils;
 
 import java.util.*;
 
@@ -16,6 +15,9 @@ public class AntminerDetectionStrategy
     /** The strategies for detecting MACs. */
     private final List<MacStrategy> macStrategies;
 
+    /** The miner for obtaining stats. */
+    private final Miner miner;
+
     /** The realm. */
     private final String realm;
 
@@ -25,14 +27,17 @@ public class AntminerDetectionStrategy
      * @param realm              The realm.
      * @param macStrategies      The mac strategies.
      * @param hostnameStrategies The hostname strategies.
+     * @param miner              The miner for obtaining stats.
      */
     public AntminerDetectionStrategy(
             final String realm,
             final List<MacStrategy> macStrategies,
-            final List<HostnameStrategy> hostnameStrategies) {
+            final List<HostnameStrategy> hostnameStrategies,
+            final Miner miner) {
         this.realm = realm;
         this.macStrategies = new ArrayList<>(macStrategies);
         this.hostnameStrategies = new ArrayList<>(hostnameStrategies);
+        this.miner = miner;
     }
 
     @Override
@@ -40,12 +45,6 @@ public class AntminerDetectionStrategy
             final String ip,
             final int port,
             final Map<String, Object> args) {
-        final boolean hostnamePreferred =
-                Boolean.parseBoolean(
-                        args.getOrDefault(
-                                "hostnamePreferred",
-                                "false").toString());
-
         Detection detection = null;
         try {
             final int webPort =
@@ -69,7 +68,7 @@ public class AntminerDetectionStrategy
                 final AntminerType realType = type.get();
 
                 final Map<String, Object> newArgs = new HashMap<>(args);
-                if (hostnamePreferred) {
+                if (ArgUtils.isHostnamePreferred(args)) {
                     this.hostnameStrategies
                             .stream()
                             .map(hostnameStrategy -> {
@@ -90,6 +89,10 @@ public class AntminerDetectionStrategy
                                             newArgs.put(
                                                     "hostname",
                                                     hostname));
+                } else if (ArgUtils.isWorkerPreferred(args)) {
+                    DetectionUtils.addWorkerFromStats(
+                            this.miner,
+                            newArgs);
                 }
 
                 this.macStrategies

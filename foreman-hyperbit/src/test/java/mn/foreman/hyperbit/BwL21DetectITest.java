@@ -105,6 +105,124 @@ public class BwL21DetectITest
                                                 "    }\n" +
                                                 "  ],\n" +
                                                 "  \"id\": 1\n" +
+                                                "}"),
+                                "{\"command\":\"pools\"}",
+                                new RpcHandler(
+                                        "{\n" +
+                                                "  \"STATUS\": [\n" +
+                                                "    {\n" +
+                                                "      \"STATUS\": \"S\",\n" +
+                                                "      \"When\": 1558529871,\n" +
+                                                "      \"Code\": 7,\n" +
+                                                "      \"Msg\": \"3 Pool(s)\",\n" +
+                                                "      \"Description\": \"cpuminer 2.3.2\"\n" +
+                                                "    }\n" +
+                                                "  ],\n" +
+                                                "  \"POOLS\": [\n" +
+                                                "    {\n" +
+                                                "      \"POOL\": 0,\n" +
+                                                "      \"URL\": \"stratum+tcp:\\/\\/us-central01.miningrigrentals.com:50934\",\n" +
+                                                "      \"Status\": \"Alive\",\n" +
+                                                "      \"Priority\": 16777216,\n" +
+                                                "      \"Quota\": 1,\n" +
+                                                "      \"Long Poll\": \"Y\",\n" +
+                                                "      \"Getworks\": 0,\n" +
+                                                "      \"Accepted\": 0,\n" +
+                                                "      \"Rejected\": 0,\n" +
+                                                "      \"Works\": 0,\n" +
+                                                "      \"Discarded\": 0,\n" +
+                                                "      \"Stale\": 0,\n" +
+                                                "      \"Get Failures\": 0,\n" +
+                                                "      \"Remote Failures\": 0,\n" +
+                                                "      \"User\": \"xxxx.yyyy\",\n" +
+                                                "      \"Passwd\": \"xxxx\",\n" +
+                                                "      \"Last Share Time\": 1558529871,\n" +
+                                                "      \"Diff1 Shares\": 2048,\n" +
+                                                "      \"Proxy Type\": \"\",\n" +
+                                                "      \"Proxy\": \"\",\n" +
+                                                "      \"Difficulty Accepted\": 0,\n" +
+                                                "      \"Difficulty Rejected\": 0,\n" +
+                                                "      \"Difficulty Stale\": 0,\n" +
+                                                "      \"Last Share Difficulty\": 0,\n" +
+                                                "      \"Has Stratum\": true,\n" +
+                                                "      \"Stratum Active\": true,\n" +
+                                                "      \"Stratum URL\": \"stratum+tcp:\\/\\/us-central01.miningrigrentals.com:50934\",\n" +
+                                                "      \"Has GBT\": false,\n" +
+                                                "      \"Best Share\": 0,\n" +
+                                                "      \"Pool Rejected%\": 0,\n" +
+                                                "      \"Pool Stale%\": 0,\n" +
+                                                "      \"Bad Work\": 0\n" +
+                                                "    },\n" +
+                                                "    {\n" +
+                                                "      \"POOL\": 1,\n" +
+                                                "      \"URL\": \"stratum+tcp:\\/\\/prohashing.com:3333\",\n" +
+                                                "      \"Status\": \"Alive\",\n" +
+                                                "      \"Priority\": 16842753,\n" +
+                                                "      \"Quota\": 1,\n" +
+                                                "      \"Long Poll\": \"Y\",\n" +
+                                                "      \"Getworks\": 0,\n" +
+                                                "      \"Accepted\": 30,\n" +
+                                                "      \"Rejected\": 0,\n" +
+                                                "      \"Works\": 0,\n" +
+                                                "      \"Discarded\": 0,\n" +
+                                                "      \"Stale\": 0,\n" +
+                                                "      \"Get Failures\": 0,\n" +
+                                                "      \"Remote Failures\": 0,\n" +
+                                                "      \"User\": \"xxxx\",\n" +
+                                                "      \"Passwd\": \"xxxx\",\n" +
+                                                "      \"Last Share Time\": 1558529871,\n" +
+                                                "      \"Diff1 Shares\": 2048,\n" +
+                                                "      \"Proxy Type\": \"\",\n" +
+                                                "      \"Proxy\": \"\",\n" +
+                                                "      \"Difficulty Accepted\": 0,\n" +
+                                                "      \"Difficulty Rejected\": 0,\n" +
+                                                "      \"Difficulty Stale\": 0,\n" +
+                                                "      \"Last Share Difficulty\": 0,\n" +
+                                                "      \"Has Stratum\": true,\n" +
+                                                "      \"Stratum Active\": true,\n" +
+                                                "      \"Stratum URL\": \"stratum+tcp:\\/\\/prohashing.com:3333\",\n" +
+                                                "      \"Has GBT\": false,\n" +
+                                                "      \"Best Share\": 0,\n" +
+                                                "      \"Pool Rejected%\": 0,\n" +
+                                                "      \"Pool Stale%\": 0,\n" +
+                                                "      \"Bad Work\": 0\n" +
+                                                "    },\n" +
+                                                "    {\n" +
+                                                "      \"POOL\": 2,\n" +
+                                                "      \"URL\": \"stratum+tcp:\\/\\/us.litecoinpool.org:3333\",\n" +
+                                                "      \"Status\": \"Alive\",\n" +
+                                                "      \"Priority\": 2,\n" +
+                                                "      \"Quota\": 1,\n" +
+                                                "      \"Long Poll\": \"Y\",\n" +
+                                                "      \"Getworks\": 0,\n" +
+                                                "      \"Accepted\": 0,\n" +
+                                                "      \"Rejected\": 0,\n" +
+                                                "      \"Works\": 0,\n" +
+                                                "      \"Discarded\": 0,\n" +
+                                                "      \"Stale\": 0,\n" +
+                                                "      \"Get Failures\": 0,\n" +
+                                                "      \"Remote Failures\": 0,\n" +
+                                                "      \"User\": \"xxxx\",\n" +
+                                                "      \"Passwd\": \"xxxx\",\n" +
+                                                "      \"Last Share Time\": 1558529871,\n" +
+                                                "      \"Diff1 Shares\": 2048,\n" +
+                                                "      \"Proxy Type\": \"\",\n" +
+                                                "      \"Proxy\": \"\",\n" +
+                                                "      \"Difficulty Accepted\": 0,\n" +
+                                                "      \"Difficulty Rejected\": 0,\n" +
+                                                "      \"Difficulty Stale\": 0,\n" +
+                                                "      \"Last Share Difficulty\": 0,\n" +
+                                                "      \"Has Stratum\": true,\n" +
+                                                "      \"Stratum Active\": true,\n" +
+                                                "      \"Stratum URL\": \"stratum+tcp:\\/\\/us.litecoinpool.org:3333\",\n" +
+                                                "      \"Has GBT\": false,\n" +
+                                                "      \"Best Share\": 0,\n" +
+                                                "      \"Pool Rejected%\": 0,\n" +
+                                                "      \"Pool Stale%\": 0,\n" +
+                                                "      \"Bad Work\": 0\n" +
+                                                "    }\n" +
+                                                "  ],\n" +
+                                                "  \"id\": 1\n" +
                                                 "}"))),
                 Detection.builder()
                         .minerType(HyperbitType.BW_L21)

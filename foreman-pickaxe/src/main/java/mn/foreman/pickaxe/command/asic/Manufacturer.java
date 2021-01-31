@@ -57,7 +57,8 @@ public enum Manufacturer {
                             AixinType::forType,
                             new HonorKnightMacStrategy(
                                     ip,
-                                    80)),
+                                    80),
+                            new HonorKnightFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -102,7 +103,8 @@ public enum Manufacturer {
                             Arrays.asList(
                                     new StockHostnameStrategy(
                                             "antMiner Configuration"),
-                                    new BraiinsHostnameStrategy())),
+                                    new BraiinsHostnameStrategy()),
+                            new AntminerFactory(BigDecimal.ONE).create(args)),
             (threadPool, blacklist, statsCache) ->
                     new ChainedAsicAction(
                             AsyncActionFactory.toAsync(
@@ -240,7 +242,10 @@ public enum Manufacturer {
     /** Baikal. */
     BAIKAL(
             "baikal",
-            (args, ip) -> new BaikalDetectionStrategy("80"),
+            (args, ip) ->
+                    new BaikalDetectionStrategy(
+                            "80",
+                            new BaikalFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -354,7 +359,8 @@ public enum Manufacturer {
                             CheetahminerType::forType,
                             new HonorKnightMacStrategy(
                                     ip,
-                                    80)),
+                                    80),
+                            new HonorKnightFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -461,7 +467,8 @@ public enum Manufacturer {
                             HonorKnightType::forType,
                             new HonorKnightMacStrategy(
                                     ip,
-                                    80)),
+                                    80),
+                            new HonorKnightFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -549,7 +556,9 @@ public enum Manufacturer {
     /** MultMiner. */
     MULTMINER(
             "multminer",
-            (args, ip) -> new MultMinerDetectionStrategy(),
+            (args, ip) ->
+                    new MultMinerDetectionStrategy(
+                            new MultMinerFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -574,7 +583,8 @@ public enum Manufacturer {
                     new ObeliskDetectionStrategy<>(
                             new ObeliskMacStrategy(
                                     ip,
-                                    80)),
+                                    80),
+                            new ObeliskFactory().create(args)),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -731,7 +741,8 @@ public enum Manufacturer {
                             new WhatsminerDetectionStrategy(
                                     new NewFirmwareMacStrategy(
                                             ip,
-                                            4028)),
+                                            4028),
+                                    new WhatsminerFactory().create(args)),
                             new CgMinerDetectionStrategy(
                                     CgMinerCommand.STATS,
                                     new WhatsminerTypeFactory(),
