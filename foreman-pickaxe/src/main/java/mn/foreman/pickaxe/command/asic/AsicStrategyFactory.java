@@ -10,6 +10,7 @@ import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.eval.EvalStrategy;
 import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
+import mn.foreman.pickaxe.command.asic.terminate.TerminateStrategy;
 import mn.foreman.pickaxe.command.asic.whatsminer.WhatsminerGetStrategy;
 
 import java.util.Optional;
@@ -118,6 +119,9 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache)));
+                break;
+            case "terminate":
+                strategy = Optional.of(new TerminateStrategy());
                 break;
             default:
                 break;
