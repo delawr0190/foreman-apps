@@ -220,6 +220,9 @@ public class ScanStrategy
         final List<Object> miners = new LinkedList<>();
         for (long i = start; i <= stop; i++) {
             final String ip = ipFromLong(i);
+
+
+
             final DetectionStrategy detectionStrategy =
                     manufacturer.getDetectionStrategy(
                             args,

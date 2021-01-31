@@ -36,6 +36,8 @@ import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.strongu.StrongUTypeFactory;
 import mn.foreman.whatsminer.*;
 
+import one.util.streamex.EntryStream;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
@@ -58,7 +60,16 @@ public enum Manufacturer {
                             new HonorKnightMacStrategy(
                                     ip,
                                     80),
-                            new HonorKnightFactory().create(args)),
+                            new HonorKnightFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "4028")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -104,7 +115,16 @@ public enum Manufacturer {
                                     new StockHostnameStrategy(
                                             "antMiner Configuration"),
                                     new BraiinsHostnameStrategy()),
-                            new AntminerFactory(BigDecimal.ONE).create(args)),
+                            new AntminerFactory(BigDecimal.ONE).create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "4028")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     new ChainedAsicAction(
                             AsyncActionFactory.toAsync(
@@ -245,7 +265,16 @@ public enum Manufacturer {
             (args, ip) ->
                     new BaikalDetectionStrategy(
                             "80",
-                            new BaikalFactory().create(args)),
+                            new BaikalFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "4028")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -360,7 +389,16 @@ public enum Manufacturer {
                             new HonorKnightMacStrategy(
                                     ip,
                                     80),
-                            new HonorKnightFactory().create(args)),
+                            new HonorKnightFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "4028")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -468,7 +506,16 @@ public enum Manufacturer {
                             new HonorKnightMacStrategy(
                                     ip,
                                     80),
-                            new HonorKnightFactory().create(args)),
+                            new HonorKnightFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "4028")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -558,7 +605,16 @@ public enum Manufacturer {
             "multminer",
             (args, ip) ->
                     new MultMinerDetectionStrategy(
-                            new MultMinerFactory().create(args)),
+                            new MultMinerFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "80")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -584,7 +640,16 @@ public enum Manufacturer {
                             new ObeliskMacStrategy(
                                     ip,
                                     80),
-                            new ObeliskFactory().create(args)),
+                            new ObeliskFactory().create(
+                                    EntryStream
+                                            .of(args)
+                                            .append(
+                                                    "apiIp",
+                                                    ip)
+                                            .append(
+                                                    "apiPort",
+                                                    "80")
+                                            .toMap())),
             (threadPool, blacklist, statsCache) ->
                     AsyncActionFactory.toAsync(
                             threadPool,
@@ -742,7 +807,16 @@ public enum Manufacturer {
                                     new NewFirmwareMacStrategy(
                                             ip,
                                             4028),
-                                    new WhatsminerFactory().create(args)),
+                                    new WhatsminerFactory().create(
+                                            EntryStream
+                                                    .of(args)
+                                                    .append(
+                                                            "apiIp",
+                                                            ip)
+                                                    .append(
+                                                            "apiPort",
+                                                            "4028")
+                                                    .toMap())),
                             new CgMinerDetectionStrategy(
                                     CgMinerCommand.STATS,
                                     new WhatsminerTypeFactory(),
