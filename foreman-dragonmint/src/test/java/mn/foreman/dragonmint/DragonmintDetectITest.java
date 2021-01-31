@@ -6,13 +6,27 @@ import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 
 import com.google.common.collect.ImmutableMap;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
 
 /** Tests detection of a Dragonmint. */
+@RunWith(Parameterized.class)
 public class DragonmintDetectITest
         extends AbstractDetectITest {
 
-    /** Constructor. */
-    public DragonmintDetectITest() {
+    /**
+     * Constructor.
+     *
+     * @param workerPreferred Whether or not the worker is preferred.
+     * @param detectionArgs   The arguments in the detection.
+     */
+    public DragonmintDetectITest(
+            final boolean workerPreferred,
+            final Map<String, Object> detectionArgs) {
         super(
                 new DragonmintDetectionStrategy<>(
                         DragonmintType::forType,
@@ -26,7 +40,7 @@ public class DragonmintDetectITest
                 8888,
                 ImmutableMap.of(
                         "workerPreferred",
-                        "true",
+                        Boolean.toString(workerPreferred),
                         "username",
                         "username",
                         "password",
@@ -246,18 +260,59 @@ public class DragonmintDetectITest
                         .minerType(DragonmintType.DRAGONMINT_T1)
                         .ipAddress("127.0.0.1")
                         .port(8888)
-                        .parameters(
-                                ImmutableMap.of(
-                                        "username",
-                                        "username",
-                                        "password",
-                                        "password",
-                                        "mac",
-                                        "00:0a:35:00:00:00",
-                                        "workerPreferred",
-                                        "true",
-                                        "worker",
-                                        "brndnmtthws.dragon-0ade5"))
+                        .parameters(detectionArgs)
                         .build());
+    }
+
+    /**
+     * Test parameters
+     *
+     * @return The test parameters.
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> parameters() {
+        return Arrays.asList(
+                new Object[][]{
+                        {
+                                // Don't prefer worker name
+                                false,
+                                ImmutableMap.<String, Object>builder()
+                                        .put(
+                                                "username",
+                                                "username")
+                                        .put(
+                                                "password",
+                                                "password")
+                                        .put(
+                                                "mac",
+                                                "00:0a:35:00:00:00")
+                                        .put(
+                                                "workerPreferred",
+                                                "false")
+                                        .build()
+                        },
+                        {
+                                // Prefer worker name
+                                true,
+                                ImmutableMap.<String, Object>builder()
+                                        .put(
+                                                "username",
+                                                "username")
+                                        .put(
+                                                "password",
+                                                "password")
+                                        .put(
+                                                "mac",
+                                                "00:0a:35:00:00:00")
+                                        .put(
+                                                "workerPreferred",
+                                                "true")
+                                        .put(
+                                                "worker",
+                                                "brndnmtthws.dragon-0ade5")
+                                        .build()
+                        }
+                }
+        );
     }
 }

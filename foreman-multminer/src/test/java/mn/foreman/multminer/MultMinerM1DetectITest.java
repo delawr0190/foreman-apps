@@ -6,15 +6,29 @@ import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 
 import com.google.common.collect.ImmutableMap;
+import one.util.streamex.EntryStream;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 
 /** Tests detection of a MultMiner. */
+@RunWith(Parameterized.class)
 public class MultMinerM1DetectITest
         extends AbstractDetectITest {
 
-    /** Constructor. */
-    public MultMinerM1DetectITest() {
+    /**
+     * Constructor.
+     *
+     * @param args          The arguments.
+     * @param detectionArgs The detection arguments.
+     */
+    public MultMinerM1DetectITest(
+            final Map<String, Object> args,
+            final Map<String, Object> detectionArgs) {
         super(
                 new MultMinerDetectionStrategy(
                         new MultMinerFactory().create(
@@ -25,7 +39,7 @@ public class MultMinerM1DetectITest
                                         "8080"))),
                 "127.0.0.1",
                 8080,
-                DEFAULT_ARGS,
+                args,
                 () -> new FakeHttpMinerServer(
                         8080,
                         ImmutableMap.of(
@@ -40,7 +54,43 @@ public class MultMinerM1DetectITest
                         .minerType(MultMinerType.M1)
                         .ipAddress("127.0.0.1")
                         .port(8080)
-                        .parameters(DEFAULT_ARGS)
+                        .parameters(detectionArgs)
                         .build());
+    }
+
+    /**
+     * Test parameters
+     *
+     * @return The test parameters.
+     */
+    @Parameterized.Parameters
+    public static Collection<Object[]> parameters() {
+        return Arrays.asList(
+                new Object[][]{
+                        {
+                                // Worker not preferred
+                                DEFAULT_ARGS,
+                                DEFAULT_ARGS
+                        },
+                        {
+                                // Worker preferred
+                                EntryStream
+                                        .of(DEFAULT_ARGS)
+                                        .append(
+                                                "workerPreferred",
+                                                "true")
+                                        .toMap(),
+                                EntryStream
+                                        .of(DEFAULT_ARGS)
+                                        .append(
+                                                "workerPreferred",
+                                                "true")
+                                        .append(
+                                                "worker",
+                                                "xxx")
+                                        .toMap()
+                        }
+                }
+        );
     }
 }

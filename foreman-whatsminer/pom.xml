@@ -45,6 +45,11 @@
         </dependency>
 
         <dependency>
+            <groupId>one.util</groupId>
+            <artifactId>streamex</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>mn.foreman</groupId>
             <artifactId>foreman-util</artifactId>
             <scope>test</scope>

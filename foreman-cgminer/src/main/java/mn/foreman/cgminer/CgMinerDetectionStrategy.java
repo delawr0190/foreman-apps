@@ -132,7 +132,7 @@ public class CgMinerDetectionStrategy
                 final String workerName = worker.get();
                 if (ArgUtils.isWorkerPreferred(args) && workerName != null) {
                     newArgs.put(
-                            "hostname",
+                            "worker",
                             workerName);
                 }
 

@@ -30,7 +30,7 @@ public class DetectionUtils {
                     .findFirst()
                     .ifPresent(worker ->
                             args.put(
-                                    "hostname",
+                                    "worker",
                                     worker));
         } catch (final MinerException me) {
             // Ignore
