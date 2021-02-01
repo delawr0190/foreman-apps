@@ -110,7 +110,7 @@ public class WhatsminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("12286819780000.000"))
+                                                        .setHashRate(new BigDecimal("11763615450000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -170,7 +170,7 @@ public class WhatsminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("65371302780000.000"))
+                                                        .setHashRate(new BigDecimal("65492089330000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -228,7 +228,7 @@ public class WhatsminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("64143777950000.000"))
+                                                        .setHashRate(new BigDecimal("68710597190000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -288,7 +288,7 @@ public class WhatsminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("78398752210000.000"))
+                                                        .setHashRate(new BigDecimal("78130188720000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -336,7 +336,7 @@ public class WhatsminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("85038430010000.000"))
+                                                        .setHashRate(new BigDecimal("85106399370000.000"))
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -347,6 +347,62 @@ public class WhatsminerStatsITest
                                                         .addTemp(80)
                                                         .addTemp(72)
                                                         .addTemp(72)
+                                                        .hasErrors(false)
+                                                        .build())
+                                        .build()
+                        },
+                        {
+                                // Whatsminer M31S (new firmware)
+                                ImmutableMap.of(
+                                        "{\"command\":\"summary\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612175432,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"btminer\"}],\"SUMMARY\":[{\"Elapsed\":33102,\"MHS av\":76718604.38,\"MHS 5s\":92768288.94,\"MHS 1m\":77909448.60,\"MHS 5m\":76943560.94,\"MHS 15m\":76766726.75,\"HS RT\":76690808.44,\"Found Blocks\":0,\"Getworks\":1367,\"Accepted\":2296,\"Rejected\":1,\"Hardware Errors\":0,\"Utility\":4.16,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Local Work\":629698680,\"Remote Failures\":0,\"Network Blocks\":170,\"Total MH\":2539516358593.0000,\"Work Utility\":0.00,\"Difficulty Accepted\":588906496.00000000,\"Difficulty Rejected\":262144.00000000,\"Difficulty Stale\":0.00000000,\"Best Share\":1320888597,\"Temperature\":72.00,\"freq_avg\":710,\"Fan Speed In\":5700,\"Fan Speed Out\":0,\"Voltage\":1206,\"Power\":3553,\"Power_RT\":3552,\"Power Rate\":46.31,\"Device Hardware%\":0.0000,\"Device Rejected%\":0.0000,\"Pool Rejected%\":0.0445,\"Pool Stale%\":0.0000,\"Last getwork\":0,\"Uptime\":1405529,\"Chip Data\":\"HPJA05-20070601 BINV02-193005F\",\"Power Current\":276.626346,\"Power Fanspeed\":7608,\"Error Code 0\":110,\"Error 0 Time\":\"\",\"Error Code 1\":111,\"Error 1 Time\":\"\",\"Error Code 2\":131,\"Error 2 Time\":\"\",\"Factory Error Code 0\":208,\"Error 3 Time\":\"\",\"Factory Error Code 1\":2310,\"Error 4 Time\":\"\",\"Error Code Count\":3,\"Factory Error Code Count\":2,\"Security Mode\":0,\"Liquid Cooling\":false,\"Hash Stable\":true,\"Hash Stable Cost Seconds\":1373628,\"Hash Deviation%\":0.0086,\"Target Freq\":652,\"Target MHS\":71472240,\"Env Temp\":7.00,\"Power Mode\":\"Normal\",\"Firmware Version\":\"'20201202.22.REL'\",\"CB Platform\":\"ALLWINNER_H6OS\",\"CB Version\":\"V10\",\"MAC\":\"C6:06:12:00:2D:63\",\"Factory GHS\":75697,\"Power Limit\":3600,\"Power Voltage Input\":229.50,\"Power Current Input\":15.58,\"Chip Temp Min\":48.00,\"Chip Temp Max\":93.00,\"Chip Temp Avg\":73.87,\"Debug\":\"76.5/77.9T_46.4W_100.3/98.5_-3\"}],\"id\":1}"),
+                                        "{\"command\":\"edevs\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612175433,\"Code\":9,\"Msg\":\"3 ASC(s)\",\"Description\":\"btminer\"}],\"DEVS\":[{\"ASC\":0,\"Name\":\"SM\",\"ID\":0,\"Slot\":0,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":57.50,\"Chip Frequency\":686,\"Fan Speed In\":5700,\"Fan Speed Out\":0,\"MHS av\":24731566.18,\"MHS 5s\":25012892.74,\"MHS 1m\":24720718.63,\"MHS 5m\":24741199.08,\"MHS 15m\":24731544.59,\"Accepted\":756,\"Rejected\":0,\"Hardware Errors\":0,\"Utility\":1.37,\"Last Share Pool\":0,\"Last Share Time\":1612175429,\"Total MH\":818666585854.0000,\"Diff1 Work\":0,\"Difficulty Accepted\":194772992.00000000,\"Difficulty Rejected\":0.00000000,\"Last Share Difficulty\":262144.00000000,\"Last Valid Work\":1612175430,\"Device Hardware%\":0.0000,\"Device Rejected%\":0.0000,\"Device Elapsed\":33102,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"BJM1FS69630721K31122\",\"Chip Data\":\"HPJA05-20070601 BINV02-193005F\",\"Chip Temp Min\":48.00,\"Chip Temp Max\":77.44,\"Chip Temp Avg\":66.30,\"chip_vol_diff\":11},{\"ASC\":1,\"Name\":\"SM\",\"ID\":1,\"Slot\":1,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":72.00,\"Chip Frequency\":726,\"Fan Speed In\":5700,\"Fan Speed Out\":0,\"MHS av\":26094168.35,\"MHS 5s\":26032487.18,\"MHS 1m\":26026621.49,\"MHS 5m\":26091737.63,\"MHS 15m\":26087691.64,\"Accepted\":777,\"Rejected\":1,\"Hardware Errors\":0,\"Utility\":1.41,\"Last Share Pool\":0,\"Last Share Time\":1612175356,\"Total MH\":863771576430.0000,\"Diff1 Work\":0,\"Difficulty Accepted\":199229440.00000000,\"Difficulty Rejected\":262144.00000000,\"Last Share Difficulty\":262144.00000000,\"Last Valid Work\":1612175433,\"Device Hardware%\":0.0000,\"Device Rejected%\":0.0000,\"Device Elapsed\":33102,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"BJM1FS69630721K31108\",\"Chip Data\":\"HPJA05-20070601 BINV02-193005F\",\"Chip Temp Min\":60.00,\"Chip Temp Max\":93.00,\"Chip Temp Avg\":79.89,\"chip_vol_diff\":19},{\"ASC\":2,\"Name\":\"SM\",\"ID\":2,\"Slot\":2,\"Enabled\":\"Y\",\"Status\":\"Alive\",\"Temperature\":68.00,\"Chip Frequency\":718,\"Fan Speed In\":5700,\"Fan Speed Out\":0,\"MHS av\":25891964.07,\"MHS 5s\":25944861.70,\"MHS 1m\":25862805.06,\"MHS 5m\":25851462.21,\"MHS 15m\":25861873.60,\"Accepted\":763,\"Rejected\":0,\"Hardware Errors\":0,\"Utility\":1.38,\"Last Share Pool\":0,\"Last Share Time\":1612175363,\"Total MH\":857078196309.0000,\"Diff1 Work\":0,\"Difficulty Accepted\":194904064.00000000,\"Difficulty Rejected\":0.00000000,\"Last Share Difficulty\":262144.00000000,\"Last Valid Work\":1612175432,\"Device Hardware%\":0.0000,\"Device Rejected%\":0.0000,\"Device Elapsed\":33102,\"Upfreq Complete\":1,\"Effective Chips\":105,\"PCB SN\":\"x\",\"Chip Data\":\"HPJA05-20070601 BINV02-193005F\",\"Chip Temp Min\":54.00,\"Chip Temp Max\":89.17,\"Chip Temp Avg\":75.43,\"chip_vol_diff\":12}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612175433,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"btminer\"}],\"POOLS\":[{\"POOL\":1,\"URL\":\"stratum+tcp://btc.ss.poolin.com:443\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1367,\"Accepted\":2296,\"Rejected\":1,\"Works\":897985052,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x.12x22\",\"Last Share Time\":1612175429,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":588906496.00000000,\"Difficulty Rejected\":262144.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":262144.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"x.ss.poolin.com\",\"Stratum Difficulty\":262144.00000000,\"Has GBT\":false,\"Best Share\":1320888597,\"Pool Rejected%\":0.0445,\"Pool Stale%\":0.0000,\"Bad Work\":188,\"Current Block Height\":668600,\"Current Block Version\":536870912},{\"POOL\":2,\"URL\":\"stratum+tcp://btc.ss.poolin.com:1883\",\"Status\":\"Alive\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x.12x22\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912},{\"POOL\":3,\"URL\":\"stratum+tcp://btc.ss.poolin.com:25\",\"Status\":\"Alive\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Works\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x.12x22\",\"Last Share Time\":0,\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Work Difficulty\":0.00000000,\"Has Stratum\":true,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Stratum Difficulty\":0.00000000,\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000,\"Bad Work\":0,\"Current Block Height\":0,\"Current Block Version\":536870912}],\"id\":1}")),
+                                Collections.emptyList(),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("btc.ss.poolin.com:443")
+                                                        .setWorker("x.12x22")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(2296, 1, 0)
+                                                        .build())
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("btc.ss.poolin.com:1883")
+                                                        .setWorker("x.12x22")
+                                                        .setStatus(true, true)
+                                                        .setPriority(1)
+                                                        .setCounts(0, 0, 0)
+                                                        .build())
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("btc.ss.poolin.com:25")
+                                                        .setWorker("x.12x22")
+                                                        .setStatus(true, true)
+                                                        .setPriority(2)
+                                                        .setCounts(0, 0, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("76718604380000.000"))
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(5700)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(57)
+                                                        .addTemp(72)
+                                                        .addTemp(68)
                                                         .hasErrors(false)
                                                         .build())
                                         .build()

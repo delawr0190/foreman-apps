@@ -122,7 +122,7 @@ class WhatsminerUtils {
                 .filter(entry -> "SUMMARY".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .flatMap(List::stream)
-                .filter(map -> map.containsKey("MHS 5s"))
+                .filter(map -> map.containsKey("MHS av"))
                 .forEach(map -> {
                     context.addSimple(ContextKey.MAC, map.get("MAC"));
                     builder
@@ -134,7 +134,7 @@ class WhatsminerUtils {
                                             .setSpeedUnits("RPM")
                                             .build())
                             .setHashRate(
-                                    new BigDecimal(map.get("MHS 5s"))
+                                    new BigDecimal(map.get("MHS av"))
                                             .multiply(BigDecimal.valueOf(Math.pow(1000, 2))));
                 });
     }
