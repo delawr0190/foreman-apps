@@ -881,6 +881,77 @@ public class AntminerStatsITest
                                                         .hasErrors(false)
                                                         .build())
                                         .build()
+                        },
+                        {
+                                // Antminer T15
+                                BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612226597,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"27.10.1.3\",\"CompileTime\":\"Fri Dec 13 15:46:16 CST 2019\",\"Type\":\"Antminer T15\"}],\"id\":1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612226597,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.9.0\"}],\"STATS\":[{\"BMMiner\":\"4.9.0\",\"Miner\":\"27.10.1.3\",\"CompileTime\":\"Fri Dec 13 15:46:16 CST 2019\",\"Type\":\"Antminer T15\"},{\"STATS\":0,\"ID\":\"BTM_SOC0\",\"Elapsed\":13263,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"21615.78\",\"GHS av\":22411.07,\"GHS 30m\":22210.70,\"Voltage\":\"\",\"Mode\":\"H\",\"miner_count\":3,\"frequency\":\"\",\"freq1\":\"520\",\"freq2\":\"420\",\"freq3\":\"519\",\"freq4\":\"0\",\"freq5\":\"0\",\"freq6\":\"0\",\"freq7\":\"0\",\"freq8\":\"0\",\"freq9\":\"0\",\"freq10\":\"0\",\"freq11\":\"0\",\"freq12\":\"0\",\"freq13\":\"0\",\"freq14\":\"0\",\"freq15\":\"0\",\"freq16\":\"0\",\"fan_num\":2,\"fan1\":2880,\"fan2\":2880,\"fan3\":0,\"fan4\":0,\"fan5\":0,\"fan6\":0,\"fan7\":0,\"fan8\":0,\"temp_num\":3,\"temp1\":40,\"temp2\":35,\"temp3\":39,\"temp4\":0,\"temp5\":0,\"temp6\":0,\"temp7\":0,\"temp8\":0,\"temp9\":0,\"temp10\":0,\"temp11\":0,\"temp12\":0,\"temp13\":0,\"temp14\":0,\"temp15\":0,\"temp16\":0,\"temp2_1\":29,\"temp2_2\":29,\"temp2_3\":28,\"temp2_4\":0,\"temp2_5\":0,\"temp2_6\":0,\"temp2_7\":0,\"temp2_8\":0,\"temp2_9\":0,\"temp2_10\":0,\"temp2_11\":0,\"temp2_12\":0,\"temp2_13\":0,\"temp2_14\":0,\"temp2_15\":0,\"temp2_16\":0,\"temp_pcb1\":\"14-39-15-40\",\"temp_pcb2\":\"14-35-15-35\",\"temp_pcb3\":\"13-36-14-39\",\"temp_pcb4\":\"-\",\"temp_pcb5\":\"-\",\"temp_pcb6\":\"-\",\"temp_pcb7\":\"-\",\"temp_pcb8\":\"-\",\"temp_pcb9\":\"-\",\"temp_pcb10\":\"-\",\"temp_pcb11\":\"-\",\"temp_pcb12\":\"-\",\"temp_pcb13\":\"-\",\"temp_pcb14\":\"-\",\"temp_pcb15\":\"-\",\"temp_pcb16\":\"-\",\"temp_chip1\":\"29-54-30-55\",\"temp_chip2\":\"29-50-30-50\",\"temp_chip3\":\"28-51-29-54\",\"temp_chip4\":\"-\",\"temp_chip5\":\"-\",\"temp_chip6\":\"-\",\"temp_chip7\":\"-\",\"temp_chip8\":\"-\",\"temp_chip9\":\"-\",\"temp_chip10\":\"-\",\"temp_chip11\":\"-\",\"temp_chip12\":\"-\",\"temp_chip13\":\"-\",\"temp_chip14\":\"-\",\"temp_chip15\":\"-\",\"temp_chip16\":\"-\",\"freq_avg1\":0.00,\"freq_avg2\":0.00,\"freq_avg3\":0.00,\"freq_avg4\":0.00,\"freq_avg5\":0.00,\"freq_avg6\":0.00,\"freq_avg7\":0.00,\"freq_avg8\":0.00,\"freq_avg9\":0.00,\"freq_avg10\":0.00,\"freq_avg11\":0.00,\"freq_avg12\":0.00,\"freq_avg13\":0.00,\"freq_avg14\":0.00,\"freq_avg15\":0.00,\"freq_avg16\":0.00,\"total_rateideal\":21000.00,\"rate_unit\":\"GH\",\"total_freqavg\":0.00,\"total_acn\":180,\"total_rate\":21615.77,\"chain_rateideal1\":0.00,\"chain_rateideal2\":0.00,\"chain_rateideal3\":0.00,\"chain_rateideal4\":0.00,\"chain_rateideal5\":0.00,\"chain_rateideal6\":0.00,\"chain_rateideal7\":0.00,\"chain_rateideal8\":0.00,\"chain_rateideal9\":0.00,\"chain_rateideal10\":0.00,\"chain_rateideal11\":0.00,\"chain_rateideal12\":0.00,\"chain_rateideal13\":0.00,\"chain_rateideal14\":0.00,\"chain_rateideal15\":0.00,\"chain_rateideal16\":0.00,\"temp_max\":40,\"Device Hardware%\":0.0000,\"no_matching_work\":30,\"chain_acn1\":60,\"chain_acn2\":60,\"chain_acn3\":60,\"chain_acn4\":0,\"chain_acn5\":0,\"chain_acn6\":0,\"chain_acn7\":0,\"chain_acn8\":0,\"chain_acn9\":0,\"chain_acn10\":0,\"chain_acn11\":0,\"chain_acn12\":0,\"chain_acn13\":0,\"chain_acn14\":0,\"chain_acn15\":0,\"chain_acn16\":0,\"chain_acs1\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs2\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs3\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooo\",\"chain_acs4\":\"\",\"chain_acs5\":\"\",\"chain_acs6\":\"\",\"chain_acs7\":\"\",\"chain_acs8\":\"\",\"chain_acs9\":\"\",\"chain_acs10\":\"\",\"chain_acs11\":\"\",\"chain_acs12\":\"\",\"chain_acs13\":\"\",\"chain_acs14\":\"\",\"chain_acs15\":\"\",\"chain_acs16\":\"\",\"chain_hw1\":7,\"chain_hw2\":17,\"chain_hw3\":6,\"chain_hw4\":0,\"chain_hw5\":0,\"chain_hw6\":0,\"chain_hw7\":0,\"chain_hw8\":0,\"chain_hw9\":0,\"chain_hw10\":0,\"chain_hw11\":0,\"chain_hw12\":0,\"chain_hw13\":0,\"chain_hw14\":0,\"chain_hw15\":0,\"chain_hw16\":0,\"chain_rate1\":\"8048.19\",\"chain_rate2\":\"6574.89\",\"chain_rate3\":\"6992.69\",\"chain_rate4\":\"\",\"chain_rate5\":\"\",\"chain_rate6\":\"\",\"chain_rate7\":\"\",\"chain_rate8\":\"\",\"chain_rate9\":\"\",\"chain_rate10\":\"\",\"chain_rate11\":\"\",\"chain_rate12\":\"\",\"chain_rate13\":\"\",\"chain_rate14\":\"\",\"chain_rate15\":\"\",\"chain_rate16\":\"\",\"chain_xtime1\":\"{}\",\"chain_xtime2\":\"{}\",\"chain_xtime3\":\"{}\",\"chain_offside_1\":\"0\",\"chain_offside_2\":\"0\",\"chain_offside_3\":\"0\",\"chain_opencore_1\":\"0\",\"chain_opencore_2\":\"0\",\"chain_opencore_3\":\"0\",\"miner_version\":\"27.10.1.3\",\"miner_id\":\"804454217b808854\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612226597,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://x.pool.bitcoin.com:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":449,\"Accepted\":777,\"Rejected\":0,\"Discarded\":7102,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x\",\"Last Share Time\":\"0:00:06\",\"Diff\":\"65.5K\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":72548352.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":65536.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"x.pool.bitcoin.com\",\"Has GBT\":false,\"Best Share\":42091586,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                Arrays.asList(
+                                        "STATS.1.temp6",
+                                        "STATS.1.temp7"),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("x.pool.bitcoin.com:3333")
+                                                        .setWorker("x")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(777, 0, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("21615780000000.00"))
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(2880)
+                                                                        .addSpeed(2880)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(14)
+                                                        .addTemp(39)
+                                                        .addTemp(15)
+                                                        .addTemp(40)
+                                                        .addTemp(14)
+                                                        .addTemp(35)
+                                                        .addTemp(15)
+                                                        .addTemp(35)
+                                                        .addTemp(13)
+                                                        .addTemp(36)
+                                                        .addTemp(14)
+                                                        .addTemp(39)
+                                                        .addTemp(29)
+                                                        .addTemp(54)
+                                                        .addTemp(30)
+                                                        .addTemp(55)
+                                                        .addTemp(29)
+                                                        .addTemp(50)
+                                                        .addTemp(30)
+                                                        .addTemp(50)
+                                                        .addTemp(28)
+                                                        .addTemp(51)
+                                                        .addTemp(29)
+                                                        .addTemp(54)
+                                                        .hasErrors(false)
+                                                        .addRawStats(
+                                                                ImmutableMap.of(
+                                                                        "STATS.1.temp6",
+                                                                        new BigDecimal("0"),
+                                                                        "STATS.1.temp7",
+                                                                        new BigDecimal("0")))
+                                                        .build())
+                                        .build()
                         }
                 });
     }

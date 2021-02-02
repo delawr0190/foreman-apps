@@ -23,6 +23,7 @@ import java.util.*;
  * <pre>
  *   {
  *     "hashRate": 13674000000000.52,
+ *     "boards": 2,
  *     "fans": {
  *       "num": 2,
  *       "speeds": [
@@ -340,7 +341,7 @@ public class Asic {
          * @return The builder instance.
          */
         public Builder addTemp(final String temp) {
-            if ((temp != null) && !temp.isEmpty()) {
+            if ((temp != null) && !temp.isEmpty() && !temp.equals("-")) {
                 final String[] temps;
                 if (StringUtils.countMatches(temp, "-") > 1) {
                     temps = temp.split("-");
