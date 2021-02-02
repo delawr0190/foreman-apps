@@ -341,7 +341,7 @@ public class Asic {
          * @return The builder instance.
          */
         public Builder addTemp(final String temp) {
-            if ((temp != null) && !temp.isEmpty() && !temp.equals("-")) {
+            if ((temp != null) && !temp.isEmpty() && !temp.replace("-", "").isEmpty()) {
                 final String[] temps;
                 if (StringUtils.countMatches(temp, "-") > 1) {
                     temps = temp.split("-");
