@@ -15,7 +15,6 @@ import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +58,7 @@ public class InnosiliconStatsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static List<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -108,6 +107,7 @@ public class InnosiliconStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("51274.5999999999976797275346275875596013804624817566946148872375488281250000000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(3)
@@ -189,6 +189,7 @@ public class InnosiliconStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("51274.5999999999976797275346275875596013804624817566946148872375488281250000000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(3)

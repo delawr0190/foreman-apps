@@ -111,6 +111,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("11763615450000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -171,6 +172,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("65492089330000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -229,6 +231,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("68710597190000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -289,6 +292,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("78130188720000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -337,6 +341,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("85106399370000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -394,6 +399,7 @@ public class WhatsminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("76718604380000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)

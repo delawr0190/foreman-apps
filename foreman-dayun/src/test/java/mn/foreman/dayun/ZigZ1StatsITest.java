@@ -70,6 +70,7 @@ public class ZigZ1StatsITest
                         .addAsic(
                                 new Asic.Builder()
                                         .setHashRate(new BigDecimal("3355440000.00"))
+                                        .setBoards(4)
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(2)

@@ -1,6 +1,8 @@
 package mn.foreman.antminer;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.ContextKey;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.error.MinerException;
@@ -34,6 +36,9 @@ public class VersionDecorator
 
     /** The miner for querying braiins. */
     private final CgMiner braiins;
+
+    /** The context. */
+    private final Context context;
 
     /** The API IP. */
     private final String ip;
@@ -69,6 +74,7 @@ public class VersionDecorator
      * @param realm    The realm.
      * @param username The username.
      * @param password The password.
+     * @param context  The context to update.
      * @param antminer The antminer.
      * @param braiins  The braiins.
      */
@@ -79,6 +85,7 @@ public class VersionDecorator
             final String realm,
             final String username,
             final String password,
+            final Context context,
             final CgMiner antminer,
             final CgMiner braiins) {
         this.ip = ip;
@@ -87,6 +94,7 @@ public class VersionDecorator
         this.realm = realm;
         this.username = username;
         this.password = password;
+        this.context = context;
         this.antminer = antminer;
         this.braiins = braiins;
     }
@@ -170,7 +178,13 @@ public class VersionDecorator
                 this.realm,
                 this.username,
                 this.password,
-                s -> {
+                (s1, s2, s3) -> {
+                    this.context.addSimple(
+                            ContextKey.MINER_TYPE,
+                            s1);
+                    this.context.addSimple(
+                            ContextKey.COMPILE_TIME,
+                            s2);
                 })
                 .ifPresent(type -> {
                     this.type.set(type);

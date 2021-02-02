@@ -116,6 +116,7 @@ public class StrongUStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("397759080000.00"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -191,6 +192,7 @@ public class StrongUStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("6413329180000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)

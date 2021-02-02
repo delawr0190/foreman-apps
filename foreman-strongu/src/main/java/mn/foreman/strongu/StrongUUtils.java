@@ -6,6 +6,7 @@ import mn.foreman.model.miners.asic.Asic;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /** Utility methods for parsing StrongU miner response values. */
 class StrongUUtils {
@@ -18,13 +19,23 @@ class StrongUUtils {
     static void updateDevs(
             final Map<String, List<Map<String, String>>> values,
             final Asic.Builder builder) {
-        values.entrySet()
-                .stream()
-                .filter(entry -> "DEVS".equals(entry.getKey()))
-                .map(Map.Entry::getValue)
-                .flatMap(List::stream)
-                .filter(map -> map.containsKey("ASC"))
-                .forEach(map -> builder.addTemp(map.get("Temperature")));
+        final List<Map<String, String>> asics =
+                values.entrySet()
+                        .stream()
+                        .filter(entry -> "DEVS".equals(entry.getKey()))
+                        .map(Map.Entry::getValue)
+                        .flatMap(List::stream)
+                        .filter(map -> map.containsKey("ASC"))
+                        .collect(Collectors.toList());
+        asics.forEach(map -> builder.addTemp(map.get("Temperature")));
+
+        // Boards
+        builder.setBoards(
+                asics
+                        .stream()
+                        .map(map -> new BigDecimal(map.getOrDefault("MHS av", "0")))
+                        .filter(value -> value.compareTo(BigDecimal.ZERO) > 0)
+                        .count());
     }
 
     /**

@@ -74,6 +74,7 @@ public class HonorKnightStatsITest
                         .addAsic(
                                 new Asic.Builder()
                                         .setHashRate(new BigDecimal("16091121360000.000"))
+                                        .setBoards(4)
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(2)

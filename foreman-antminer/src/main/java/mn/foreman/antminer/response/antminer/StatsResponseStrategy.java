@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -73,13 +74,17 @@ public class StatsResponseStrategy
     private void addAsicStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        final BigDecimal hashRate =
+        BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
                         .multiply(new BigDecimal(Math.pow(1000, 3)));
 
         final Asic.Builder asicBuilder =
-                new Asic.Builder()
-                        .setHashRate(hashRate);
+                new Asic.Builder();
+
+        // Boards
+        if (values.containsKey("miner_count")) {
+            asicBuilder.setBoards(Integer.parseInt(values.get("miner_count")));
+        }
 
         // Fans
         final FanInfo.Builder fanBuilder =
@@ -127,7 +132,43 @@ public class StatsResponseStrategy
                 .ifPresent(asicBuilder::setMrrRigId);
         this.context.getMulti(ContextKey.RAW_STATS)
                 .ifPresent(asicBuilder::addRawStats);
+        this.context.getSimple(ContextKey.MINER_TYPE)
+                .ifPresent(asicBuilder::setMinerType);
+        this.context.getSimple(ContextKey.COMPILE_TIME)
+                .ifPresent(asicBuilder::setCompileTime);
 
-        builder.addAsic(asicBuilder.build());
+        if (isChiplessZ11(asicBuilder.getAttributes())) {
+            hashRate =
+                    hashRate.divide(
+                            BigDecimal.valueOf(1000),
+                            RoundingMode.DOWN);
+        }
+
+        builder.addAsic(
+                asicBuilder
+                        .setHashRate(hashRate)
+                        .build());
+    }
+
+    /**
+     * Checks to see if the firmware was chipless.
+     *
+     * @param attributes The attributes.
+     *
+     * @return Whether or not the firmware was chipless.
+     */
+    private boolean isChiplessZ11(final List<Map<String, String>> attributes) {
+        final boolean isZ11 =
+                attributes
+                        .stream()
+                        .filter(map -> "miner_type".equals(map.get("key")))
+                        .anyMatch(map -> map.getOrDefault("value", "").contains(
+                                "Z11"));
+        final boolean isChipless =
+                attributes
+                        .stream()
+                        .filter(map -> "compile_time".equals(map.get("key")))
+                        .anyMatch(map -> map.getOrDefault("value", "").contains("Chipless"));
+        return isZ11 && isChipless;
     }
 }

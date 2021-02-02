@@ -75,6 +75,15 @@ public class StatsResponseStrategy
         final Asic.Builder asicBuilder =
                 new Asic.Builder()
                         .setHashRate(hashRate)
+                        .setBoards(
+                                values
+                                        .entrySet()
+                                        .stream()
+                                        .filter(entry -> entry.getKey().endsWith(" Temp"))
+                                        .map(Map.Entry::getValue)
+                                        .map(Integer::parseInt)
+                                        .filter(value -> value > 0)
+                                        .count())
                         .setFanInfo(
                                 new FanInfo.Builder()
                                         .setCount(values.get("Fan Nunber"))

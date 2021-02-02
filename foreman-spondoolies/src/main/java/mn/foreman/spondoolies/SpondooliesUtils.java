@@ -40,6 +40,17 @@ class SpondooliesUtils {
                                         map.get("json-stats"),
                                         JsonStats.class);
 
+                        // Boards
+                        int boards =
+                                jsonStats.bottomBoard.workingAsics > 0
+                                        ? 1
+                                        : 0;
+                        boards +=
+                                jsonStats.topBoard.workingAsics > 0
+                                        ? 1
+                                        : 0;
+                        builder.setBoards(boards);
+
                         // Fans
                         final List<Integer> fanSpeeds = jsonStats.fanSpeeds;
                         final FanInfo.Builder fanBuilder =

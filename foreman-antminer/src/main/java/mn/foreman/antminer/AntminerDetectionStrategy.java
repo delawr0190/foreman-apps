@@ -62,7 +62,7 @@ public class AntminerDetectionStrategy
                             this.realm,
                             username,
                             password,
-                            s -> {
+                            (s1, s2, s3) -> {
                             });
             if (type.isPresent()) {
                 final AntminerType realType = type.get();

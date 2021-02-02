@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /** A collection of utility functions for antminer processing. */
@@ -162,7 +161,7 @@ public class AntminerUtils {
             final String realm,
             final String username,
             final String password,
-            final Consumer<String> typeCallback) throws MinerException {
+            final TypeCallback typeCallback) throws MinerException {
         final AtomicReference<AntminerType> finalType =
                 new AtomicReference<>();
         final CgMiner cgMiner =
@@ -194,7 +193,10 @@ public class AntminerUtils {
                                                 realm,
                                                 "minertype").ifPresent(
                                                 value -> {
-                                                    typeCallback.accept(value);
+                                                    typeCallback.accept(
+                                                            "",
+                                                            "",
+                                                            value);
                                                     AntminerType.forModel("Type", value).ifPresent(type::set);
                                                 });
                                     }
@@ -220,16 +222,22 @@ public class AntminerUtils {
      */
     public static Optional<AntminerType> toType(
             final Map<String, List<Map<String, String>>> responseValues,
-            final Consumer<String> callback)
+            final TypeCallback callback)
             throws EmptySiteException {
         final Map<String, String> values = toVersion(responseValues);
         Optional<AntminerType> type = toBraiinsType(values);
         if (type.isPresent()) {
-            callback.accept(type.get().getIdentifier());
+            callback.accept(
+                    values.getOrDefault("Type", ""),
+                    values.getOrDefault("CompileTime", ""),
+                    type.get().getIdentifier());
         } else {
             final String finalType = values.get(TYPE);
             type = AntminerType.forModel(TYPE, finalType);
-            callback.accept(finalType);
+            callback.accept(
+                    values.getOrDefault("Type", ""),
+                    values.getOrDefault("CompileTime", ""),
+                    finalType);
         }
         return type;
     }
@@ -280,5 +288,21 @@ public class AntminerUtils {
                 .stream()
                 .filter(type -> values.containsKey(type.getIdentifier()))
                 .findFirst();
+    }
+
+    /** A mechanism for notifying the listener that a type was determined. */
+    public interface TypeCallback {
+
+        /**
+         * Provides the version type, compile time, and sanitized type.
+         *
+         * @param versionType        The version type.
+         * @param versionCompileTime The compile time.
+         * @param sanitizedType      The sanitized type.
+         */
+        void accept(
+                String versionType,
+                String versionCompileTime,
+                String sanitizedType);
     }
 }

@@ -106,6 +106,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("16346640000.00000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -126,6 +127,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("46"),
                                                                         "STATS.0.temp2",
                                                                         new BigDecimal("46")))
+                                                        .setMinerType("Antminer D3")
+                                                        .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
                                         .build()
                         },
@@ -159,6 +162,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("197300000.00000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -209,6 +213,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("49"),
                                                                         "STATS.1.temp2",
                                                                         new BigDecimal("50")))
+                                                        .setMinerType("Antminer E3")
+                                                        .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
                                         .build()
                         },
@@ -218,7 +224,7 @@ public class AntminerStatsITest
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer D3\"}],\"id\":1}"),
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3\"}],\"id\":1}"),
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315384,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.9.0\"}],\"STATS\":[{\"CGMiner\":\"4.9.0\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3+\"}{\"STATS\":0,\"ID\":\"L30\",\"Elapsed\":393983,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"504.56\",\"GHS av\":500.28,\"miner_count\":4,\"frequency\":\"384\",\"fan_num\":2,\"fan1\":3840,\"fan2\":3810,\"temp_num\":4,\"temp1\":46,\"temp2\":46,\"temp3\":46,\"temp4\":45,\"temp2_1\":54,\"temp2_2\":56,\"temp2_3\":56,\"temp2_4\":53,\"temp31\":0,\"temp32\":0,\"temp33\":0,\"temp34\":0,\"temp4_1\":0,\"temp4_2\":0,\"temp4_3\":0,\"temp4_4\":0,\"temp_max\":46,\"Device Hardware%\":0.0000,\"no_matching_work\":152,\"chain_acn1\":72,\"chain_acn2\":72,\"chain_acn3\":72,\"chain_acn4\":72,\"chain_acs1\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs2\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs3\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs4\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":153,\"chain_hw4\":0,\"chain_rate1\":\"126.12\",\"chain_rate2\":\"125.79\",\"chain_rate3\":\"126.06\",\"chain_rate4\":\"126.59\"}],\"id\":1}"),
@@ -242,6 +248,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("504560000.00000"))
+                                                        .setBoards(4)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -264,6 +271,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("46"),
                                                                         "STATS.0.temp2",
                                                                         new BigDecimal("46")))
+                                                        .setMinerType("Antminer L3")
+                                                        .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
                                         .build()
                         },
@@ -273,7 +282,7 @@ public class AntminerStatsITest
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer D3\"}],\"id\":1}"),
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3\"}],\"id\":1}"),
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315384,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.9.0\"}],\"STATS\":[{\"CGMiner\":\"4.9.0\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3+\"}{\"STATS\":0,\"ID\":\"L30\",\"Elapsed\":393983,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"0.00\",\"GHS av\":500.28,\"miner_count\":4,\"frequency\":\"384\",\"fan_num\":2,\"fan1\":3840,\"fan2\":3810,\"temp_num\":4,\"temp1\":46,\"temp2\":46,\"temp3\":46,\"temp4\":45,\"temp2_1\":54,\"temp2_2\":56,\"temp2_3\":56,\"temp2_4\":53,\"temp31\":0,\"temp32\":0,\"temp33\":0,\"temp34\":0,\"temp4_1\":0,\"temp4_2\":0,\"temp4_3\":0,\"temp4_4\":0,\"temp_max\":46,\"Device Hardware%\":0.0000,\"no_matching_work\":152,\"chain_acn1\":72,\"chain_acn2\":72,\"chain_acn3\":72,\"chain_acn4\":72,\"chain_acs1\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs2\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs3\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_acs4\":\" oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo oooooooo\",\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":153,\"chain_hw4\":0,\"chain_rate1\":\"126.12\",\"chain_rate2\":\"125.79\",\"chain_rate3\":\"126.06\",\"chain_rate4\":\"126.59\"}],\"id\":1}"),
@@ -297,6 +306,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("0.00"))
+                                                        .setBoards(4)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -319,6 +329,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("46"),
                                                                         "STATS.0.temp2",
                                                                         new BigDecimal("46")))
+                                                        .setMinerType("Antminer L3")
+                                                        .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
                                         .build()
                         },
@@ -368,6 +380,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("54997010000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(4)
@@ -408,28 +421,40 @@ public class AntminerStatsITest
                                                                         new BigDecimal("50"),
                                                                         "STATS.1.temp2",
                                                                         new BigDecimal("53")))
+                                                        .setMinerType("Antminer S17")
+                                                        .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
                                         .build()
                         },
                         {
                                 // Antminer S9 (bOS+)
                                 BigDecimal.ONE,
-                                ImmutableMap.of(
-                                        "{\"command\":\"version\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187881,\"Code\":22,\"Msg\":\"BOSminer+ versions\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer+\":\"0.2.0-36c56a9363\"}],\"id\":1}"),
-                                        "{\"command\":\"pools\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187909,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"POOLS\":[{\"Accepted\":152,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":10984863,\"Difficulty Accepted\":9961472.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":106,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597187897,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":16655828},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":3,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:443\",\"URL\":\"stratum+tcp://stratum.antpool.com:443\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":0},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":2,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":2,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.antpool.com:25\",\"URL\":\"stratum+tcp://stratum.antpool.com:25\",\"User\":\"antminer_1\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"),
-                                        "{\"command\":\"summary\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187939,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"SUMMARY\":[{\"Accepted\":153,\"Best Share\":65536,\"Device Hardware%\":0.001644850292093576,\"Device Rejected%\":0.0,\"Difficulty Accepted\":10027008.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":3680,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":110,\"Hardware Errors\":186,\"Last getwork\":1597187939,\"Local Work\":17131300,\"MHS 15m\":14199249.521457672,\"MHS 1m\":13967276.98800245,\"MHS 24h\":562115.4771588066,\"MHS 5m\":14257979.893394984,\"MHS 5s\":15740915.842676325,\"MHS av\":11988299.650652435,\"Network Blocks\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":44121202599.395325,\"Utility\":2.4945652173913047,\"Work Utility\":184349.05814696933}],\"id\":1}"),
-                                        "{\"command\":\"fans\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187973,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":2820,\"Speed\":40},{\"FAN\":1,\"ID\":1,\"RPM\":3780,\"Speed\":40},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":40},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":40}],\"id\":1}"),
-                                        "{\"command\":\"temps\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187996,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"TEMPS\":[{\"Board\":75.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":63.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":70.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}")),
+                                ImmutableMap.builder()
+                                        .put(
+                                                "{\"command\":\"version\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187881,\"Code\":22,\"Msg\":\"BOSminer+ versions\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer+\":\"0.2.0-36c56a9363\"}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"pools\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187909,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"POOLS\":[{\"Accepted\":152,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":10984863,\"Difficulty Accepted\":9961472.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":106,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597187897,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":16655828},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":3,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:443\",\"URL\":\"stratum+tcp://stratum.antpool.com:443\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":0},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":2,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":2,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.antpool.com:25\",\"URL\":\"stratum+tcp://stratum.antpool.com:25\",\"User\":\"antminer_1\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"summary\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187939,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"SUMMARY\":[{\"Accepted\":153,\"Best Share\":65536,\"Device Hardware%\":0.001644850292093576,\"Device Rejected%\":0.0,\"Difficulty Accepted\":10027008.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":3680,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":110,\"Hardware Errors\":186,\"Last getwork\":1597187939,\"Local Work\":17131300,\"MHS 15m\":14199249.521457672,\"MHS 1m\":13967276.98800245,\"MHS 24h\":562115.4771588066,\"MHS 5m\":14257979.893394984,\"MHS 5s\":15740915.842676325,\"MHS av\":11988299.650652435,\"Network Blocks\":0,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":44121202599.395325,\"Utility\":2.4945652173913047,\"Work Utility\":184349.05814696933}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"fans\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187973,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":2820,\"Speed\":40},{\"FAN\":1,\"ID\":1,\"RPM\":3780,\"Speed\":40},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":40},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":40}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"temps\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597187996,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer+ 0.2.0-36c56a9363\"}],\"TEMPS\":[{\"Board\":75.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":63.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":70.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"devs\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612231142,\"Code\":9,\"Msg\":\"3 ASC(s)\",\"Description\":\"BOSminer bosminer-plus-am1-s9 0.4.0-908ca41d\"}],\"DEVS\":[{\"ASC\":0,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.0,\"Device Rejected%\":0.0,\"Diff1 Work\":784,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":0.0,\"Hardware Errors\":0,\"ID\":6,\"Last Share Difficulty\":5376.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231141,\"Last Valid Work\":1612231142,\"MHS 15m\":239449.19893788462,\"MHS 1m\":3591737.9840682694,\"MHS 5m\":718347.5968136538,\"MHS 5s\":4683070.74742169,\"MHS av\":3728777.765879786,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":208357453.463552,\"Utility\":0.0},{\"ASC\":1,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.0,\"Device Rejected%\":0.0,\"Diff1 Work\":819,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":0.0,\"Hardware Errors\":0,\"ID\":7,\"Last Share Difficulty\":4480.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231129,\"Last Valid Work\":1612231142,\"MHS 15m\":250138.8953190402,\"MHS 1m\":3752083.429785603,\"MHS 5m\":750416.6859571205,\"MHS 5s\":4687913.424447901,\"MHS av\":2489177.916456381,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":139088220.91366398,\"Utility\":0.0},{\"ASC\":2,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.12626262626262627,\"Device Rejected%\":0.0,\"Diff1 Work\":791,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":305.41989660444443,\"Hardware Errors\":1,\"ID\":8,\"Last Share Difficulty\":5120.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231139,\"Last Valid Work\":1612231142,\"MHS 15m\":241587.13821411575,\"MHS 1m\":3623807.073211736,\"MHS 5m\":724761.4146423473,\"MHS 5s\":4213098.705765925,\"MHS av\":3453411.084511585,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":192964290.67468798,\"Utility\":0.0}],\"id\":1}"))
+                                        .build(),
                                 Arrays.asList(
                                         "FANS.0.Speed",
                                         "FANS.1.Speed"),
@@ -463,6 +488,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("15740915842676.325000000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -486,22 +512,32 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (bOS)
                                 BigDecimal.ONE,
-                                ImmutableMap.of(
-                                        "{\"command\":\"version\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597196862,\"Code\":22,\"Msg\":\"BOSminer versions\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer\":\"0.2.0-d360818\"}],\"id\":1}"),
-                                        "{\"command\":\"pools\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197657,\"Code\":7,\"Msg\":\"2 Pool(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"POOLS\":[{\"Accepted\":68,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":6027,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":8,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597197610,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.28368794326241137,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":483100},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Dead\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.slushpool.com:3333\",\"URL\":\"stratum+tcp://stratum.slushpool.com:3333\",\"User\":\"!non-existent-user!\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"),
-                                        "{\"command\":\"summary\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197626,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"SUMMARY\":[{\"Accepted\":68,\"Best Share\":65536,\"Device Hardware%\":0.0,\"Device Rejected%\":22.852041954920775,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":92,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":7,\"Hardware Errors\":0,\"Last getwork\":1597197626,\"Local Work\":357660,\"MHS 15m\":1368586.556684464,\"MHS 1m\":14194945.838709138,\"MHS 24h\":14256.109965463167,\"MHS 5m\":4105759.670053392,\"MHS 5s\":14274425.317759488,\"MHS av\":16698158.653278796,\"Network Blocks\":0,\"Pool Rejected%\":2.857142857142857,\"Pool Stale%\":0.0,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":1550311395.16416,\"Utility\":44.347826086956516,\"Work Utility\":185334.3043014206}],\"id\":1}"),
-                                        "{\"command\":\"fans\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197416,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":1560,\"Speed\":1},{\"FAN\":1,\"ID\":1,\"RPM\":1560,\"Speed\":1},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":1},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":1}],\"id\":1}"),
-                                        "{\"command\":\"temps\"}",
-                                        new RpcHandler(
-                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197430,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"TEMPS\":[{\"Board\":53.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":46.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":52.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}")),
+                                ImmutableMap.builder()
+                                        .put(
+                                                "{\"command\":\"version\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597196862,\"Code\":22,\"Msg\":\"BOSminer versions\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"VERSION\":[{\"API\":\"3.7\",\"BOSminer\":\"0.2.0-d360818\"}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"pools\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197657,\"Code\":7,\"Msg\":\"2 Pool(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"POOLS\":[{\"Accepted\":68,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":65536,\"Current Block Height\":0,\"Current Block Version\":536870912,\"Diff1 Shares\":6027,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":8,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":65536.0,\"Last Share Time\":1597197610,\"Long Poll\":\"N\",\"POOL\":0,\"Pool Rejected%\":0.28368794326241137,\"Pool Stale%\":0.0,\"Priority\":0,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Alive\",\"Stratum Active\":true,\"Stratum Difficulty\":65536.0,\"Stratum URL\":\"stratum.antpool.com:3333\",\"URL\":\"stratum+tcp://stratum.antpool.com:3333\",\"User\":\"antminer_1\",\"Work Difficulty\":65536.0,\"Works\":483100},{\"Accepted\":0,\"AsicBoost\":true,\"Bad Work\":0,\"Best Share\":0,\"Current Block Height\":0,\"Current Block Version\":0,\"Diff1 Shares\":0,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Get Failures\":0,\"Getworks\":0,\"Has GBT\":false,\"Has Stratum\":true,\"Has Vmask\":true,\"Last Share Difficulty\":0.0,\"Last Share Time\":0,\"Long Poll\":\"N\",\"POOL\":1,\"Pool Rejected%\":0.0,\"Pool Stale%\":0.0,\"Priority\":1,\"Proxy\":\"\",\"Proxy Type\":\"\",\"Quota\":1,\"Rejected\":0,\"Remote Failures\":0,\"Stale\":0,\"Status\":\"Dead\",\"Stratum Active\":false,\"Stratum Difficulty\":0.0,\"Stratum URL\":\"stratum.slushpool.com:3333\",\"URL\":\"stratum+tcp://stratum.slushpool.com:3333\",\"User\":\"!non-existent-user!\",\"Work Difficulty\":0.0,\"Works\":0}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"summary\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197626,\"Code\":11,\"Msg\":\"Summary\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"SUMMARY\":[{\"Accepted\":68,\"Best Share\":65536,\"Device Hardware%\":0.0,\"Device Rejected%\":22.852041954920775,\"Difficulty Accepted\":359936.0,\"Difficulty Rejected\":1024.0,\"Difficulty Stale\":0.0,\"Discarded\":0,\"Elapsed\":92,\"Found Blocks\":0,\"Get Failures\":0,\"Getworks\":7,\"Hardware Errors\":0,\"Last getwork\":1597197626,\"Local Work\":357660,\"MHS 15m\":1368586.556684464,\"MHS 1m\":14194945.838709138,\"MHS 24h\":14256.109965463167,\"MHS 5m\":4105759.670053392,\"MHS 5s\":14274425.317759488,\"MHS av\":16698158.653278796,\"Network Blocks\":0,\"Pool Rejected%\":2.857142857142857,\"Pool Stale%\":0.0,\"Rejected\":2,\"Remote Failures\":0,\"Stale\":0,\"Total MH\":1550311395.16416,\"Utility\":44.347826086956516,\"Work Utility\":185334.3043014206}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"fans\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197416,\"Code\":202,\"Msg\":\"4 Fan(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"FANS\":[{\"FAN\":0,\"ID\":0,\"RPM\":1560,\"Speed\":1},{\"FAN\":1,\"ID\":1,\"RPM\":1560,\"Speed\":1},{\"FAN\":2,\"ID\":2,\"RPM\":0,\"Speed\":1},{\"FAN\":3,\"ID\":3,\"RPM\":0,\"Speed\":1}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"temps\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1597197430,\"Code\":201,\"Msg\":\"3 Temp(s)\",\"Description\":\"BOSminer 0.2.0-d360818\"}],\"TEMPS\":[{\"Board\":53.0,\"Chip\":0.0,\"ID\":6,\"TEMP\":0},{\"Board\":46.0,\"Chip\":0.0,\"ID\":7,\"TEMP\":1},{\"Board\":52.0,\"Chip\":0.0,\"ID\":8,\"TEMP\":2}],\"id\":1}"))
+                                        .put(
+                                                "{\"command\":\"devs\"}",
+                                                new RpcHandler(
+                                                        "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612231142,\"Code\":9,\"Msg\":\"3 ASC(s)\",\"Description\":\"BOSminer bosminer-plus-am1-s9 0.4.0-908ca41d\"}],\"DEVS\":[{\"ASC\":0,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.0,\"Device Rejected%\":0.0,\"Diff1 Work\":784,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":0.0,\"Hardware Errors\":0,\"ID\":6,\"Last Share Difficulty\":5376.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231141,\"Last Valid Work\":1612231142,\"MHS 15m\":239449.19893788462,\"MHS 1m\":3591737.9840682694,\"MHS 5m\":718347.5968136538,\"MHS 5s\":4683070.74742169,\"MHS av\":3728777.765879786,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":208357453.463552,\"Utility\":0.0},{\"ASC\":1,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.0,\"Device Rejected%\":0.0,\"Diff1 Work\":819,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":0.0,\"Hardware Errors\":0,\"ID\":7,\"Last Share Difficulty\":4480.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231129,\"Last Valid Work\":1612231142,\"MHS 15m\":250138.8953190402,\"MHS 1m\":3752083.429785603,\"MHS 5m\":750416.6859571205,\"MHS 5s\":4687913.424447901,\"MHS av\":2489177.916456381,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":139088220.91366398,\"Utility\":0.0},{\"ASC\":2,\"Accepted\":0,\"Device Elapsed\":55,\"Device Hardware%\":0.12626262626262627,\"Device Rejected%\":0.0,\"Diff1 Work\":791,\"Difficulty Accepted\":0.0,\"Difficulty Rejected\":0.0,\"Enabled\":\"Y\",\"Hardware Error MHS 15m\":305.41989660444443,\"Hardware Errors\":1,\"ID\":8,\"Last Share Difficulty\":5120.0,\"Last Share Pool\":-1,\"Last Share Time\":1612231139,\"Last Valid Work\":1612231142,\"MHS 15m\":241587.13821411575,\"MHS 1m\":3623807.073211736,\"MHS 5m\":724761.4146423473,\"MHS 5s\":4213098.705765925,\"MHS av\":3453411.084511585,\"Name\":\"\",\"Nominal MHS\":4668300.0,\"Rejected\":0,\"Status\":\"Alive\",\"Temperature\":0.0,\"Total MH\":192964290.67468798,\"Utility\":0.0}],\"id\":1}"))
+                                        .build(),
                                 Arrays.asList(
                                         "FANS.0.Speed",
                                         "FANS.1.Speed"),
@@ -527,6 +563,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("14274425317759.488000000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -593,6 +630,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("11781400000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -613,6 +651,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("59"),
                                                                         "STATS.0.temp7",
                                                                         new BigDecimal("50")))
+                                                        .setMinerType("Antminer S9 Hiveon")
+                                                        .setCompileTime("Tue Nov 20 10:12:30 UTC 2019")
                                                         .build())
                                         .build()
                         },
@@ -670,6 +710,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("12795480000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -690,6 +731,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("65"),
                                                                         "STATS.0.temp7",
                                                                         new BigDecimal("56")))
+                                                        .setMinerType("Antminer S9 (vnish 3.8.6)")
+                                                        .setCompileTime("Fri May  8 15:27:59 CST 2020")
                                                         .build())
                                         .build()
                         },
@@ -739,6 +782,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("13402140000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -759,6 +803,8 @@ public class AntminerStatsITest
                                                                         new BigDecimal("57"),
                                                                         "STATS.1.temp7",
                                                                         new BigDecimal("49")))
+                                                        .setMinerType("Antminer S9")
+                                                        .setCompileTime("Mon Nov 11 17:07:20 CST 2019")
                                                         .build())
                                         .build()
                         },
@@ -798,6 +844,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("13883810000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -811,6 +858,9 @@ public class AntminerStatsITest
                                                         .addTemp(-83)
                                                         .addTemp(62)
                                                         .hasErrors(false)
+                                                        .setMinerType("Antminer S9\n" +
+                                                                "V1.3.58")
+                                                        .setCompileTime("Wed Jul 31 16:18:27 CST 2019")
                                                         .build())
                                         .build()
                         },
@@ -866,6 +916,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("9039731000000.000"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
@@ -879,6 +930,8 @@ public class AntminerStatsITest
                                                         .addTemp(45)
                                                         .addTemp(48)
                                                         .hasErrors(false)
+                                                        .setMinerType("Antminer S9 Pro (v5.1) ")
+                                                        .setCompileTime("Mon Nov 25 09:56:24 PST 2019")
                                                         .build())
                                         .build()
                         },
@@ -912,6 +965,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("21615780000000.00"))
+                                                        .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -950,6 +1004,58 @@ public class AntminerStatsITest
                                                                         new BigDecimal("0"),
                                                                         "STATS.1.temp7",
                                                                         new BigDecimal("0")))
+                                                        .setMinerType("Antminer T15")
+                                                        .setCompileTime("Fri Dec 13 15:46:16 CST 2019")
+                                                        .build())
+                                        .build()
+                        },
+                        {
+                                // Antminer Z11
+                                new BigDecimal(0.000001),
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612234363,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 23 19:07:17 CST 2020 (Chipless v3.0 Auto Paid)\",\"Type\":\"Antminer Z11\"}],\"id\":1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612234362,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.9.0\"}],\"STATS\":[{\"CGMiner\":\"4.9.0\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 23 19:07:17 CST 2020 (Chipless v3.0 Auto Paid)\",\"Type\":\"Antminer Z11\"}{\"STATS\":0,\"ID\":\"ZCASH0\",\"Elapsed\":20578,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"145474.39\",\"GHS av\":143682.17,\"miner_count\":3,\"fan_num\":2,\"fan1\":3000,\"fan2\":3000,\"fan3\":0,\"fan4\":0,\"fan5\":0,\"fan6\":0,\"temp_num\":3,\"temp1\":37,\"temp2\":38,\"temp3\":34,\"temp4\":0,\"temp2_1\":56,\"temp2_2\":60,\"temp2_3\":54,\"temp2_4\":0,\"temp_max\":38,\"Device Hardware%\":0.0000,\"no_matching_work\":0,\"chain_acn1\":3,\"chain_acn2\":3,\"chain_acn3\":3,\"chain_acn4\":0,\"chain_acs1\":\" ooo\",\"chain_acs2\":\" ooo\",\"chain_acs3\":\" ooo\",\"chain_acs4\":\"\",\"chain_hw1\":0,\"chain_hw2\":0,\"chain_hw3\":0,\"chain_hw4\":0,\"frequency1\":747,\"frequency2\":750,\"frequency3\":750,\"frequency4\":0,\"chain_rate1\":\"42.59\",\"chain_rate2\":\"47.84\",\"chain_rate3\":\"55.04\",\"chain_rate4\":\"\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612234361,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://equihash.luxor.tech:700\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1061,\"Accepted\":2848,\"Rejected\":20,\"Discarded\":11751,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x.001\",\"Last Share Time\":\"0:00:02\",\"Diff\":\"21\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":53843.00000000,\"Difficulty Rejected\":350.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":21.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"equihash.luxor.tech\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.6458,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                Arrays.asList(
+                                        "STATS.1.temp6",
+                                        "STATS.1.temp7"),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("equihash.luxor.tech:700")
+                                                        .setWorker("x.001")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(2848, 20, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("145474.38999999999341700917152258969167188951132629881612956523895263671875000000"))
+                                                        .setBoards(3)
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(3000)
+                                                                        .addSpeed(3000)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(37)
+                                                        .addTemp(38)
+                                                        .addTemp(34)
+                                                        .addTemp(56)
+                                                        .addTemp(60)
+                                                        .addTemp(54)
+                                                        .hasErrors(false)
+                                                        .setMinerType("Antminer Z11")
+                                                        .setCompileTime("Sat May 23 19:07:17 CST 2020 (Chipless v3.0 Auto Paid)")
                                                         .build())
                                         .build()
                         }

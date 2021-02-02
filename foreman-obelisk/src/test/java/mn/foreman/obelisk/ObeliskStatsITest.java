@@ -164,6 +164,7 @@ public class ObeliskStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("7000000.0"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -272,6 +273,7 @@ public class ObeliskStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("7000000.0"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)

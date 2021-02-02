@@ -130,6 +130,15 @@ public class InnosiliconFactory
                         .filter(value -> value.containsKey("Num chips"))
                         .collect(Collectors.toList());
         if (!asics.isEmpty()) {
+            // Boards
+            builder.setBoards(
+                    asics
+                            .stream()
+                            .map(map -> map.getOrDefault("Num active chips", "0"))
+                            .map(Integer::parseInt)
+                            .filter(value -> value > 0)
+                            .count());
+
             // Fans
             final List<Integer> fans =
                     asics

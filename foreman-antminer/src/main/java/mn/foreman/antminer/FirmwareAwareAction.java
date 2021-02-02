@@ -66,7 +66,7 @@ public class FirmwareAwareAction
                 this.realm,
                 args.getOrDefault("username", "root").toString(),
                 args.getOrDefault("password", "root").toString(),
-                s -> completed.set(true))
+                (s1, s2, s3) -> completed.set(true))
                 .ifPresent(typeReference::set);
 
         if (completed.get()) {

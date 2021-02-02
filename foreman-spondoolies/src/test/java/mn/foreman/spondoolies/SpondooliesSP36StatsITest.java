@@ -75,6 +75,7 @@ public class SpondooliesSP36StatsITest
                         .addAsic(
                                 new Asic.Builder()
                                         .setHashRate(new BigDecimal("512711840000.00"))
+                                        .setBoards(2)
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(4)

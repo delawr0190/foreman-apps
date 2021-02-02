@@ -23,13 +23,19 @@ public class HonorKnightUtils {
     public static void updateEDevs(
             final Map<String, List<Map<String, String>>> fullValues,
             final Asic.Builder asicBuilder) {
-        asicBuilder.setHashRate(
+        final List<Map<String, String>> devs =
                 fullValues.entrySet()
                         .stream()
                         .filter(entry -> "DEVS".equals(entry.getKey()))
                         .map(Map.Entry::getValue)
                         .flatMap(List::stream)
                         .filter(map -> map.containsKey("MHS av"))
+                        .collect(Collectors.toList());
+
+        // Hash rate
+        asicBuilder.setHashRate(
+                devs
+                        .stream()
                         .map(Map::entrySet)
                         .flatMap(Set::stream)
                         .filter(entry -> entry.getKey().equals("MHS av"))
@@ -37,6 +43,13 @@ public class HonorKnightUtils {
                         .map(BigDecimal::new)
                         .map(rate -> rate.multiply(BigDecimal.valueOf(Math.pow(1000, 2))))
                         .reduce(BigDecimal.ZERO, BigDecimal::add));
+
+        // Boards
+        asicBuilder.setBoards(
+                devs
+                        .stream()
+                        .filter(map -> "Alive".equals(map.get("Status")) && "Y".equals(map.get("Enabled")))
+                        .count());
     }
 
     /**

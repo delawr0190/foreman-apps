@@ -27,6 +27,9 @@ class BlackminerUtils {
                 .flatMap(List::stream)
                 .filter(map -> map.containsKey("STATS"))
                 .forEach(map -> {
+                    // Boards
+                    builder.setBoards(map.get("miner_count"));
+
                     // Fans
                     final int numFans = Integer.parseInt(map.get("fan_num"));
                     final FanInfo.Builder fanBuilder =

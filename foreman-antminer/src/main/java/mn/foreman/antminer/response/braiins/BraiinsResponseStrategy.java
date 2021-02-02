@@ -10,6 +10,7 @@ import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.asic.Asic;
 
 import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,6 +24,9 @@ public class BraiinsResponseStrategy
 
     /** The context. */
     private final Context context;
+
+    /** The temps. */
+    private final List<String> temps = new LinkedList<>();
 
     /** The fans. */
     private FanInfo fanInfo;
@@ -55,12 +59,48 @@ public class BraiinsResponseStrategy
                     processFans(values.get("FANS"));
                     break;
                 case "TEMPS":
-                    processTemps(
-                            values.get("TEMPS"),
+                    processTemps(values.get("TEMPS"));
+                    break;
+                case "DEVS":
+                    processDevs(
+                            values.get("DEVS"),
                             builder);
                     break;
             }
         }
+    }
+
+    /**
+     * Processes the device response.
+     *
+     * @param values  The values.
+     * @param builder The builder.
+     */
+    private void processDevs(
+            final List<Map<String, String>> values,
+            final MinerStats.Builder builder) {
+        // We know we're done after we see devs based on the ordering that
+        // we defined the requests to be executed
+        final Asic.Builder asicBuilder =
+                new Asic.Builder()
+                        .setBoards(
+                                values
+                                        .stream()
+                                        .map(map -> map.getOrDefault("MHS av", "0"))
+                                        .map(BigDecimal::new)
+                                        .filter(value -> value.compareTo(BigDecimal.ZERO) > 0)
+                                        .count())
+                        .setHashRate(this.hashRate)
+                        .setFanInfo(this.fanInfo)
+                        .addTemps(this.temps);
+
+        // Context data
+        this.context.getSimple(ContextKey.MRR_RIG_ID)
+                .ifPresent(asicBuilder::setMrrRigId);
+        this.context.getMulti(ContextKey.RAW_STATS)
+                .ifPresent(asicBuilder::addRawStats);
+
+        builder.addAsic(asicBuilder.build());
     }
 
     /**
@@ -105,29 +145,13 @@ public class BraiinsResponseStrategy
     /**
      * Process the temps response.
      *
-     * @param values  The values.
-     * @param builder The builder to update.
+     * @param values The values.
      */
-    private void processTemps(
-            final List<Map<String, String>> values,
-            final MinerStats.Builder builder) {
-        // We know we're done after we see temps based on the ordering that
-        // we defined the requests to be executed
-        final Asic.Builder asicBuilder =
-                new Asic.Builder()
-                        .setHashRate(this.hashRate)
-                        .setFanInfo(this.fanInfo);
+    private void processTemps(final List<Map<String, String>> values) {
+        this.temps.clear();
         values.forEach(map -> {
-            asicBuilder.addTemp(map.get("Board"));
-            asicBuilder.addTemp(map.get("Chip"));
+            this.temps.add(map.getOrDefault("Board", "0"));
+            this.temps.add(map.getOrDefault("Chip", "0"));
         });
-
-        // Context data
-        this.context.getSimple(ContextKey.MRR_RIG_ID)
-                .ifPresent(asicBuilder::setMrrRigId);
-        this.context.getMulti(ContextKey.RAW_STATS)
-                .ifPresent(asicBuilder::addRawStats);
-
-        builder.addAsic(asicBuilder.build());
     }
 }

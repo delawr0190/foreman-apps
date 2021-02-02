@@ -19,7 +19,6 @@ import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -72,7 +71,7 @@ public class BlackminerStatsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static List<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {
@@ -142,6 +141,7 @@ public class BlackminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("2232900000.0000"))
+                                                        .setBoards(1)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -253,6 +253,7 @@ public class BlackminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("16003200000.0000"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)
@@ -352,6 +353,7 @@ public class BlackminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("4208800000.0000"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(2)

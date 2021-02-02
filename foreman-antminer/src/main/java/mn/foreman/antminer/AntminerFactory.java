@@ -94,6 +94,9 @@ public class AntminerFactory
                                         braiinsStrategy),
                                 ImmutableMap.of(
                                         CgMinerCommand.TEMPS,
+                                        braiinsStrategy),
+                                ImmutableMap.of(
+                                        CgMinerCommand.DEVS,
                                         braiinsStrategy)),
                         new BraiinsMacStrategy(
                                 apiIp,
@@ -108,6 +111,7 @@ public class AntminerFactory
                 "antMiner Configuration",
                 username,
                 password,
+                context,
                 antminer,
                 braiins);
     }

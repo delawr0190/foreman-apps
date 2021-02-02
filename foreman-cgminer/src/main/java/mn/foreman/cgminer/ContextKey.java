@@ -9,6 +9,12 @@ public enum ContextKey {
     /** The mac address. */
     MAC("mac"),
 
+    /** The miner type. */
+    MINER_TYPE("type"),
+
+    /** The compile time. */
+    COMPILE_TIME("compile_time"),
+
     /** MRR rig id. */
     MRR_RIG_ID("mrr_rig_id");
 

@@ -253,6 +253,7 @@ public class DragonmintStatsITest
                         .addAsic(
                                 new Asic.Builder()
                                         .setHashRate(new BigDecimal("14075555300000.00"))
+                                        .setBoards(3)
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(1)

@@ -154,6 +154,11 @@ public class Dragonmint
                 new Asic.Builder();
         asicBuilder
                 .setHashRate(toHashRate(devs))
+                .setBoards(
+                        devs
+                                .stream()
+                                .filter(dev -> "Y".equals(dev.enabled) && "Alive".equals(dev.status))
+                                .count())
                 .setFanInfo(
                         new FanInfo.Builder()
                                 .setCount(1)

@@ -1566,6 +1566,7 @@ public class AvalonStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("25536751740000.000"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)
@@ -1634,6 +1635,7 @@ public class AvalonStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("0.0"))
+                                                        .setBoards(2)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(1)

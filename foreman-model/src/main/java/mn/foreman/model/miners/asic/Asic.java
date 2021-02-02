@@ -54,6 +54,9 @@ public class Asic {
     /** Miscellaneous rig attributes. */
     private final List<Map<String, String>> attributes;
 
+    /** The board count. */
+    private final int boards;
+
     /** The fan readings. */
     private final FanInfo fans;
 
@@ -77,6 +80,7 @@ public class Asic {
      * Constructor.
      *
      * @param hashRate   The hash rate.
+     * @param boards     The board count.
      * @param fans       The fan information.
      * @param temps      The temperatures.
      * @param powerState The power state.
@@ -86,6 +90,7 @@ public class Asic {
      */
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
+            @JsonProperty("boards") final int boards,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("powerState") final String powerState,
@@ -105,6 +110,7 @@ public class Asic {
                 hasErrors,
                 "hasErrors cannot be null");
         this.hashRate = hashRate;
+        this.boards = boards;
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
         this.powerState = powerState;
@@ -130,6 +136,7 @@ public class Asic {
                     diff.areEqual() &&
                             new EqualsBuilder()
                                     .append(this.hashRate, asic.hashRate)
+                                    .append(this.boards, asic.boards)
                                     .append(this.fans, asic.fans)
                                     .append(this.temps, asic.temps)
                                     .append(this.powerState, asic.powerState)
@@ -147,6 +154,15 @@ public class Asic {
      */
     public List<Map<String, String>> getAttributes() {
         return Collections.unmodifiableList(this.attributes);
+    }
+
+    /**
+     * Returns the boards.
+     *
+     * @return The boards.
+     */
+    public int getBoards() {
+        return this.boards;
     }
 
     /**
@@ -207,6 +223,7 @@ public class Asic {
     public int hashCode() {
         return new HashCodeBuilder()
                 .append(this.hashRate)
+                .append(this.boards)
                 .append(this.fans)
                 .append(this.temps)
                 .append(this.powerState)
@@ -221,6 +238,7 @@ public class Asic {
         return String.format(
                 "%s [ " +
                         "hashRate=%s, " +
+                        "boards=%d, " +
                         "fans=%s, " +
                         "temps=%s, " +
                         "powerState=%s, " +
@@ -230,6 +248,7 @@ public class Asic {
                         " ]",
                 getClass().getSimpleName(),
                 this.hashRate,
+                this.boards,
                 this.fans,
                 this.temps,
                 this.powerState,
@@ -250,6 +269,9 @@ public class Asic {
 
         /** The temperatures. */
         private final List<Integer> temps = new LinkedList<>();
+
+        /** The number of boards. */
+        private int boards = -1;
 
         /** The fan information. */
         private FanInfo fanInfo;
@@ -372,10 +394,23 @@ public class Asic {
             return this;
         }
 
+        /**
+         * Adds the provided temps.
+         *
+         * @param temps The temps to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addTemps(final List<String> temps) {
+            temps.forEach(this::addTemp);
+            return this;
+        }
+
         @Override
         public Asic build() {
             return new Asic(
                     this.hashRate,
+                    this.boards,
                     this.fanInfo,
                     this.temps,
                     this.powerState,
@@ -393,6 +428,7 @@ public class Asic {
          */
         public Builder fromAsic(final Asic asic) {
             if (asic != null) {
+                setBoards(asic.boards);
                 setFanInfo(asic.fans);
                 hasErrors(asic.hasErrors);
                 setHashRate(asic.hashRate);
@@ -405,6 +441,15 @@ public class Asic {
         }
 
         /**
+         * Returns the attributes.
+         *
+         * @return The attributes.
+         */
+        public List<Map<String, String>> getAttributes() {
+            return Collections.unmodifiableList(this.attributes);
+        }
+
+        /**
          * Sets whether or not errors were observed.
          *
          * @param hasErrors Whether or not errors were observed.
@@ -413,6 +458,56 @@ public class Asic {
          */
         public Builder hasErrors(final Boolean hasErrors) {
             this.hasErrors = hasErrors;
+            return this;
+        }
+
+        /**
+         * Sets the board count.
+         *
+         * @param boards The board count.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setBoards(final String boards) {
+            return setBoards(Integer.parseInt(boards));
+        }
+
+        /**
+         * Sets the board count.
+         *
+         * @param boards The board count.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setBoards(final long boards) {
+            return setBoards((int) boards);
+        }
+
+        /**
+         * Sets the board count.
+         *
+         * @param boards The board count.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setBoards(final int boards) {
+            this.boards = boards;
+            return this;
+        }
+
+        /**
+         * Sets the compile time.
+         *
+         * @param time The compile time.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setCompileTime(final String time) {
+            if (time != null && !time.isEmpty()) {
+                addAttribute(
+                        "compile_time",
+                        time);
+            }
             return this;
         }
 
@@ -437,6 +532,22 @@ public class Asic {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
+            return this;
+        }
+
+        /**
+         * Sets the type.
+         *
+         * @param type The type.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setMinerType(final String type) {
+            if (type != null && !type.isEmpty()) {
+                addAttribute(
+                        "miner_type",
+                        type);
+            }
             return this;
         }
 

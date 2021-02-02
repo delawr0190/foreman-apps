@@ -147,6 +147,14 @@ public class Obelisk
                 new Asic.Builder();
         asicBuilder.setHashRate(toHashRate(dashboard));
 
+        // Boards
+        asicBuilder.setBoards(
+                dashboard
+                        .hashboards
+                        .stream()
+                        .filter(hashboard -> hashboard.hashrate.compareTo(BigDecimal.ZERO) > 0)
+                        .count());
+
         // Fans
         final FanInfo.Builder fanBuilder =
                 new FanInfo.Builder()

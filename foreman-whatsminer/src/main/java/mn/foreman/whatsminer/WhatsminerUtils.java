@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Utility methods for parsing Whatsminer miner response values. */
@@ -69,6 +70,7 @@ class WhatsminerUtils {
     static void updateDevs(
             final Map<String, List<Map<String, String>>> values,
             final Asic.Builder builder) {
+        final AtomicInteger activeBoards = new AtomicInteger(0);
         values.entrySet()
                 .stream()
                 .filter(entry -> "DEVS".equals(entry.getKey()))
@@ -76,10 +78,22 @@ class WhatsminerUtils {
                 .flatMap(List::stream)
                 .forEach(map -> {
                     builder.addTemp(map.get("Temperature"));
+
+                    final BigDecimal boardHashRate =
+                            new BigDecimal(
+                                    map.getOrDefault(
+                                            "MHS av",
+                                            "0"));
+                    if (boardHashRate.compareTo(BigDecimal.ZERO) > 0) {
+                        activeBoards.incrementAndGet();
+                    }
+
                     if (!"Alive".equals(map.getOrDefault("Status", "Alive"))) {
                         builder.hasErrors(true);
                     }
                 });
+
+        builder.setBoards(activeBoards.get());
     }
 
     /**
@@ -90,6 +104,7 @@ class WhatsminerUtils {
     static void updateStats(
             final Map<String, List<Map<String, String>>> values,
             final Asic.Builder builder) {
+        final AtomicInteger activeBoards = new AtomicInteger(0);
         values.entrySet()
                 .stream()
                 .filter(entry -> "STATS".equals(entry.getKey()))
@@ -97,6 +112,10 @@ class WhatsminerUtils {
                 .flatMap(List::stream)
                 .filter(map -> map.containsKey("STATS"))
                 .forEach(map -> {
+                    if (map.containsKey("slot")) {
+                        activeBoards.incrementAndGet();
+                    }
+
                     for (int i = 1; i <= 8; i++) {
                         builder.addTemp(map.get("temp_" + i));
                     }
@@ -104,6 +123,8 @@ class WhatsminerUtils {
                         builder.hasErrors(true);
                     }
                 });
+
+        builder.setBoards(activeBoards.get());
     }
 
     /**

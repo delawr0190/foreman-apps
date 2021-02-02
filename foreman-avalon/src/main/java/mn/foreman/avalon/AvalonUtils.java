@@ -12,6 +12,9 @@ import java.util.stream.Collectors;
 /** Utility methods for parsing Avalon miner response values. */
 class AvalonUtils {
 
+    /** The hash board key. */
+    private static final String HASH_BOARD_KEY = "Hash Board: ";
+
     /**
      * Updates the builder with stats.
      *
@@ -81,6 +84,38 @@ class AvalonUtils {
         addTemps(
                 stats,
                 builder);
+        addBoards(
+                stats,
+                builder);
+    }
+
+    /**
+     * Adds the hash boards, if they can be determined from this model.
+     *
+     * @param stats       The stats.
+     * @param asicBuilder The builder.
+     */
+    private static void addBoards(
+            final List<String> stats,
+            final Asic.Builder asicBuilder) {
+        if (stats.stream().anyMatch(stat -> stat.contains(HASH_BOARD_KEY))) {
+            asicBuilder.setBoards(
+                    stats
+                            .stream()
+                            .filter(stat -> stat.contains(HASH_BOARD_KEY))
+                            .mapToInt(stat -> {
+                                final int start = stat.indexOf(HASH_BOARD_KEY);
+                                if (start >= 0) {
+                                    return Integer.parseInt(
+                                            stat.substring(
+                                                    start + HASH_BOARD_KEY.length(),
+                                                    stat.indexOf("]", start))
+                                                    .trim());
+                                }
+                                return 0;
+                            })
+                            .sum());
+        }
     }
 
     /**
