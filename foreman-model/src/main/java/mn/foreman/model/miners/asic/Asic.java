@@ -364,15 +364,21 @@ public class Asic {
          */
         public Builder addTemp(final String temp) {
             if ((temp != null) && !temp.isEmpty() && !temp.replace("-", "").isEmpty()) {
-                final String[] temps;
+                final List<String> temps = new LinkedList<>();
                 if (StringUtils.countMatches(temp, "-") > 1) {
-                    temps = temp.split("-");
+                    String sign = "";
+                    for (final String tempValue : temp.split("-")) {
+                        if (tempValue != null && !tempValue.isEmpty()) {
+                            temps.add(sign + tempValue);
+                            sign = "";
+                        } else {
+                            sign = "-";
+                        }
+                    }
                 } else {
-                    temps = new String[]{temp};
+                    temps.add(temp);
                 }
-                Arrays
-                        .stream(temps)
-                        .forEach(s -> addTemp(Double.valueOf(s).intValue()));
+                temps.forEach(s -> addTemp(Double.valueOf(s).intValue()));
             }
             return this;
         }
