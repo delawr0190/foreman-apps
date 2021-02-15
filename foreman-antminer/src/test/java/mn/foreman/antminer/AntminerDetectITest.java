@@ -94,7 +94,7 @@ public class AntminerDetectITest
                                 null
                         },
                         {
-                                // Antminer L3
+                                // Antminer L3+
                                 Collections.singletonList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
                                                 4028,
@@ -102,7 +102,7 @@ public class AntminerDetectITest
                                                         "{\"command\":\"version\"}",
                                                         new RpcHandler(
                                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3+\"}],\"id\":1}")))),
-                                AntminerType.ANTMINER_L3,
+                                AntminerType.ANTMINER_L3P,
                                 DEFAULT_ARGS,
                                 false,
                                 null,
@@ -274,7 +274,7 @@ public class AntminerDetectITest
                                 null
                         },
                         {
-                                // Hostname preferred (L3)
+                                // Hostname preferred (L3+)
                                 Arrays.asList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
                                                 4028,
@@ -315,7 +315,7 @@ public class AntminerDetectITest
                                                                 exchange -> AntminerTestUtils.validateDigest(
                                                                         exchange,
                                                                         "antMiner Configuration"))))),
-                                AntminerType.ANTMINER_L3,
+                                AntminerType.ANTMINER_L3P,
                                 toHostnameArgs(
                                         true,
                                         null,
@@ -325,7 +325,7 @@ public class AntminerDetectITest
                                 null
                         },
                         {
-                                // Worker preferred (L3)
+                                // Worker preferred (L3+)
                                 Collections.singletonList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
                                                 4028,
@@ -339,7 +339,7 @@ public class AntminerDetectITest
                                                         "{\"command\":\"pools\"}",
                                                         new RpcHandler(
                                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315222,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://us.litecoinpool.org:3333\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":24933,\"Accepted\":47384,\"Rejected\":212,\"Discarded\":230740,\"Stale\":15,\"Get Failures\":1,\"Remote Failures\":0,\"User\":\"obmllc.l3_1\",\"Last Share Time\":\"0:00:23\",\"Diff\":\"65.5K\",\"Diff1 Shares\":11805080,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":2988769280.00000000,\"Difficulty Rejected\":13254656.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":65536.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"us.litecoinpool.org\",\"Has GBT\":false,\"Best Share\":11224839560,\"Pool Rejected%\":0.4415,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")))),
-                                AntminerType.ANTMINER_L3,
+                                AntminerType.ANTMINER_L3P,
                                 toHostnameArgs(
                                         false,
                                         null,

@@ -35,11 +35,29 @@ public enum AntminerType
     /** Antminer L3. */
     ANTMINER_L3("Antminer L3", "antminer-l3"),
 
+    /** Antminer L3+. */
+    ANTMINER_L3P("Antminer L3+", "antminer-l3+"),
+
+    /** Antminer L3++. */
+    ANTMINER_L3PP("Antminer L3++", "antminer-l3++"),
+
     /** Antminer S7. */
     ANTMINER_S7("Antminer S7", "antminer-s7"),
 
     /** Antminer S9. */
     ANTMINER_S9("Antminer S9", "antminer-s9"),
+
+    /** Antminer S9i. */
+    ANTMINER_S9I("Antminer S9i", "antminer-s9i"),
+
+    /** Antminer S9j. */
+    ANTMINER_S9J("Antminer S9j", "antminer-s9j"),
+
+    /** Antminer S9k. */
+    ANTMINER_S9K("Antminer S9k", "antminer-s9k"),
+
+    /** Antminer S9 Hydro. */
+    ANTMINER_S9_HYDRO("Antminer S9 Hydro", "antminer-s9-hydro"),
 
     /** Antminer S15. */
     ANTMINER_S15("Antminer S15", "antminer-s15"),
@@ -58,6 +76,9 @@ public enum AntminerType
 
     /** Antminer T9. */
     ANTMINER_T9("Antminer T9", "antminer-t9"),
+
+    /** Antminer T9+. */
+    ANTMINER_T9P("Antminer T9+", "antminer-t9+"),
 
     /** Antminer T15. */
     ANTMINER_T15("Antminer T15", "antminer-t15"),
