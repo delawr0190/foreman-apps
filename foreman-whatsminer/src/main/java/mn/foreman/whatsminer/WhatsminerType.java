@@ -2,6 +2,7 @@ package mn.foreman.whatsminer;
 
 import mn.foreman.model.MinerType;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -168,7 +169,12 @@ public enum WhatsminerType
      * @return The type.
      */
     public static Optional<WhatsminerType> fromVersion(final String version) {
-        return Optional.ofNullable(VERSION_MAP.get(version));
+        return VERSION_MAP
+                .entrySet()
+                .stream()
+                .filter(entry -> version.startsWith(entry.getKey()))
+                .max(Comparator.comparing(entry -> entry.getValue().version.length()))
+                .map(Map.Entry::getValue);
     }
 
     @Override

@@ -1063,6 +1063,206 @@ public class WhatsminerDetectITest
                                 WhatsminerType.WHATSMINER_M21,
                                 toArgs(false),
                                 toArgs(false)
+                        },
+                        {
+                                // Whatsminer M30S
+                                Collections.singletonList(
+                                        (Supplier<FakeMinerServer>) () ->
+                                                new FakeHttpMinerServer(
+                                                        8080,
+                                                        ImmutableMap.of(
+                                                                "/cgi-bin/luci/",
+                                                                new HttpHandler(
+                                                                        "luci_username=username&luci_password=password",
+                                                                        Collections.emptyMap(),
+                                                                        "",
+                                                                        ImmutableMap.of(
+                                                                                "Set-Cookie",
+                                                                                "sysauth=c57ede0698febf098dca307d106376d0")),
+                                                                "/cgi-bin/luci/admin/status/overview",
+                                                                new HttpHandler(
+                                                                        "",
+                                                                        ImmutableMap.of(
+                                                                                "Cookie",
+                                                                                "sysauth=c57ede0698febf098dca307d106376d0"),
+                                                                        "<!DOCTYPE html>\\n\n" +
+                                                                                "<html lang=\\\"en\\\">\\n\\t\n" +
+                                                                                "\t<head>\\n\\t\\t\n" +
+                                                                                "\t\t<meta charset=\\\"utf-8\\\">\\n\\t\\t\n" +
+                                                                                "\t\t\t<title>WhatsMiner_2767 - Overview - LuCI</title>\\n\\t\\t\n" +
+                                                                                "\t\t\t<!--[if lt IE 9]>\n" +
+                                                                                "\t\t\t<script src=\\\"/luci-static/bootstrap/html5.js?v=git-16.336.70424-1fd43b4\\\"></script>\n" +
+                                                                                "\t\t\t<![endif]-->\\n\\t\\t\n" +
+                                                                                "\t\t\t<meta name=\\\"viewport\\\" content=\\\"initial-scale=1.0\\\">\\n\\t\\t\n" +
+                                                                                "\t\t\t\t<link rel=\\\"stylesheet\\\" href=\\\"/luci-static/bootstrap/cascade.css?v=git-16.336.70424-1fd43b4\\\">\\n\\t\\t\n" +
+                                                                                "\t\t\t\t\t<link rel=\\\"stylesheet\\\" media=\\\"only screen and (max-device-width: 854px)\\\" href=\\\"/luci-static/bootstrap/mobile.css?v=git-16.336.70424-1fd43b4\\\" type=\\\"text/css\\\" />\\n\\t\\t\n" +
+                                                                                "\t\t\t\t\t<link rel=\\\"shortcut icon\\\" href=\\\"/luci-static/bootstrap/favicon.ico\\\">\\n\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t<script src=\\\"/luci-static/resources/xhr.js?v=git-16.336.70424-1fd43b4\\\"></script>\\n\\t\n" +
+                                                                                "\t\t\t\t\t</head>\\n\\n\\t\n" +
+                                                                                "\t\t\t\t\t<body class=\\\"lang_enOverview\\\">\\n\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t<header>\\n\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t<div class=\\\"fill\\\">\\n\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t<div class=\\\"container\\\">\\n\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<a class=\\\"brand\\\" href=\\\"#\\\">WhatsMiner_2767</a>\\n\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<ul class=\\\"nav\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<li class=\\\"dropdown\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class=\\\"menu\\\" href=\\\"#\\\">Status</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<ul class=\\\"dropdown-menu\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/btminerstatus\\\">Miner Status</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/btminerapi\\\">Miner API Log</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/syslog\\\">System Log</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/minerlog\\\">Miner Log</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/processes\\\">Processes</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/status/overview\\\">Overview</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t</ul>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<li class=\\\"dropdown\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class=\\\"menu\\\" href=\\\"#\\\">System</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<ul class=\\\"dropdown-menu\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/system/system\\\">System</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/system/admin\\\">Administration</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/system/reboot\\\">Reboot</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t</ul>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<li class=\\\"dropdown\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<a class=\\\"menu\\\" href=\\\"#\\\">Configuration</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<ul class=\\\"dropdown-menu\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/network/network\\\">Interfaces</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/network/btminer\\\">Miner Configuration</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t</ul>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<a href=\\\"/cgi-bin/luci/admin/logout\\\">Logout</a>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</li>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</ul>\\n\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<div class=\\\"pull-right\\\">\\n\\t\\t\\t\\t\\t\\t\\n\\t\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<span id=\\\"xhr_poll_status\\\" style=\\\"display:none\\\" onclick=\\\"XHR.running() ? XHR.halt() : XHR.run()\\\">\\n\\t\\t\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<span class=\\\"label success\\\" id=\\\"xhr_poll_status_on\\\">Auto Refresh on</span>\\n\\t\\t\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<span class=\\\"label\\\" id=\\\"xhr_poll_status_off\\\" style=\\\"display:none\\\">Auto Refresh off</span>\\n\\t\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</span>\\n\\t\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</div>\\n\\t\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t\t</div>\\n\\t\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t\t</div>\\n\\t\\t\n" +
+                                                                                "\t\t\t\t\t\t</header>\n" +
+                                                                                "\t\t\t\t\t\t<div id=\\\"maincontent\\\" class=\\\"container\\\">\\n\\t\\t\\t\\n\\n\\n\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<script type=\\\"text/javascript\\\" src=\\\"/luci-static/resources/cbi.js?v=git-16.336.70424-1fd43b4\\\"></script>\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<script type=\\\"text/javascript\\\">//\n" +
+                                                                                "\t\t\t\t\t\t\t\t<![CDATA[\\n        function progressbar(v, m)\\n        {\\n                var vn = parseInt(v) || 0;\\n                var mn = parseInt(m) || 100;\\n                var pc = Math.floor((100 / mn) * vn);\\n\\n                return String.format(\\n                        '<div style=\\\"width:200px; position:relative; border:1px solid #999999\\\">' +\\n                                '<div style=\\\"background-color:#CCCCCC; width:%d%%; height:15px\\\">' +\\n                                        '<div style=\\\"position:absolute; left:0; top:0; text-align:center; width:100%%; color:#000000\\\">' +\\n                                                '<small>%s / %s (%d%%)</small>' +\\n                                        '</div>' +\\n                                '</div>' +\\n                        '</div>', pc, v, m, pc\\n                );\\n        }\\n\\n        function wifirate(bss, rx) {\\n                var p = rx ? 'rx_' : 'tx_',\\n                    s = '%.1f Mbit/s, %dMHz'\\n                                        .format(bss[p+'rate'] / 1000, bss[p+'mhz']),\\n                    ht = bss[p+'ht'], vht = bss[p+'vht'],\\n                        mhz = bss[p+'mhz'], nss = bss[p+'nss'],\\n                        mcs = bss[p+'mcs'], sgi = bss[p+'short_gi'];\\n\\n                if (ht || vht) {\\n                        if (vht) s += ', VHT-MCS %d'.format(mcs);\\n                        if (nss) s += ', VHT-NSS %d'.format(nss);\\n                        if (ht)  s += ', MCS %s'.format(mcs);\\n                        if (sgi) s += ', Short GI';\\n                }\\n\\n                return s;\\n        }\\n\\n        function duid2mac(duid) {\\n                // DUID-LLT / Ethernet\\n                if (duid.length === 28 && duid.substr(0, 8) === '00010001')\\n                        return duid.substr(16).replace(/(..)(?=..)/g, '$1:').toUpperCase();\\n\\n                // DUID-LL / Ethernet\\n                if (duid.length === 24 && duid.substr(0, 8) === '00030001')\\n                        return duid.substr(8).replace(/(..)(?=..)/g, '$1:').toUpperCase();\\n\\n                return null;\\n        }\\n\\n        var npoll = 1;\\n        var hosts = {\\\"6A:A6:8F:18:44:E9\\\":{\\\"ipv4\\\":\\\"10.208.169.5\\\"},\\\"C6:10:09:00:27:67\\\":{\\\"ipv4\\\":\\\"10.208.169.61\\\"}};\\n\\n        function updateHosts() {\\n                XHR.get('/cgi-bin/luci/admin/status/overview', { hosts: 1 }, function(x, data) {\\n                        hosts = data;\\n                });\\n        }\\n\\n        XHR.poll(5, '/cgi-bin/luci/admin/status/overview', { status: 1 },\\n                function(x, info)\\n                {\\n                        if (!(npoll++ % 5))\\n                                updateHosts();\\n\\n                        var si = document.getElementById('wan4_i');\\n                        var ss = document.getElementById('wan4_s');\\n                        var ifc = info.wan;\\n\\n                        if (ifc && ifc.ifname && ifc.proto != 'none')\\n                        {\\n                                var s = String.format(\\n                                        '<strong>Type: </strong>%s<br />' +\\n                                        '<strong>Address: </strong>%s<br />' +\\n                                        '<strong>Netmask: </strong>%s<br />' +\\n                                        '<strong>Gateway: </strong>%s<br />',\\n                                                ifc.proto,\\n                                                (ifc.ipaddr) ? ifc.ipaddr : '0.0.0.0',\\n                                                (ifc.netmask && ifc.netmask != ifc.ipaddr) ? ifc.netmask : '255.255.255.255',\\n                                                (ifc.gwaddr) ? ifc.gwaddr : '0.0.0.0'\\n                                );\\n\\n                                for (var i = 0; i < ifc.dns.length; i++)\\n                                {\\n                                        s += String.format(\\n                                                '<strong>DNS %d: </strong>%s<br />',\\n                                                i + 1, ifc.dns[i]\\n                                        );\\n                                }\\n\\n                                if (ifc.expires > -1)\\n                                {\\n                                        s += String.format(\\n                                                '<strong>Expires: </strong>%t<br />',\\n                                                ifc.expires\\n                                        );\\n                                }\\n\\n                                if (ifc.uptime > 0)\\n                                {\\n                                        s += String.format(\\n                                                '<strong>Connected: </strong>%t<br />',\\n                                                ifc.uptime\\n                                        );\\n                                }\\n\\n                                ss.innerHTML = String.format('<small>%s</small>', s);\\n                                si.innerHTML = String.format(\\n                                        '<img src=\\\"/luci-static/resources/icons/ethernet.png\\\" />' +\\n                                        '<br /><small><a href=\\\"%s\\\">%s</a></small>',\\n                                                ifc.link, ifc.ifname\\n                                );\\n                        }\\n                        else\\n                        {\\n                                si.innerHTML = '<img src=\\\"/luci-static/resources/icons/ethernet_disabled.png\\\" /><br /><small>?</small>';\\n                                ss.innerHTML = '<em>Not connected</em>';\\n                        }\\n\\n                        \\n\\n                        \\n\\n                        \\n\\n                        \\n\\n                        var e;\\n\\n                        if (e = document.getElementById('localtime'))\\n                                e.innerHTML = info.localtime;\\n\\n                        if (e = document.getElementById('uptime'))\\n                                e.innerHTML = String.format('%t', info.uptime);\\n\\n                        if (e = document.getElementById('loadavg'))\\n                                e.innerHTML = String.format(\\n                                        '%.02f, %.02f, %.02f',\\n                                        info.loadavg[0] / 65535.0,\\n                                        info.loadavg[1] / 65535.0,\\n                                        info.loadavg[2] / 65535.0\\n                                );\\n\\n                        if (e = document.getElementById('memtotal'))\\n                                e.innerHTML = progressbar(\\n                                        ((info.memory.free + info.memory.buffered) / 1024) + \\\" kB\\\",\\n                                        (info.memory.total / 1024) + \\\" kB\\\"\\n                                );\\n\\n                        if (e = document.getElementById('memfree'))\\n                                e.innerHTML = progressbar(\\n                                        (info.memory.free / 1024) + \\\" kB\\\",\\n                                        (info.memory.total / 1024) + \\\" kB\\\"\\n                                );\\n\\n                        if (e = document.getElementById('membuff'))\\n                                e.innerHTML = progressbar(\\n                                        (info.memory.buffered / 1024) + \\\" kB\\\",\\n                                        (info.memory.total / 1024) + \\\" kB\\\"\\n                                );\\n\\n                        if (e = document.getElementById('swaptotal'))\\n                                e.innerHTML = progressbar(\\n                                        (info.swap.free / 1024) + \\\" kB\\\",\\n                                        (info.swap.total / 1024) + \\\" kB\\\"\\n                                );\\n\\n                        if (e = document.getElementById('swapfree'))\\n                                e.innerHTML = progressbar(\\n                                        (info.swap.free / 1024) + \\\" kB\\\",\\n                                        (info.swap.total / 1024) + \\\" kB\\\"\\n                                );\\n\\n                        if (e = document.getElementById('conns'))\\n                                e.innerHTML = progressbar(info.conncount, info.connmax);\\n\\n                }\\n        );\\n//]]>\n" +
+                                                                                "\t\t\t\t\t\t\t</script>\\n\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<h2 name=\\\"content\\\">Status</h2>\\n\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<fieldset class=\\\"cbi-section\\\">\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<legend>System</legend>\\n\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<table width=\\\"100%\\\" cellspacing=\\\"10\\\">\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Model</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>WhatsMiner M30S_V50</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Hostname</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>M30S_V50.H6OS-V10.P21D-V02-193005B</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Firmware Version</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>20201223.14.REL</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Kernel Version</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>#256 SMP PREEMPT Wed Dec 23 14:36:51 CST 2020</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Miner Version</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>4.9.2-git-45b4dd5</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Local Time</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"localtime\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Uptime</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"uptime\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Load Average</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"loadavg\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t</table>\\n\n" +
+                                                                                "\t\t\t\t\t\t\t</fieldset>\\n\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<fieldset class=\\\"cbi-section\\\">\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<legend>Memory</legend>\\n\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<table width=\\\"100%\\\" cellspacing=\\\"10\\\">\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Total Available</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"memtotal\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Free</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"memfree\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Buffered</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"membuff\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t</table>\\n\n" +
+                                                                                "\t\t\t\t\t\t\t</fieldset>\\n\\n\\n\\n\n" +
+                                                                                "\t\t\t\t\t\t\t<fieldset class=\\\"cbi-section\\\">\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<legend>Network</legend>\\n\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t<table width=\\\"100%\\\" cellspacing=\\\"10\\\">\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\" style=\\\"vertical-align:top\\\">IPv4 WAN Status</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td>\\n                        \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t<table>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t<tr>\\n                                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<td id=\\\"wan4_i\\\" style=\\\"width:16px; text-align:center; padding:3px\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t<img src=\\\"/luci-static/resources/icons/ethernet_disabled.png\\\" />\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t<br />\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t<small>?</small>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\\n                                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t<td id=\\\"wan4_s\\\" style=\\\"vertical-align:middle; padding: 3px\\\">\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t\t<em>Collecting data...</em>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t\t</td>\\n                        \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t\t</tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t\t</table>\\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n                \\n                \n" +
+                                                                                "\t\t\t\t\t\t\t\t\t<tr>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td width=\\\"33%\\\">Active Connections</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t\t<td id=\\\"conns\\\">-</td>\n" +
+                                                                                "\t\t\t\t\t\t\t\t\t</tr>\\n        \n" +
+                                                                                "\t\t\t\t\t\t\t\t</table>\\n\n" +
+                                                                                "\t\t\t\t\t\t\t</fieldset>\\n\\n\\n\\n\\n\\n\\n   \n" +
+                                                                                "\t\t\t\t\t\t\t<footer>\\n    \n" +
+                                                                                "\t\t\t\t\t\t\t\t<a>Copyright (C) 2020 Microbt.com. All Rights Reserved.</a>\\n   \n" +
+                                                                                "\t\t\t\t\t\t\t</footer>\\n   \n" +
+                                                                                "\t\t\t\t\t\t</div>\\n  \n" +
+                                                                                "\t\t\t\t\t</div>\\n \n" +
+                                                                                "\t\t\t\t</body>\\n\n" +
+                                                                                "\t\t\t</html>\\n\\n\\n",
+                                                                        Collections.emptyMap())))),
+                                WhatsminerType.WHATSMINER_M30S,
+                                toArgs(false),
+                                toArgs(false)
                         }
                 });
     }
