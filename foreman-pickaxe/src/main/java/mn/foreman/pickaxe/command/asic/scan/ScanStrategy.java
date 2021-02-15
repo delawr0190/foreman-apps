@@ -18,6 +18,9 @@ import org.slf4j.LoggerFactory;
 
 import java.net.InetAddress;
 import java.util.*;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.LongStream;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 
@@ -28,6 +31,16 @@ public class ScanStrategy
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(ScanStrategy.class);
+
+    /** Never use more than 5 threads to scan. */
+    private static final int SCAN_THREADS =
+            Math.min(
+                    5,
+                    Runtime.getRuntime().availableProcessors());
+
+    /** The thread pool to use for scanning. */
+    private static final ExecutorService THREAD_POOL =
+            Executors.newCachedThreadPool();
 
     @Override
     public void runCommand(
@@ -109,6 +122,68 @@ public class ScanStrategy
                 minerType.getCategory().getName(),
                 "ipAddress",
                 detection.getIpAddress());
+    }
+
+    /**
+     * Checks to see if all of the scans are done.
+     *
+     * @param futures The scans.
+     *
+     * @return Whether or not all of the scans are done.
+     */
+    private boolean areScansDone(final List<Future<?>> futures) {
+        return futures
+                .stream()
+                .allMatch(Future::isDone);
+    }
+
+    /**
+     * Processes the scan results.
+     *
+     * @param scanResults The results.
+     * @param scanned     The scan counter.
+     * @param remaining   The remaining counter.
+     * @param miners      All of the miners that were found.
+     * @param foremanApi  The API handler.
+     * @param id          The scan command ID.
+     */
+    private void processResults(
+            final BlockingQueue<ScanResult> scanResults,
+            final AtomicInteger scanned,
+            final AtomicInteger remaining,
+            final BlockingQueue<Object> miners,
+            final ForemanApi foremanApi,
+            final String id) {
+        final List<ScanResult> lastResults = new LinkedList<>();
+        scanResults.drainTo(lastResults);
+
+        if (!lastResults.isEmpty()) {
+            for (final ScanResult scanResult : lastResults) {
+                scanned.incrementAndGet();
+                remaining.decrementAndGet();
+                final Detection detection = scanResult.result;
+                if (detection != null) {
+                    miners.add(
+                            toMiner(
+                                    detection));
+                }
+            }
+
+            final Map<String, Object> update = new HashMap<>();
+            update.put("found", miners.size());
+            update.put("scanned", scanned.get());
+            update.put("remaining", remaining.get());
+
+            foremanApi
+                    .pickaxe()
+                    .commandUpdate(
+                            CommandUpdate
+                                    .builder()
+                                    .command("scan")
+                                    .update(update)
+                                    .build(),
+                            id);
+        }
     }
 
     /**
@@ -217,51 +292,53 @@ public class ScanStrategy
             final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
-        final List<Object> miners = new LinkedList<>();
-        for (long i = start; i <= stop; i++) {
-            final String ip = ipFromLong(i);
+        final BlockingQueue<Long> ipsToScan = new LinkedBlockingDeque<>();
+        LongStream
+                .rangeClosed(start, stop)
+                .forEach(ipsToScan::add);
 
+        final AtomicInteger scanned = new AtomicInteger(0);
+        final AtomicInteger remaining = new AtomicInteger(ipsToScan.size());
 
+        final BlockingQueue<ScanResult> scanResults =
+                new LinkedBlockingDeque<>();
+        final BlockingQueue<Object> foundMiners =
+                new LinkedBlockingDeque<>();
 
-            final DetectionStrategy detectionStrategy =
-                    manufacturer.getDetectionStrategy(
-                            args,
-                            ip);
-
-            Optional<Detection> detectionOpt = Optional.empty();
-            try {
-                detectionOpt =
-                        detectionStrategy.detect(
-                                ip,
-                                port,
-                                args);
-            } catch (final Exception e) {
-                LOG.warn("Exception occurred while querying", e);
-            }
-
-            LOG.debug("Scanning {}:{}", ip, port);
-
-            final Map<String, Object> update = new HashMap<>();
-            update.put("found", miners.size());
-            update.put("scanned", (i - start) + 1);
-            update.put("remaining", stop - i);
-
-            if (detectionOpt.isPresent()) {
-                final Object miner = toMiner(detectionOpt.get());
-                miners.add(miner);
-                update.put("miner", miner);
-            }
-
-            foremanApi
-                    .pickaxe()
-                    .commandUpdate(
-                            CommandUpdate
-                                    .builder()
-                                    .command("scan")
-                                    .update(update)
-                                    .build(),
-                            id);
+        final List<Future<?>> scanFutures = new ArrayList<>(SCAN_THREADS);
+        for (int i = 0; i < SCAN_THREADS; i++) {
+            scanFutures.add(
+                    THREAD_POOL.submit(
+                            new Scanner(
+                                    args,
+                                    ipsToScan,
+                                    manufacturer,
+                                    port,
+                                    scanResults)));
         }
+
+        while (!areScansDone(scanFutures)) {
+            processResults(
+                    scanResults,
+                    scanned,
+                    remaining,
+                    foundMiners,
+                    foremanApi,
+                    id);
+        }
+
+        // Once more for the race
+        processResults(
+                scanResults,
+                scanned,
+                remaining,
+                foundMiners,
+                foremanApi,
+                id);
+
+        final List<Object> miners = new LinkedList<>();
+        foundMiners.drainTo(miners);
+
         callback.done(
                 builder
                         .result(
@@ -274,5 +351,107 @@ public class ScanStrategy
                                         .type(DoneStatus.SUCCESS)
                                         .build())
                         .build());
+    }
+
+    /** A {@link ScanResult} represents the result of a sigle IP scan. */
+    private static class ScanResult {
+
+        /** The result, if something was found. */
+        private final Detection result;
+
+        /**
+         * Constructor.
+         *
+         * @param result The result, if something was found.
+         */
+        ScanResult(final Detection result) {
+            this.result = result;
+        }
+    }
+
+    /**
+     * A {@link Scanner} provides a {@link Runnable} implementation that will
+     * continuously scan miners until there are no more IPs that need to be
+     * evaluated.
+     */
+    private static class Scanner
+            implements Runnable {
+
+        /** The arguments. */
+        private final Map<String, Object> args;
+
+        /** The IPs to scan. */
+        private final BlockingQueue<Long> ipsToScan;
+
+        /** The manufacturer. */
+        private final Manufacturer manufacturer;
+
+        /** The miner API port. */
+        private final int port;
+
+        /** Where the result will be stored. */
+        private final BlockingQueue<ScanResult> scanResults;
+
+        /**
+         * Constructor.
+         *
+         * @param args         The arguments.
+         * @param ipsToScan    The IPs to scan.
+         * @param manufacturer The manufacturer.
+         * @param port         The port.
+         * @param scanResults  The results.
+         */
+        private Scanner(
+                final Map<String, Object> args,
+                final BlockingQueue<Long> ipsToScan,
+                final Manufacturer manufacturer,
+                final int port,
+                final BlockingQueue<ScanResult> scanResults) {
+            this.args = args;
+            this.ipsToScan = ipsToScan;
+            this.manufacturer = manufacturer;
+            this.port = port;
+            this.scanResults = scanResults;
+        }
+
+        @Override
+        public void run() {
+            try {
+                while (true) {
+                    final Long ipLong = this.ipsToScan.poll(5, TimeUnit.SECONDS);
+                    if (ipLong != null) {
+                        final String ip = ipFromLong(ipLong);
+
+                        final DetectionStrategy detectionStrategy =
+                                this.manufacturer.getDetectionStrategy(
+                                        this.args,
+                                        ip);
+
+                        LOG.debug("Scanning {}:{}", ip, this.port);
+
+                        Optional<Detection> detectionOpt = Optional.empty();
+                        try {
+                            detectionOpt =
+                                    detectionStrategy.detect(
+                                            ip,
+                                            this.port,
+                                            this.args);
+                        } catch (final Exception e) {
+                            LOG.warn("Exception occurred while querying", e);
+                        }
+
+                        this.scanResults.add(
+                                new ScanResult(
+                                        detectionOpt.orElse(null)));
+                    } else {
+                        // Done
+                        LOG.info("Scanner has finished");
+                        break;
+                    }
+                }
+            } catch (final Exception e) {
+                LOG.warn("Scanner was interrupted", e);
+            }
+        }
     }
 }
