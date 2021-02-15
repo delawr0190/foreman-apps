@@ -117,7 +117,7 @@ public class WhatsminerQuery {
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
                         .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1))
-                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(5))
+                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
                         .setCircularRedirectsAllowed(true)
                         .build();
 
