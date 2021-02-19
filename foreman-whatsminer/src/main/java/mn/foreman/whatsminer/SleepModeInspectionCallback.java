@@ -70,7 +70,7 @@ public class SleepModeInspectionCallback
                             "").toString(),
                     Command.STATUS,
                     Collections.emptyMap(),
-                    5,
+                    1,
                     TimeUnit.SECONDS,
                     response -> {
                         final Map<String, String> msg =
