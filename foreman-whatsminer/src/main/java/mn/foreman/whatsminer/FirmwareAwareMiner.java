@@ -8,7 +8,6 @@ import mn.foreman.model.miners.asic.Asic;
 
 import com.google.common.collect.Iterables;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -70,12 +69,7 @@ public class FirmwareAwareMiner
                 final MinerStats stats = miner.getStats();
                 final List<Asic> asics = stats.getAsics();
                 if (asics != null && !asics.isEmpty()) {
-                    if (asics
-                            .stream()
-                            .anyMatch(asic -> asic.getHashRate().compareTo(BigDecimal.ZERO) > 0)) {
-                        // Found good stats
-                        return stats;
-                    }
+                    return stats;
                 }
             } catch (final Exception e) {
                 // Ignore

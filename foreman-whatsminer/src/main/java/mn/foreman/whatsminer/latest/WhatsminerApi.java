@@ -13,6 +13,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.codec.digest.Md5Crypt;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -30,11 +32,9 @@ import java.util.concurrent.TimeUnit;
 /** Utility for querying the Whatsminer API. */
 public class WhatsminerApi {
 
-    /** The connection timeout. */
-    private static final int CONNECTION_TIMEOUT = 30;
-
-    /** The connection timeout (units). */
-    private static final TimeUnit CONNECTION_TIMEOUT_UNITS = TimeUnit.SECONDS;
+    /** The logger for this class. */
+    private static final Logger LOG =
+            LoggerFactory.getLogger(WhatsminerApi.class);
 
     /** The mapper for writing and reading json. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -58,13 +58,52 @@ public class WhatsminerApi {
      * @throws ApiException              on failure.
      * @throws PermissionDeniedException on write API not enabled.
      */
-    @SuppressWarnings("unchecked")
     public static boolean runCommand(
             final String ip,
             final int port,
             final String password,
             final Command command,
             final Map<String, String> args)
+            throws ApiException, PermissionDeniedException {
+        return runCommand(
+                ip,
+                port,
+                password,
+                command,
+                args,
+                30,
+                TimeUnit.SECONDS,
+                response -> {
+                });
+    }
+
+    /**
+     * Runs a command against a Whatminer miner.
+     *
+     * @param ip                     The IP.
+     * @param port                   The port.
+     * @param password               The password.
+     * @param command                The command.
+     * @param args                   The arguments.
+     * @param responseCallback       The callback for processing responses.
+     * @param connectionTimeout      The connection timeout.
+     * @param connectionTimeoutUnits The connection timeout units.
+     *
+     * @return Whether or not the command was successful.
+     *
+     * @throws ApiException              on failure.
+     * @throws PermissionDeniedException on write API not enabled.
+     */
+    @SuppressWarnings("unchecked")
+    public static boolean runCommand(
+            final String ip,
+            final int port,
+            final String password,
+            final Command command,
+            final Map<String, String> args,
+            final int connectionTimeout,
+            final TimeUnit connectionTimeoutUnits,
+            final ResponseCallback responseCallback)
             throws ApiException, PermissionDeniedException {
         try {
             // Request token
@@ -77,8 +116,11 @@ public class WhatsminerApi {
                                             toCommand(
                                                     Command.GET_TOKEN,
                                                     Collections.emptyMap(),
-                                                    null)))
+                                                    null)),
+                                    connectionTimeout,
+                                    connectionTimeoutUnits)
                                     .orElseThrow(() -> new ApiException("Failed to obtain response")));
+            LOG.debug("Msg: {}", result.get("Msg"));
             final Map<String, String> saltInfo =
                     (Map<String, String>) result.get("Msg");
 
@@ -117,7 +159,9 @@ public class WhatsminerApi {
                     query(
                             ip,
                             port,
-                            toString(toSend))
+                            toString(toSend),
+                            connectionTimeout,
+                            connectionTimeoutUnits)
                             .orElseThrow(
                                     () -> new ApiException("Failed to obtain response"));
 
@@ -134,7 +178,11 @@ public class WhatsminerApi {
                             aesKey,
                             toDecrypt);
 
-            return processResult(response);
+            LOG.info("Whatsminer response: {}", response);
+
+            return processResult(
+                    response,
+                    responseCallback);
         } catch (final NoSuchAlgorithmException |
                 BadPaddingException |
                 InvalidKeyException |
@@ -262,7 +310,8 @@ public class WhatsminerApi {
     /**
      * Processes the result.
      *
-     * @param response The result.
+     * @param response         The result.
+     * @param responseCallback The response callback.
      *
      * @return Whether or not the command was successful.
      *
@@ -270,11 +319,17 @@ public class WhatsminerApi {
      * @throws PermissionDeniedException if the write API isn't enabled.
      */
     @SuppressWarnings("unchecked")
-    private static boolean processResult(final String response)
+    private static boolean processResult(
+            final String response,
+            final ResponseCallback responseCallback)
             throws
             IOException,
             PermissionDeniedException {
         final Map<String, Object> finalResult = readMap(response);
+        if (finalResult.containsKey("Msg")) {
+            responseCallback.sawMsg(finalResult.get("Msg"));
+        }
+
         Object status = finalResult.get("STATUS");
         if (status instanceof List) {
             status = ((List<Map<String, Object>>) status).get(0).get("STATUS");
@@ -290,16 +345,20 @@ public class WhatsminerApi {
     /**
      * Queries the miner.
      *
-     * @param ip     The ip.
-     * @param port   The port.
-     * @param toSend The command to send.
+     * @param ip                     The ip.
+     * @param port                   The port.
+     * @param toSend                 The command to send.
+     * @param connectionTimeout      The connection timeout.
+     * @param connectionTimeoutUnits The connection timeout units.
      *
      * @return The result, if present.
      */
     private static Optional<String> query(
             final String ip,
             final int port,
-            final String toSend) {
+            final String toSend,
+            final int connectionTimeout,
+            final TimeUnit connectionTimeoutUnits) {
         Optional<String> result = Optional.empty();
 
         final ApiRequest apiRequest =
@@ -311,13 +370,13 @@ public class WhatsminerApi {
         final Connection connection =
                 ConnectionFactory.createJsonConnection(
                         apiRequest,
-                        CONNECTION_TIMEOUT,
-                        CONNECTION_TIMEOUT_UNITS);
+                        connectionTimeout,
+                        connectionTimeoutUnits);
         connection.query();
 
         if (apiRequest.waitForCompletion(
-                CONNECTION_TIMEOUT,
-                CONNECTION_TIMEOUT_UNITS)) {
+                connectionTimeout,
+                connectionTimeoutUnits)) {
             result = Optional.ofNullable(apiRequest.getResponse());
         }
 

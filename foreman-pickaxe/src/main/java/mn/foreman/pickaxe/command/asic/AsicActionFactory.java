@@ -1,9 +1,6 @@
 package mn.foreman.pickaxe.command.asic;
 
-import mn.foreman.model.AsicAction;
-import mn.foreman.model.AsyncAsicAction;
-import mn.foreman.model.MinerFactory;
-import mn.foreman.model.MinerID;
+import mn.foreman.model.*;
 import mn.foreman.model.cache.StatsCache;
 
 import java.util.Map;
@@ -13,7 +10,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 /** A factory for making new {@link AsyncAsicAction actions}. */
-class AsyncActionFactory {
+class AsicActionFactory {
 
     /**
      * Creates a new async action with defaults.
@@ -73,5 +70,17 @@ class AsyncActionFactory {
                 minerFactory,
                 completableAction,
                 (originalParams, newParams) -> newParams);
+    }
+
+    /**
+     * Creates a new sync action.
+     *
+     * @param completableAction The action.
+     *
+     * @return The action.
+     */
+    static AsicAction toSync(
+            final AsicAction.CompletableAction completableAction) {
+        return new SyncAsicAction(completableAction);
     }
 }

@@ -78,7 +78,6 @@ public class AsyncAsicAction
      * @param blacklist         The blacklist.
      * @param statsCache        The stats cache.
      * @param paramHook         The param hook.
-     * @param paramHook         The param hook.
      */
     public AsyncAsicAction(
             final long delay,
@@ -147,7 +146,7 @@ public class AsyncAsicAction
                             this.units);
         } else {
             // Didn't work
-            callback.failed("Fail to perform action");
+            callback.failed("Failed to perform action");
         }
     }
 

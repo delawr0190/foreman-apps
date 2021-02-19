@@ -3,6 +3,9 @@ package mn.foreman.whatsminer.latest;
 /** A command that can be sent to a whatsminer. */
 public enum Command {
 
+    /** status. */
+    STATUS("status"),
+
     /** update_pools. */
     UPDATE_POOLS("update_pools"),
 
@@ -14,6 +17,12 @@ public enum Command {
 
     /** net_config. */
     NETWORK("net_config"),
+
+    /** power_off. */
+    POWER_OFF("power_off"),
+
+    /** power_on. */
+    POWER_ON("power_on"),
 
     /** get_token. */
     GET_TOKEN("get_token");

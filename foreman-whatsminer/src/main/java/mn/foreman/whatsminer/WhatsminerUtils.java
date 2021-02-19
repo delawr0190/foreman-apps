@@ -147,6 +147,7 @@ class WhatsminerUtils {
                 .forEach(map -> {
                     context.addSimple(ContextKey.MAC, map.get("MAC"));
                     builder
+                            .setPowerMode(toPowerMode(map.get("Power Mode")))
                             .setFanInfo(
                                     new FanInfo.Builder()
                                             .setCount(2)
@@ -158,5 +159,22 @@ class WhatsminerUtils {
                                     new BigDecimal(map.get("MHS av"))
                                             .multiply(BigDecimal.valueOf(Math.pow(1000, 2))));
                 });
+    }
+
+    /**
+     * Converts the provided mode to a string.
+     *
+     * @param powerMode The mode.
+     *
+     * @return The power mode.
+     */
+    private static Asic.PowerMode toPowerMode(final String powerMode) {
+        if ("High".equalsIgnoreCase(powerMode)) {
+            return Asic.PowerMode.HIGH;
+        } else if ("Low".equalsIgnoreCase(powerMode)) {
+            return Asic.PowerMode.LOW;
+        } else {
+            return Asic.PowerMode.NORMAL;
+        }
     }
 }

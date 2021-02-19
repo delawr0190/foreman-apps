@@ -5,6 +5,7 @@ import mn.foreman.model.miners.BigDecimalSerializer;
 import mn.foreman.model.miners.FanInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
@@ -40,6 +41,7 @@ import java.util.*;
  *       69
  *     ],
  *     "powerState": "",
+ *     "powerMode": "normal",
  *     "hasErrors": false,
  *     "rawStats": {}
  *   }
@@ -67,6 +69,9 @@ public class Asic {
     @JsonSerialize(using = BigDecimalSerializer.class)
     private final BigDecimal hashRate;
 
+    /** The power mode. */
+    private final PowerMode powerMode;
+
     /** The power state. */
     private final String powerState;
 
@@ -81,6 +86,7 @@ public class Asic {
      *
      * @param hashRate   The hash rate.
      * @param boards     The board count.
+     * @param powerMode  The power mode.
      * @param fans       The fan information.
      * @param temps      The temperatures.
      * @param powerState The power state.
@@ -91,6 +97,7 @@ public class Asic {
     private Asic(
             @JsonProperty("hashRate") final BigDecimal hashRate,
             @JsonProperty("boards") final int boards,
+            @JsonProperty("powerMode") final PowerMode powerMode,
             @JsonProperty("fans") final FanInfo fans,
             @JsonProperty("temps") final List<Integer> temps,
             @JsonProperty("powerState") final String powerState,
@@ -111,6 +118,7 @@ public class Asic {
                 "hasErrors cannot be null");
         this.hashRate = hashRate;
         this.boards = boards;
+        this.powerMode = powerMode;
         this.fans = fans;
         this.temps = new ArrayList<>(temps);
         this.powerState = powerState;
@@ -137,6 +145,7 @@ public class Asic {
                             new EqualsBuilder()
                                     .append(this.hashRate, asic.hashRate)
                                     .append(this.boards, asic.boards)
+                                    .append(this.powerMode, asic.powerMode)
                                     .append(this.fans, asic.fans)
                                     .append(this.temps, asic.temps)
                                     .append(this.powerState, asic.powerState)
@@ -193,6 +202,15 @@ public class Asic {
     }
 
     /**
+     * Returns the power mode.
+     *
+     * @return The power mode.
+     */
+    public PowerMode getPowerMode() {
+        return this.powerMode;
+    }
+
+    /**
      * Returns the power state.
      *
      * @return The power state.
@@ -224,6 +242,7 @@ public class Asic {
         return new HashCodeBuilder()
                 .append(this.hashRate)
                 .append(this.boards)
+                .append(this.powerMode)
                 .append(this.fans)
                 .append(this.temps)
                 .append(this.powerState)
@@ -239,6 +258,7 @@ public class Asic {
                 "%s [ " +
                         "hashRate=%s, " +
                         "boards=%d, " +
+                        "powerMode=%s, " +
                         "fans=%s, " +
                         "temps=%s, " +
                         "powerState=%s, " +
@@ -249,12 +269,43 @@ public class Asic {
                 getClass().getSimpleName(),
                 this.hashRate,
                 this.boards,
+                this.powerMode,
                 this.fans,
                 this.temps,
                 this.powerState,
                 this.hasErrors,
                 this.attributes,
                 this.rawStats);
+    }
+
+    /** ASIC power modes. */
+    public enum PowerMode {
+
+        /** Sleeping. */
+        @JsonProperty("sleeping")
+        SLEEPING,
+
+        /** Low power. */
+        @JsonProperty("low")
+        LOW,
+
+        /** Normal power. */
+        @JsonProperty("normal")
+        NORMAL,
+
+        /** High power. */
+        @JsonProperty("high")
+        HIGH;
+
+        /**
+         * Returns the name.
+         *
+         * @return The name.
+         */
+        @JsonValue
+        public String getName() {
+            return this.name().toLowerCase();
+        }
     }
 
     /** A builder for creating {@link Asic ASICs}. */
@@ -281,6 +332,9 @@ public class Asic {
 
         /** The hash rate. */
         private BigDecimal hashRate;
+
+        /** The power mode. */
+        private PowerMode powerMode = PowerMode.NORMAL;
 
         /** The power state. */
         private String powerState = null;
@@ -417,6 +471,7 @@ public class Asic {
             return new Asic(
                     this.hashRate,
                     this.boards,
+                    this.powerMode,
                     this.fanInfo,
                     this.temps,
                     this.powerState,
@@ -435,6 +490,7 @@ public class Asic {
         public Builder fromAsic(final Asic asic) {
             if (asic != null) {
                 setBoards(asic.boards);
+                setPowerMode(asic.powerMode);
                 setFanInfo(asic.fans);
                 hasErrors(asic.hasErrors);
                 setHashRate(asic.hashRate);
@@ -570,6 +626,18 @@ public class Asic {
                         "mrr_rig_id",
                         rigId);
             }
+            return this;
+        }
+
+        /**
+         * Sets the power mode.
+         *
+         * @param powerMode The mode.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setPowerMode(final PowerMode powerMode) {
+            this.powerMode = powerMode;
             return this;
         }
 

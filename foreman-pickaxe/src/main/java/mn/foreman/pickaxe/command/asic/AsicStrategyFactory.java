@@ -123,6 +123,16 @@ public class AsicStrategyFactory
             case "terminate":
                 strategy = Optional.of(new TerminateStrategy());
                 break;
+            case "power-mode":
+                strategy = Optional.of(
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getPowerModeStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache)));
+                break;
             default:
                 break;
         }

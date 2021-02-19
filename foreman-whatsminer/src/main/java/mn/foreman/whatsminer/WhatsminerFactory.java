@@ -89,6 +89,11 @@ public class WhatsminerFactory
                                 new NewFirmwareMacStrategy(
                                         apiIp,
                                         Integer.parseInt(apiPort)))
+                        .setFailureCallback(
+                                new SleepModeInspectionCallback(
+                                        apiIp,
+                                        apiPort,
+                                        config))
                         .build(),
                 // 202008
                 new CgMiner.Builder(cgContext, statsWhitelist)
@@ -117,6 +122,11 @@ public class WhatsminerFactory
                                 new NewFirmwareMacStrategy(
                                         apiIp,
                                         Integer.parseInt(apiPort)))
+                        .setFailureCallback(
+                                new SleepModeInspectionCallback(
+                                        apiIp,
+                                        apiPort,
+                                        config))
                         .build(),
                 // 202007
                 new CgMiner.Builder(cgContext, statsWhitelist)

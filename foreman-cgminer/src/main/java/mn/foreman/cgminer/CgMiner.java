@@ -63,6 +63,9 @@ public class CgMiner
     /** The connection timeout units. */
     private final TimeUnit connectTimeoutUnits;
 
+    /** The callback to invoke when a request failed. */
+    private final RequestFailureCallback failureCallback;
+
     /** The requests. */
     private final List<Request> requests;
 
@@ -80,23 +83,30 @@ public class CgMiner
         this.requests = new ArrayList<>(builder.requests);
         this.connectTimeout = builder.connectTimeout;
         this.connectTimeoutUnits = builder.connectTimeoutUnits;
+        this.failureCallback = builder.failureCallback;
     }
 
     @Override
     protected void addStats(
             final MinerStats.Builder statsBuilder)
             throws MinerException {
-        for (final Request request : this.requests) {
-            final List<CgMinerResponse> responses =
-                    query(
-                            request.request,
-                            request.patchingStrategy);
-            final ResponseStrategy strategy = request.responseStrategy;
-            for (final CgMinerResponse response : responses) {
-                strategy.processResponse(
-                        statsBuilder,
-                        response);
+        try {
+            for (final Request request : this.requests) {
+                final List<CgMinerResponse> responses =
+                        query(
+                                request.request,
+                                request.patchingStrategy);
+                final ResponseStrategy strategy = request.responseStrategy;
+                for (final CgMinerResponse response : responses) {
+                    strategy.processResponse(
+                            statsBuilder,
+                            response);
+                }
             }
+        } catch (final MinerException me) {
+            this.failureCallback.failed(
+                    statsBuilder,
+                    me);
         }
     }
 
@@ -132,6 +142,11 @@ public class CgMiner
         // Patch miners returning 'nan'
         if (goodJson.contains("nan,")) {
             goodJson = goodJson.replace("nan,", "0,");
+        }
+
+        // Patch miners returning 'inf'
+        if (goodJson.contains("inf,")) {
+            goodJson = goodJson.replace("inf,", "0,");
         }
 
         // Patch invalid escapes
@@ -323,6 +338,10 @@ public class CgMiner
         /** The connection timeout units. */
         private TimeUnit connectTimeoutUnits = TimeUnit.SECONDS;
 
+        /** The failure. */
+        private RequestFailureCallback failureCallback =
+                new RethrowingFailureCallback();
+
         /** The MAC strategy. */
         private MacStrategy macStrategy = new NullMacStrategy();
 
@@ -482,6 +501,18 @@ public class CgMiner
                 final TimeUnit connectTimeoutUnits) {
             this.connectTimeout = connectTimeout;
             this.connectTimeoutUnits = connectTimeoutUnits;
+            return this;
+        }
+
+        /**
+         * Sets the failure callback.
+         *
+         * @param failureCallback The failure callback.
+         *
+         * @return This builder instance.
+         */
+        public Builder setFailureCallback(final RequestFailureCallback failureCallback) {
+            this.failureCallback = failureCallback;
             return this;
         }
 
