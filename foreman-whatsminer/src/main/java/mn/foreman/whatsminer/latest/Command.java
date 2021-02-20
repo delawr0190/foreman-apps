@@ -4,39 +4,46 @@ package mn.foreman.whatsminer.latest;
 public enum Command {
 
     /** status. */
-    STATUS("status"),
+    STATUS("status", false),
 
     /** update_pools. */
-    UPDATE_POOLS("update_pools"),
+    UPDATE_POOLS("update_pools", true),
 
     /** reboot. */
-    REBOOT("reboot"),
+    REBOOT("reboot", true),
 
     /** factory_reset. */
-    FACTORY_RESET("factory_reset"),
+    FACTORY_RESET("factory_reset", true),
 
     /** net_config. */
-    NETWORK("net_config"),
+    NETWORK("net_config", true),
 
     /** power_off. */
-    POWER_OFF("power_off"),
+    POWER_OFF("power_off", true),
 
     /** power_on. */
-    POWER_ON("power_on"),
+    POWER_ON("power_on", true),
 
     /** get_token. */
-    GET_TOKEN("get_token");
+    GET_TOKEN("get_token", false);
 
     /** The command. */
     private final String command;
+
+    /** Whether or not the command is a write. */
+    private final boolean isWrite;
 
     /**
      * Constructor.
      *
      * @param command The command.
+     * @param isWrite Whether or not the command is behind the write API.
      */
-    Command(final String command) {
+    Command(
+            final String command,
+            final boolean isWrite) {
         this.command = command;
+        this.isWrite = isWrite;
     }
 
     /**
@@ -46,5 +53,14 @@ public enum Command {
      */
     public String getCommand() {
         return this.command;
+    }
+
+    /**
+     * Returns whether or not the command is a write.
+     *
+     * @return Whether or not the command is a write.
+     */
+    public boolean isWrite() {
+        return this.isWrite;
     }
 }

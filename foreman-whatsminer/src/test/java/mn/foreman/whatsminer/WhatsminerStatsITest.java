@@ -417,12 +417,9 @@ public class WhatsminerStatsITest
                         {
                                 // Whatsminer M31S (sleeping)
                                 ImmutableMap.of(
-                                        "{\"cmd\":\"get_token\"}",
+                                        "{\"cmd\":\"status\"}",
                                         new RpcHandler(
-                                                "{\"STATUS\":\"S\",\"When\":1608417125,\"Code\":134,\"Msg\":{\"time\":\"6915\",\"salt\":\"BQ5hoXV9\",\"newsalt\":\"a5TtWui2\"},\"Description\":\"whatsminer v1.1\"}"),
-                                        "{\"enc\":1,\"data\":\"3HjZpFnhS5g7OS3RRLzgaMipdasSiL3vVkn9nuJfQANZx8ucVffVFrwa0QxM8GxeZnz4wRGOwv9EXSwX+shB4w==\"}",
-                                        new RpcHandler(
-                                                "{\"enc\":\"e+iVEHt3XaqHeCA8EK8LNJYHagIBVlZBKWRLDLZ129gdwfRg5OKIwYRqIf7tATRDtBTFC21dQ1R1MaV8rA3QAirirR/h2mk8tmq9/fd+/kZooJBpUfNkKk3C/AcNe7b/ChH9cP3Z6gHu23+PYM1Uksdwhchdpb4xLhmZjyEzTaqpPcn3RoQepra8PL9bwOjL\"}")),
+                                                "{\"STATUS\":\"S\",\"When\":1613790817,\"Code\":131,\"Msg\":{\"btmineroff\":\"true\",\"Firmware Version\":\"'20210109.22.REL'\"},\"Description\":\"whatsminer v1.3\"}")),
                                 Collections.emptyList(),
                                 new MinerStats.Builder()
                                         .setApiIp("127.0.0.1")

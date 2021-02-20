@@ -94,7 +94,6 @@ public class WhatsminerApi {
      * @throws ApiException              on failure.
      * @throws PermissionDeniedException on write API not enabled.
      */
-    @SuppressWarnings("unchecked")
     public static boolean runCommand(
             final String ip,
             final int port,
@@ -105,90 +104,73 @@ public class WhatsminerApi {
             final TimeUnit connectionTimeoutUnits,
             final ResponseCallback responseCallback)
             throws ApiException, PermissionDeniedException {
+        if (command.isWrite()) {
+            return runWrite(
+                    ip,
+                    port,
+                    password,
+                    command,
+                    args,
+                    connectionTimeout,
+                    connectionTimeoutUnits,
+                    responseCallback);
+        }
+        return runRead(
+                ip,
+                port,
+                command,
+                args,
+                connectionTimeout,
+                connectionTimeoutUnits,
+                responseCallback);
+    }
+
+    /**
+     * Runs a non-encrypted API read.
+     *
+     * @param ip                     The ip.
+     * @param port                   The port.
+     * @param command                The command.
+     * @param args                   The args.
+     * @param connectionTimeout      The connection timeout.
+     * @param connectionTimeoutUnits The connection timeout (units).
+     * @param responseCallback       The response callback.
+     *
+     * @return Whether or not the command was successful.
+     *
+     * @throws ApiException              on failure.
+     * @throws PermissionDeniedException on failure.
+     */
+    public static boolean runRead(
+            final String ip,
+            final int port,
+            final Command command,
+            final Map<String, String> args,
+            final int connectionTimeout,
+            final TimeUnit connectionTimeoutUnits,
+            final ResponseCallback responseCallback)
+            throws ApiException, PermissionDeniedException {
         try {
-            // Request token
-            final Map<String, Object> result =
-                    readMap(
-                            query(
-                                    ip,
-                                    port,
-                                    toString(
-                                            toCommand(
-                                                    Command.GET_TOKEN,
-                                                    Collections.emptyMap(),
-                                                    null)),
-                                    connectionTimeout,
-                                    connectionTimeoutUnits)
-                                    .orElseThrow(() -> new ApiException("Failed to obtain response")));
-            LOG.debug("Msg: {}", result.get("Msg"));
-            final Map<String, String> saltInfo =
-                    (Map<String, String>) result.get("Msg");
-
-            // Generate md5 and sign
-            final String hostPasswordMd5 =
-                    md5Crypt(
-                            password,
-                            saltInfo.get("salt"));
-            final String hostSign =
-                    md5Crypt(
-                            hostPasswordMd5 + saltInfo.get("time"),
-                            saltInfo.get("newsalt"));
-
-            // Generate AES key
-            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            final byte[] aesKey = digest.digest(hostPasswordMd5.getBytes());
-
-            // Encrypt and encode
-            final String encrypted =
-                    encrypt(
-                            aesKey,
+            final String response =
+                    query(
+                            ip,
+                            port,
                             toString(
                                     toCommand(
                                             command,
                                             args,
-                                            hostSign)));
-
-            final Map<String, Object> toSend =
-                    ImmutableMap.of(
-                            "enc",
-                            1,
-                            "data",
-                            encrypted);
-
-            String response =
-                    query(
-                            ip,
-                            port,
-                            toString(toSend),
+                                            null)),
                             connectionTimeout,
                             connectionTimeoutUnits)
                             .orElseThrow(
                                     () -> new ApiException("Failed to obtain response"));
-
-            // Depending on the request type, could be structured differently
-            final String toDecrypt;
-            if (response.contains("\"enc\"")) {
-                toDecrypt = readMap(response).get("enc").toString();
-            } else {
-                toDecrypt = response;
-            }
-
-            response =
-                    decrypt(
-                            aesKey,
-                            toDecrypt);
 
             LOG.info("Whatsminer response: {}", response);
 
             return processResult(
                     response,
                     responseCallback);
-        } catch (final NoSuchAlgorithmException |
-                BadPaddingException |
-                InvalidKeyException |
-                NoSuchPaddingException |
-                IOException |
-                IllegalBlockSizeException e) {
+        } catch (final IOException e) {
             throw new ApiException(e);
         }
     }
@@ -398,6 +380,122 @@ public class WhatsminerApi {
                 toRead,
                 new TypeReference<Map<String, Object>>() {
                 });
+    }
+
+    /**
+     * Runs a command that requires encryption.
+     *
+     * @param ip                     The ip.
+     * @param port                   The port.
+     * @param password               The password.
+     * @param command                The command.
+     * @param args                   The args.
+     * @param connectionTimeout      The connection timeout.
+     * @param connectionTimeoutUnits The connection timeout (units).
+     * @param responseCallback       The response callback.
+     *
+     * @return Whether or not the command was successful.
+     *
+     * @throws ApiException              on failure.
+     * @throws PermissionDeniedException on failure.
+     */
+    @SuppressWarnings("unchecked")
+    private static boolean runWrite(
+            final String ip,
+            final int port,
+            final String password,
+            final Command command,
+            final Map<String, String> args,
+            final int connectionTimeout,
+            final TimeUnit connectionTimeoutUnits,
+            final ResponseCallback responseCallback)
+            throws ApiException, PermissionDeniedException {
+        try {
+            // Request token
+            final Map<String, Object> result =
+                    readMap(
+                            query(
+                                    ip,
+                                    port,
+                                    toString(
+                                            toCommand(
+                                                    Command.GET_TOKEN,
+                                                    Collections.emptyMap(),
+                                                    null)),
+                                    connectionTimeout,
+                                    connectionTimeoutUnits)
+                                    .orElseThrow(() -> new ApiException("Failed to obtain response")));
+            LOG.debug("Msg: {}", result.get("Msg"));
+            final Map<String, String> saltInfo =
+                    (Map<String, String>) result.get("Msg");
+
+            // Generate md5 and sign
+            final String hostPasswordMd5 =
+                    md5Crypt(
+                            password,
+                            saltInfo.get("salt"));
+            final String hostSign =
+                    md5Crypt(
+                            hostPasswordMd5 + saltInfo.get("time"),
+                            saltInfo.get("newsalt"));
+
+            // Generate AES key
+            final MessageDigest digest = MessageDigest.getInstance("SHA-256");
+            final byte[] aesKey = digest.digest(hostPasswordMd5.getBytes());
+
+            // Encrypt and encode
+            final String encrypted =
+                    encrypt(
+                            aesKey,
+                            toString(
+                                    toCommand(
+                                            command,
+                                            args,
+                                            hostSign)));
+
+            final Map<String, Object> toSend =
+                    ImmutableMap.of(
+                            "enc",
+                            1,
+                            "data",
+                            encrypted);
+
+            String response =
+                    query(
+                            ip,
+                            port,
+                            toString(toSend),
+                            connectionTimeout,
+                            connectionTimeoutUnits)
+                            .orElseThrow(
+                                    () -> new ApiException("Failed to obtain response"));
+
+            // Depending on the request type, could be structured differently
+            final String toDecrypt;
+            if (response.contains("\"enc\"")) {
+                toDecrypt = readMap(response).get("enc").toString();
+            } else {
+                toDecrypt = response;
+            }
+
+            response =
+                    decrypt(
+                            aesKey,
+                            toDecrypt);
+
+            LOG.info("Whatsminer response: {}", response);
+
+            return processResult(
+                    response,
+                    responseCallback);
+        } catch (final NoSuchAlgorithmException |
+                BadPaddingException |
+                InvalidKeyException |
+                NoSuchPaddingException |
+                IOException |
+                IllegalBlockSizeException e) {
+            throw new ApiException(e);
+        }
     }
 
     /**
