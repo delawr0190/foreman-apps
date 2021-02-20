@@ -93,6 +93,7 @@
         <module>foreman-iximiner</module>
         <module>foreman-jceminer</module>
         <module>foreman-lolminer</module>
+        <module>foreman-minerva</module>
         <module>foreman-miniz</module>
         <module>foreman-mkxminer</module>
         <module>foreman-model</module>
@@ -295,6 +296,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-lolminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-minerva</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

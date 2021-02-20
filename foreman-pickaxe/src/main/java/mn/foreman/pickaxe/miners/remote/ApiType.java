@@ -28,6 +28,7 @@ import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.iximiner.IximinerFactory;
 import mn.foreman.jceminer.JceminerFactory;
 import mn.foreman.lolminer.LolminerFactory;
+import mn.foreman.minerva.MinerVaFactory;
 import mn.foreman.miniz.MinizFactory;
 import mn.foreman.mkxminer.MkxminerFactory;
 import mn.foreman.model.Miner;
@@ -453,6 +454,13 @@ public enum ApiType {
             53,
             (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
                 return new MultMinerFactory();
+            }),
+
+    /** miner-va. */
+    MINERVA_API(
+            54,
+            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+                return new MinerVaFactory();
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */
