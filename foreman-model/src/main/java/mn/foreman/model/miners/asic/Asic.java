@@ -524,6 +524,15 @@ public class Asic {
         }
 
         /**
+         * Returns whether or not the builder has fans.
+         *
+         * @return Whether or not the builder has fans.
+         */
+        public boolean hasFans() {
+            return this.fanInfo != null;
+        }
+
+        /**
          * Sets the board count.
          *
          * @param boards The board count.

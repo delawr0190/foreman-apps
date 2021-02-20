@@ -23,6 +23,8 @@ import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.ApiType;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.innosilicon.InnosiliconType;
+import mn.foreman.minerva.MinerVaMacStrategy;
+import mn.foreman.minerva.MinerVaTypeFactory;
 import mn.foreman.model.*;
 import mn.foreman.model.cache.StatsCache;
 import mn.foreman.multminer.MultMinerChangePoolsAction;
@@ -610,6 +612,23 @@ public enum Manufacturer {
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
+    /** Miner-Va. */
+    MINERVA(
+            "miner-va",
+            (args, ip) ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.SUMMARY,
+                            new MinerVaTypeFactory(),
+                            new MinerVaMacStrategy(
+                                    ip,
+                                    4028),
+                            new NullPatchingStrategy()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
 
     /** MultMiner. */
