@@ -619,7 +619,7 @@ public enum Manufacturer {
             "miner-va",
             (args, ip) ->
                     new CgMinerDetectionStrategy(
-                            CgMinerCommand.SUMMARY,
+                            CgMinerCommand.STATS,
                             new MinerVaTypeFactory(),
                             new MinerVaMacStrategy(
                                     ip,
