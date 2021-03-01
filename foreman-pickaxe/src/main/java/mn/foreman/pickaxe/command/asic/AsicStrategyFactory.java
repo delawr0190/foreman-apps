@@ -133,6 +133,16 @@ public class AsicStrategyFactory
                                                 this.blacklist,
                                                 this.statsCache)));
                 break;
+            case "password":
+                strategy = Optional.of(
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getPasswordStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache)));
+                break;
             default:
                 break;
         }

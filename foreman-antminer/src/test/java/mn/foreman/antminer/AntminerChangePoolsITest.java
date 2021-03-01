@@ -9,7 +9,6 @@ import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.net.httpserver.HttpExchange;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -106,12 +105,12 @@ public class AntminerChangePoolsITest
                                                         "\"api-allow\" : \"A:0/0,W:*\",\n" +
                                                         "\"bitmain-freq\" : \"384\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=384",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -158,12 +157,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-use-vil\" : true,\n" +
                                                         "\"bitmain-freq\" : \"384\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=true&_ant_fan_customize_value=100&_ant_freq=384",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -209,12 +208,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-freq\" : \"550\",\n" +
                                                         "\"multi-version\" : \"1\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=550",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -386,12 +385,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-freq\" : \"550\",\n" +
                                                         "\"multi-version\" : \"1\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=550",
                                                 "ok\nok\n",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -457,12 +456,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-trigger-reboot\" : \"0\",\n" +
                                                         "\"multi-version\" : \"1\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=650",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -523,12 +522,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-work-mode\" : \"0\",\n" +
                                                         "\"bitmain-freq-level\" : \"100\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "{\"bitmain-fan-ctrl\":false,\"bitmain-fan-pwm\":\"100\",\"miner-mode\":\"0\",\"freq-level\":\"100\",\"pools\":[{\"url\":\"stratum+tcp://my-test-pool1.com:5588\",\"user\":\"my-test-username1\",\"pass\":\"my-test-password1\"},{\"url\":\"stratum+tcp://my-test-pool2.com:5588\",\"user\":\"my-test-username2\",\"pass\":\"my-test-password2\"},{\"url\":\"stratum+tcp://my-test-pool3.com:5588\",\"user\":\"my-test-username3\",\"pass\":\"my-test-password3\"}]}",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -580,12 +579,12 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-work-mode\" : \"\",\n" +
                                                         "\"bitmain-freq-level\" : \"\"" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "{\"bitmain-fan-ctrl\":false,\"bitmain-fan-pwm\":\"100\",\"miner-mode\":\"0\",\"freq-level\":\"100\",\"pools\":[{\"url\":\"stratum+tcp://my-test-pool1.com:5588\",\"user\":\"my-test-username1\",\"pass\":\"my-test-password1\"},{\"url\":\"stratum+tcp://my-test-pool2.com:5588\",\"user\":\"my-test-username2\",\"pass\":\"my-test-password2\"},{\"url\":\"stratum+tcp://my-test-pool3.com:5588\",\"user\":\"my-test-username3\",\"pass\":\"my-test-password3\"}]}",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -649,7 +648,7 @@ public class AntminerChangePoolsITest
                                                         "\"bitmain-chip-freq3\" : \"615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:535:545:545:545:545:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615:615\",\n" +
                                                         "\"multi-version\" : \"4\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/get_system_info.cgi",
                                         new HttpHandler(
                                                 "",
@@ -677,12 +676,12 @@ public class AntminerChangePoolsITest
                                                         "\"system_filesystem_version\":\"Sat Aug 15 18:55:51 CST 2020\",\n" +
                                                         "\"bmminer_version\":\"4.11.1\"\n" +
                                                         "}",
-                                                AntminerChangePoolsITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_miner_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_pool1url=stratum%2Btcp%3A%2F%2Fmy-test-pool1.com%3A5588&_ant_pool1user=my-test-username1&_ant_pool1pw=my-test-password1&_ant_pool2url=stratum%2Btcp%3A%2F%2Fmy-test-pool2.com%3A5588&_ant_pool2user=my-test-username2&_ant_pool2pw=my-test-password2&_ant_pool3url=stratum%2Btcp%3A%2F%2Fmy-test-pool3.com%3A5588&_ant_pool3user=my-test-username3&_ant_pool3pw=my-test-password3&_ant_nobeeper=false&_ant_notempoverctrl=false&_ant_fan_customize_switch=false&_ant_fan_customize_value=&_ant_freq=565",
                                                 "ok",
-                                                AntminerChangePoolsITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -696,18 +695,5 @@ public class AntminerChangePoolsITest
                                 true
                         }
                 });
-    }
-
-    /**
-     * Validates the exchange digest.
-     *
-     * @param exchange The exchange.
-     *
-     * @return Whether or not the digest was validated.
-     */
-    private static boolean validateDigest(final HttpExchange exchange) {
-        return AntminerTestUtils.validateDigest(
-                exchange,
-                "antMiner Configuration");
     }
 }

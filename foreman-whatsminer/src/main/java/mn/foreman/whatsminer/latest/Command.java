@@ -24,6 +24,9 @@ public enum Command {
     /** power_on. */
     POWER_ON("power_on", true),
 
+    /** update_pwd. */
+    UPDATE_PWD("update_pwd", true),
+
     /** get_token. */
     GET_TOKEN("get_token", false);
 

@@ -17,6 +17,7 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.auth.DigestScheme;
@@ -121,6 +122,45 @@ public class Query {
         }
 
         return response;
+    }
+
+    /**
+     * Performs an HTTP GET operation against an API that requires digest auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The digest auth username.
+     * @param password          The digest auth password.
+     * @param content           The GET content.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestGet(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                false,
+                content,
+                null,
+                responseProcessor,
+                1,
+                TimeUnit.SECONDS);
     }
 
     /**
@@ -797,7 +837,20 @@ public class Query {
 
             final HttpRequest httpRequest;
             if (!isPost) {
-                httpRequest = new HttpGet(url.getPath());
+                // GET
+                final URIBuilder uriBuilder =
+                        new URIBuilder()
+                                .setScheme("http")
+                                .setHost(host)
+                                .setPort(port)
+                                .setPath(path);
+                if (content != null) {
+                    content.forEach(entry ->
+                            uriBuilder.addParameter(
+                                    entry.get("key").toString(),
+                                    entry.get("value").toString()));
+                }
+                httpRequest = new HttpGet(uriBuilder.build());
             } else {
                 final HttpPost httpPost = new HttpPost(url.getPath());
                 if (content != null) {

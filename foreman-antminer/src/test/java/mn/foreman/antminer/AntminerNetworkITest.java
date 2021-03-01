@@ -11,7 +11,6 @@ import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
-import com.sun.net.httpserver.HttpExchange;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
@@ -104,12 +103,12 @@ public class AntminerNetworkITest
                                                         "\"system_filesystem_version\":\"Fri Aug 25 17:28:57 CST 2017\",\n" +
                                                         "\"cgminer_version\":\"4.9.0\"\n" +
                                                         "}",
-                                                AntminerNetworkITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_conf_nettype=Static&_ant_conf_hostname=hostname&_ant_conf_ipaddress=192.168.1.189&_ant_conf_netmask=255.255.255.0&_ant_conf_gateway=192.168.1.1&_ant_conf_dnsservers=192.168.1.1",
                                                 "ok",
-                                                AntminerNetworkITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -157,12 +156,12 @@ public class AntminerNetworkITest
                                                         "\"system_filesystem_version\":\"Fri Aug 25 17:28:57 CST 2017\",\n" +
                                                         "\"cgminer_version\":\"4.9.0\"\n" +
                                                         "}",
-                                                AntminerNetworkITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "_ant_conf_nettype=Static&_ant_conf_hostname=antMiner&_ant_conf_ipaddress=192.168.1.189&_ant_conf_netmask=255.255.255.0&_ant_conf_gateway=192.168.1.1&_ant_conf_dnsservers=192.168.1.1",
                                                 "ok",
-                                                AntminerNetworkITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -212,12 +211,12 @@ public class AntminerNetworkITest
                                                         "\"system_filesystem_version\":\"Mon Jun 1 20:27:44 CST 2020\",\n" +
                                                         "\"firmware_type\":\"Release\"\n" +
                                                         "}",
-                                                AntminerNetworkITest::validateDigest),
+                                                AntminerTestUtils::validateDigest),
                                         "/cgi-bin/set_network_conf.cgi",
                                         new HttpHandler(
                                                 "{\"ipHost\":\"Antminer\",\"ipPro\":2,\"ipAddress\":\"192.168.1.189\",\"ipSub\":\"255.255.255.0\",\"ipGateway\":\"192.168.1.1\",\"ipDns\":\"192.168.1.1\"}",
                                                 "ok",
-                                                AntminerNetworkITest::validateDigest)),
+                                                AntminerTestUtils::validateDigest)),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -236,18 +235,5 @@ public class AntminerNetworkITest
                                 false
                         },
                 });
-    }
-
-    /**
-     * Validates the exchange digest.
-     *
-     * @param exchange The exchange.
-     *
-     * @return Whether or not the digest was validated.
-     */
-    private static boolean validateDigest(final HttpExchange exchange) {
-        return AntminerTestUtils.validateDigest(
-                exchange,
-                "antMiner Configuration");
     }
 }

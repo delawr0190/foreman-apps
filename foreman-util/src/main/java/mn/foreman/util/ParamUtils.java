@@ -10,19 +10,36 @@ public class ParamUtils {
 
     /**
      * Adds the provided params.
-     * @param key The key.
+     *
+     * @param key   The key.
      * @param value The value.
-     * @param dest The dest.
+     * @param dest  The dest.
      */
     public static void addParam(
             final String key,
             final Object value,
             final List<Map<String, Object>> dest) {
         dest.add(
-                ImmutableMap.of(
-                        "key",
+                toParam(
                         key,
-                        "value",
                         value));
+    }
+
+    /**
+     * Converts the provided key and value to a param.
+     *
+     * @param key   The key.
+     * @param value The value.
+     *
+     * @return The param.
+     */
+    public static Map<String, Object> toParam(
+            final String key,
+            final Object value) {
+        return ImmutableMap.of(
+                "key",
+                key,
+                "value",
+                value);
     }
 }
