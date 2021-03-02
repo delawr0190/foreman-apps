@@ -271,7 +271,9 @@ public enum Manufacturer {
                                     new AvalonRebootAction()),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new AvalonPasswordAction())),
 
     /** Baikal. */
     BAIKAL(
@@ -507,7 +509,9 @@ public enum Manufacturer {
                             new DragonmintNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new DragonmintPasswordAction())),
 
     /** FutureBit. */
     FUTUREBIT(
@@ -630,7 +634,9 @@ public enum Manufacturer {
                             new DragonmintNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new DragonmintPasswordAction())),
 
     /** Miner-Va. */
     MINERVA(
@@ -739,7 +745,9 @@ public enum Manufacturer {
                             new ObeliskNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new ObeliskPasswordAction())),
 
     /** Spondoolies. */
     SPONDOOLIES(
