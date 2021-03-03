@@ -78,6 +78,7 @@ class WhatsminerUtils {
                 .flatMap(List::stream)
                 .forEach(map -> {
                     builder.addTemp(map.get("Temperature"));
+                    builder.addTemp(map.get("Chip Temp Avg"));
 
                     final BigDecimal boardHashRate =
                             new BigDecimal(
@@ -153,8 +154,10 @@ class WhatsminerUtils {
                                             .setCount(2)
                                             .addSpeed(map.get("Fan Speed In"))
                                             .addSpeed(map.get("Fan Speed Out"))
+                                            .addSpeed(map.get("Power Fanspeed"))
                                             .setSpeedUnits("RPM")
                                             .build())
+                            .addTemp(map.get("Env Temp"))
                             .setHashRate(
                                     new BigDecimal(map.get("MHS av"))
                                             .multiply(BigDecimal.valueOf(Math.pow(1000, 2))));
