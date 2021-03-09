@@ -12,6 +12,7 @@ import org.jsoup.nodes.Element;
 
 import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -147,14 +148,18 @@ class WhatsminerUtils {
                 .filter(map -> map.containsKey("MHS av"))
                 .forEach(map -> {
                     context.addSimple(ContextKey.MAC, map.get("MAC"));
+
+                    final List<String> fans = new LinkedList<>();
+                    addFan("Fan Speed In", map, fans);
+                    addFan("Fan Speed Out", map, fans);
+                    addFan("Power Fanspeed", map, fans);
+
                     builder
                             .setPowerMode(toPowerMode(map.get("Power Mode")))
                             .setFanInfo(
                                     new FanInfo.Builder()
-                                            .setCount(2)
-                                            .addSpeed(map.get("Fan Speed In"))
-                                            .addSpeed(map.get("Fan Speed Out"))
-                                            .addSpeed(map.get("Power Fanspeed"))
+                                            .setCount(fans.size())
+                                            .addSpeeds(fans)
                                             .setSpeedUnits("RPM")
                                             .build())
                             .addTemp(map.get("Env Temp"))
@@ -162,6 +167,23 @@ class WhatsminerUtils {
                                     new BigDecimal(map.get("MHS av"))
                                             .multiply(BigDecimal.valueOf(Math.pow(1000, 2))));
                 });
+    }
+
+    /**
+     * Adds the provided fans.
+     *
+     * @param key   The key.
+     * @param stats The stats.
+     * @param fans  The dest.
+     */
+    private static void addFan(
+            final String key,
+            final Map<String, String> stats,
+            final List<String> fans) {
+        final String fan = stats.get(key);
+        if (fan != null && !fan.isEmpty() && !"0".equals(fan)) {
+            fans.add(fan);
+        }
     }
 
     /**

@@ -170,6 +170,18 @@ public class FanInfo {
             return this;
         }
 
+        /**
+         * Adds the speends.
+         *
+         * @param speeds The speeds.
+         *
+         * @return The builder instance.
+         */
+        public Builder addSpeeds(final List<String> speeds) {
+            speeds.forEach(this::addSpeed);
+            return this;
+        }
+
         @Override
         public FanInfo build() {
             return new FanInfo(

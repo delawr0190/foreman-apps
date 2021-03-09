@@ -8,6 +8,7 @@ import mn.foreman.model.MinerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -71,20 +72,16 @@ public class WhatsminerFactory
                         .setCommandKey("cmd")
                         .addRequest(
                                 new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.POOLS)
+                                        .addCommand(CgMinerCommand.POOLS)
+                                        .addCommand(CgMinerCommand.SUMMARY)
+                                        .addCommand(CgMinerCommand.EDEVS)
                                         .build(),
-                                new PoolsResponseStrategy(
-                                        new MrrRigIdCallback(cgContext)))
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.SUMMARY)
-                                        .build(),
-                                newFirmwareStrategy)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .setCommand(CgMinerCommand.EDEVS)
-                                        .build(),
-                                newFirmwareStrategy)
+                                new MultiResponseStrategy(
+                                        Arrays.asList(
+                                                new PoolsResponseStrategy(
+                                                        new MrrRigIdCallback(
+                                                                cgContext)),
+                                                newFirmwareStrategy)))
                         .setMacStrategy(
                                 new NewFirmwareMacStrategy(
                                         apiIp,

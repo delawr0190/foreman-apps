@@ -4,6 +4,7 @@ import mn.foreman.io.Query;
 import mn.foreman.model.AbstractPasswordAction;
 
 import com.google.common.collect.ImmutableMap;
+import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,7 +48,7 @@ public class AvalonPasswordAction
                                     "confirm",
                                     "value",
                                     newPassword)),
-                    (code, s1) -> success.set(true));
+                    (code, s1) -> success.set(code == HttpStatus.SC_OK));
         } catch (final Exception e) {
             LOG.warn("Exception occurred", e);
         }
