@@ -427,6 +427,9 @@ public class Query {
      * @param path              The path.
      * @param auth              The auth.
      * @param payload           The payload.
+     * @param type              The type.
+     * @param timeout           The timeout.
+     * @param timeoutUnits      The timeout (units).
      * @param responseProcessor The response processor.
      * @param <T>               The type.
      *
@@ -439,6 +442,8 @@ public class Query {
             final String auth,
             final String payload,
             final TypeReference<T> type,
+            final int timeout,
+            final TimeUnit timeoutUnits,
             final BiConsumer<Integer, String> responseProcessor)
             throws Exception {
         T result;
@@ -470,8 +475,8 @@ public class Query {
                             .setDefaultRequestConfig(
                                     RequestConfig
                                             .custom()
-                                            .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1))
-                                            .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                                            .setConnectTimeout((int) timeoutUnits.toMillis(timeout))
+                                            .setSocketTimeout((int) timeoutUnits.toMillis(timeout))
                                             .build())
                             .build();
 
@@ -827,8 +832,12 @@ public class Query {
                 apiPort,
                 uri,
                 ImmutableMap.of(
+                        "Accept",
+                        "application/json",
                         "Authorization",
-                        "Bearer " + token),
+                        "Bearer " + token,
+                        "Content-Type",
+                        "application/json"),
                 "GET",
                 type,
                 connectTimeout,

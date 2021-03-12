@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.HttpStatus;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Reboots an OpenMiner miner. */
@@ -50,6 +51,8 @@ public class OpenMinerRebootAction
                     "{\"action\":\"reboot\",\"parameters\":{}}",
                     new TypeReference<Map<String, Object>>() {
                     },
+                    5,
+                    TimeUnit.SECONDS,
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to reboot", e);

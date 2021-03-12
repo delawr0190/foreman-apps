@@ -8,6 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.HttpStatus;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -58,6 +59,8 @@ public class OpenMinerPasswordAction
                             newPassword),
                     new TypeReference<Map<String, String>>() {
                     },
+                    5,
+                    TimeUnit.SECONDS,
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to change password", e);

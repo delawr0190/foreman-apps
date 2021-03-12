@@ -68,10 +68,14 @@ public class OpenMiner
                 this.apiPort,
                 this.username,
                 this.password,
-                rawJson -> rawStats.putAll(
-                        Flatten.flattenAndFilter(
-                                rawJson,
-                                this.statsWhitelist)));
+                rawJson -> {
+                    if (rawJson != null) {
+                        rawStats.putAll(
+                                Flatten.flattenAndFilter(
+                                        rawJson,
+                                        this.statsWhitelist));
+                    }
+                });
         addAgg(
                 stats,
                 rawStats,

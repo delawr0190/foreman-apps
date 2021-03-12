@@ -43,6 +43,8 @@ public class OpenMinerUtils {
                             "{\"email\":\"" + username + "\",\"password\":\"" + password + "\"}",
                             new TypeReference<Map<String, String>>() {
                             },
+                            5,
+                            TimeUnit.SECONDS,
                             (integer, s) -> {
                             });
             if (result.isPresent()) {

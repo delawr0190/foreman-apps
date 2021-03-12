@@ -75,7 +75,7 @@ public class OpenMinerDetectionStrategy
                 detection =
                         Detection.builder()
                                 .ipAddress(ip)
-                                .port(port)
+                                .port(realPort)
                                 .minerType(type.get())
                                 .parameters(newArgs)
                                 .build();

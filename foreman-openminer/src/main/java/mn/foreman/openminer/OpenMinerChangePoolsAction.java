@@ -87,6 +87,8 @@ public class OpenMinerChangePoolsAction
                     OBJECT_MAPPER.writeValueAsString(currentSettings),
                     new TypeReference<Map<String, String>>() {
                     },
+                    5,
+                    TimeUnit.SECONDS,
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to change pools", e);
