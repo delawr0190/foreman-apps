@@ -140,16 +140,14 @@ public class FanInfo {
         private String speedUnits;
 
         /**
-         * Adds a speed.
+         * Adds the speeds.
          *
-         * @param speed The speed.
+         * @param speeds The speeds.
          *
          * @return The builder instance.
          */
-        public Builder addSpeed(final String speed) {
-            if ((speed != null) && !speed.isEmpty()) {
-                return addSpeed(Integer.parseInt(speed));
-            }
+        public Builder addIntSpeeds(final List<Integer> speeds) {
+            speeds.forEach(this::addSpeed);
             return this;
         }
 
@@ -171,7 +169,21 @@ public class FanInfo {
         }
 
         /**
-         * Adds the speends.
+         * Adds a speed.
+         *
+         * @param speed The speed.
+         *
+         * @return The builder instance.
+         */
+        public Builder addSpeed(final String speed) {
+            if ((speed != null) && !speed.isEmpty()) {
+                return addSpeed(Integer.parseInt(speed));
+            }
+            return this;
+        }
+
+        /**
+         * Adds the speeds.
          *
          * @param speeds The speeds.
          *

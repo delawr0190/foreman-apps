@@ -39,6 +39,7 @@ import mn.foreman.nanominer.NanominerFactory;
 import mn.foreman.nbminer.NbminerFactory;
 import mn.foreman.nicehash.NiceHashMinerFactory;
 import mn.foreman.obelisk.ObeliskFactory;
+import mn.foreman.openminer.OpenMinerFactory;
 import mn.foreman.optiminer.OptiminerFactory;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
 import mn.foreman.rhminer.RhminerFactory;
@@ -461,6 +462,13 @@ public enum ApiType {
             54,
             (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
                 return new MinerVaFactory();
+            }),
+
+    /** open-miner. */
+    OPENMINER_API(
+            55,
+            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+                return new OpenMinerFactory();
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */

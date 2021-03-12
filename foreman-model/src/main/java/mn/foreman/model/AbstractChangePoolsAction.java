@@ -11,6 +11,23 @@ import java.util.stream.Collectors;
 public abstract class AbstractChangePoolsAction
         implements AsicAction.CompletableAction {
 
+    /** The required pools. */
+    private final int requiredPools;
+
+    /** Constructor. */
+    protected AbstractChangePoolsAction() {
+        this(3);
+    }
+
+    /**
+     * Constructor.
+     *
+     * @param requiredPools The required pools.
+     */
+    protected AbstractChangePoolsAction(final int requiredPools) {
+        this.requiredPools = requiredPools;
+    }
+
     @Override
     public boolean run(
             final String ip,
@@ -18,7 +35,7 @@ public abstract class AbstractChangePoolsAction
             final Map<String, Object> parameters)
             throws MinerException {
         final List<Pool> pools = toPools(parameters);
-        if (pools.size() != 3) {
+        if (pools.size() < this.requiredPools) {
             throw new MinerException("3 pools are required");
         }
 

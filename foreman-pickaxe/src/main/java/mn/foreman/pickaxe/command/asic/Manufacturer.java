@@ -32,6 +32,7 @@ import mn.foreman.multminer.MultMinerDetectionStrategy;
 import mn.foreman.multminer.MultMinerFactory;
 import mn.foreman.multminer.MultMinerRebootAction;
 import mn.foreman.obelisk.*;
+import mn.foreman.openminer.*;
 import mn.foreman.spondoolies.SpondooliesTypeFactory;
 import mn.foreman.strongu.StrongUConfValue;
 import mn.foreman.strongu.StrongUFactory;
@@ -309,6 +310,31 @@ public enum Manufacturer {
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
+    /** Bitfury. */
+    BITFURY(
+            "bitfury",
+            (args, ip) -> new OpenMinerDetectionStrategy(),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new OpenMinerFactory(),
+                            new OpenMinerChangePoolsAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new OpenMinerFactory(),
+                            new OpenMinerRebootAction()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new OpenMinerPasswordAction())),
 
     /** Blackminer. */
     BLACKMINER(

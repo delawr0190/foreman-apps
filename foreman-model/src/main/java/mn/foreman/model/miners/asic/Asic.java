@@ -392,6 +392,18 @@ public class Asic {
         }
 
         /**
+         * Adds the provided temps.
+         *
+         * @param temps The temps to add.
+         *
+         * @return This builder instance.
+         */
+        public Builder addIntTemps(final List<Integer> temps) {
+            temps.forEach(this::addTemp);
+            return this;
+        }
+
+        /**
          * Adds the provided values.
          *
          * @param values The values.

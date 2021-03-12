@@ -46,6 +46,11 @@ public class Query {
     private static final Logger LOG =
             LoggerFactory.getLogger(Query.class);
 
+    /** The mapper for JSON. */
+    private static final ObjectMapper OBJECT_MAPPER =
+            new ObjectMapper()
+                    .registerModule(new JavaTimeModule());
+
     /**
      * Constructor.
      *
@@ -415,6 +420,102 @@ public class Query {
     }
 
     /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param auth              The auth.
+     * @param payload           The payload.
+     * @param responseProcessor The response processor.
+     * @param <T>               The type.
+     *
+     * @throws Exception on failure.
+     */
+    public static <T> Optional<T> restPost(
+            final String host,
+            final int port,
+            final String path,
+            final String auth,
+            final String payload,
+            final TypeReference<T> type,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        T result;
+
+        final URI uri =
+                new URI(
+                        "http",
+                        null,
+                        host,
+                        port,
+                        path,
+                        null,
+                        null);
+        final URL url = uri.toURL();
+
+        final HttpHost targetHost =
+                new HttpHost(
+                        url.getHost(),
+                        url.getPort(),
+                        url.getProtocol());
+
+        CloseableHttpClient httpClient = null;
+        try {
+            final HttpClientContext context = HttpClientContext.create();
+            httpClient =
+                    HttpClients
+                            .custom()
+                            .disableAutomaticRetries()
+                            .setDefaultRequestConfig(
+                                    RequestConfig
+                                            .custom()
+                                            .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                                            .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                                            .build())
+                            .build();
+
+            final HttpPost httpPost = new HttpPost(url.getPath());
+            httpPost.setEntity(new StringEntity(payload));
+            httpPost.setHeader("Accept", "application/json");
+            httpPost.setHeader("Content-type", "application/json");
+            if (auth != null) {
+                httpPost.setHeader("Authorization", "Bearer " + auth);
+            }
+
+            LOG.debug("Sending request: {}", httpPost);
+
+            try (final CloseableHttpResponse response =
+                         httpClient.execute(
+                                 targetHost,
+                                 httpPost,
+                                 context)) {
+                final StatusLine statusLine =
+                        response.getStatusLine();
+                final String responseBody =
+                        EntityUtils.toString(response.getEntity());
+                LOG.debug("Received digest API response: {}", responseBody);
+                try {
+                    result =
+                            OBJECT_MAPPER.readValue(
+                                    responseBody,
+                                    type);
+                } catch (final Exception e) {
+                    throw new MinerException(e);
+                }
+                responseProcessor.accept(
+                        statusLine.getStatusCode(),
+                        responseBody);
+            }
+        } finally {
+            if (httpClient != null) {
+                httpClient.close();
+            }
+        }
+        return Optional.ofNullable(result);
+    }
+
+    /**
      * Utility method to perform a query against a REST API.
      *
      * @param apiIp                  The API IP.
@@ -704,6 +805,47 @@ public class Query {
      * @param type                The response class.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
+     * @param rawCallback         The raw callback.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQueryBearer(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String token,
+            final TypeReference<T> type,
+            final int connectTimeout,
+            final TimeUnit connectTimeoutUnits,
+            final Consumer<String> rawCallback)
+            throws MinerException {
+        return restQuery(
+                apiIp,
+                apiPort,
+                uri,
+                ImmutableMap.of(
+                        "Authorization",
+                        "Bearer " + token),
+                "GET",
+                type,
+                connectTimeout,
+                connectTimeoutUnits,
+                rawCallback);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param uri                 The URI.
+     * @param token               The token.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
      * @param <T>                 The response type.
      *
      * @return The response.
@@ -719,14 +861,11 @@ public class Query {
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits)
             throws MinerException {
-        return restQuery(
+        return restQueryBearer(
                 apiIp,
                 apiPort,
                 uri,
-                ImmutableMap.of(
-                        "Authorization",
-                        "Bearer " + token),
-                "GET",
+                token,
                 type,
                 connectTimeout,
                 connectTimeoutUnits,
