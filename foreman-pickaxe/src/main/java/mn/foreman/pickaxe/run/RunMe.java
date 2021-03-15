@@ -31,10 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** {@link RunMe} provides the application context for PICKAXE. */
@@ -85,8 +82,9 @@ public class RunMe {
                     TimeUnit.SECONDS);
 
     /** The thread pool for running tasks. */
-    private final ForkJoinPool statsThreadPool =
-            new ForkJoinPool();
+    private final Executor statsThreadPool =
+            Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors() * 4);
 
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
@@ -341,12 +339,19 @@ public class RunMe {
                                 Lists.partition(
                                         miners,
                                         25);
-                        this.statsThreadPool
-                                .submit(() ->
-                                        partitionedMiners
-                                                .parallelStream()
-                                                .forEach(this::updateMiners))
-                                .get();
+                        final CountDownLatch doneLatch =
+                                new CountDownLatch(partitionedMiners.size());
+                        partitionedMiners.forEach(toScan ->
+                                this.statsThreadPool.execute(() -> {
+                                    try {
+                                        updateMiners(toScan);
+                                    } catch (final Exception e) {
+                                        // Ignore
+                                    } finally {
+                                        doneLatch.countDown();
+                                    }
+                                }));
+                        doneLatch.await();
                     } catch (final Exception e) {
                         LOG.warn("Exception occurred while updating", e);
                     }
