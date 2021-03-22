@@ -164,7 +164,7 @@ public class Query {
                 content,
                 null,
                 responseProcessor,
-                1,
+                5,
                 TimeUnit.SECONDS);
     }
 
