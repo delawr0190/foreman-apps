@@ -424,7 +424,10 @@ public enum Manufacturer {
                                     "bb"),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new StockPasswordAction(
+                                    "blackMiner Configuration"))),
 
     /** Cheetahminer. */
     CHEETAHMINER(
@@ -888,7 +891,10 @@ public enum Manufacturer {
                                     "stu"),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new StockPasswordAction(
+                                    "stuMiner Configuration"))),
 
     /** Whatsminer. */
     WHATSMINER(
