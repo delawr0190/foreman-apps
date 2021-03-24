@@ -36,7 +36,7 @@ public class ScanStrategy
     private static final int SCAN_THREADS =
             Math.min(
                     6,
-                    Runtime.getRuntime().availableProcessors());
+                    Runtime.getRuntime().availableProcessors() * 4);
 
     /** The thread pool to use for scanning. */
     private static final ExecutorService THREAD_POOL =

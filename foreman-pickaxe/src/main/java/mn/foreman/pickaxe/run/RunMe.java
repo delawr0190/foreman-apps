@@ -4,12 +4,12 @@ import mn.foreman.api.ForemanApi;
 import mn.foreman.api.ForemanApiImpl;
 import mn.foreman.api.JdkWebUtil;
 import mn.foreman.api.endpoints.miners.Miners;
+import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.Commands;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.cache.SelfExpiringStatsCache;
 import mn.foreman.model.cache.StatsCache;
-import mn.foreman.model.error.MinerException;
 import mn.foreman.pickaxe.command.CommandProcessor;
 import mn.foreman.pickaxe.command.CommandProcessorImpl;
 import mn.foreman.pickaxe.command.asic.AsicStrategyFactory;
@@ -54,6 +54,11 @@ public class RunMe {
     /** The blacklisted miners. */
     private final Set<MinerID> blacklistedMiners =
             Sets.newConcurrentHashSet();
+
+    /** The thread pool for running commands. */
+    private final Executor commandThreadPool =
+            Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors() * 4);
 
     /** The {@link Configuration}. */
     private final Configuration configuration;
@@ -227,17 +232,12 @@ public class RunMe {
                                         .pickaxe()
                                         .getCommands();
                         if (commands.isPresent()) {
-                            commands
-                                    .get()
+                            commands.get()
                                     .commands
-                                    .parallelStream()
-                                    .forEach(command -> {
-                                        try {
-                                            commandProcessor.runCommand(command);
-                                        } catch (final MinerException me) {
-                                            LOG.warn("Exception while running command", me);
-                                        }
-                                    });
+                                    .forEach(command ->
+                                            submitCommand(
+                                                    command,
+                                                    commandProcessor));
                         } else {
                             LOG.warn("Failed to obtain commands");
                         }
@@ -359,6 +359,25 @@ public class RunMe {
                 0,
                 30,
                 TimeUnit.SECONDS);
+    }
+
+    /**
+     * Submits the provided {@link CommandStart} to the {@link
+     * #commandThreadPool} for processing.
+     *
+     * @param commandStart     The command to start.
+     * @param commandProcessor The processor.
+     */
+    private void submitCommand(
+            final CommandStart commandStart,
+            final CommandProcessor commandProcessor) {
+        this.commandThreadPool.execute(() -> {
+            try {
+                commandProcessor.runCommand(commandStart);
+            } catch (final Exception e) {
+                LOG.warn("Exception while running command", e);
+            }
+        });
     }
 
     /**
