@@ -1011,7 +1011,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer Z11
-                                new BigDecimal(0.000001),
+                                new BigDecimal(0.000000001),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1038,7 +1038,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("145474.38999999999341700917152258969167188951132629881612956523895263671875000000"))
+                                                        .setHashRate(new BigDecimal("145474.390000000009060376525549735366826635540871137663998524658381938934326171875000000000"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
