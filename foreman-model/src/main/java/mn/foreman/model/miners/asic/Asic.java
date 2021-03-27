@@ -10,10 +10,10 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -431,7 +431,7 @@ public class Asic {
         public Builder addTemp(final String temp) {
             if ((temp != null) && !temp.isEmpty() && !temp.replace("-", "").isEmpty()) {
                 final List<String> temps = new LinkedList<>();
-                if (StringUtils.countMatches(temp, "-") > 1) {
+                if (!NumberUtils.isCreatable(temp)) {
                     String sign = "";
                     for (final String tempValue : temp.split("-")) {
                         if (tempValue != null && !tempValue.isEmpty()) {
