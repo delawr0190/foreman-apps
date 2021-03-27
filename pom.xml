@@ -7,7 +7,7 @@
     <groupId>mn.foreman</groupId>
     <artifactId>foreman-buildmaster</artifactId>
     <packaging>pom</packaging>
-    <version>3.49.1</version>
+    <version>3.49.2-SNAPSHOT</version>
 
     <name>foreman: buildmaster</name>
     <organization>
