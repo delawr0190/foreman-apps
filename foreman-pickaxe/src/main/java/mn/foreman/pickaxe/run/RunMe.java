@@ -210,7 +210,7 @@ public class RunMe {
                     this.blacklistedMiners.clear();
                 },
                 0,
-                5,
+                2,
                 TimeUnit.MINUTES);
     }
 
@@ -246,8 +246,8 @@ public class RunMe {
                     }
                 },
                 0,
-                1,
-                TimeUnit.MINUTES);
+                30,
+                TimeUnit.SECONDS);
     }
 
     /**
