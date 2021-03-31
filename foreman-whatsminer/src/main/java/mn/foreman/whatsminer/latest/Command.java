@@ -15,6 +15,9 @@ public enum Command {
     /** factory_reset. */
     FACTORY_RESET("factory_reset", true),
 
+    /** set_led. */
+    SET_LED("set_led", true),
+
     /** net_config. */
     NETWORK("net_config", true),
 

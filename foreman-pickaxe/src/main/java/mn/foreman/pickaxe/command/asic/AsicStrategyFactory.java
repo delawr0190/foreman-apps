@@ -143,6 +143,16 @@ public class AsicStrategyFactory
                                                 this.blacklist,
                                                 this.statsCache)));
                 break;
+            case "blink":
+                strategy = Optional.of(
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getBlinkStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache)));
+                break;
             default:
                 break;
         }

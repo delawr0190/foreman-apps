@@ -94,7 +94,7 @@ public class RunMe {
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
             Executors.newScheduledThreadPool(
-                    Runtime.getRuntime().availableProcessors());
+                    Runtime.getRuntime().availableProcessors() * 4);
 
     /**
      * Constructor.
