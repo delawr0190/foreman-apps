@@ -89,7 +89,7 @@ public class RunMe {
     /** The thread pool for running tasks. */
     private final Executor statsThreadPool =
             Executors.newFixedThreadPool(
-                    Runtime.getRuntime().availableProcessors() * 4);
+                    Runtime.getRuntime().availableProcessors() * 8);
 
     /** The thread pool for running tasks. */
     private final ScheduledExecutorService threadPool =
@@ -338,7 +338,7 @@ public class RunMe {
                         final List<List<Miner>> partitionedMiners =
                                 Lists.partition(
                                         miners,
-                                        25);
+                                        5);
                         final CountDownLatch doneLatch =
                                 new CountDownLatch(partitionedMiners.size());
                         partitionedMiners.forEach(toScan ->
