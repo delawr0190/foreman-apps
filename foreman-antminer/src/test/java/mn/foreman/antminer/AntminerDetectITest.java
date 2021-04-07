@@ -42,7 +42,18 @@ public class AntminerDetectITest
         super(
                 new AntminerDetectionStrategy(
                         "antMiner Configuration",
-                        Collections.emptyList(),
+                        Arrays.asList(
+                                new StockMacStrategy(
+                                        "127.0.0.1",
+                                        8080,
+                                        "antMiner Configuration",
+                                        "root",
+                                        "root"),
+                                new BraiinsMacStrategy(
+                                        "127.0.0.1",
+                                        8080,
+                                        "root",
+                                        "root")),
                         Arrays.asList(
                                 new StockHostnameStrategy(
                                         "antMiner Configuration"),
@@ -347,7 +358,45 @@ public class AntminerDetectITest
                                 false,
                                 null,
                                 "obmllc.l3_1"
-                        }
+                        },
+                        {
+                                // Hostname preferred (L3+)
+                                Arrays.asList(
+                                        (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
+                                                4028,
+                                                ImmutableMap.of(
+                                                        "{\"command\":\"version\"}",
+                                                        new RpcHandler(
+                                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1617801219,\"Code\":22,\"Msg\":\"BMMiner versions\",\"Description\":\"bmminer 2.4.2-1.2.2-90ed\"}],\"VERSION\":[{\"BMMiner\":\"2.4.2-1.2.2-90ed\",\"Miner\":\"30.0.1.3\",\"CompileTime\":\"Wed Nov 7 11:19:02 CST 2018\",\"Type\":\"Antminer S9i\",\"API\":\"3.1\"}],\"id\":1}"))),
+                                        () -> new FakeHttpMinerServer(
+                                                8080,
+                                                ImmutableMap.of(
+                                                        "/cgi-bin/get_network_info.cgi",
+                                                        new HttpHandler(
+                                                                "",
+                                                                "<?xml version=\"1.0\" encoding=\"iso-8859-1\"?>\n" +
+                                                                        "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\"\n" +
+                                                                        "         \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">\n" +
+                                                                        "<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\">\n" +
+                                                                        " <head>\n" +
+                                                                        "  <title>401 - Unauthorized</title>\n" +
+                                                                        " </head>\n" +
+                                                                        " <body>\n" +
+                                                                        "  <h1>401 - Unauthorized</h1>\n" +
+                                                                        " </body>\n" +
+                                                                        "</html>",
+                                                                exchange -> AntminerTestUtils.validateDigest(
+                                                                        exchange,
+                                                                        "antMiner Configuration"))))),
+                                AntminerType.ANTMINER_S9I,
+                                toHostnameArgs(
+                                        false,
+                                        null,
+                                        null),
+                                false,
+                                null,
+                                null
+                        },
                 });
     }
 

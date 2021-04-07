@@ -4,7 +4,6 @@ import mn.foreman.model.MacStrategy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.ImmutableMap;
 import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,7 +87,7 @@ public class BraiinsMacStrategy
         } catch (final Exception e) {
             // Ignore if we can't get the MAC
         }
-        return Optional.of(mac.get());
+        return Optional.ofNullable(mac.get());
     }
 
     /**
