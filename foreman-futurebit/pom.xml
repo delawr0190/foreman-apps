@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.51.0</version>
+        <version>3.51.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>foreman-futurebit</artifactId>
-    <version>3.51.0</version>
+    <version>3.51.1-SNAPSHOT</version>
     <name>foreman: foreman-futurebit</name>
 
     <packaging>jar</packaging>
