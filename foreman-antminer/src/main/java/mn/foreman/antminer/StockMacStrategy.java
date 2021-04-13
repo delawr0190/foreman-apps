@@ -1,5 +1,6 @@
 package mn.foreman.antminer;
 
+import mn.foreman.antminer.error.NotAuthorizedException;
 import mn.foreman.io.Query;
 import mn.foreman.model.MacStrategy;
 
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Obtains the MAC from stock antminer firmware. */
@@ -64,6 +66,7 @@ public class StockMacStrategy
 
     @Override
     public Optional<String> getMacAddress() {
+        final AtomicBoolean unauthorized = new AtomicBoolean(false);
         final AtomicReference<String> mac = new AtomicReference<>();
         try {
             Query.digestGet(
@@ -75,12 +78,15 @@ public class StockMacStrategy
                     this.password,
                     (code, s) -> {
                         try {
-                            final Map<String, Object> conf =
-                                    OBJECT_MAPPER.readValue(
-                                            s,
-                                            new TypeReference<Map<String, Object>>() {
-                                            });
-                            mac.set(toMac(conf));
+                            if (s != null) {
+                                unauthorized.set(s.toLowerCase().contains("unauthorized"));
+                                final Map<String, Object> conf =
+                                        OBJECT_MAPPER.readValue(
+                                                s,
+                                                new TypeReference<Map<String, Object>>() {
+                                                });
+                                mac.set(toMac(conf));
+                            }
                         } catch (final IOException e) {
                             LOG.warn("Exception occurred while querying", e);
                         }
@@ -88,6 +94,11 @@ public class StockMacStrategy
         } catch (final Exception e) {
             // Ignore if we can't get the MAC
         }
+
+        if (unauthorized.get()) {
+            throw new NotAuthorizedException("Invalid credentials");
+        }
+
         return Optional.ofNullable(mac.get());
     }
 

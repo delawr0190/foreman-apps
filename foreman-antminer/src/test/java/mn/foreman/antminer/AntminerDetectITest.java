@@ -31,6 +31,7 @@ public class AntminerDetectITest
      * @param hostnamePreferred Whether or not hostname is preferred.
      * @param hostname          The hostname.
      * @param worker            The worker.
+     * @param found             Whether or not the detection found anything.
      */
     public AntminerDetectITest(
             final List<Supplier<FakeMinerServer>> servers,
@@ -38,7 +39,8 @@ public class AntminerDetectITest
             final Map<String, Object> args,
             final boolean hostnamePreferred,
             final String hostname,
-            final String worker) {
+            final String worker,
+            final boolean found) {
         super(
                 new AntminerDetectionStrategy(
                         "antMiner Configuration",
@@ -66,7 +68,7 @@ public class AntminerDetectITest
                                         "4028"))),
                 servers,
                 args,
-                Detection.builder()
+                found ? Detection.builder()
                         .minerType(expectedType)
                         .ipAddress("127.0.0.1")
                         .port(4028)
@@ -76,7 +78,8 @@ public class AntminerDetectITest
                                 hostname,
                                 worker)
                                 : args)
-                        .build(),
+                        .build()
+                        : null,
                 (integer, stringObjectMap) -> stringObjectMap);
     }
 
@@ -102,7 +105,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer L3+
@@ -117,7 +121,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer S9
@@ -132,7 +137,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer S17 Pro
@@ -147,7 +153,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer S17+
@@ -162,7 +169,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer S19 Pro
@@ -177,7 +185,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer Z9
@@ -192,7 +201,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Antminer Z9 Mini
@@ -207,7 +217,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Braiins OS S9
@@ -222,7 +233,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Braiins OS+ S9
@@ -237,7 +249,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Braiins OS S9
@@ -252,7 +265,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Hiveon S9
@@ -267,7 +281,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // NiceHash
@@ -282,7 +297,8 @@ public class AntminerDetectITest
                                 DEFAULT_ARGS,
                                 false,
                                 null,
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Hostname preferred (L3+)
@@ -333,7 +349,8 @@ public class AntminerDetectITest
                                         null),
                                 true,
                                 "antMiner",
-                                null
+                                null,
+                                true
                         },
                         {
                                 // Worker preferred (L3+)
@@ -357,10 +374,11 @@ public class AntminerDetectITest
                                         null),
                                 false,
                                 null,
-                                "obmllc.l3_1"
+                                "obmllc.l3_1",
+                                true
                         },
                         {
-                                // Hostname preferred (L3+)
+                                // Bad password
                                 Arrays.asList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
                                                 4028,
@@ -395,7 +413,8 @@ public class AntminerDetectITest
                                         null),
                                 false,
                                 null,
-                                null
+                                null,
+                                false
                         },
                 });
     }
