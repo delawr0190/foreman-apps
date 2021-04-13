@@ -9,6 +9,7 @@ import mn.foreman.pickaxe.command.asic.digest.DigestStrategy;
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.eval.EvalStrategy;
 import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
+import mn.foreman.pickaxe.command.asic.scan.MacFilteringStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
 import mn.foreman.pickaxe.command.asic.terminate.TerminateStrategy;
 import mn.foreman.pickaxe.command.asic.whatsminer.WhatsminerGetStrategy;
@@ -64,6 +65,9 @@ public class AsicStrategyFactory
                 break;
             case "scan":
                 strategy = Optional.of(new ScanStrategy());
+                break;
+            case "targeted-scan":
+                strategy = Optional.of(new ScanStrategy(new MacFilteringStrategy()));
                 break;
             case "change-pools":
                 strategy =
