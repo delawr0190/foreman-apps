@@ -4,6 +4,7 @@ import mn.foreman.io.Query;
 import mn.foreman.model.AsicAction;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /** A strategy that performs an antminer factory reset. */
 public class StockFactoryResetAction
@@ -39,7 +40,9 @@ public class StockFactoryResetAction
                     username,
                     password,
                     (code, s) -> {
-                    });
+                    },
+                    5,
+                    TimeUnit.SECONDS);
         } catch (final Exception e) {
             // Ignore
         }

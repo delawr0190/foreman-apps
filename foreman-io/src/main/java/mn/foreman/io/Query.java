@@ -188,7 +188,9 @@ public class Query {
             final String path,
             final String username,
             final String password,
-            final BiConsumer<Integer, String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits)
             throws Exception {
         doDigest(
                 host,
@@ -200,6 +202,40 @@ public class Query {
                 false,
                 null,
                 null,
+                responseProcessor,
+                socketTimeout,
+                socketTimeoutUnits);
+    }
+
+    /**
+     * Performs an HTTP GET operation against an API that requires digest auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The digest auth username.
+     * @param password          The digest auth password.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestGet(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        digestGet(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
                 responseProcessor,
                 1,
                 TimeUnit.SECONDS);

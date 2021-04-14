@@ -301,58 +301,6 @@ public class AntminerDetectITest
                                 true
                         },
                         {
-                                // Hostname preferred (L3+)
-                                Arrays.asList(
-                                        (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(
-                                                4028,
-                                                ImmutableMap.of(
-                                                        "{\"command\":\"version\"}",
-                                                        new RpcHandler(
-                                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1526315502,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"1.0.1.3\",\"CompileTime\":\"Fri Aug 25 17:28:57 CST 2017\",\"Type\":\"Antminer L3+\"}],\"id\":1}"))),
-                                        () -> new FakeHttpMinerServer(
-                                                8080,
-                                                ImmutableMap.of(
-                                                        "/cgi-bin/get_system_info.cgi",
-                                                        new HttpHandler(
-                                                                "",
-                                                                "{\n" +
-                                                                        "\"minertype\":\"Antminer L3+\",\n" +
-                                                                        "\"nettype\":\"DHCP\",\n" +
-                                                                        "\"netdevice\":\"eth0\",\n" +
-                                                                        "\"macaddr\":\"C4:F3:12:B3:9F:FC\",\n" +
-                                                                        "\"hostname\":\"antMiner\",\n" +
-                                                                        "\"ipaddress\":\"192.168.1.189\",\n" +
-                                                                        "\"netmask\":\"255.255.255.0\",\n" +
-                                                                        "\"gateway\":\"\",\n" +
-                                                                        "\"dnsservers\":\"\",\n" +
-                                                                        "\"curtime\":\"01:15:51\",\n" +
-                                                                        "\"uptime\":\"1\",\n" +
-                                                                        "\"loadaverage\":\"0.50, 0.18, 0.06\",\n" +
-                                                                        "\"mem_total\":\"251180\",\n" +
-                                                                        "\"mem_used\":\"48680\",\n" +
-                                                                        "\"mem_free\":\"202500\",\n" +
-                                                                        "\"mem_buffers\":\"0\",\n" +
-                                                                        "\"mem_cached\":\"0\",\n" +
-                                                                        "\"system_mode\":\"GNU/Linux\",\n" +
-                                                                        "\"ant_hwv\":\"1.0.1.3\",\n" +
-                                                                        "\"system_kernel_version\":\"Linux 3.8.13 #22 SMP Tue Dec 2 15:26:11 CST 2014\",\n" +
-                                                                        "\"system_filesystem_version\":\"Fri Aug 25 17:28:57 CST 2017\",\n" +
-                                                                        "\"cgminer_version\":\"4.9.0\"\n" +
-                                                                        "}",
-                                                                exchange -> AntminerTestUtils.validateDigest(
-                                                                        exchange,
-                                                                        "antMiner Configuration"))))),
-                                AntminerType.ANTMINER_L3P,
-                                toHostnameArgs(
-                                        true,
-                                        null,
-                                        null),
-                                true,
-                                "antMiner",
-                                null,
-                                true
-                        },
-                        {
                                 // Worker preferred (L3+)
                                 Collections.singletonList(
                                         (Supplier<FakeMinerServer>) () -> new FakeRpcMinerServer(

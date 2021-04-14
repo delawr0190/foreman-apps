@@ -49,6 +49,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 
 /** An enumeration containing all of the known manufacturers. */
@@ -179,16 +180,14 @@ public enum Manufacturer {
                                     new BraiinsRebootAction())),
             (threadPool, blacklist, statsCache) ->
                     new ChainedAsicAction(
-                            AsicActionFactory.toAsync(
-                                    threadPool,
-                                    blacklist,
-                                    statsCache,
-                                    new AntminerFactory(BigDecimal.ONE),
+                            AsicActionFactory.toSync(
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockFactoryResetAction(
                                                     "antMiner Configuration"),
-                                            new BraiinsFactoryResetAction())),
+                                            new BraiinsFactoryResetAction()),
+                                    60,
+                                    TimeUnit.SECONDS),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,

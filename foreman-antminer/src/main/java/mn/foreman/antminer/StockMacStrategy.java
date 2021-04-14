@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -90,7 +91,9 @@ public class StockMacStrategy
                         } catch (final IOException e) {
                             LOG.warn("Exception occurred while querying", e);
                         }
-                    });
+                    },
+                    5,
+                    TimeUnit.SECONDS);
         } catch (final Exception e) {
             // Ignore if we can't get the MAC
         }

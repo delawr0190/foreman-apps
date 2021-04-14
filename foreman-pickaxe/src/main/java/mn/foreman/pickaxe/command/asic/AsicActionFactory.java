@@ -76,6 +76,25 @@ class AsicActionFactory {
      * Creates a new sync action.
      *
      * @param completableAction The action.
+     * @param delay             The delay.
+     * @param delayUnits        The delay units.
+     *
+     * @return The action.
+     */
+    static AsicAction toSync(
+            final AsicAction.CompletableAction completableAction,
+            final int delay,
+            final TimeUnit delayUnits) {
+        return new SyncAsicAction(
+                completableAction,
+                delay,
+                delayUnits);
+    }
+
+    /**
+     * Creates a new sync action.
+     *
+     * @param completableAction The action.
      *
      * @return The action.
      */

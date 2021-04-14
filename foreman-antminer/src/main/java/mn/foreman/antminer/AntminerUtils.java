@@ -6,7 +6,6 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.io.Query;
 import mn.foreman.model.error.EmptySiteException;
-import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,6 +14,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -85,7 +85,9 @@ public class AntminerUtils {
                     } catch (final IOException e) {
                         LOG.warn("Exception occurred while querying", e);
                     }
-                });
+                },
+                5,
+                TimeUnit.SECONDS);
         return minerConfRef.get();
     }
 
@@ -132,7 +134,9 @@ public class AntminerUtils {
                         } catch (final Exception e) {
                             // Ignore if we can't get
                         }
-                    });
+                    },
+                    5,
+                    TimeUnit.SECONDS);
         } catch (final Exception e) {
             // Ignore if we can't get
         }
@@ -151,8 +155,6 @@ public class AntminerUtils {
      * @param typeCallback The callback.
      *
      * @return The type.
-     *
-     * @throws MinerException on failure.
      */
     public static Optional<AntminerType> getType(
             final String ip,
@@ -161,7 +163,7 @@ public class AntminerUtils {
             final String realm,
             final String username,
             final String password,
-            final TypeCallback typeCallback) throws MinerException {
+            final TypeCallback typeCallback) {
         final AtomicReference<AntminerType> finalType =
                 new AtomicReference<>();
         final CgMiner cgMiner =
@@ -182,30 +184,37 @@ public class AntminerUtils {
                                     } catch (final EmptySiteException ese) {
                                         // Ignore
                                     }
-
-                                    if (type.get() == null) {
-                                        // Attempt to use the system info
-                                        getSystemAttribute(
-                                                ip,
-                                                webPort,
-                                                username,
-                                                password,
-                                                realm,
-                                                "minertype").ifPresent(
-                                                value -> {
-                                                    typeCallback.accept(
-                                                            "",
-                                                            "",
-                                                            value);
-                                                    AntminerType.forModel("Type", value).ifPresent(type::set);
-                                                });
-                                    }
-
                                     finalType.set(type.get());
                                 })
                         .build();
 
-        cgMiner.getStats();
+        try {
+            cgMiner.getStats();
+        } catch (final Exception e) {
+            LOG.warn("Exception occurred while querying", e);
+        }
+
+        if (finalType.get() == null) {
+            // Attempt to use the system info
+            try {
+                getSystemAttribute(
+                        ip,
+                        webPort,
+                        username,
+                        password,
+                        realm,
+                        "minertype").ifPresent(
+                        value -> {
+                            typeCallback.accept(
+                                    "",
+                                    "",
+                                    value);
+                            AntminerType.forModel("Type", value).ifPresent(finalType::set);
+                        });
+            } catch (final Exception e) {
+                LOG.warn("Exception occurred while querying", e);
+            }
+        }
 
         return Optional.ofNullable(finalType.get());
     }
