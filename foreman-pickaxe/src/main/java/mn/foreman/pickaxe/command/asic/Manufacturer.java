@@ -17,6 +17,7 @@ import mn.foreman.cheetahminer.CheetahminerType;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.*;
+import mn.foreman.epic.*;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.honorknight.*;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
@@ -555,6 +556,34 @@ public enum Manufacturer {
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toSync(
                             new DragonmintPasswordAction()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
+    /** ePIC. */
+    EPIC(
+            "epic",
+            (args, ip) -> new EpicDetectionStrategy(new NullMacStrategy()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new EpicFactory(),
+                            new EpicChangePoolsAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new EpicFactory(),
+                            new EpicRebootAction()),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new EpicPowerModeAction()),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new EpicPasswordAction()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
 
     /** FutureBit. */

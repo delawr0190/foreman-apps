@@ -15,6 +15,7 @@ import mn.foreman.cpuminer.CpuminerFactory;
 import mn.foreman.dayun.DayunFactory;
 import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
+import mn.foreman.epic.EpicFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
@@ -469,6 +470,13 @@ public enum ApiType {
             55,
             (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
                 return new OpenMinerFactory();
+            }),
+
+    /** ePIC. */
+    EPIC_API(
+            56,
+            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+                return new EpicFactory();
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */
