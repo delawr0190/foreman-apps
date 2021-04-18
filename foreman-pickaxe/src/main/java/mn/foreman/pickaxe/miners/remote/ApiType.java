@@ -21,6 +21,7 @@ import mn.foreman.ewbf.EwbfFactory;
 import mn.foreman.excavator.ExcavatorFactory;
 import mn.foreman.futurebit.FutureBitFactory;
 import mn.foreman.gminer.GminerFactory;
+import mn.foreman.goldshell.GoldshellFactory;
 import mn.foreman.grinpro.GrinProFactory;
 import mn.foreman.honorknight.HonorKnightFactory;
 import mn.foreman.hspminer.HspminerFactory;
@@ -62,6 +63,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An API type represents a FOREMAN server json that indicates the miner API
@@ -477,6 +479,15 @@ public enum ApiType {
             56,
             (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
                 return new EpicFactory();
+            }),
+
+    /** goldshell. */
+    GOLDSHELL_API(
+            57,
+            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+                return new GoldshellFactory(
+                        1,
+                        TimeUnit.SECONDS);
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */

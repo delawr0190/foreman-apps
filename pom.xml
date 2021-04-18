@@ -85,6 +85,7 @@
         <module>foreman-excavator</module>
         <module>foreman-futurebit</module>
         <module>foreman-gminer</module>
+        <module>foreman-goldshell</module>
         <module>foreman-grinpro</module>
         <module>foreman-honorknight</module>
         <module>foreman-hspminer</module>
@@ -258,6 +259,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-gminer</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-goldshell</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

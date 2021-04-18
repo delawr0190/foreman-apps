@@ -19,6 +19,7 @@ import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.*;
 import mn.foreman.epic.*;
 import mn.foreman.futurebit.FutureBitTypeFactory;
+import mn.foreman.goldshell.*;
 import mn.foreman.honorknight.*;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
 import mn.foreman.innosilicon.ApiType;
@@ -600,6 +601,94 @@ public enum Manufacturer {
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
+    /** Goldshell. */
+    GOLDSHELL(
+            "goldshell",
+            (args, ip) ->
+                    new GoldshellDetectionStrategy(
+                            new GoldshellMacStrategy(
+                                    ip,
+                                    80,
+                                    1,
+                                    TimeUnit.SECONDS),
+                            1,
+                            TimeUnit.SECONDS),
+            (threadPool, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new GoldshellFactory(
+                                            1,
+                                            TimeUnit.SECONDS),
+                                    new GoldshellChangePoolsAction(
+                                            1,
+                                            TimeUnit.SECONDS)),
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new GoldshellFactory(
+                                            1,
+                                            TimeUnit.SECONDS),
+                                    new GoldshellRebootAction(
+                                            1,
+                                            TimeUnit.SECONDS))),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new GoldshellFactory(
+                                    1,
+                                    TimeUnit.SECONDS),
+                            new GoldshellRebootAction(
+                                    1,
+                                    TimeUnit.SECONDS)),
+            (threadPool, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsicActionFactory.toSync(
+                                    new GoldshellFactoryResetAction(
+                                            1,
+                                            TimeUnit.SECONDS),
+                                    60,
+                                    TimeUnit.SECONDS),
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new GoldshellFactory(
+                                            1,
+                                            TimeUnit.SECONDS),
+                                    new GoldshellChangePoolsAction(
+                                            1,
+                                            TimeUnit.SECONDS))),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new GoldshellFactory(
+                                    1,
+                                    TimeUnit.SECONDS),
+                            new GoldshellNetworkAction(
+                                    1,
+                                    TimeUnit.SECONDS),
+                            AsyncAsicActionUtils::ipChangingHook),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toSync(
+                            new GoldshellPasswordAction(
+                                    1,
+                                    TimeUnit.SECONDS)),
+            (threadPool, blacklist, statsCache) ->
+                    new BlinkAction(
+                            threadPool,
+                            new GoldshellBlinkStrategy(
+                                    1,
+                                    TimeUnit.SECONDS))),
 
     /** HonorKnight. */
     HONORKNIGHT(

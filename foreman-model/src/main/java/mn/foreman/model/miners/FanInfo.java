@@ -203,6 +203,15 @@ public class FanInfo {
         }
 
         /**
+         * Returns whether or not speeds have already been added.
+         *
+         * @return Whether or not speeds have already been added.
+         */
+        public boolean hasSpeeds() {
+            return !this.speeds.isEmpty();
+        }
+
+        /**
          * Sets the count.
          *
          * @param count The count.
