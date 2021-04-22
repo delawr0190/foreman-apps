@@ -59,6 +59,7 @@ public class ScanStrategy
         this.filteringStrategy = filteringStrategy;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void runCommand(
             final CommandStart command,
@@ -71,7 +72,10 @@ public class ScanStrategy
         final long start = ipToLong(safeGet(args, "start"));
         final long stop = ipToLong(safeGet(args, "stop"));
         final int port = Integer.parseInt(safeGet(args, "port"));
-        final String targetMac = safeGet(args, "targetMac");
+        final List<String> targetMacs =
+                (List<String>) args.getOrDefault(
+                        "targetMacs",
+                        new LinkedList<String>());
 
         switch (type) {
             case "asic":
@@ -82,7 +86,7 @@ public class ScanStrategy
                         start,
                         stop,
                         port,
-                        targetMac,
+                        targetMacs,
                         args,
                         builder,
                         callback);
@@ -165,7 +169,7 @@ public class ScanStrategy
      * @param miners      All of the miners that were found.
      * @param foremanApi  The API handler.
      * @param id          The scan command ID.
-     * @param targetMac   The target mac.
+     * @param targetMacs  The target mac.
      */
     private void processResults(
             final BlockingQueue<ScanResult> scanResults,
@@ -174,7 +178,7 @@ public class ScanStrategy
             final BlockingQueue<Object> miners,
             final ForemanApi foremanApi,
             final String id,
-            final String targetMac) {
+            final List<String> targetMacs) {
         final List<ScanResult> lastResults = new LinkedList<>();
         scanResults.drainTo(lastResults);
 
@@ -186,7 +190,7 @@ public class ScanStrategy
                 if (detection != null &&
                         this.filteringStrategy.matches(
                                 detection,
-                                targetMac)) {
+                                targetMacs)) {
                     miners.add(
                             toMiner(
                                     detection));
@@ -219,7 +223,7 @@ public class ScanStrategy
      * @param start        Where to start.
      * @param stop         Where to stop.
      * @param port         The port to inspect.
-     * @param targetMac    The target MAC.
+     * @param targetMacs   The target MACs.
      * @param args         The arguments.
      * @param builder      The builder to use for creating the final result.
      * @param callback     The callback.
@@ -231,7 +235,7 @@ public class ScanStrategy
             final long start,
             final long stop,
             final int port,
-            final String targetMac,
+            final List<String> targetMacs,
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
@@ -243,7 +247,7 @@ public class ScanStrategy
                         start,
                         stop,
                         port,
-                        targetMac,
+                        targetMacs,
                         args,
                         value,
                         builder,
@@ -258,7 +262,7 @@ public class ScanStrategy
      * @param start        Where to start.
      * @param stop         Where to stop.
      * @param port         The port to inspect.
-     * @param targetMac    The target mac.
+     * @param targetMacs   The target macs.
      * @param args         The arguments.
      * @param builder      The builder to use for creating the final result.
      * @param manufacturer The manufacturer.
@@ -270,7 +274,7 @@ public class ScanStrategy
             final long start,
             final long stop,
             final int port,
-            final String targetMac,
+            final List<String> targetMacs,
             final Map<String, Object> args,
             final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
@@ -282,7 +286,7 @@ public class ScanStrategy
                     start,
                     stop,
                     port,
-                    targetMac,
+                    targetMacs,
                     args,
                     manufacturer,
                     builder,
@@ -307,7 +311,7 @@ public class ScanStrategy
      * @param start        Where to start.
      * @param stop         Where to stop.
      * @param port         The port to inspect.
-     * @param targetMac    The target mac.
+     * @param targetMacs   The target macs.
      * @param args         The arguments.
      * @param builder      The builder to use for creating the final result.
      * @param manufacturer The manufacturer.
@@ -319,7 +323,7 @@ public class ScanStrategy
             final long start,
             final long stop,
             final int port,
-            final String targetMac,
+            final List<String> targetMacs,
             final Map<String, Object> args,
             final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
@@ -357,7 +361,7 @@ public class ScanStrategy
                     foundMiners,
                     foremanApi,
                     id,
-                    targetMac);
+                    targetMacs);
         }
 
         // Once more for the race
@@ -368,7 +372,7 @@ public class ScanStrategy
                 foundMiners,
                 foremanApi,
                 id,
-                targetMac);
+                targetMacs);
 
         final List<Object> miners = new LinkedList<>();
         foundMiners.drainTo(miners);

@@ -2,6 +2,8 @@ package mn.foreman.pickaxe.command.asic.scan;
 
 import mn.foreman.model.Detection;
 
+import java.util.List;
+
 /** Returns all of the detections. */
 public class NullFilteringStrategy
         implements FilteringStrategy {
@@ -9,7 +11,7 @@ public class NullFilteringStrategy
     @Override
     public boolean matches(
             final Detection detection,
-            final String mac) {
+            final List<String> macs) {
         return true;
     }
 }

@@ -2,6 +2,8 @@ package mn.foreman.pickaxe.command.asic.scan;
 
 import mn.foreman.model.Detection;
 
+import java.util.List;
+
 /** Filters down the detections to the ones that match the desired MAC. */
 public interface FilteringStrategy {
 
@@ -10,11 +12,11 @@ public interface FilteringStrategy {
      * was desired.
      *
      * @param detection The detection.
-     * @param mac       The MAC.
+     * @param macs      The MACs.
      *
      * @return Whether or not it was filtered.
      */
     boolean matches(
             Detection detection,
-            String mac);
+            List<String> macs);
 }

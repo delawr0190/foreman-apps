@@ -2,7 +2,9 @@ package mn.foreman.pickaxe.command.asic.scan;
 
 import mn.foreman.model.Detection;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /** Finds the detection by MAC. */
 public class MacFilteringStrategy
@@ -11,11 +13,16 @@ public class MacFilteringStrategy
     @Override
     public boolean matches(
             final Detection detection,
-            final String mac) {
+            final List<String> macs) {
         final Map<String, Object> args = detection.getParameters();
-        return args
-                .getOrDefault("mac", "")
-                .toString()
-                .equalsIgnoreCase(mac);
+        return macs
+                .stream()
+                .map(String::toLowerCase)
+                .collect(Collectors.toList())
+                .contains(
+                        args
+                                .getOrDefault("mac", "")
+                                .toString()
+                                .toLowerCase());
     }
 }
