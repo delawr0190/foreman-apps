@@ -125,6 +125,9 @@ public enum AntminerType
     /** Antminer S19 Pro. */
     ANTMINER_S19_PRO("Antminer S19 Pro", "antminer-s19-pro"),
 
+    /** Antminer S19j. */
+    ANTMINER_S19J("Antminer S19j", "antminer-s19j"),
+
     /** Antminer S19j Pro. */
     ANTMINER_S19J_PRO("Antminer S19j Pro", "antminer-s19j-pro"),
 

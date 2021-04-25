@@ -13,6 +13,24 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum GoldshellType
         implements MinerType {
 
+    /** KD2. */
+    KD2("Goldshell-KD2", "goldshell-kd2"),
+
+    /** KD5. */
+    KD5("Goldshell-KD5", "goldshell-kd5"),
+
+    /** LT5. */
+    LT5("Goldshell-LT5", "goldshell-lt5"),
+
+    /** HS3. */
+    HS3("Goldshell-HS3", "goldshell-hs3"),
+
+    /** HS3-SE. */
+    HS3SE("Goldshell-HS3-SE", "goldshell-hs3se"),
+
+    /** HS5. */
+    HS5("Goldshell-HS5", "goldshell-hs5"),
+
     /** CK5. */
     CK5("Goldshell-CK5", "goldshell-ck5");
 

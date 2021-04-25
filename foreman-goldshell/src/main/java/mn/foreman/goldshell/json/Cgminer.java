@@ -1,5 +1,6 @@
 package mn.foreman.goldshell.json;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -40,6 +41,7 @@ public class Cgminer {
 
         /** The temp. */
         @JsonProperty("temp")
+        @JsonAlias("r_temp")
         public String temp;
     }
 }
