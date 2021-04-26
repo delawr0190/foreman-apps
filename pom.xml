@@ -34,7 +34,7 @@
 
         <apache-httpclient.version>4.5.6</apache-httpclient.version>
         <commons-collections.version>4.2</commons-collections.version>
-        <commons-io.version>2.6</commons-io.version>
+        <commons-io.version>2.7</commons-io.version>
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
         <foreman-java-api.version>1.0.0</foreman-java-api.version>
