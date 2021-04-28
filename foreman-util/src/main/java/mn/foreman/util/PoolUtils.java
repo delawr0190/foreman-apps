@@ -34,7 +34,12 @@ public class PoolUtils {
 
             // Trim the protocol
             if (sanitized.contains("://")) {
-                sanitized = sanitized.split("://")[1];
+                final String[] parts = sanitized.split("://");
+                if (parts.length > 1) {
+                    sanitized = parts[1];
+                } else {
+                    sanitized = parts[0];
+                }
             }
 
             // Trim user

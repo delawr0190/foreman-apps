@@ -26,6 +26,15 @@ public class PoolUtilsTest {
 
     /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
     @Test
+    public void testSanitizeJustStratum() {
+        assertEquals(
+                "stratum+tcp",
+                PoolUtils.sanitizeUrl(
+                        "stratum+tcp:// "));
+    }
+
+    /** Tests {@link PoolUtils#sanitizeUrl(String)}. */
+    @Test
     public void testSanitizePadded() {
         assertEquals(
                 "",
