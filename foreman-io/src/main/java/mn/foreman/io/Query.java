@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -1075,6 +1076,13 @@ public class Query {
                 responseProcessor.accept(
                         statusLine.getStatusCode(),
                         responseBody);
+            } catch (final SocketTimeoutException ste) {
+                final String message = ste.getMessage();
+                if (message != null && !message.contains("Read timed out")) {
+                    // Allow read timeouts - sometimes, miners just don't
+                    // respond
+                    throw ste;
+                }
             }
         } finally {
             if (httpClient != null) {

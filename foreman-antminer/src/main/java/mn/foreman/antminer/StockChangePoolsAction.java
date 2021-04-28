@@ -51,8 +51,6 @@ public class StockChangePoolsAction
             final Map<String, Object> parameters,
             final List<Pool> pools)
             throws MinerException {
-        boolean success;
-
         try {
             final String username =
                     (String) parameters.getOrDefault("username", "");
@@ -68,15 +66,14 @@ public class StockChangePoolsAction
                             username,
                             password);
             if (minerConf != null) {
-                success =
-                        changeConf(
-                                parameters,
-                                minerConf,
-                                ip,
-                                port,
-                                username,
-                                password,
-                                pools);
+                changeConf(
+                        parameters,
+                        minerConf,
+                        ip,
+                        port,
+                        username,
+                        password,
+                        pools);
             } else {
                 throw new MinerException(
                         String.format(
@@ -88,7 +85,7 @@ public class StockChangePoolsAction
             throw new MinerException(e);
         }
 
-        return success;
+        return true;
     }
 
     /**
