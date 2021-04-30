@@ -259,15 +259,23 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new AvalonFactory(),
-                            new AvalonChangePoolsAction(
-                                    new AvalonRebootAction())),
+                            new RetryingAction(
+                                    5,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new AvalonChangePoolsAction(
+                                            new AvalonRebootAction()))),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new AvalonFactory(),
-                            new AvalonRebootAction()),
+                            new RetryingAction(
+                                    5,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new AvalonRebootAction())),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toAsync(
@@ -275,13 +283,21 @@ public enum Manufacturer {
                             blacklist,
                             statsCache,
                             new AvalonFactory(),
-                            new AvalonNetworkAction(
-                                    new AvalonRebootAction()),
+                            new RetryingAction(
+                                    5,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new AvalonNetworkAction(
+                                            new AvalonRebootAction())),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toSync(
-                            new AvalonPasswordAction()),
+                            new RetryingAction(
+                                    5,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new AvalonPasswordAction())),
             (threadPool, blacklist, statsCache) ->
                     new BlinkAction(
                             threadPool,

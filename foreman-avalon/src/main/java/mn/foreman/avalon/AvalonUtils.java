@@ -1,5 +1,9 @@
 package mn.foreman.avalon;
 
+import mn.foreman.io.ApiRequest;
+import mn.foreman.io.ApiRequestImpl;
+import mn.foreman.io.Connection;
+import mn.foreman.io.ConnectionFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.asic.Asic;
 
@@ -7,6 +11,8 @@ import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 /** Utility methods for parsing Avalon miner response values. */
@@ -14,6 +20,49 @@ class AvalonUtils {
 
     /** The hash board key. */
     private static final String HASH_BOARD_KEY = "Hash Board: ";
+
+    /**
+     * Queries an Avalon.
+     *
+     * @param ip        The ip.
+     * @param port      The port.
+     * @param message   The message.
+     * @param validator The response validator.
+     *
+     * @return The result.
+     */
+    public static boolean query(
+            final String ip,
+            final int port,
+            final String message,
+            final BiFunction<String, ApiRequest, Boolean> validator) {
+        boolean success = false;
+
+        final ApiRequest request =
+                new ApiRequestImpl(
+                        ip,
+                        (port == 8081 || port == 4029 ? 4029 : 4028),
+                        message);
+
+        final Connection connection =
+                ConnectionFactory.createRawConnection(
+                        request,
+                        1,
+                        TimeUnit.SECONDS);
+        connection.query();
+
+        if (request.waitForCompletion(
+                1,
+                TimeUnit.SECONDS)) {
+            final String response = request.getResponse();
+            success =
+                    validator.apply(
+                            response,
+                            request);
+        }
+
+        return success;
+    }
 
     /**
      * Updates the builder with stats.

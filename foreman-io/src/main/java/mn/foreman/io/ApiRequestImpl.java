@@ -34,6 +34,9 @@ public class ApiRequestImpl
     /** The request to send. */
     private final String request;
 
+    /** Whether or not connected. */
+    private boolean connected = false;
+
     /** The response. */
     private String response;
 
@@ -113,6 +116,16 @@ public class ApiRequestImpl
     @Override
     public void completed() {
         this.completedLatch.countDown();
+    }
+
+    @Override
+    public boolean connected() {
+        return this.connected;
+    }
+
+    @Override
+    public void connected(final boolean connected) {
+        this.connected = connected;
     }
 
     @Override

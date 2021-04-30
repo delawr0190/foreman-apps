@@ -53,6 +53,8 @@ public class SocketApiConnection
             socket.setSoTimeout(this.socketTimeout);
             socket.connect(socketAddress, 1000);
 
+            this.apiRequest.connected(true);
+
             try (final PrintWriter printWriter =
                          new PrintWriter(
                                  socket.getOutputStream());

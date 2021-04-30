@@ -1,18 +1,13 @@
 package mn.foreman.avalon;
 
 import mn.foreman.api.model.Network;
-import mn.foreman.io.Query;
 import mn.foreman.model.AbstractNetworkAction;
+import mn.foreman.model.AsicAction;
 
-import com.google.common.collect.ImmutableMap;
-import org.apache.http.HttpStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * An {@link AbstractNetworkAction} implementation that will change the network
@@ -26,14 +21,14 @@ public class AvalonNetworkAction
             LoggerFactory.getLogger(AvalonNetworkAction.class);
 
     /** The action to run when performing a reboot. */
-    private final AvalonRebootAction rebootAction;
+    private final AsicAction.CompletableAction rebootAction;
 
     /**
      * Constructor.
      *
      * @param rebootAction The action to run when performing a reboot.
      */
-    public AvalonNetworkAction(final AvalonRebootAction rebootAction) {
+    public AvalonNetworkAction(final AsicAction.CompletableAction rebootAction) {
         this.rebootAction = rebootAction;
     }
 
@@ -43,83 +38,39 @@ public class AvalonNetworkAction
             final int port,
             final Map<String, Object> parameters,
             final Network network) {
-        final AtomicBoolean success = new AtomicBoolean(false);
-
-        try {
-            Query.post(
-                    ip,
-                    port,
-                    "/network.cgi",
-                    toParams(network),
-                    (code, s1) -> {
-                        if (code == HttpStatus.SC_OK) {
-                            // Miner needs to be rebooted after the config has
-                            // been changed
-                            success.set(
-                                    this.rebootAction.run(
-                                            ip,
-                                            port,
-                                            parameters));
-                        }
-                    });
-        } catch (final Exception e) {
-            LOG.warn("Exception occurred", e);
+        boolean success =
+                AvalonUtils.query(
+                        ip,
+                        port,
+                        String.format(
+                                "ascset|0,ip,s,%s,%s,%s",
+                                network.ipAddress,
+                                network.netmask,
+                                network.gateway),
+                        (s, request) -> request.connected());
+        if (success) {
+            success =
+                    AvalonUtils.query(
+                            ip,
+                            port,
+                            String.format(
+                                    "ascset|0,dns,%s,%s",
+                                    network.dns,
+                                    network.dns),
+                            (s, request) -> request.connected());
+        }
+        if (success) {
+            try {
+                success =
+                        this.rebootAction.run(
+                                ip,
+                                port,
+                                parameters);
+            } catch (final Exception e) {
+                LOG.warn("Exception occurred", e);
+            }
         }
 
-        return success.get();
-    }
-
-    /**
-     * Creates the network params.
-     *
-     * @param network The network.
-     *
-     * @return The new params.
-     */
-    private static List<Map<String, Object>> toParams(final Network network) {
-        final List<Map<String, Object>> newParams = new LinkedList<>();
-        newParams.add(
-                toValueMap(
-                        "protocol",
-                        "1"));
-        newParams.add(
-                toValueMap(
-                        "ip",
-                        network.ipAddress));
-        newParams.add(
-                toValueMap(
-                        "mask",
-                        network.netmask));
-        newParams.add(
-                toValueMap(
-                        "gateway",
-                        network.gateway));
-        newParams.add(
-                toValueMap(
-                        "dns",
-                        network.dns));
-        newParams.add(
-                toValueMap(
-                        "dnsbak",
-                        network.gateway));
-        return newParams;
-    }
-
-    /**
-     * Creates a value map.
-     *
-     * @param key   The key.
-     * @param value The value.
-     *
-     * @return The map.
-     */
-    private static Map<String, Object> toValueMap(
-            final String key,
-            final Object value) {
-        return ImmutableMap.of(
-                "key",
-                key,
-                "value",
-                value);
+        return success;
     }
 }

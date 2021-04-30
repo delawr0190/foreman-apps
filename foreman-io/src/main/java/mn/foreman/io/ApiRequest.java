@@ -30,6 +30,20 @@ public interface ApiRequest {
     void completed();
 
     /**
+     * Returns whether or not the request connected.
+     *
+     * @return Whether or not the request connected.
+     */
+    boolean connected();
+
+    /**
+     * Sets whether or not connected.
+     *
+     * @param connected Whether or not connected.
+     */
+    void connected(boolean connected);
+
+    /**
      * Returns the content.
      *
      * @return The content.
