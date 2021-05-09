@@ -1,6 +1,5 @@
 package mn.foreman.sgminer;
 
-import com.google.common.collect.ImmutableMap;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -11,6 +10,8 @@ import mn.foreman.model.miners.rig.Rig;
 import mn.foreman.util.AbstractApiITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
+
+import com.google.common.collect.ImmutableMap;
 
 import java.math.BigDecimal;
 
@@ -140,6 +141,7 @@ public class TeamRedMiner_0_3_10_ITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("lux.pickaxe.pro:8332")
+                                        .setWorker("LhreQGewLdoGFiqq882Am6i644Qc1h28Wh")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,

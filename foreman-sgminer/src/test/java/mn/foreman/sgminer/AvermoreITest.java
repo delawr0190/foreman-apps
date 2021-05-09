@@ -177,6 +177,7 @@ public class AvermoreITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("minepool.com:3636")
+                                        .setWorker("RWoSZX6j6WU6SVTVq5hKmdgPmmrYE9be5R")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,
@@ -189,6 +190,7 @@ public class AvermoreITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("ravenminer.com:9999")
+                                        .setWorker("RTByBLDAGRF27sNJRvsL4LArihLLZ8Gyv9")
                                         .setPriority(1)
                                         .setStatus(
                                                 true,

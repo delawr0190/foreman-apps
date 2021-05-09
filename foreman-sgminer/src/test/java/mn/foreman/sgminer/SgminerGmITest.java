@@ -141,6 +141,7 @@ public class SgminerGmITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("zec-us-east1.nanopool.org:16666")
+                                        .setWorker("zzzz")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,

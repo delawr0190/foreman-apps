@@ -316,6 +316,7 @@ public class SgminerTecracoinITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("pool-mtp.tecracoin.io:4556")
+                                        .setWorker("xxxx")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,

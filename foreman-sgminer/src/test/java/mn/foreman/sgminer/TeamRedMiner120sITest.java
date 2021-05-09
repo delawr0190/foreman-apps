@@ -316,6 +316,7 @@ public class TeamRedMiner120sITest
                         .addPool(
                                 new Pool.Builder()
                                         .setName("pool.supportxmr.com:7777")
+                                        .setWorker("479c6JsyawEVAMNZU8GMmXgVPTxd1vdejR6vVpsm7z8y2AvP7C5hz2g5gfrqyffpvLPLYb2eUmmWA5yhRw5ANYyePX7SvLE")
                                         .setPriority(0)
                                         .setStatus(
                                                 true,

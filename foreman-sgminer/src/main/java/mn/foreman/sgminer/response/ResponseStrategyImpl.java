@@ -130,6 +130,7 @@ public class ResponseStrategyImpl
                         .map(pool ->
                                 new Pool.Builder()
                                         .setName(pool.getName())
+                                        .setWorker(pool.getWorker())
                                         .setPriority(pool.getPriority())
                                         .setCounts(
                                                 pool.getAccepted(),
