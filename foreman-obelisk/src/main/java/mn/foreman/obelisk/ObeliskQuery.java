@@ -10,19 +10,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import lombok.Builder;
 import lombok.Data;
-import org.apache.http.Header;
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.BasicCookieStore;
 
 import java.io.IOException;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 /** Utility methods to safely query an Obelisk with an established session. */
 public class ObeliskQuery {
+
+    /** The mapper for parsing json. */
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     /**
      * Adds stats for the provided obelisk generation.
@@ -31,12 +32,9 @@ public class ObeliskQuery {
      *
      * @throws MinerException on failure to query.
      */
-    static <T> void runSessionQuery(final Context<T> context)
+    public static <T> void runSessionQuery(final Context<T> context)
             throws Exception {
-        final AtomicReference<String> sessionId =
-                new AtomicReference<>();
-        final ObjectMapper objectMapper =
-                new ObjectMapper();
+        final CookieStore cookieStore = new BasicCookieStore();
         try {
             // Login first
             query(
@@ -44,13 +42,13 @@ public class ObeliskQuery {
                     "/api/login",
                     "POST",
                     true,
-                    objectMapper.writeValueAsString(
+                    OBJECT_MAPPER.writeValueAsString(
                             ImmutableMap.of(
                                     "username",
                                     context.getUsername(),
                                     "password",
                                     context.getPassword())),
-                    sessionId,
+                    cookieStore,
                     Object.class);
 
             // Run the query
@@ -62,7 +60,7 @@ public class ObeliskQuery {
                             context.getMethod(),
                             false,
                             context.getContent(),
-                            sessionId,
+                            cookieStore,
                             responseClass);
             if (responseClass != null) {
                 if (responseOptional.isPresent()) {
@@ -84,31 +82,8 @@ public class ObeliskQuery {
                         "POST",
                         false,
                         null,
-                        sessionId,
+                        cookieStore,
                         Object.class);
-            }
-        }
-    }
-
-    /**
-     * Processes all of the obelisk response headers.
-     *
-     * @param headers   The Obelisk response headers.
-     * @param sessionId The session ID.
-     */
-    private static void processHeaders(
-            final Map<String, String> headers,
-            final AtomicReference<String> sessionId) {
-        // Update the session cookie
-        for (final Map.Entry<String, String> entry : headers.entrySet()) {
-            if ("set-cookie".equalsIgnoreCase(entry.getKey())) {
-                final String cookie = entry.getValue();
-                if (cookie.contains("sessionid")) {
-                    sessionId.set(
-                            cookie
-                                    .split(";")[0]
-                                    .replace("sessionid=", ""));
-                }
             }
         }
     }
@@ -116,14 +91,14 @@ public class ObeliskQuery {
     /**
      * Queries an Obelisk.
      *
-     * @param context   The request context.
-     * @param uri       The API URI.
-     * @param method    The method.
-     * @param isLogin   Whether or not the request is a login attempt.
-     * @param content   The content.
-     * @param sessionId The session ID.
-     * @param clazz     The class of the response.
-     * @param <T>       The response type.
+     * @param context     The request context.
+     * @param uri         The API URI.
+     * @param method      The method.
+     * @param isLogin     Whether or not the request is a login attempt.
+     * @param content     The content.
+     * @param cookieStore The cookie store.
+     * @param clazz       The class of the response.
+     * @param <T>         The response type.
      *
      * @return The response, if present.
      *
@@ -136,7 +111,7 @@ public class ObeliskQuery {
             final String method,
             final boolean isLogin,
             final String content,
-            final AtomicReference<String> sessionId,
+            final CookieStore cookieStore,
             final Class<U> clazz)
             throws
             IOException,
@@ -151,10 +126,8 @@ public class ObeliskQuery {
                         context.getApiIp(),
                         context.getApiPort(),
                         uri,
-                        toCookies(sessionId),
+                        Collections.emptyMap(),
                         content);
-
-        final Map<String, String> headerMap = new HashMap<>();
 
         final Connection connection =
                 ConnectionFactory.createRestConnection(
@@ -162,21 +135,12 @@ public class ObeliskQuery {
                         method,
                         5,
                         TimeUnit.SECONDS,
-                        headers -> {
-                            for (final Header header : headers) {
-                                headerMap.put(
-                                        header.getName(),
-                                        header.getValue());
-                            }
-                        });
+                        cookieStore);
         connection.query();
 
         if (apiRequest.waitForCompletion(
                 5,
                 TimeUnit.SECONDS)) {
-            processHeaders(
-                    headerMap,
-                    sessionId);
             final String response = apiRequest.getResponse();
             final Consumer<String> callback =
                     context.getRawResponseCallback();
@@ -193,26 +157,11 @@ public class ObeliskQuery {
             throw new MinerException("Failed to obtain response from obelisk");
         }
 
-        if (isLogin && sessionId.get() == null) {
+        if (isLogin && cookieStore.getCookies().stream().noneMatch(cookie -> cookie.getName().contains("sessionid"))) {
             throw new MinerException("Failed to login to obelisk");
         }
 
         return Optional.ofNullable(result);
-    }
-
-    /**
-     * Creates an HTTP cookie map.
-     *
-     * @param sessionId The session ID.
-     *
-     * @return The cookies.
-     */
-    private static Map<String, String> toCookies(
-            final AtomicReference<String> sessionId) {
-        final String id = sessionId.get();
-        return id != null
-                ? ImmutableMap.of("Cookie", "sessionid=" + id)
-                : Collections.emptyMap();
     }
 
     /**

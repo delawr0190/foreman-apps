@@ -12,8 +12,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 
 /** Test changing pools on an Obelisk. */
@@ -47,7 +47,7 @@ public class ObeliskChangePoolsITest
      * @return The test parameters.
      */
     @Parameterized.Parameters
-    public static Collection parameters() {
+    public static List<Object[]> parameters() {
         return Arrays.asList(
                 new Object[][]{
                         {

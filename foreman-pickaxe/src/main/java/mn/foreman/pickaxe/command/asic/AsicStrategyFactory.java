@@ -8,6 +8,7 @@ import mn.foreman.pickaxe.command.StrategyFactory;
 import mn.foreman.pickaxe.command.asic.digest.DigestStrategy;
 import mn.foreman.pickaxe.command.asic.discover.DiscoverStrategy;
 import mn.foreman.pickaxe.command.asic.eval.EvalStrategy;
+import mn.foreman.pickaxe.command.asic.obelisk.ObeliskGetStrategy;
 import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.MacFilteringStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
@@ -156,6 +157,9 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache)));
+                break;
+            case "obelisk-get":
+                strategy = Optional.of(new ObeliskGetStrategy());
                 break;
             default:
                 break;

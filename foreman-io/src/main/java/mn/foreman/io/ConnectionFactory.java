@@ -7,11 +7,11 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.codec.string.StringEncoder;
-import org.apache.http.Header;
+import org.apache.http.client.CookieStore;
+import org.apache.http.impl.client.BasicCookieStore;
 
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * A {@link ConnectionFactory} provides a factory to creating {@link Connection
@@ -159,7 +159,7 @@ public class ConnectionFactory {
      * @param method              The method.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
-     * @param headerCallback      The header callback.
+     * @param cookieStore         The cookie store.
      *
      * @return The new {@link Connection}.
      */
@@ -168,7 +168,7 @@ public class ConnectionFactory {
             final String method,
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits,
-            final Consumer<Header[]> headerCallback) {
+            final CookieStore cookieStore) {
         return new RestConnection(
                 String.format(
                         "http://%s:%d%s",
@@ -179,7 +179,7 @@ public class ConnectionFactory {
                 request,
                 connectTimeout,
                 connectTimeoutUnits,
-                headerCallback);
+                cookieStore);
     }
 
     /**
@@ -197,18 +197,11 @@ public class ConnectionFactory {
             final String method,
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits) {
-        return new RestConnection(
-                String.format(
-                        "http://%s:%d%s",
-                        request.getIp(),
-                        request.getPort(),
-                        request.getRequest()),
-                method,
+        return createRestConnection(
                 request,
+                method,
                 connectTimeout,
                 connectTimeoutUnits,
-                headers -> {
-                    // Do nothing
-                });
+                new BasicCookieStore());
     }
 }

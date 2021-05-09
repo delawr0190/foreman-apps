@@ -1,8 +1,9 @@
 package mn.foreman.io;
 
 import org.apache.commons.lang3.Validate;
-import org.apache.http.Header;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -11,6 +12,7 @@ import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +23,6 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 
 /**
  * A {@link RestConnection} provides a connection to a remote miner instance.
@@ -44,8 +45,8 @@ public class RestConnection
     /** The connection timeout units. */
     private final TimeUnit connectionTimeoutUnits;
 
-    /** The header callback. */
-    private final Consumer<Header[]> headerCallback;
+    /** The cookie store. */
+    private final CookieStore cookieStore;
 
     /** The method. */
     private final String method;
@@ -64,7 +65,6 @@ public class RestConnection
      * @param request             The request.
      * @param connectTimeout      The connection timeout.
      * @param connectTimeoutUnits The connection timeout units.
-     * @param headerCallback      The header callback.
      */
     RestConnection(
             final String url,
@@ -72,7 +72,7 @@ public class RestConnection
             final ApiRequest request,
             final int connectTimeout,
             final TimeUnit connectTimeoutUnits,
-            final Consumer<Header[]> headerCallback) {
+            final CookieStore cookieStore) {
         Validate.notEmpty(
                 url,
                 "url cannot be empty");
@@ -93,7 +93,7 @@ public class RestConnection
         this.request = request;
         this.connectionTimeout = connectTimeout;
         this.connectionTimeoutUnits = connectTimeoutUnits;
-        this.headerCallback = headerCallback;
+        this.cookieStore = cookieStore;
     }
 
     @Override
@@ -106,11 +106,15 @@ public class RestConnection
                         .setConnectTimeout(socketTimeout)
                         .setConnectionRequestTimeout(socketTimeout)
                         .setSocketTimeout(socketTimeout)
+                        .setCookieSpec(CookieSpecs.STANDARD)
                         .build();
 
         try (final CloseableHttpClient httpClient =
-                     HttpClients.custom()
+                     HttpClients
+                             .custom()
+                             .setRedirectStrategy(new LaxRedirectStrategy())
                              .setDefaultRequestConfig(requestConfig)
+                             .setDefaultCookieStore(this.cookieStore)
                              .disableAutomaticRetries()
                              .build()) {
             final HttpRequestBase httpRequest =
@@ -130,8 +134,6 @@ public class RestConnection
                                 .getStatusLine()
                                 .getStatusCode();
                 if (statusCode == HttpStatus.SC_OK) {
-                    this.headerCallback.accept(
-                            httpResponse.getAllHeaders());
                     this.request.setResponse(
                             EntityUtils.toString(
                                     httpResponse.getEntity()));
