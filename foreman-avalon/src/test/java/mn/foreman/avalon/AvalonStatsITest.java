@@ -1574,7 +1574,8 @@ public class AvalonStatsITest
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .addTemp(18)
-                                                        .addTemp(64)
+                                                        .addTemp(55)
+                                                        .addTemp(58)
                                                         .addRawStats(
                                                                 ImmutableMap.of(
                                                                         "summary.0.summary.0.remote_failures",
@@ -1643,7 +1644,8 @@ public class AvalonStatsITest
                                                                         .setSpeedUnits("%")
                                                                         .build())
                                                         .addTemp(18)
-                                                        .addTemp(64)
+                                                        .addTemp(55)
+                                                        .addTemp(58)
                                                         .addRawStats(
                                                                 ImmutableMap.of(
                                                                         "summary.0.summary.0.remote_failures",

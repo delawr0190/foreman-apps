@@ -8,9 +8,7 @@ import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.asic.Asic;
 
 import java.math.BigDecimal;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -182,6 +180,8 @@ class AvalonUtils {
                 stats
                         .stream()
                         .map(s -> getValue(s, "FanR"))
+                        .filter(Optional::isPresent)
+                        .map(Optional::get)
                         .map(s -> s.replace("%", ""))
                         .collect(Collectors.toList());
         fanBuilder
@@ -201,14 +201,18 @@ class AvalonUtils {
             final List<String> stats,
             final Asic.Builder asicBuilder) {
         for (final String stat : stats) {
-            asicBuilder.addTemp(
-                    getValue(
-                            stat,
-                            "Temp"));
-            asicBuilder.addTemp(
-                    getValue(
-                            stat,
-                            "TMax"));
+            getValue(stat, "Temp").ifPresent(asicBuilder::addTemp);
+            final Optional<String> mtAvgOptional =
+                    getValue(stat, "MTavg");
+            if (mtAvgOptional.isPresent()) {
+                Arrays.stream(
+                        mtAvgOptional
+                                .get()
+                                .split(" "))
+                        .forEach(asicBuilder::addTemp);
+            } else {
+                getValue(stat, "TMax").ifPresent(asicBuilder::addTemp);
+            }
         }
     }
 
@@ -220,15 +224,19 @@ class AvalonUtils {
      *
      * @return The value.
      */
-    private static String getValue(
+    private static Optional<String> getValue(
             final String toExtract,
             final String key) {
         final int start = toExtract.indexOf(key);
-        return toExtract.substring(
-                // Start after KEY[
-                start + key.length() + 1,
-                // End after ]
-                toExtract.indexOf("]", start));
+        if (start >= 0) {
+            return Optional.of(
+                    toExtract.substring(
+                            // Start after KEY[
+                            start + key.length() + 1,
+                            // End after ]
+                            toExtract.indexOf("]", start)));
+        }
+        return Optional.empty();
     }
 
     /**
