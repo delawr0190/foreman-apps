@@ -58,11 +58,15 @@ public class ObeliskGetStrategy
                             .password(password)
                             .rawResponseCallback(data::set)
                             .responseClass(Object.class)
-                            .responseCallback(dashboard -> {
+                            .responseCallback(response -> {
                             })
                             .build());
-        } catch (final Exception e) {
-            data.set(ExceptionUtils.getStackTrace(e));
+        } catch (final Exception e1) {
+            try {
+                data.set(ExceptionUtils.getStackTrace(e1));
+            } catch (final Exception e2) {
+                data.set("Exception occurred: " + e2.getMessage());
+            }
         }
 
         callback.done(

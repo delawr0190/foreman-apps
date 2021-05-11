@@ -118,9 +118,6 @@ public class ObeliskQuery {
             MinerException {
         U result = null;
 
-        final ObjectMapper objectMapper =
-                new ObjectMapper();
-
         final ApiRequest apiRequest =
                 new ApiRequestImpl(
                         context.getApiIp(),
@@ -149,7 +146,7 @@ public class ObeliskQuery {
             }
             if (response != null && !response.isEmpty()) {
                 result =
-                        objectMapper.readValue(
+                        OBJECT_MAPPER.readValue(
                                 response,
                                 clazz);
             }
