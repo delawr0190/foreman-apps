@@ -1,5 +1,6 @@
 package mn.foreman.blackminer;
 
+import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -19,6 +20,7 @@ import org.junit.runners.Parameterized;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -30,37 +32,40 @@ public class BlackminerStatsITest
     /**
      * Constructor.
      *
+     * @param minerFactory  The miner factory.
+     * @param port          The port.
      * @param servers       The miner servers.
      * @param expectedStats The expected stats.
      */
     public BlackminerStatsITest(
+            final MinerFactory minerFactory,
+            final int port,
             final List<FakeMinerServer> servers,
             final MinerStats expectedStats) {
         super(
-                new BlackminerFactory()
-                        .create(
-                                ImmutableMap.<String, Object>builder()
-                                        .put(
-                                                "apiIp",
-                                                "127.0.0.1")
-                                        .put(
-                                                "apiPort",
-                                                "4028")
-                                        .put(
-                                                "username",
-                                                "username")
-                                        .put(
-                                                "password",
-                                                "password")
-                                        .put(
-                                                "port",
-                                                "8080")
-                                        .put(
-                                                "statsWhitelist",
-                                                Arrays.asList(
-                                                        "SUMMARY.0.Last getwork",
-                                                        "STATS.0.GHS av"))
-                                        .build()),
+                minerFactory.create(
+                        ImmutableMap.<String, Object>builder()
+                                .put(
+                                        "apiIp",
+                                        "127.0.0.1")
+                                .put(
+                                        "apiPort",
+                                        Integer.toString(port))
+                                .put(
+                                        "username",
+                                        "username")
+                                .put(
+                                        "password",
+                                        "password")
+                                .put(
+                                        "port",
+                                        "8080")
+                                .put(
+                                        "statsWhitelist",
+                                        Arrays.asList(
+                                                "SUMMARY.0.Last getwork",
+                                                "STATS.0.GHS av"))
+                                .build()),
                 servers,
                 expectedStats);
     }
@@ -76,6 +81,8 @@ public class BlackminerStatsITest
                 new Object[][]{
                         {
                                 // Blackminer F1 Mini
+                                new BlackminerFactory(),
+                                4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
                                                 4028,
@@ -162,6 +169,8 @@ public class BlackminerStatsITest
                         },
                         {
                                 // Blackminer F1
+                                new BlackminerFactory(),
+                                4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
                                                 4028,
@@ -275,6 +284,8 @@ public class BlackminerStatsITest
                         },
                         {
                                 // Blackminer F1 Ultra
+                                new BlackminerFactory(),
+                                4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
                                                 4028,
@@ -384,7 +395,182 @@ public class BlackminerStatsITest
                                                                         "4.5009"))
                                                         .build())
                                         .build()
-                        }
+                        },
+                        {
+                                // Blackminer F2
+                                new BlackminerFactory(),
+                                8080,
+                                Collections.singletonList(
+                                        new FakeHttpMinerServer(
+                                                8080,
+                                                ImmutableMap.of(
+                                                        "/cgi-bin/get_miner_status.cgi",
+                                                        new HttpHandler(
+                                                                "",
+                                                                "// 20210510142223\n" +
+                                                                        "// http://192.168.0.167/cgi-bin/get_miner_status.cgi\n" +
+                                                                        "\n" +
+                                                                        "{\n" +
+                                                                        "  \"summary\": {\n" +
+                                                                        "    \"elapsed\": \"2011\",\n" +
+                                                                        "    \"ghs5s\": \"7.1293\",\n" +
+                                                                        "    \"ghsav\": \"6.6368\",\n" +
+                                                                        "    \"foundblocks\": \"0\",\n" +
+                                                                        "    \"getworks\": \"303\",\n" +
+                                                                        "    \"accepted\": \" 8.0000\",\n" +
+                                                                        "    \"rejected\": \" 8.0000\",\n" +
+                                                                        "    \"hw\": \"3\",\n" +
+                                                                        "    \"utility\": \"16.89\",\n" +
+                                                                        "    \"discarded\": \"1552\",\n" +
+                                                                        "    \"stale\": \"0\",\n" +
+                                                                        "    \"localwork\": \"185131\",\n" +
+                                                                        "    \"wu\": \"92.17\",\n" +
+                                                                        "    \"diffa\": \"3041.00000000\",\n" +
+                                                                        "    \"diffr\": \"48.00000000\",\n" +
+                                                                        "    \"diffs\": \"0.00000000\",\n" +
+                                                                        "    \"bestshare\": \"1329\"\n" +
+                                                                        "  },\n" +
+                                                                        "  \"pools\": [\n" +
+                                                                        "    {\n" +
+                                                                        "      \"index\": \"0\",\n" +
+                                                                        "      \"url\": \"stratum+tcp://pool.dgb256.online:8083\",\n" +
+                                                                        "      \"user\": \"aaa\",\n" +
+                                                                        "      \"status\": \"Alive\",\n" +
+                                                                        "      \"priority\": \"0\",\n" +
+                                                                        "      \"getworks\": \"303\",\n" +
+                                                                        "      \"accepted\": \"566\",\n" +
+                                                                        "      \"rejected\": \"8\",\n" +
+                                                                        "      \"discarded\": \"1552\",\n" +
+                                                                        "      \"stale\": \"0\",\n" +
+                                                                        "      \"diff\": \" 6.0000\",\n" +
+                                                                        "      \"diff1\": \"3108\",\n" +
+                                                                        "      \"diffa\": \"3041.00000000\",\n" +
+                                                                        "      \"diffr\": \"48.00000000\",\n" +
+                                                                        "      \"diffs\": \"0.00000000\",\n" +
+                                                                        "      \"lsdiff\": \"6.00000000\",\n" +
+                                                                        "      \"lstime\": \"0:00:03\"\n" +
+                                                                        "    },\n" +
+                                                                        "    {\n" +
+                                                                        "      \"index\": \"1\",\n" +
+                                                                        "      \"url\": \"\",\n" +
+                                                                        "      \"user\": \"\",\n" +
+                                                                        "      \"status\": \"Dead\",\n" +
+                                                                        "      \"priority\": \"1\",\n" +
+                                                                        "      \"getworks\": \"0\",\n" +
+                                                                        "      \"accepted\": \"0\",\n" +
+                                                                        "      \"rejected\": \"0\",\n" +
+                                                                        "      \"discarded\": \"0\",\n" +
+                                                                        "      \"stale\": \"0\",\n" +
+                                                                        "      \"diff\": \" 0.0000\",\n" +
+                                                                        "      \"diff1\": \"0\",\n" +
+                                                                        "      \"diffa\": \"0.00000000\",\n" +
+                                                                        "      \"diffr\": \"0.00000000\",\n" +
+                                                                        "      \"diffs\": \"0.00000000\",\n" +
+                                                                        "      \"lsdiff\": \"0.00000000\",\n" +
+                                                                        "      \"lstime\": \"0\"\n" +
+                                                                        "    },\n" +
+                                                                        "    {\n" +
+                                                                        "      \"index\": \"2\",\n" +
+                                                                        "      \"url\": \"\",\n" +
+                                                                        "      \"user\": \"\",\n" +
+                                                                        "      \"status\": \"Dead\",\n" +
+                                                                        "      \"priority\": \"2\",\n" +
+                                                                        "      \"getworks\": \"0\",\n" +
+                                                                        "      \"accepted\": \"0\",\n" +
+                                                                        "      \"rejected\": \"0\",\n" +
+                                                                        "      \"discarded\": \"0\",\n" +
+                                                                        "      \"stale\": \"0\",\n" +
+                                                                        "      \"diff\": \" 0.0000\",\n" +
+                                                                        "      \"diff1\": \"0\",\n" +
+                                                                        "      \"diffa\": \"0.00000000\",\n" +
+                                                                        "      \"diffr\": \"0.00000000\",\n" +
+                                                                        "      \"diffs\": \"0.00000000\",\n" +
+                                                                        "      \"lsdiff\": \"0.00000000\",\n" +
+                                                                        "      \"lstime\": \"0\"\n" +
+                                                                        "    }\n" +
+                                                                        "  ],\n" +
+                                                                        "  \"devs\": [\n" +
+                                                                        "    {\n" +
+                                                                        "      \"index\": \"1\",\n" +
+                                                                        "      \"chain_acn\": \"6\",\n" +
+                                                                        "      \"freq\": \"560,fan_num=2,fan1=4730,fan2=4730,temp_num=2,temp1=72,chipTemp1=[92.77, 89.82, 85.88, 83.79, 89.70, 92.28],temp2=63,chipTemp2=[90.31, 85.64, 77.76, 77.27, 84.16, 89.33],temp3=0,chipTemp3=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp4=0,chipTemp4=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp_max=72,Device Hardware%=0.0000,no_matching_work=3,chain_acn1=6,chain_acn2=6,chain_acn3=0,chain_acn4=0,chain_acs1= oooooo,chain_acs2= oooooo,chain_acs3=,chain_acs4=,chain_hw1=2,chain_hw2=1,chain_hw3=0,chain_hw4=0,chain_rate1=4.0371,chain_rate2=3.0922,chain_rate3=,chain_rate4=|\",\n" +
+                                                                        "      \"fan\": \"4730\",\n" +
+                                                                        "      \"temp\": \"72,chipTemp1=[92.77, 89.82, 85.88, 83.79, 89.70, 92.28]\",\n" +
+                                                                        "      \"chain_acs\": \" oooooo\"\n" +
+                                                                        "    },\n" +
+                                                                        "    {\n" +
+                                                                        "      \"index\": \"2\",\n" +
+                                                                        "      \"chain_acn\": \"6\",\n" +
+                                                                        "      \"freq\": \"560,fan_num=2,fan1=4730,fan2=4730,temp_num=2,temp1=72,chipTemp1=[92.77, 89.82, 85.88, 83.79, 89.70, 92.28],temp2=63,chipTemp2=[90.31, 85.64, 77.76, 77.27, 84.16, 89.33],temp3=0,chipTemp3=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp4=0,chipTemp4=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp_max=72,Device Hardware%=0.0000,no_matching_work=3,chain_acn1=6,chain_acn2=6,chain_acn3=0,chain_acn4=0,chain_acs1= oooooo,chain_acs2= oooooo,chain_acs3=,chain_acs4=,chain_hw1=2,chain_hw2=1,chain_hw3=0,chain_hw4=0,chain_rate1=4.0371,chain_rate2=3.0922,chain_rate3=,chain_rate4=|\",\n" +
+                                                                        "      \"fan\": \"4730,temp_num=2,temp1=72,chipTemp1=[92.77, 89.82, 85.88, 83.79, 89.70, 92.28],temp2=63,chipTemp2=[90.31, 85.64, 77.76, 77.27, 84.16, 89.33],temp3=0,chipTemp3=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp4=0,chipTemp4=[0.00, 0.00, 0.00, 0.00, 0.00, 0.00],temp_max=72,Device Hardware%=0.0000,no_matching_work=3,chain_acn1=6,chain_acn2=6,chain_acn3=0,chain_acn4=0,chain_acs1= oooooo,chain_acs2= oooooo,chain_acs3=,chain_acs4=,chain_hw1=2,chain_hw2=1,chain_hw3=0,chain_hw4=0,chain_rate1=4.0371,chain_rate2=3.0922,chain_rate3=,chain_rate4=|\",\n" +
+                                                                        "      \"temp\": \"63,chipTemp2=[90.31, 85.64, 77.76, 77.27, 84.16, 89.33]\",\n" +
+                                                                        "      \"chain_acs\": \" oooooo\"\n" +
+                                                                        "    }\n" +
+                                                                        "  ]\n" +
+                                                                        "}"),
+                                                        "/cgi-bin/get_miner_conf.cgi",
+                                                        new HttpHandler(
+                                                                "",
+                                                                "{\n" +
+                                                                        "\"pools\" : [\n" +
+                                                                        "{\n" +
+                                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                                        "\"user\" : \"xxx\",\n" +
+                                                                        "\"pass\" : \"X\"\n" +
+                                                                        "},\n" +
+                                                                        "{\n" +
+                                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                                        "\"user\" : \"xxx\",\n" +
+                                                                        "\"pass\" : \"X\"\n" +
+                                                                        "},\n" +
+                                                                        "{\n" +
+                                                                        "\"url\" : \"stratum+tcp://dash.f2pool.com:5588\",\n" +
+                                                                        "\"user\" : \"xxx\",\n" +
+                                                                        "\"pass\" : \"X\"\n" +
+                                                                        "}\n" +
+                                                                        "]\n" +
+                                                                        ",\n" +
+                                                                        "\"api-listen\": true,\n" +
+                                                                        "\"api-network\": true,\n" +
+                                                                        "\"freq\": \"400\",\n" +
+                                                                        "\"coin-type\": \"tellor\",\n" +
+                                                                        "\"api-groups\": \"A:stats:pools:devs:summary:version\",\n" +
+                                                                        "\"api-allow\": \"R:0/0,W:127.0.0.1\"\n" +
+                                                                        "}",
+                                                                BlackminerStatsITest::validateDigest)))),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(8080)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("pool.dgb256.online:8083")
+                                                        .setWorker("aaa")
+                                                        .setPriority(0)
+                                                        .setStatus(
+                                                                true,
+                                                                true)
+                                                        .setCounts(
+                                                                8,
+                                                                8,
+                                                                0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("6636800000.0000"))
+                                                        .setBoards(2)
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(4730)
+                                                                        .addSpeed(4730)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(72)
+                                                        .addTemp(63)
+                                                        .setPowerState("tellor")
+                                                        .build())
+                                        .build()
+                        },
                 });
     }
 

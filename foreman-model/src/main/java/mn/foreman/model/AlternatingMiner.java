@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * An {@link AlternatingMiner} provides a {@link Miner} implementation that will
@@ -23,6 +24,7 @@ public class AlternatingMiner
     /** The candidates. */
     private final List<Miner> candidates;
 
+
     /**
      * Constructor.
      *
@@ -37,6 +39,18 @@ public class AlternatingMiner
                 apiIp,
                 apiPort);
         this.candidates = Arrays.asList(candidates);
+    }
+
+    @Override
+    public Optional<String> getMacAddress() {
+        for (final Miner candidate : this.candidates) {
+            try {
+                return candidate.getMacAddress();
+            } catch (final Exception e) {
+                // Skip
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

@@ -393,11 +393,20 @@ public class Pool {
          * @return The new value.
          */
         private static long toCount(final String count) {
-            try {
-                return Long.parseLong(count);
-            } catch (final NumberFormatException nfe) {
-                return 0;
+            long countLong = 0;
+            if (count != null && !count.isEmpty()) {
+                final String toConvert = count.trim();
+                try {
+                    countLong = Long.parseLong(toConvert);
+                } catch (final NumberFormatException nfe) {
+                    try {
+                        countLong = (long) Double.parseDouble(toConvert);
+                    } catch (final NumberFormatException nfe2) {
+                        // Ignore
+                    }
+                }
             }
+            return countLong;
         }
     }
 }
