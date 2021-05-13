@@ -34,9 +34,21 @@ public class MinerStatus {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Pool {
 
+        /** The accepted. */
+        @JsonProperty("accepted")
+        public String accepted;
+
         /** The priority. */
         @JsonProperty("priority")
         public String priority;
+
+        /** The rejected. */
+        @JsonProperty("rejected")
+        public String rejected;
+
+        /** The stale. */
+        @JsonProperty("stale")
+        public String stale;
 
         /** The status. */
         @JsonProperty("status")
@@ -55,20 +67,9 @@ public class MinerStatus {
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Summary {
 
-        /** The accepted. */
-        @JsonProperty("accepted")
-        public String accepted;
-
         /** The hash rate. */
         @JsonProperty("ghsav")
         public String ghsav;
 
-        /** The rejected. */
-        @JsonProperty("rejected")
-        public String rejected;
-
-        /** The stale. */
-        @JsonProperty("stale")
-        public String stale;
     }
 }

@@ -14,6 +14,7 @@ import mn.foreman.util.PoolUtils;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -84,7 +85,7 @@ public class BlackminerWeb
             final MinerStatus minerStatus = status.get();
             if (minerStatus != null) {
                 addPools(
-                        minerStatus,
+                        minerStatus.pools,
                         statsBuilder);
                 addAsics(
                         minerStatus,
@@ -148,14 +149,13 @@ public class BlackminerWeb
     /**
      * Adds pools to the provided builder.
      *
-     * @param minerStatus The status.
-     * @param builder     The builder.
+     * @param pools   The pools.
+     * @param builder The builder.
      */
     private static void addPools(
-            final MinerStatus minerStatus,
+            final List<MinerStatus.Pool> pools,
             final MinerStats.Builder builder) {
-        minerStatus
-                .pools
+        pools
                 .stream()
                 .filter(pool -> pool.url != null && !pool.url.isEmpty())
                 .map(pool ->
@@ -163,9 +163,9 @@ public class BlackminerWeb
                                 .setName(PoolUtils.sanitizeUrl(pool.url))
                                 .setWorker(pool.user)
                                 .setCounts(
-                                        minerStatus.summary.accepted,
-                                        minerStatus.summary.rejected,
-                                        minerStatus.summary.stale)
+                                        pool.accepted,
+                                        pool.rejected,
+                                        pool.stale)
                                 .setPriority(pool.priority)
                                 .setStatus(
                                         true,

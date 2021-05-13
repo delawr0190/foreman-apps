@@ -550,7 +550,7 @@ public class BlackminerStatsITest
                                                                 true,
                                                                 true)
                                                         .setCounts(
-                                                                8,
+                                                                566,
                                                                 8,
                                                                 0)
                                                         .build())
