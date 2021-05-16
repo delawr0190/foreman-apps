@@ -5,6 +5,7 @@ import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -13,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /** Test changing passwords on an Obelisk. */
 @RunWith(Parameterized.class)
@@ -28,7 +30,10 @@ public class ObeliskPasswordITest
             final Map<String, ServerHandler> handlers) {
         super(
                 8080,
-                new ObeliskPasswordAction(),
+                new ObeliskPasswordAction(
+                        1,
+                        TimeUnit.SECONDS,
+                        new ObjectMapper()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -65,14 +70,6 @@ public class ObeliskPasswordITest
                                         "/api/action/changePassword",
                                         new HttpHandler(
                                                 "{\"username\":\"admin\",\"oldPassword\":\"old\",\"newPassword\":\"new\"}",
-                                                ImmutableMap.of(
-                                                        "Cookie",
-                                                        "sessionid=foreman"),
-                                                "",
-                                                Collections.emptyMap()),
-                                        "/api/logout",
-                                        new HttpHandler(
-                                                "",
                                                 ImmutableMap.of(
                                                         "Cookie",
                                                         "sessionid=foreman"),

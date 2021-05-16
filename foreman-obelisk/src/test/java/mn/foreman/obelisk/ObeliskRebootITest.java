@@ -8,6 +8,7 @@ import mn.foreman.util.http.SkipFirstHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 
 /** Test rebooting an Obelisk. */
 public class ObeliskRebootITest
@@ -18,7 +19,9 @@ public class ObeliskRebootITest
         super(
                 8080,
                 8080,
-                new ObeliskRebootAction(),
+                new ObeliskRebootAction(
+                        1,
+                        TimeUnit.SECONDS),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,

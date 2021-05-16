@@ -3,14 +3,12 @@ package mn.foreman.obelisk;
 import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
 import mn.foreman.model.error.MinerException;
-import mn.foreman.obelisk.json.Dashboard;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An {@link ObeliskChangePoolsAction} provides an {@link
@@ -20,6 +18,31 @@ import java.util.Map;
 public class ObeliskChangePoolsAction
         extends AbstractChangePoolsAction {
 
+    /** The mapper for JSON. */
+    private final ObjectMapper objectMapper;
+
+    /** The socket timeout. */
+    private final int socketTimeout;
+
+    /** The socket timeout (units). */
+    private final TimeUnit socketTimeoutUnits;
+
+    /**
+     * Constructor.
+     *
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout (units).
+     * @param objectMapper       The mapper.
+     */
+    public ObeliskChangePoolsAction(
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits,
+            final ObjectMapper objectMapper) {
+        this.socketTimeout = socketTimeout;
+        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.objectMapper = objectMapper;
+    }
+
     @Override
     public boolean doChange(
             final String ip,
@@ -27,13 +50,12 @@ public class ObeliskChangePoolsAction
             final Map<String, Object> parameters,
             final List<Pool> pools)
             throws MinerException {
+        boolean result;
         try {
             final String username =
                     (String) parameters.getOrDefault("username", "");
             final String password =
                     (String) parameters.getOrDefault("password", "");
-            final ObjectMapper objectMapper =
-                    new ObjectMapper();
 
             final List<Map<String, String>> newPools = new LinkedList<>();
             pools.forEach(pool ->
@@ -41,23 +63,26 @@ public class ObeliskChangePoolsAction
                             pool,
                             newPools));
 
-            ObeliskQuery.runSessionQuery(
-                    ObeliskQuery.Context
-                            .<Dashboard>builder()
-                            .apiIp(ip)
-                            .apiPort(port)
-                            .uri("/api/config/pools")
-                            .method("POST")
-                            .username(username)
-                            .password(password)
-                            .content(objectMapper.writeValueAsString(newPools))
-                            .rawResponseCallback(s -> {
-                            })
-                            .build());
+            result =
+                    ObeliskQuery.runSessionQuery(
+                            ip,
+                            port,
+                            "/api/config/pools",
+                            true,
+                            username,
+                            password,
+                            this.socketTimeout,
+                            this.socketTimeoutUnits,
+                            Collections.emptyList(),
+                            (code, body) -> null,
+                            this.objectMapper.writeValueAsString(newPools),
+                            o -> {
+                            },
+                            new HashMap<>());
         } catch (final Exception e) {
             throw new MinerException(e);
         }
-        return true;
+        return result;
     }
 
     /**

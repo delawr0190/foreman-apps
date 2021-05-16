@@ -7,6 +7,7 @@ import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.http.SkipFirstHandler;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -15,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /** Test changing pools on an Obelisk. */
 @RunWith(Parameterized.class)
@@ -31,7 +33,10 @@ public class ObeliskChangePoolsITest
         super(
                 8080,
                 8080,
-                new ObeliskChangePoolsAction(),
+                new ObeliskChangePoolsAction(
+                        1,
+                        TimeUnit.SECONDS,
+                        new ObjectMapper()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -64,14 +69,6 @@ public class ObeliskChangePoolsITest
                                         "/api/config/pools",
                                         new HttpHandler(
                                                 "[{\"url\":\"stratum+tcp://my-test-pool1.com:5588\",\"worker\":\"my-test-username1\",\"password\":\"my-test-password1\"},{\"url\":\"stratum+tcp://my-test-pool2.com:5588\",\"worker\":\"my-test-username2\",\"password\":\"my-test-password2\"},{\"url\":\"stratum+tcp://my-test-pool3.com:5588\",\"worker\":\"my-test-username3\",\"password\":\"my-test-password3\"}]",
-                                                ImmutableMap.of(
-                                                        "Cookie",
-                                                        "sessionid=foreman"),
-                                                "",
-                                                Collections.emptyMap()),
-                                        "/api/logout",
-                                        new HttpHandler(
-                                                "",
                                                 ImmutableMap.of(
                                                         "Cookie",
                                                         "sessionid=foreman"),

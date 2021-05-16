@@ -79,6 +79,7 @@
         <module>foreman-discover</module>
         <module>foreman-dragonmint</module>
         <module>foreman-dstm</module>
+        <module>foreman-ebang</module>
         <module>foreman-epic</module>
         <module>foreman-ethminer</module>
         <module>foreman-ewbf</module>
@@ -229,6 +230,11 @@
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-dstm</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-ebang</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

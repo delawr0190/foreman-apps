@@ -15,6 +15,7 @@ import mn.foreman.cpuminer.CpuminerFactory;
 import mn.foreman.dayun.DayunFactory;
 import mn.foreman.dragonmint.DragonmintFactory;
 import mn.foreman.dstm.DstmFactory;
+import mn.foreman.ebang.EbangFactory;
 import mn.foreman.epic.EpicFactory;
 import mn.foreman.ethminer.EthminerFactory;
 import mn.foreman.ewbf.EwbfFactory;
@@ -58,6 +59,7 @@ import mn.foreman.xmrstak.XmrstakType;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -488,6 +490,16 @@ public enum ApiType {
                 return new GoldshellFactory(
                         1,
                         TimeUnit.SECONDS);
+            }),
+
+    /** ebang. */
+    EBANG_API(
+            58,
+            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+                return new EbangFactory(
+                        1,
+                        TimeUnit.SECONDS,
+                        new ObjectMapper());
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */

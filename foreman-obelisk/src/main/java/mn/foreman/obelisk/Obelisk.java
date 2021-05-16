@@ -1,6 +1,6 @@
 package mn.foreman.obelisk;
 
-import mn.foreman.io.Query;
+import mn.foreman.io.HttpRequestBuilder;
 import mn.foreman.model.AbstractMiner;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
@@ -14,12 +14,13 @@ import mn.foreman.util.Flatten;
 import mn.foreman.util.MrrUtils;
 import mn.foreman.util.PoolUtils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <h1>Overview</h1>
@@ -32,8 +33,17 @@ import java.util.*;
 public class Obelisk
         extends AbstractMiner {
 
+    /** The mapper. */
+    private final ObjectMapper objectMapper;
+
     /** The API password. */
     private final String password;
+
+    /** The socket timeout. */
+    private final int socketTimeout;
+
+    /** The socket timeout (units). */
+    private final TimeUnit socketTimeoutUnits;
 
     /** The stats whitelist. */
     private final List<String> statsWhitelist;
@@ -44,12 +54,15 @@ public class Obelisk
     /**
      * Constructor.
      *
-     * @param apiIp          The API IP.
-     * @param apiPort        The API port.
-     * @param username       The username.
-     * @param password       The password.
-     * @param statsWhitelist The stats whitelist.
-     * @param macStrategy    The MAC strategy.
+     * @param apiIp              The API IP.
+     * @param apiPort            The API port.
+     * @param username           The username.
+     * @param password           The password.
+     * @param statsWhitelist     The stats whitelist.
+     * @param macStrategy        The MAC strategy.
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout (units).
+     * @param objectMapper       Json mapper.
      */
     Obelisk(
             final String apiIp,
@@ -57,7 +70,10 @@ public class Obelisk
             final String username,
             final String password,
             final List<String> statsWhitelist,
-            final MacStrategy macStrategy) {
+            final MacStrategy macStrategy,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits,
+            final ObjectMapper objectMapper) {
         super(
                 apiIp,
                 apiPort,
@@ -65,6 +81,9 @@ public class Obelisk
         this.username = username;
         this.password = password;
         this.statsWhitelist = new ArrayList<>(statsWhitelist);
+        this.socketTimeout = socketTimeout;
+        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -73,16 +92,25 @@ public class Obelisk
             throws MinerException {
         final Map<String, Object> rawStats = new LinkedHashMap<>();
         final Info info =
-                Query.restQuery(
-                        this.apiIp,
-                        this.apiPort,
-                        "/api/info",
-                        new TypeReference<Info>() {
-                        },
-                        s -> handleResponse(
-                                s,
-                                rawStats,
-                                this.statsWhitelist));
+                new HttpRequestBuilder<Info>()
+                        .ip(this.apiIp)
+                        .port(this.apiPort)
+                        .uri(
+                                "/api/info")
+                        .socketTimeout(
+                                this.socketTimeout,
+                                this.socketTimeoutUnits)
+                        .rawCallback((integer, s) ->
+                                handleResponse(
+                                        s,
+                                        rawStats,
+                                        this.statsWhitelist))
+                        .responseTransformer((integer, s) ->
+                                this.objectMapper.readValue(
+                                        s,
+                                        Info.class))
+                        .get()
+                        .orElseThrow(() -> new MinerException("Failed to obtain info"));
         final Optional<ObeliskType> type =
                 ObeliskType.forType(
                         info.model);
@@ -261,38 +289,38 @@ public class Obelisk
             final Map<String, Object> rawStats)
             throws Exception {
         ObeliskQuery.runSessionQuery(
-                ObeliskQuery.Context
-                        .<Dashboard>builder()
-                        .apiIp(this.apiIp)
-                        .apiPort(this.apiPort)
-                        .uri("/api/status/dashboard")
-                        .method("GET")
-                        .username(this.username)
-                        .password(this.password)
-                        .rawResponseCallback(s ->
-                                handleResponse(
-                                        s,
-                                        rawStats,
-                                        this.statsWhitelist))
-                        .responseClass(Dashboard.class)
-                        .responseCallback(dashboard -> {
-                            addPools(
-                                    statsBuilder,
-                                    dashboard);
-                            addAsics(
-                                    statsBuilder,
-                                    dashboard,
-                                    gen,
-                                    dashboard
-                                            .pools
-                                            .stream()
-                                            .map(pool -> MrrUtils.getRigId(pool.url, pool.worker))
-                                            .filter(Objects::nonNull)
-                                            .findFirst()
-                                            .orElse(""),
-                                    rawStats);
-                        })
-                        .build());
+                this.apiIp,
+                this.apiPort,
+                "/api/status/dashboard",
+                false,
+                this.username,
+                this.password,
+                this.socketTimeout,
+                this.socketTimeoutUnits,
+                this.statsWhitelist,
+                (code, body) ->
+                        this.objectMapper.readValue(
+                                body,
+                                Dashboard.class),
+                null,
+                dashboard -> {
+                    addPools(
+                            statsBuilder,
+                            dashboard);
+                    addAsics(
+                            statsBuilder,
+                            dashboard,
+                            gen,
+                            dashboard
+                                    .pools
+                                    .stream()
+                                    .map(pool -> MrrUtils.getRigId(pool.url, pool.worker))
+                                    .filter(Objects::nonNull)
+                                    .findFirst()
+                                    .orElse(""),
+                            rawStats);
+                },
+                rawStats);
     }
 
     /**

@@ -1,18 +1,19 @@
 package mn.foreman.obelisk;
 
-import mn.foreman.io.Query;
+import mn.foreman.io.HttpRequestBuilder;
 import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.obelisk.json.Info;
 import mn.foreman.util.ArgUtils;
 
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link ObeliskDetectionStrategy} provides a {@link DetectionStrategy} for
@@ -34,17 +35,35 @@ public class ObeliskDetectionStrategy<T extends MinerType>
     /** The miner. */
     private final Miner miner;
 
+    /** The json mapper. */
+    private final ObjectMapper objectMapper;
+
+    /** The timeout. */
+    private final int socketTimeout;
+
+    /** The timeout (units). */
+    private final TimeUnit socketTimeoutUnits;
+
     /**
      * Constructor.
      *
-     * @param macStrategy The strategy.
-     * @param miner       The miner.
+     * @param macStrategy        The strategy.
+     * @param miner              The miner.
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout (units).
+     * @param objectMapper       The mapper.
      */
     public ObeliskDetectionStrategy(
             final MacStrategy macStrategy,
-            final Miner miner) {
+            final Miner miner,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits,
+            final ObjectMapper objectMapper) {
         this.macStrategy = macStrategy;
         this.miner = miner;
+        this.socketTimeout = socketTimeout;
+        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.objectMapper = objectMapper;
     }
 
     @Override
@@ -55,12 +74,20 @@ public class ObeliskDetectionStrategy<T extends MinerType>
         Detection detection = null;
         try {
             final Info info =
-                    Query.restQuery(
-                            ip,
-                            port,
-                            "/api/info",
-                            new TypeReference<Info>() {
-                            });
+                    new HttpRequestBuilder<Info>()
+                            .ip(ip)
+                            .port(port)
+                            .uri(
+                                    "/api/info")
+                            .socketTimeout(
+                                    this.socketTimeout,
+                                    this.socketTimeoutUnits)
+                            .responseTransformer((integer, s) ->
+                                    this.objectMapper.readValue(
+                                            s,
+                                            Info.class))
+                            .get()
+                            .orElseThrow(() -> new MinerException("Failed to obtain info"));
             final Optional<ObeliskType> type =
                     ObeliskType.forType(
                             info.model);

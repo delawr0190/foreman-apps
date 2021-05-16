@@ -133,14 +133,6 @@ public class ObeliskStatsITest
                                                         "    }\n" +
                                                         "  ]\n" +
                                                         "}",
-                                                Collections.emptyMap()),
-                                        "/api/logout",
-                                        new HttpHandler(
-                                                "",
-                                                ImmutableMap.of(
-                                                        "Cookie",
-                                                        "sessionid=foreman"),
-                                                "",
                                                 Collections.emptyMap())),
                                 Arrays.asList(
                                         "hashboardStatus.0.boardTemp",
@@ -242,14 +234,6 @@ public class ObeliskStatsITest
                                                         "    }\n" +
                                                         "  ]\n" +
                                                         "}",
-                                                Collections.emptyMap()),
-                                        "/api/logout",
-                                        new HttpHandler(
-                                                "",
-                                                ImmutableMap.of(
-                                                        "Cookie",
-                                                        "sessionid=foreman"),
-                                                "",
                                                 Collections.emptyMap())),
                                 Arrays.asList(
                                         "hashboardStatus.0.intakeTemp",

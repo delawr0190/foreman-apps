@@ -17,6 +17,7 @@ import mn.foreman.cheetahminer.CheetahminerType;
 import mn.foreman.dayun.DayunTypeFactory;
 import mn.foreman.dayun.response.StatsPatchingStrategy;
 import mn.foreman.dragonmint.*;
+import mn.foreman.ebang.*;
 import mn.foreman.epic.*;
 import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.goldshell.*;
@@ -41,6 +42,7 @@ import mn.foreman.strongu.StrongUFactory;
 import mn.foreman.strongu.StrongUTypeFactory;
 import mn.foreman.whatsminer.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import one.util.streamex.EntryStream;
 
 import java.math.BigDecimal;
@@ -575,6 +577,85 @@ public enum Manufacturer {
                             new DragonmintPasswordAction()),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
 
+    /** Ebang. */
+    EBANG(
+            "ebang",
+            (args, ip) -> null,
+            (threadPool, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new EbangFactory(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper()),
+                                    new EbangChangePoolsAction(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper())),
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new EbangFactory(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper()),
+                                    new EbangRebootAction(
+                                            1,
+                                            TimeUnit.SECONDS))),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new EbangFactory(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper()),
+                            new EbangRebootAction(
+                                    1,
+                                    TimeUnit.SECONDS)),
+            (threadPool, blacklist, statsCache) ->
+                    new ChainedAsicAction(
+                            AsicActionFactory.toSync(
+                                    new EbangFactoryResetAction(
+                                            1,
+                                            TimeUnit.SECONDS),
+                                    60,
+                                    TimeUnit.SECONDS),
+                            AsicActionFactory.toAsync(
+                                    threadPool,
+                                    blacklist,
+                                    statsCache,
+                                    new EbangFactory(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper()),
+                                    new EbangChangePoolsAction(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper()))),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new EbangFactory(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper()),
+                            new EbangNetworkAction(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper()),
+                            AsyncAsicActionUtils::ipChangingHook),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+
     /** ePIC. */
     EPIC(
             "epic",
@@ -881,7 +962,10 @@ public enum Manufacturer {
                     new ObeliskDetectionStrategy<>(
                             new ObeliskMacStrategy(
                                     ip,
-                                    80),
+                                    80,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper()),
                             new ObeliskFactory().create(
                                     EntryStream
                                             .of(args)
@@ -891,21 +975,29 @@ public enum Manufacturer {
                                             .append(
                                                     "apiPort",
                                                     "80")
-                                            .toMap())),
+                                            .toMap()),
+                            1,
+                            TimeUnit.SECONDS,
+                            new ObjectMapper()),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new ObeliskFactory(),
-                            new ObeliskChangePoolsAction()),
+                            new ObeliskChangePoolsAction(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper())),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new ObeliskFactory(),
-                            new ObeliskRebootAction()),
+                            new ObeliskRebootAction(
+                                    1,
+                                    TimeUnit.SECONDS)),
             (threadPool, blacklist, statsCache) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
@@ -913,25 +1005,36 @@ public enum Manufacturer {
                                     blacklist,
                                     statsCache,
                                     new ObeliskFactory(),
-                                    new ObeliskFactoryResetAction()),
+                                    new ObeliskFactoryResetAction(
+                                            1,
+                                            TimeUnit.SECONDS)),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
                                     new ObeliskFactory(),
-                                    new ObeliskChangePoolsAction())),
+                                    new ObeliskChangePoolsAction(
+                                            1,
+                                            TimeUnit.SECONDS,
+                                            new ObjectMapper()))),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new ObeliskFactory(),
-                            new ObeliskNetworkAction(),
+                            new ObeliskNetworkAction(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper()),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toSync(
-                            new ObeliskPasswordAction()),
+                            new ObeliskPasswordAction(
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper())),
             (threadPool, blacklist, statsCache) -> new NullAsicAction()),
 
     /** Spondoolies. */
