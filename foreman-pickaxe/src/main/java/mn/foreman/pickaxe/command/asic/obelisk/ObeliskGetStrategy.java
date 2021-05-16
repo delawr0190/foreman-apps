@@ -10,7 +10,10 @@ import mn.foreman.pickaxe.command.CommandStrategy;
 import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
@@ -48,19 +51,19 @@ public class ObeliskGetStrategy
         final AtomicReference<String> data = new AtomicReference<>();
         try {
             ObeliskQuery.runSessionQuery(
-                    ObeliskQuery.Context
-                            .builder()
-                            .apiIp(ip)
-                            .apiPort(port)
-                            .uri(uri)
-                            .method("GET")
-                            .username(username)
-                            .password(password)
-                            .rawResponseCallback(data::set)
-                            .responseClass(Object.class)
-                            .responseCallback(response -> {
-                            })
-                            .build());
+                    ip,
+                    port,
+                    uri,
+                    false,
+                    username,
+                    password,
+                    5,
+                    TimeUnit.SECONDS,
+                    Collections.emptyList(),
+                    (code, body) -> null,
+                    null,
+                    data::set,
+                    new HashMap<>());
         } catch (final Exception e1) {
             try {
                 data.set(ExceptionUtils.getStackTrace(e1));
