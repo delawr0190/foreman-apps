@@ -1,5 +1,9 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.cgminer.CgMiner;
+import mn.foreman.cgminer.Context;
+import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.util.ArgUtils;
@@ -12,6 +16,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** A strategy for detecting Whatsminer miners. */
@@ -51,11 +57,29 @@ public class WhatsminerDetectionStrategy
         final AtomicReference<WhatsminerType> typeRef =
                 new AtomicReference<>();
         try {
+            final AtomicBoolean foundCgminer = new AtomicBoolean(false);
+            final CgMiner cgMiner =
+                    new CgMiner.Builder(new Context(), Collections.emptyList())
+                            .setApiIp(ip)
+                            .setApiPort(4028)
+                            .setConnectTimeout(
+                                    1,
+                                    TimeUnit.SECONDS)
+                            .addRequest(
+                                    new CgMinerRequest.Builder()
+                                            .setCommand(CgMinerCommand.POOLS)
+                                            .build(),
+                                    (builder, response) -> foundCgminer.set(response != null))
+                            .build();
+            cgMiner.getStats();
+
             WhatsminerQuery.query(
                     ip,
                     Integer.parseInt(args.getOrDefault("webPort", "443").toString()),
                     args.getOrDefault("username", "").toString(),
                     args.getOrDefault("password", "").toString(),
+                    2,
+                    TimeUnit.SECONDS,
                     Collections.singletonList(
                             WhatsminerQuery.Query
                                     .builder()

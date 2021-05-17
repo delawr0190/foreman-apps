@@ -50,6 +50,62 @@ public class WhatsminerQuery {
      * Queries a Whatsminer, performing a login operation first to obtain a
      * session cookie.
      *
+     * @param ip                 The ip.
+     * @param port               The port.
+     * @param username           The username.
+     * @param password           The password.
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout (units).
+     * @param queries            The queries.
+     *
+     * @throws MinerException on failure.
+     */
+    public static void query(
+            final String ip,
+            final int port,
+            final String username,
+            final String password,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits,
+            final List<Query> queries)
+            throws MinerException {
+        // Test hook
+        if (port == 8080 || port == 8081) {
+            doQuery(
+                    ip,
+                    port,
+                    username,
+                    password,
+                    socketTimeout,
+                    socketTimeoutUnits,
+                    queries);
+        } else {
+            try {
+                doQuery(
+                        ip,
+                        443,
+                        username,
+                        password,
+                        socketTimeout,
+                        socketTimeoutUnits,
+                        queries);
+            } catch (final MinerException me) {
+                doQuery(
+                        ip,
+                        80,
+                        username,
+                        password,
+                        socketTimeout,
+                        socketTimeoutUnits,
+                        queries);
+            }
+        }
+    }
+
+    /**
+     * Queries a Whatsminer, performing a login operation first to obtain a
+     * session cookie.
+     *
      * @param ip       The ip.
      * @param port     The port.
      * @param username The username.
@@ -65,31 +121,14 @@ public class WhatsminerQuery {
             final String password,
             final List<Query> queries)
             throws MinerException {
-        // Test hook
-        if (port == 8080 || port == 8081) {
-            doQuery(
-                    ip,
-                    port,
-                    username,
-                    password,
-                    queries);
-        } else {
-            try {
-                doQuery(
-                        ip,
-                        443,
-                        username,
-                        password,
-                        queries);
-            } catch (final MinerException me) {
-                doQuery(
-                        ip,
-                        80,
-                        username,
-                        password,
-                        queries);
-            }
-        }
+        query(
+                ip,
+                port,
+                username,
+                password,
+                1,
+                TimeUnit.SECONDS,
+                queries);
     }
 
     /**
@@ -109,6 +148,8 @@ public class WhatsminerQuery {
             final int port,
             final String username,
             final String password,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits,
             final List<Query> queries)
             throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
@@ -116,7 +157,7 @@ public class WhatsminerQuery {
                 RequestConfig
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
-                        .setConnectTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                        .setConnectTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
                         .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
                         .setCircularRedirectsAllowed(true)
                         .build();
