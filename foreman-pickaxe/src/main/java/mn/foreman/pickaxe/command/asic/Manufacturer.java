@@ -230,7 +230,19 @@ public enum Manufacturer {
                                             "ant"),
                                     new BraiinsNetworkAction()),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache) ->
+                    AsicActionFactory.toAsync(
+                            threadPool,
+                            blacklist,
+                            statsCache,
+                            new AntminerFactory(BigDecimal.ONE),
+                            new FirmwareAwareAction(
+                                    "antMiner Configuration",
+                                    new StockPowerModeAction(
+                                            "antMiner Configuration",
+                                            new ObjectMapper()),
+                                    new BraiinsPowerModeAction()),
+                            AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toSync(
                             new FirmwareAwareAction(
