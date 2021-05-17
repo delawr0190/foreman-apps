@@ -73,7 +73,7 @@ public class StatsResponseStrategy
     private void addAsicStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        BigDecimal hashRate =
+        final BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
                         .multiply(new BigDecimal(Math.pow(1000, 3)));
 
@@ -118,13 +118,27 @@ public class StatsResponseStrategy
 
         // Errors
         boolean hasErrors = false;
+        boolean hasFunctioningChips = false;
         for (int i = 1; i <= 16; i++) {
             final String chain = values.get("chain_acs" + i);
             if (chain != null) {
                 hasErrors = (hasErrors || chain.contains("x"));
+                hasFunctioningChips |=
+                        chain
+                                .trim()
+                                .replace(
+                                        "x",
+                                        "")
+                                .trim()
+                                .length() > 0;
             }
         }
-        asicBuilder.hasErrors(hasErrors);
+        asicBuilder
+                .hasErrors(hasFunctioningChips && hasErrors)
+                .setPowerMode(
+                        !hasFunctioningChips && hasErrors
+                                ? Asic.PowerMode.SLEEPING
+                                : Asic.PowerMode.NORMAL);
 
         // Context data
         this.context.getSimple(ContextKey.MRR_RIG_ID)
