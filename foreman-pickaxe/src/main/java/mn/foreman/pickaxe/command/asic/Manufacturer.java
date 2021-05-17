@@ -231,18 +231,13 @@ public enum Manufacturer {
                                     new BraiinsNetworkAction()),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache) ->
-                    AsicActionFactory.toAsync(
-                            threadPool,
-                            blacklist,
-                            statsCache,
-                            new AntminerFactory(BigDecimal.ONE),
+                    AsicActionFactory.toSync(
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockPowerModeAction(
                                             "antMiner Configuration",
                                             new ObjectMapper()),
-                                    new BraiinsPowerModeAction()),
-                            AsyncAsicActionUtils::ipChangingHook),
+                                    new BraiinsPowerModeAction())),
             (threadPool, blacklist, statsCache) ->
                     AsicActionFactory.toSync(
                             new FirmwareAwareAction(
