@@ -177,7 +177,7 @@ public class Ebang
                             new Asic.Builder()
                                     .setHashRate(
                                             alarmLoop.feedback.hashRate
-                                                    .multiply(BigDecimal.valueOf(Math.pow(1000, 2))))
+                                                    .multiply(BigDecimal.valueOf(1000 * 1000 * 1000)))
                                     .setFanInfo(
                                             new FanInfo.Builder()
                                                     .setCount(2)
@@ -287,8 +287,10 @@ public class Ebang
             return cgminerVal.feedback.pool1Worker;
         } else if (pool.equals(cgminerVal.feedback.pool2Url)) {
             return cgminerVal.feedback.pool2Worker;
-        } else {
+        } else if (pool.equals(cgminerVal.feedback.pool3Url)) {
             return cgminerVal.feedback.pool3Worker;
+        } else {
+            return cgminerVal.feedback.pool1Worker;
         }
     }
 }

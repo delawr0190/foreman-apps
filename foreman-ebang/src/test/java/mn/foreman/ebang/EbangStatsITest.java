@@ -108,7 +108,7 @@ public class EbangStatsITest
                                         .build())
                         .addAsic(
                                 new Asic.Builder()
-                                        .setHashRate(new BigDecimal("12526698000.0000000"))
+                                        .setHashRate(new BigDecimal("12526698000000.000000"))
                                         .setFanInfo(
                                                 new FanInfo.Builder()
                                                         .setCount(2)
