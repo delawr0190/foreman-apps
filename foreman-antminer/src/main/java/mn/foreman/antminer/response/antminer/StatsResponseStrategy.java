@@ -8,6 +8,7 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
+import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 
 import org.slf4j.Logger;
@@ -133,10 +134,31 @@ public class StatsResponseStrategy
                                 .length() > 0;
             }
         }
+
+        final boolean hasPools =
+                builder
+                        .getPools()
+                        .stream()
+                        .map(Pool::getName)
+                        .filter(s -> !"undefined".equals(s))
+                        .anyMatch(s -> !s.isEmpty());
+        final boolean hasSubmittedShares =
+                this.context
+                        .getMulti(ContextKey.LAST_SHARE_TIME)
+                        .map(shares ->
+                                shares
+                                        .values()
+                                        .stream()
+                                        .map(Object::toString)
+                                        .filter(String::isEmpty)
+                                        .mapToInt(Integer::parseInt)
+                                        .sum() > 0)
+                        .orElse(false);
+
         asicBuilder
                 .hasErrors(hasFunctioningChips && hasErrors)
                 .setPowerMode(
-                        !hasFunctioningChips && hasErrors
+                        !hasFunctioningChips && hasErrors && hasPools && !hasSubmittedShares
                                 ? Asic.PowerMode.SLEEPING
                                 : Asic.PowerMode.NORMAL);
 
@@ -154,5 +176,7 @@ public class StatsResponseStrategy
                 asicBuilder
                         .setHashRate(hashRate)
                         .build());
+
+        this.context.clear();
     }
 }

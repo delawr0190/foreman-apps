@@ -10,6 +10,8 @@ import mn.foreman.util.PoolUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +26,8 @@ public class PoolsResponseStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(PoolsResponseStrategy.class);
 
-    /** The callback to invoke when a pool is found. */
-    private final PoolCallback poolCallback;
+    /** The callbacks to invoke when a pool is found. */
+    private final List<PoolCallback> poolCallbacks;
 
     /** Constructor. */
     public PoolsResponseStrategy() {
@@ -35,10 +37,10 @@ public class PoolsResponseStrategy
     /**
      * Constructor.
      *
-     * @param poolCallback The callback to invoke when a pool is found.
+     * @param poolCallbacks The callbacks to invoke when a pool is found.
      */
-    public PoolsResponseStrategy(final PoolCallback poolCallback) {
-        this.poolCallback = poolCallback;
+    public PoolsResponseStrategy(final PoolCallback... poolCallbacks) {
+        this.poolCallbacks = Arrays.asList(poolCallbacks);
     }
 
     @Override
@@ -52,7 +54,10 @@ public class PoolsResponseStrategy
                     .filter(entry -> entry.getKey().startsWith("POOL"))
                     .forEach(entry -> entry.getValue().forEach(
                             value -> {
-                                this.poolCallback.foundPool(value);
+                                this.poolCallbacks
+                                        .forEach(
+                                                poolCallback ->
+                                                        poolCallback.foundPool(value));
                                 addPoolStats(
                                         builder,
                                         value);
