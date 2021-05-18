@@ -587,7 +587,16 @@ public enum Manufacturer {
     /** Ebang. */
     EBANG(
             "ebang",
-            (args, ip) -> null,
+            (args, ip) ->
+                    new EpicDetectionStrategy(
+                            new EbangMacStrategy(
+                                    ip,
+                                    80,
+                                    args.getOrDefault("username", "").toString(),
+                                    args.getOrDefault("password", "").toString(),
+                                    2,
+                                    TimeUnit.SECONDS,
+                                    new ObjectMapper())),
             (threadPool, blacklist, statsCache) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(

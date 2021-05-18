@@ -19,8 +19,19 @@ public class ObeliskQuery {
     /**
      * Adds stats for the provided obelisk generation.
      *
-     * @param
-     * @param context The query context.
+     * @param ip                 The ip.
+     * @param port               The port.
+     * @param uri                The URI.
+     * @param isPost             Whether or not a post.
+     * @param username           The username.
+     * @param password           The password.
+     * @param socketTimeout      The socket timeout.
+     * @param socketTimeoutUnits The socket timeout (units).
+     * @param whitelist          The stats whitelist.
+     * @param transformer        The response transformer.
+     * @param content            The body.
+     * @param responseCallback   The response callback.
+     * @param rawStats           The raw stats to update.
      *
      * @throws MinerException on failure to query.
      */
@@ -56,11 +67,8 @@ public class ObeliskQuery {
                                         .getCookies()
                                         .stream()
                                         .anyMatch(cookie -> cookie.getName().contains("sessionid")))
-                        .rawCallback((code, s) ->
-                                rawStats.putAll(
-                                        Flatten.flattenAndFilter(
-                                                s,
-                                                whitelist)))
+                        .rawCallback((code, s) -> {
+                        })
                         .postJsonNoResponse(
                                 ImmutableMap.of(
                                         "username",

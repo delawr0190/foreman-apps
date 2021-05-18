@@ -94,6 +94,8 @@ public class EbangMacStrategy
         } catch (final Exception e) {
             LOG.warn("Exception occurred", e);
         }
-        return Optional.ofNullable(mac);
+        return Optional
+                .ofNullable(mac)
+                .map(String::toLowerCase);
     }
 }

@@ -45,6 +45,6 @@ public class EbangMacITest
                                                         "{\"status\": 1, \"feedback\": {\"newipaddr\":\"10.0.4.23\",\"macaddr\":\"8C:C7:D0:1B:76:F3\",\"dnsaddr\":\"10.0.0.1\",\"ipmask\":\"255.255.0.0\",\"geteway\":\"10.0.0.1\",\"dhcpstatus\":0,\"dhcpnc\":0,\"dhcpovertime\":10}}",
                                                         Collections.emptyMap()))
                                         .build())),
-                "8C:C7:D0:1B:76:F3");
+                "8c:c7:d0:1b:76:f3");
     }
 }

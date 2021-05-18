@@ -54,7 +54,7 @@ public class EbangStatsITest
                                 new HttpHandler(
                                         "username=username&word=password&yuyan=1&login=Login&get_password=",
                                         Collections.emptyMap(),
-                                        "",
+                                        "<html></html>",
                                         ImmutableMap.of(
                                                 "Set-Cookie",
                                                 "-http-session-=1::http.session::647531ff4c6d47243a8ed9a41a26e473; path=/; domain=127.0.0.1; httponly")),

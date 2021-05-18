@@ -49,7 +49,11 @@ public class EbangQuery {
                                 ? "http"
                                 : "https")
                 .ip(apiIp)
-                .port(apiPort)
+                // Test hook
+                .port(
+                        apiPort == 8080 || apiPort == 8081
+                                ? apiPort
+                                : 443)
                 .uri("/user/login")
                 .cookieStore(cookieStore)
                 .socketTimeout(
@@ -63,7 +67,8 @@ public class EbangQuery {
                                     .anyMatch(cookie -> cookie.getName().contains("http-session")));
                     return loggedIn.get();
                 })
-                .rawCallback(rawCallback)
+                .rawCallback((code, body) -> {
+                })
                 .postWithResponse(
                         Arrays.asList(
                                 ParamUtils.toParam(

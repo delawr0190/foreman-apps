@@ -11,12 +11,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.TrustAllStrategy;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.client.LaxRedirectStrategy;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.ssl.SSLContextBuilder;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,6 +93,11 @@ public class HttpRequestBuilder<U> {
         return this;
     }
 
+    /**
+     * Runs a GET operation.
+     *
+     * @return The result.
+     */
     public Optional<U> get() {
         final AtomicReference<U> result = new AtomicReference<>();
         try {
@@ -311,6 +319,11 @@ public class HttpRequestBuilder<U> {
             final CloseableHttpClient httpClient =
                     HttpClients
                             .custom()
+                            .setSSLContext(
+                                    new SSLContextBuilder()
+                                            .loadTrustMaterial(null, TrustAllStrategy.INSTANCE)
+                                            .build())
+                            .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
                             .setRedirectStrategy(new LaxRedirectStrategy())
                             .setDefaultRequestConfig(
                                     RequestConfig
