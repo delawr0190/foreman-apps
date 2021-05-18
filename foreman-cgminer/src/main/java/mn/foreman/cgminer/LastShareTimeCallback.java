@@ -29,9 +29,11 @@ public class LastShareTimeCallback
                             .getMulti(ContextKey.LAST_SHARE_TIME)
                             .map(HashMap::new)
                             .orElse(new HashMap<>());
-            lastShareTimes.put(
-                    pool,
-                    lastShareTime);
+            if ("0".equals(lastShareTimes.getOrDefault(pool, "0"))) {
+                lastShareTimes.put(
+                        pool,
+                        lastShareTime);
+            }
             this.context.addMulti(
                     ContextKey.LAST_SHARE_TIME,
                     lastShareTimes);
