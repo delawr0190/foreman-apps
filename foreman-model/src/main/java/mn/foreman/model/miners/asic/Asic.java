@@ -524,6 +524,15 @@ public class Asic {
         }
 
         /**
+         * Returns the temps.
+         *
+         * @return The temps.
+         */
+        public List<Integer> getTemps() {
+            return Collections.unmodifiableList(temps);
+        }
+
+        /**
          * Sets whether or not errors were observed.
          *
          * @param hasErrors Whether or not errors were observed.

@@ -48,6 +48,17 @@ public class StatsResponseStrategy
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
         if (response.hasValues()) {
+            final boolean isS19 =
+                    response
+                            .getValues()
+                            .entrySet()
+                            .stream()
+                            .filter(entry -> entry.getKey().equals("STATS"))
+                            .map(Map.Entry::getValue)
+                            .flatMap(List::stream)
+                            .filter(value -> value.containsKey("Type"))
+                            .map(value -> value.get("Type"))
+                            .anyMatch(s -> s.contains("S19"));
             response.getValues()
                     .entrySet()
                     .stream()
@@ -58,6 +69,7 @@ public class StatsResponseStrategy
                     .forEach(value ->
                             addAsicStats(
                                     builder,
+                                    isS19,
                                     value));
         } else {
             LOG.debug("No ACICs founds");
@@ -69,10 +81,12 @@ public class StatsResponseStrategy
      * metrics, to a {@link Asic} and adds it to the provided builder.
      *
      * @param builder The builder to update.
+     * @param isS19   Whether or not the miner is an S19.
      * @param values  The asic values.
      */
     private void addAsicStats(
             final MinerStats.Builder builder,
+            final boolean isS19,
             final Map<String, String> values) {
         final BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
@@ -153,11 +167,17 @@ public class StatsResponseStrategy
                             }
                             return false;
                         }).orElse(false);
+        final boolean overheated =
+                isS19 &&
+                        asicBuilder
+                                .getTemps()
+                                .stream()
+                                .anyMatch(temp -> temp >= 96);
 
         asicBuilder
                 .hasErrors(hasFunctioningChips && hasErrors)
                 .setPowerMode(
-                        !hasFunctioningChips && hasErrors && hasPools && !hasSubmittedShares
+                        !hasFunctioningChips && hasErrors && hasPools && !hasSubmittedShares && !overheated
                                 ? Asic.PowerMode.SLEEPING
                                 : Asic.PowerMode.NORMAL);
 
