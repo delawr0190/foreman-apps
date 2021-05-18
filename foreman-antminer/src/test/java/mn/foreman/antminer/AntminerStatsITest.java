@@ -1279,6 +1279,77 @@ public class AntminerStatsITest
                                                         .setCompileTime("Fri Dec 11 11:15:40 CST 2020")
                                                         .build())
                                         .build()
+                        },
+                        {
+                                // Antminer S19 (overheating)
+                                BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\": \"S\", \"When\": 1621205582, \"Code\": 22, \"Msg\": \"CGMiner versions\", \"Description\": \"cgminer 1.0.0\"}], \"VERSION\": [{\"BMMiner\": \"1.0.0\", \"API\": \"3.1\", \"Miner\": \"49.0.1.3\", \"CompileTime\": \"Fri Dec 11 11:15:40 CST 2020\", \"Type\": \"Antminer S19\"}], \"id\": 1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\": \"S\", \"When\": 1621305590, \"Code\": 70, \"Msg\": \"CGMiner stats\", \"Description\": \"cgminer 1.0.0\"}], \"STATS\": [{\"BMMiner\": \"1.0.0\", \"Miner\": \"49.0.1.3\", \"CompileTime\": \"Fri Dec 11 11:23:44 CST 2020\", \"Type\": \"Antminer S19 Pro\"}, {\"STATS\": 0, \"ID\": \"BTM_SOC0\", \"Elapsed\": 12122, \"Calls\": 0, \"Wait\": 0, \"Max\": 0, \"Min\": 99999999, \"GHS 5s\": 0.0, \"GHS av\": 737.37, \"rate_30m\": 737.37, \"Mode\": 2, \"miner_count\": 3, \"frequency\": 525, \"fan_num\": 4, \"fan1\": 5160, \"fan2\": 5280, \"fan3\": 6240, \"fan4\": 6120, \"temp_num\": 3, \"temp1\": 88, \"temp2_1\": 93, \"temp2\": 89, \"temp2_2\": 94, \"temp3\": 92, \"temp2_3\": 97, \"temp_pcb1\": \"75-59-88-78\", \"temp_pcb2\": \"76-62-89-79\", \"temp_pcb3\": \"75-61-92-82\", \"temp_pcb4\": \"0-0-0-0\", \"temp_chip1\": \"80-64-93-83\", \"temp_chip2\": \"81-67-94-84\", \"temp_chip3\": \"80-66-97-87\", \"temp_chip4\": \"0-0-0-0\", \"temp_pic1\": \"65-49-78-68\", \"temp_pic2\": \"66-52-79-69\", \"temp_pic3\": \"65-51-82-72\", \"temp_pic4\": \"0-0-0-0\", \"total_rateideal\": 111859.0, \"rate_unit\": \"GH\", \"total_freqavg\": 525, \"total_acn\": 342, \"total rate\": 737.37, \"temp_max\": 0, \"no_matching_work\": 1, \"chain_acn1\": 114, \"chain_acn2\": 114, \"chain_acn3\": 114, \"chain_acn4\": 0, \"chain_acs1\": \" xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx\", \"chain_acs2\": \" xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx\", \"chain_acs3\": \" xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx xxx\", \"chain_acs4\": \"\", \"chain_hw1\": 1, \"chain_hw2\": 0, \"chain_hw3\": 0, \"chain_hw4\": 0, \"chain_rate1\": \"0.00\", \"chain_rate2\": \"0.00\", \"chain_rate3\": \"0.00\", \"chain_rate4\": \"\", \"freq1\": 525, \"freq2\": 525, \"freq3\": 525, \"freq4\": 0, \"miner_version\": \"49.0.1.3\", \"miner_id\": \"81108c063ce4285c\"}], \"id\": 1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\": [{\"STATUS\": \"S\", \"When\": 1621305590, \"Code\": 7, \"Msg\": \"3 Pool(s)\", \"Description\": \"cgminer 1.0.0\"}], \"POOLS\": [{\"POOL\": 0, \"URL\": \"stratum+tcp://aaa.com:9999#xnsub\", \"Status\": \"Alive\", \"Priority\": 0, \"Quota\": 1, \"Long Poll\": \"N\", \"Getworks\": 831, \"Accepted\": 37, \"Rejected\": 0, \"Discarded\": 6899, \"Stale\": 0, \"Get Failures\": 0, \"Remote Failures\": 0, \"User\": \"aaa.bb\", \"Last Share Time\": \"3:20:33\", \"Diff\": \"8.19K\", \"Diff1 Shares\": 0, \"Proxy Type\": \"\", \"Proxy\": \"\", \"Difficulty Accepted\": 2424832.0, \"Difficulty Rejected\": 0.0, \"Difficulty Stale\": 0.0, \"Last Share Difficulty\": 65536.0, \"Has Stratum\": true, \"Stratum Active\": true, \"Stratum URL\": \"aaa.com\", \"Has GBT\": false, \"Best Share\": 2130440.0, \"Pool Rejected%\": 0.0, \"Pool Stale%%\": 0.0}, {\"POOL\": 1, \"URL\": \"\", \"Status\": \"Deed\", \"Priority\": 1, \"Quota\": 1, \"Long Poll\": \"N\", \"Getworks\": 0, \"Accepted\": 0, \"Rejected\": 0, \"Discarded\": 0, \"Stale\": 0, \"Get Failures\": 0, \"Remote Failures\": 0, \"User\": \"\", \"Last Share Time\": \"0\", \"Diff\": \"\", \"Diff1 Shares\": 0, \"Proxy Type\": \"\", \"Proxy\": \"\", \"Difficulty Accepted\": 0.0, \"Difficulty Rejected\": 0.0, \"Difficulty Stale\": 0.0, \"Last Share Difficulty\": 0.0, \"Has Stratum\": false, \"Stratum Active\": false, \"Stratum URL\": \"\", \"Has GBT\": false, \"Best Share\": 0.0, \"Pool Rejected%\": 0.0, \"Pool Stale%%\": 0.0}, {\"POOL\": 2, \"URL\": \"\", \"Status\": \"Deed\", \"Priority\": 2, \"Quota\": 1, \"Long Poll\": \"N\", \"Getworks\": 0, \"Accepted\": 0, \"Rejected\": 0, \"Discarded\": 0, \"Stale\": 0, \"Get Failures\": 0, \"Remote Failures\": 0, \"User\": \"\", \"Last Share Time\": \"0\", \"Diff\": \"\", \"Diff1 Shares\": 0, \"Proxy Type\": \"\", \"Proxy\": \"\", \"Difficulty Accepted\": 0.0, \"Difficulty Rejected\": 0.0, \"Difficulty Stale\": 0.0, \"Last Share Difficulty\": 0.0, \"Has Stratum\": false, \"Stratum Active\": false, \"Stratum URL\": \"\", \"Has GBT\": false, \"Best Share\": 0.0, \"Pool Rejected%\": 0.0, \"Pool Stale%%\": 0.0}], \"id\": 1}")),
+                                Arrays.asList(
+                                        "STATS.1.temp6",
+                                        "STATS.1.temp7"),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("aaa.com:9999#xnsub")
+                                                        .setWorker("aaa.bb")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(37, 0, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("0.0"))
+                                                        .setBoards(3)
+                                                        .setPowerMode(Asic.PowerMode.NORMAL)
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(4)
+                                                                        .addSpeed(5160)
+                                                                        .addSpeed(5280)
+                                                                        .addSpeed(6240)
+                                                                        .addSpeed(6120)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(75)
+                                                        .addTemp(59)
+                                                        .addTemp(88)
+                                                        .addTemp(78)
+                                                        .addTemp(76)
+                                                        .addTemp(62)
+                                                        .addTemp(89)
+                                                        .addTemp(79)
+                                                        .addTemp(75)
+                                                        .addTemp(61)
+                                                        .addTemp(92)
+                                                        .addTemp(82)
+                                                        .addTemp(80)
+                                                        .addTemp(64)
+                                                        .addTemp(93)
+                                                        .addTemp(83)
+                                                        .addTemp(81)
+                                                        .addTemp(67)
+                                                        .addTemp(94)
+                                                        .addTemp(84)
+                                                        .addTemp(80)
+                                                        .addTemp(66)
+                                                        .addTemp(97)
+                                                        .addTemp(87)
+                                                        .hasErrors(false)
+                                                        .setMinerType("Antminer S19")
+                                                        .setCompileTime("Fri Dec 11 11:15:40 CST 2020")
+                                                        .build())
+                                        .build()
                         }
                 });
     }

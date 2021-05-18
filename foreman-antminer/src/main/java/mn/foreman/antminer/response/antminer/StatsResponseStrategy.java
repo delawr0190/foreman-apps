@@ -145,15 +145,14 @@ public class StatsResponseStrategy
         final boolean hasSubmittedShares =
                 this.context
                         .getMulti(ContextKey.LAST_SHARE_TIME)
-                        .map(shares ->
-                                shares
-                                        .values()
-                                        .stream()
-                                        .map(Object::toString)
-                                        .filter(String::isEmpty)
-                                        .mapToInt(Integer::parseInt)
-                                        .sum() > 0)
-                        .orElse(false);
+                        .map(shares -> {
+                            for (final Object share : shares.values()) {
+                                if (!share.toString().equals("0")) {
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }).orElse(false);
 
         asicBuilder
                 .hasErrors(hasFunctioningChips && hasErrors)

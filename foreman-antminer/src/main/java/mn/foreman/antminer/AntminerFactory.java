@@ -56,7 +56,8 @@ public class AntminerFactory
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
                                         new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(context))),
+                                                new MrrRigIdCallback(context),
+                                                new LastShareTimeCallback(context))),
                                 ImmutableMap.of(
                                         CgMinerCommand.STATS,
                                         new RateMultiplyingDecorator(
@@ -85,8 +86,7 @@ public class AntminerFactory
                                 ImmutableMap.of(
                                         CgMinerCommand.POOLS,
                                         new PoolsResponseStrategy(
-                                                new MrrRigIdCallback(context),
-                                                new LastShareTimeCallback(context))),
+                                                new MrrRigIdCallback(context))),
                                 ImmutableMap.of(
                                         CgMinerCommand.SUMMARY,
                                         braiinsStrategy),
