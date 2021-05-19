@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.60.9</version>
+        <version>3.60.10-SNAPSHOT</version>
     </parent>
 
     <artifactId>foreman-bminer</artifactId>
-    <version>3.60.9</version>
+    <version>3.60.10-SNAPSHOT</version>
     <name>foreman: foreman-bminer</name>
 
     <packaging>jar</packaging>
