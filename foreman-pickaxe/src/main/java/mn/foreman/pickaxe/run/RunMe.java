@@ -73,6 +73,11 @@ public class RunMe {
                     .expireAfterWrite(6, TimeUnit.HOURS)
                     .build();
 
+    /** The thread pool for sending metrics. */
+    private final Executor metricsThreadPool =
+            Executors.newFixedThreadPool(
+                    Runtime.getRuntime().availableProcessors() * 4);
+
     /** The factory for creating all of the {@link Miner miners}. */
     private final MinerConfiguration minerConfiguration;
 
@@ -168,12 +173,27 @@ public class RunMe {
                     StatsBatch.toBatches(
                             this.statsCache.getMetrics(),
                             200);
-            batches
-                    .parallelStream()
-                    .forEach(batch ->
-                            metricsSender.sendMetrics(
-                                    batch.getBatchTime(),
-                                    batch.getBatch()));
+
+            final CountDownLatch doneLatch = new CountDownLatch(batches.size());
+            batches.forEach(
+                    statsBatch ->
+                            this.metricsThreadPool.execute(() -> {
+                                try {
+                                    metricsSender.sendMetrics(
+                                            statsBatch.getBatchTime(),
+                                            statsBatch.getBatch());
+                                } catch (final Exception e) {
+                                    LOG.warn("Exception while sending", e);
+                                }
+                                doneLatch.countDown();
+                            }));
+
+            try {
+                doneLatch.await(1, TimeUnit.MINUTES);
+            } catch (final InterruptedException e) {
+                // Ignore
+            }
+
             final long now = System.currentTimeMillis();
             if (now < deadline) {
                 try {
