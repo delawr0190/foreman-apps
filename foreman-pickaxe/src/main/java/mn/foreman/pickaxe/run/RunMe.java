@@ -184,12 +184,13 @@ public class RunMe {
                                             statsBatch.getBatch());
                                 } catch (final Exception e) {
                                     LOG.warn("Exception while sending", e);
+                                } finally {
+                                    doneLatch.countDown();
                                 }
-                                doneLatch.countDown();
                             }));
 
             try {
-                doneLatch.await(1, TimeUnit.MINUTES);
+                doneLatch.await();
             } catch (final InterruptedException e) {
                 // Ignore
             }
