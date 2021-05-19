@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
@@ -65,7 +66,15 @@ public class AntminerFactory
                                                 "GHS 5s",
                                                 this.multiplier,
                                                 new StatsResponseStrategy(
-                                                        context)))),
+                                                        context,
+                                                        new StockPowerModeStrategy(
+                                                                apiIp,
+                                                                port,
+                                                                "antMiner Configuration",
+                                                                username,
+                                                                password,
+                                                                200,
+                                                                TimeUnit.MILLISECONDS))))),
                         new StockMacStrategy(
                                 apiIp,
                                 port,

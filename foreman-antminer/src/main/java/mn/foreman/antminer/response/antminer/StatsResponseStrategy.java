@@ -1,5 +1,6 @@
 package mn.foreman.antminer.response.antminer;
 
+import mn.foreman.antminer.PowerModeStrategy;
 import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.PoolsResponseStrategy;
@@ -8,7 +9,6 @@ import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
-import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 
 import org.slf4j.Logger;
@@ -34,13 +34,20 @@ public class StatsResponseStrategy
     /** The context. */
     private final Context context;
 
+    /** The {@link PowerModeStrategy}. */
+    private final PowerModeStrategy powerModeStrategy;
+
     /**
      * Constructor.
      *
-     * @param context The context.
+     * @param context           The context.
+     * @param powerModeStrategy The {@link PowerModeStrategy}.
      */
-    public StatsResponseStrategy(final Context context) {
+    public StatsResponseStrategy(
+            final Context context,
+            final PowerModeStrategy powerModeStrategy) {
         this.context = context;
+        this.powerModeStrategy = powerModeStrategy;
     }
 
     @Override
@@ -48,17 +55,6 @@ public class StatsResponseStrategy
             final MinerStats.Builder builder,
             final CgMinerResponse response) {
         if (response.hasValues()) {
-            final boolean isS19 =
-                    response
-                            .getValues()
-                            .entrySet()
-                            .stream()
-                            .filter(entry -> entry.getKey().equals("STATS"))
-                            .map(Map.Entry::getValue)
-                            .flatMap(List::stream)
-                            .filter(value -> value.containsKey("Type"))
-                            .map(value -> value.get("Type"))
-                            .anyMatch(s -> s.contains("S19"));
             response.getValues()
                     .entrySet()
                     .stream()
@@ -69,7 +65,6 @@ public class StatsResponseStrategy
                     .forEach(value ->
                             addAsicStats(
                                     builder,
-                                    isS19,
                                     value));
         } else {
             LOG.debug("No ACICs founds");
@@ -81,12 +76,10 @@ public class StatsResponseStrategy
      * metrics, to a {@link Asic} and adds it to the provided builder.
      *
      * @param builder The builder to update.
-     * @param isS19   Whether or not the miner is an S19.
      * @param values  The asic values.
      */
     private void addAsicStats(
             final MinerStats.Builder builder,
-            final boolean isS19,
             final Map<String, String> values) {
         final BigDecimal hashRate =
                 new BigDecimal(values.get("GHS 5s"))
@@ -149,37 +142,12 @@ public class StatsResponseStrategy
             }
         }
 
-        final boolean hasPools =
-                builder
-                        .getPools()
-                        .stream()
-                        .map(Pool::getName)
-                        .filter(s -> !"undefined".equals(s))
-                        .anyMatch(s -> !s.isEmpty());
-        final boolean hasSubmittedShares =
-                this.context
-                        .getMulti(ContextKey.LAST_SHARE_TIME)
-                        .map(shares -> {
-                            for (final Object share : shares.values()) {
-                                if (!share.toString().equals("0")) {
-                                    return true;
-                                }
-                            }
-                            return false;
-                        }).orElse(false);
-        final boolean overheated =
-                isS19 &&
-                        asicBuilder
-                                .getTemps()
-                                .stream()
-                                .anyMatch(temp -> temp >= 96);
-
-        asicBuilder
-                .hasErrors(hasFunctioningChips && hasErrors)
-                .setPowerMode(
-                        !hasFunctioningChips && hasErrors && hasPools && !hasSubmittedShares && !overheated
-                                ? Asic.PowerMode.SLEEPING
-                                : Asic.PowerMode.NORMAL);
+        asicBuilder.hasErrors(hasErrors);
+        this.powerModeStrategy.setPowerMode(
+                asicBuilder,
+                values,
+                hasErrors,
+                hasFunctioningChips);
 
         // Context data
         this.context.getSimple(ContextKey.MRR_RIG_ID)

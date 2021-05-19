@@ -6,6 +6,9 @@ import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
 import mn.foreman.model.miners.asic.Asic;
 import mn.foreman.util.AbstractApiITest;
+import mn.foreman.util.http.FakeHttpMinerServer;
+import mn.foreman.util.http.HttpHandler;
+import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
 import mn.foreman.util.rpc.RpcHandler;
@@ -26,12 +29,14 @@ public class AntminerStatsITest
      * Constructor.
      *
      * @param multiplier     The multiplier.
+     * @param httpHandlers   The HTTP handlers.
      * @param handlers       The handlers.
      * @param statsWhitelist The stats whitelist.
      * @param expectedStats  The expected stats.
      */
     public AntminerStatsITest(
             final BigDecimal multiplier,
+            final Map<String, ServerHandler> httpHandlers,
             final Map<String, HandlerInterface> handlers,
             final List<String> statsWhitelist,
             final MinerStats expectedStats) {
@@ -43,10 +48,16 @@ public class AntminerStatsITest
                                 "apiPort",
                                 "4028",
                                 "statsWhitelist",
-                                statsWhitelist)),
-                new FakeRpcMinerServer(
-                        4028,
-                        handlers),
+                                statsWhitelist,
+                                "port",
+                                "8080")),
+                Arrays.asList(
+                        new FakeHttpMinerServer(
+                                8080,
+                                httpHandlers),
+                        new FakeRpcMinerServer(
+                                4028,
+                                handlers)),
                 expectedStats);
     }
 
@@ -62,6 +73,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer D3
                                 new BigDecimal("0.001"),
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -135,6 +147,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer E3
                                 new BigDecimal("0.001"),
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -221,6 +234,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer L3
                                 new BigDecimal("0.001"),
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -279,6 +293,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer L3
                                 new BigDecimal("0.001"),
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -337,6 +352,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S17
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -429,6 +445,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (bOS+)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.builder()
                                         .put(
                                                 "{\"command\":\"version\"}",
@@ -512,6 +529,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (bOS)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.builder()
                                         .put(
                                                 "{\"command\":\"version\"}",
@@ -587,6 +605,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (Hiveon)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -659,6 +678,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (NiceHash)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -739,6 +759,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (asicseer)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -811,6 +832,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (bad temps)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -867,6 +889,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9 (mskminer)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -938,6 +961,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer T15
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1012,6 +1036,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer Z11
                                 new BigDecimal(0.000000001),
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1062,6 +1087,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S19 (really cold)
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1132,6 +1158,7 @@ public class AntminerStatsITest
                         {
                                 // Antminer S9k
                                 BigDecimal.ONE,
+                                Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1204,6 +1231,46 @@ public class AntminerStatsITest
                         {
                                 // Antminer S19 (sleeping)
                                 BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "/cgi-bin/get_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "\n" +
+                                                        "\n" +
+                                                        "{\n" +
+                                                        "\"pools\" : [\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"aaa:700\",\n" +
+                                                        "\"user\" : \"aaa.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"bbb:6000\",\n" +
+                                                        "\"user\" : \"bbb.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"ccc:1314\",\n" +
+                                                        "\"user\" : \"ccc.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "}\n" +
+                                                        "]\n" +
+                                                        ",\n" +
+                                                        "\"api-listen\" : true,\n" +
+                                                        "\"api-network\" : true,\n" +
+                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
+                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
+                                                        "\"bitmain-fan-ctrl\" : false,\n" +
+                                                        "\"bitmain-fan-pwm\" : \"100\",\n" +
+                                                        "\"bitmain-use-vil\" : true,\n" +
+                                                        "\"bitmain-freq\" : \"675\",\n" +
+                                                        "\"bitmain-voltage\" : \"1400\",\n" +
+                                                        "\"bitmain-ccdelay\" : \"0\",\n" +
+                                                        "\"bitmain-pwth\" : \"0\",\n" +
+                                                        "\"bitmain-work-mode\" : \"1\",\n" +
+                                                        "\"bitmain-freq-level\" : \"100\"\n" +
+                                                        "}\n"
+                                        )),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1284,6 +1351,46 @@ public class AntminerStatsITest
                                 // Antminer S19 (overheating)
                                 BigDecimal.ONE,
                                 ImmutableMap.of(
+                                        "/cgi-bin/get_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "\n" +
+                                                        "\n" +
+                                                        "{\n" +
+                                                        "\"pools\" : [\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"aaa:700\",\n" +
+                                                        "\"user\" : \"aaa.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"bbb:6000\",\n" +
+                                                        "\"user\" : \"bbb.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"ccc:1314\",\n" +
+                                                        "\"user\" : \"ccc.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "}\n" +
+                                                        "]\n" +
+                                                        ",\n" +
+                                                        "\"api-listen\" : true,\n" +
+                                                        "\"api-network\" : true,\n" +
+                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
+                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
+                                                        "\"bitmain-fan-ctrl\" : false,\n" +
+                                                        "\"bitmain-fan-pwm\" : \"100\",\n" +
+                                                        "\"bitmain-use-vil\" : true,\n" +
+                                                        "\"bitmain-freq\" : \"675\",\n" +
+                                                        "\"bitmain-voltage\" : \"1400\",\n" +
+                                                        "\"bitmain-ccdelay\" : \"0\",\n" +
+                                                        "\"bitmain-pwth\" : \"0\",\n" +
+                                                        "\"bitmain-work-mode\" : \"0\",\n" +
+                                                        "\"bitmain-freq-level\" : \"100\"\n" +
+                                                        "}\n"
+                                        )),
+                                ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
                                                 "{\"STATUS\": [{\"STATUS\": \"S\", \"When\": 1621205582, \"Code\": 22, \"Msg\": \"CGMiner versions\", \"Description\": \"cgminer 1.0.0\"}], \"VERSION\": [{\"BMMiner\": \"1.0.0\", \"API\": \"3.1\", \"Miner\": \"49.0.1.3\", \"CompileTime\": \"Fri Dec 11 11:15:40 CST 2020\", \"Type\": \"Antminer S19\"}], \"id\": 1}"),
@@ -1345,7 +1452,7 @@ public class AntminerStatsITest
                                                         .addTemp(66)
                                                         .addTemp(97)
                                                         .addTemp(87)
-                                                        .hasErrors(false)
+                                                        .hasErrors(true)
                                                         .setMinerType("Antminer S19")
                                                         .setCompileTime("Fri Dec 11 11:15:40 CST 2020")
                                                         .build())
@@ -1354,6 +1461,46 @@ public class AntminerStatsITest
                         {
                                 // Antminer S19 (overheating)
                                 BigDecimal.ONE,
+                                ImmutableMap.of(
+                                        "/cgi-bin/get_miner_conf.cgi",
+                                        new HttpHandler(
+                                                "",
+                                                "\n" +
+                                                        "\n" +
+                                                        "{\n" +
+                                                        "\"pools\" : [\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"aaa:700\",\n" +
+                                                        "\"user\" : \"aaa.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"bbb:6000\",\n" +
+                                                        "\"user\" : \"bbb.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "},\n" +
+                                                        "{\n" +
+                                                        "\"url\" : \"ccc:1314\",\n" +
+                                                        "\"user\" : \"ccc.248x75\",\n" +
+                                                        "\"pass\" : \"x\"\n" +
+                                                        "}\n" +
+                                                        "]\n" +
+                                                        ",\n" +
+                                                        "\"api-listen\" : true,\n" +
+                                                        "\"api-network\" : true,\n" +
+                                                        "\"api-groups\" : \"A:stats:pools:devs:summary:version\",\n" +
+                                                        "\"api-allow\" : \"A:0/0,W:*\",\n" +
+                                                        "\"bitmain-fan-ctrl\" : false,\n" +
+                                                        "\"bitmain-fan-pwm\" : \"100\",\n" +
+                                                        "\"bitmain-use-vil\" : true,\n" +
+                                                        "\"bitmain-freq\" : \"675\",\n" +
+                                                        "\"bitmain-voltage\" : \"1400\",\n" +
+                                                        "\"bitmain-ccdelay\" : \"0\",\n" +
+                                                        "\"bitmain-pwth\" : \"0\",\n" +
+                                                        "\"bitmain-work-mode\" : \"0\",\n" +
+                                                        "\"bitmain-freq-level\" : \"100\"\n" +
+                                                        "}\n"
+                                        )),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
@@ -1432,7 +1579,7 @@ public class AntminerStatsITest
                                                         .addTemp(68)
                                                         .addTemp(81)
                                                         .addTemp(88)
-                                                        .hasErrors(false)
+                                                        .hasErrors(true)
                                                         .setMinerType("Antminer S19 Pro")
                                                         .setCompileTime("Mon Oct 26 17:55:33 CST 2020")
                                                         .build())
