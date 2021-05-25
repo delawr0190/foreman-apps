@@ -425,6 +425,7 @@ public class RunMe {
                                 e);
                         this.blacklistedMiners.add(minerID);
                         this.statsCache.invalidate(minerID);
+                        this.macCache.invalidate(minerID);
                     }
                 });
     }

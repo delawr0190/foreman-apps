@@ -51,6 +51,7 @@ public class StockChangePoolsAction
             final Map<String, Object> parameters,
             final List<Pool> pools)
             throws MinerException {
+        boolean success;
         try {
             final String username =
                     (String) parameters.getOrDefault("username", "");
@@ -66,14 +67,15 @@ public class StockChangePoolsAction
                             username,
                             password);
             if (minerConf != null) {
-                changeConf(
-                        parameters,
-                        minerConf,
-                        ip,
-                        port,
-                        username,
-                        password,
-                        pools);
+                success =
+                        changeConf(
+                                parameters,
+                                minerConf,
+                                ip,
+                                port,
+                                username,
+                                password,
+                                pools);
             } else {
                 throw new MinerException(
                         String.format(
@@ -85,7 +87,7 @@ public class StockChangePoolsAction
             throw new MinerException(e);
         }
 
-        return true;
+        return success;
     }
 
     /**
@@ -166,6 +168,8 @@ public class StockChangePoolsAction
             final String password,
             final List<Pool> pools)
             throws Exception {
+        boolean evalResponse = false;
+
         List<Map<String, Object>> contentList = null;
         String payload = null;
         if (minerConf.containsKey("bitmain-pwth")) {
@@ -183,18 +187,21 @@ public class StockChangePoolsAction
                                     "bitmain-fan-pwm",
                                     "100"),
                             "miner-mode",
-                            toValid(
-                                    minerConf,
-                                    "bitmain-work-mode",
-                                    "0"),
+                            Integer.parseInt(
+                                    toValid(
+                                            minerConf,
+                                            "bitmain-work-mode",
+                                            "0")),
                             "freq-level",
-                            toValid(
-                                    minerConf,
-                                    "bitmain-freq-level",
-                                    "100"),
+                            Integer.parseInt(
+                                    toValid(
+                                            minerConf,
+                                            "bitmain-freq-level",
+                                            "100")),
                             "pools",
                             toPools(pools));
             payload = MAPPER.writeValueAsString(json);
+            evalResponse = true;
         } else {
             final List<Map<String, Object>> content = new LinkedList<>();
             this.props.forEach(
@@ -220,7 +227,6 @@ public class StockChangePoolsAction
                 (integer, s) -> response.set(s));
 
         final String responseString = response.get();
-        return responseString != null &&
-                responseString.toLowerCase().contains("ok");
+        return !evalResponse || responseString != null && responseString.toLowerCase().contains("ok");
     }
 }
