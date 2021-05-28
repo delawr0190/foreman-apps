@@ -68,6 +68,18 @@ public class ApplicationConfiguration {
                         socketTimeoutUnits));
     }
 
+    @Override
+    public String toString() {
+        return String.format(
+                "%s [ " +
+                        "readConfig=%s, " +
+                        "writeConfig=%s" +
+                        " ]",
+                getClass().getSimpleName(),
+                this.readSocketConfig,
+                this.writeSocketConfig);
+    }
+
     /** A socket configuration. */
     public static class SocketConfig {
 
@@ -106,6 +118,18 @@ public class ApplicationConfiguration {
          */
         public TimeUnit getSocketTimeoutUnits() {
             return this.socketTimeoutUnits;
+        }
+
+        @Override
+        public String toString() {
+            return String.format(
+                    "%s [ " +
+                            "socketTimeout=%s, " +
+                            "socketTimeoutUnits=%s" +
+                            " ]",
+                    getClass().getSimpleName(),
+                    this.socketTimeout,
+                    this.socketTimeoutUnits);
         }
     }
 }

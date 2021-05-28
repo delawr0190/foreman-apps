@@ -312,6 +312,7 @@ public class RunMe {
                                     this.applicationConfiguration.setWriteSocketTimeout(
                                             pickaxeConfiguration.writeSocketTimeout,
                                             TimeUnit.valueOf(pickaxeConfiguration.writeSocketTimeoutUnits));
+                                    LOG.debug("New config: {}", this.applicationConfiguration);
                                 });
                     } catch (final Exception e) {
                         LOG.warn("Failed to obtain app config", e);
