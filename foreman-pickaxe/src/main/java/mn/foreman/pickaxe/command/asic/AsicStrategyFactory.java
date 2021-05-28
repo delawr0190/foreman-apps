@@ -34,6 +34,9 @@ public class AsicStrategyFactory
     /** The configuration. */
     private final ApplicationConfiguration configuration;
 
+    /** Whether or not command and control is enabled. */
+    private final boolean isControl;
+
     /** The post processor for rebooting. */
     private final PostCommandProcessor postRebootProcessor;
 
@@ -51,90 +54,108 @@ public class AsicStrategyFactory
      * @param blacklist           The blacklist.
      * @param statsCache          The cache.
      * @param configuration       The configuration.
+     * @param isControl           Whether or not command and control is
+     *                            enabled.
      */
     public AsicStrategyFactory(
             final PostCommandProcessor postRebootProcessor,
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
             final StatsCache statsCache,
-            final ApplicationConfiguration configuration) {
+            final ApplicationConfiguration configuration,
+            final boolean isControl) {
         this.postRebootProcessor = postRebootProcessor;
         this.threadPool = threadPool;
         this.blacklist = blacklist;
         this.statsCache = statsCache;
         this.configuration = configuration;
+        this.isControl = isControl;
     }
 
     @Override
     public Optional<CommandStrategy> forType(final String type) {
-        Optional<CommandStrategy> strategy = Optional.empty();
-        switch (type) {
-            case "discover":
-                strategy = Optional.of(new DiscoverStrategy());
+        final Optional<RemoteCommand> remoteCommand =
+                RemoteCommand.forType(type);
+        if (remoteCommand.isPresent()) {
+            return toStrategy(remoteCommand.get());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Converts the provided command to a {@link CommandStrategy} that can be
+     * invoked.
+     *
+     * @param remoteCommand The command.
+     *
+     * @return The strategy to invoke.
+     */
+    private Optional<CommandStrategy> toStrategy(final RemoteCommand remoteCommand) {
+        CommandStrategy commandStrategy = null;
+        switch (remoteCommand) {
+            case DISCOVER:
+                commandStrategy = new DiscoverStrategy();
                 break;
-            case "scan":
-                strategy = Optional.of(
+            case SCAN:
+                commandStrategy =
                         new ScanStrategy(
-                                this.configuration));
+                                this.configuration);
                 break;
-            case "targeted-scan":
-                strategy = Optional.of(
+            case TARGETED_SCAN:
+                commandStrategy =
                         new ScanStrategy(
                                 new MacFilteringStrategy(),
-                                this.configuration));
+                                this.configuration);
                 break;
-            case "change-pools":
-                strategy =
-                        Optional.of(
-                                new RebootingCommandStrategy(
-                                        this.postRebootProcessor,
-                                        manufacturer ->
-                                                manufacturer.getChangePoolsAction(
-                                                        this.threadPool,
-                                                        this.blacklist,
-                                                        this.statsCache,
-                                                        this.configuration)));
+            case CHANGE_POOLS:
+                commandStrategy =
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getChangePoolsAction(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache,
+                                                this.configuration));
                 break;
-            case "reboot":
-                strategy =
-                        Optional.of(
-                                new RebootingCommandStrategy(
-                                        this.postRebootProcessor,
-                                        manufacturer ->
-                                                manufacturer.getRebootAction(
-                                                        this.threadPool,
-                                                        this.blacklist,
-                                                        this.statsCache,
-                                                        this.configuration)));
+            case REBOOT:
+                commandStrategy =
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getRebootAction(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache,
+                                                this.configuration));
                 break;
-            case "digest":
-                strategy = Optional.of(new DigestStrategy());
+            case DIGEST:
+                commandStrategy = new DigestStrategy();
                 break;
-            case "raw-stats":
-                strategy = Optional.of(
+            case RAW_STATS:
+                commandStrategy =
                         new RawStatsStrategy(
-                                this.configuration));
+                                this.configuration);
                 break;
-            case "factory-reset":
-                strategy =
-                        Optional.of(
-                                new RebootingCommandStrategy(
-                                        this.postRebootProcessor,
-                                        manufacturer ->
-                                                manufacturer.getFactoryResetStrategy(
-                                                        this.threadPool,
-                                                        this.blacklist,
-                                                        this.statsCache,
-                                                        this.configuration)));
+            case FACTORY_RESET:
+                commandStrategy =
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getFactoryResetStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache,
+                                                this.configuration));
                 break;
-            case "eval":
-                strategy = Optional.of(new EvalStrategy());
+            case EVAL:
+                commandStrategy = new EvalStrategy();
                 break;
-            case "whatsminer-get":
-                strategy = Optional.of(new WhatsminerGetStrategy());
+            case WHATSMINER_GET:
+                commandStrategy = new WhatsminerGetStrategy();
                 break;
-            case "network":
-                strategy = Optional.of(
+            case NETWORK:
+                commandStrategy =
                         new RebootingCommandStrategy(
                                 this.postRebootProcessor,
                                 manufacturer ->
@@ -142,13 +163,13 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache,
-                                                this.configuration)));
+                                                this.configuration));
                 break;
-            case "terminate":
-                strategy = Optional.of(new TerminateStrategy());
+            case TERMINATE:
+                commandStrategy = new TerminateStrategy();
                 break;
-            case "power-mode":
-                strategy = Optional.of(
+            case POWER_MODE:
+                commandStrategy =
                         new RebootingCommandStrategy(
                                 this.postRebootProcessor,
                                 manufacturer ->
@@ -156,10 +177,10 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache,
-                                                this.configuration)));
+                                                this.configuration));
                 break;
-            case "password":
-                strategy = Optional.of(
+            case PASSWORD:
+                commandStrategy =
                         new RebootingCommandStrategy(
                                 this.postRebootProcessor,
                                 manufacturer ->
@@ -167,10 +188,10 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache,
-                                                this.configuration)));
+                                                this.configuration));
                 break;
-            case "blink":
-                strategy = Optional.of(
+            case BLINK:
+                commandStrategy =
                         new RebootingCommandStrategy(
                                 this.postRebootProcessor,
                                 manufacturer ->
@@ -178,14 +199,17 @@ public class AsicStrategyFactory
                                                 this.threadPool,
                                                 this.blacklist,
                                                 this.statsCache,
-                                                this.configuration)));
+                                                this.configuration));
                 break;
-            case "obelisk-get":
-                strategy = Optional.of(new ObeliskGetStrategy());
+            case OBILESK_GET:
+                commandStrategy = new ObeliskGetStrategy();
                 break;
             default:
                 break;
         }
-        return strategy;
+
+        return this.isControl || !remoteCommand.isControl()
+                ? Optional.ofNullable(commandStrategy)
+                : Optional.empty();
     }
 }

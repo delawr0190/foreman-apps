@@ -165,11 +165,7 @@ public class RunMe {
         startUpdateMiners();
         startBlacklistFlush();
         startMacQuerying();
-
-        // Only query for commands if pickaxe is running for command and control
-        if (this.configuration.isControl()) {
-            startCommandQuerying();
-        }
+        startCommandQuerying();
 
         //noinspection InfiniteLoopStatement
         while (true) {
@@ -251,7 +247,8 @@ public class RunMe {
                                 this.threadPool,
                                 this.blacklistedMiners,
                                 this.statsCache,
-                                this.applicationConfiguration));
+                                this.applicationConfiguration,
+                                this.configuration.isControl()));
         this.threadPool.scheduleAtFixedRate(
                 () -> {
                     try {
