@@ -3,10 +3,7 @@ package mn.foreman.goldshell;
 import mn.foreman.goldshell.json.Pool;
 import mn.foreman.goldshell.json.Status;
 import mn.foreman.io.Query;
-import mn.foreman.model.Detection;
-import mn.foreman.model.DetectionStrategy;
-import mn.foreman.model.MacStrategy;
-import mn.foreman.model.MinerType;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.util.ArgUtils;
 
@@ -18,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link GoldshellDetectionStrategy} provides a {@link DetectionStrategy} for
@@ -32,29 +28,23 @@ public class GoldshellDetectionStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(GoldshellDetectionStrategy.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
+
     /** The strategy for detecting MACs. */
     private final MacStrategy macStrategy;
-
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
 
     /**
      * Constructor.
      *
-     * @param macStrategy        The MAC strategy.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param macStrategy   The MAC strategy.
+     * @param configuration The configuration.
      */
     public GoldshellDetectionStrategy(
             final MacStrategy macStrategy,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration configuration) {
         this.macStrategy = macStrategy;
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.configuration = configuration;
     }
 
     @Override
@@ -64,6 +54,9 @@ public class GoldshellDetectionStrategy
             final Map<String, Object> args) {
         Detection detection = null;
         try {
+            final ApplicationConfiguration.SocketConfig socketConfig =
+                    this.configuration.getReadSocketTimeout();
+
             final Status status =
                     GoldshellQuery.runGet(
                             ip,
@@ -72,8 +65,7 @@ public class GoldshellDetectionStrategy
                             null,
                             new TypeReference<Status>() {
                             },
-                            this.socketTimeout,
-                            this.socketTimeoutUnits)
+                            this.configuration)
                             .orElseThrow(() -> new MinerException("Not found"));
 
             final GoldshellType goldshellType =
@@ -93,8 +85,8 @@ public class GoldshellDetectionStrategy
                                 "GET",
                                 new TypeReference<List<mn.foreman.goldshell.json.Pool>>() {
                                 },
-                                this.socketTimeout,
-                                this.socketTimeoutUnits,
+                                socketConfig.getSocketTimeout(),
+                                socketConfig.getSocketTimeoutUnits(),
                                 s -> {
                                 });
                 if (!pools.isEmpty()) {

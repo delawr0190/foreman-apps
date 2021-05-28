@@ -1,11 +1,11 @@
 package mn.foreman.goldshell;
 
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link GoldshellRebootAction} provides an {@link AbstractChangePoolsAction}
@@ -14,23 +14,17 @@ import java.util.concurrent.TimeUnit;
 public class GoldshellRebootAction
         implements AsicAction.CompletableAction {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
     public GoldshellRebootAction(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+            final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -44,7 +38,6 @@ public class GoldshellRebootAction
                 port,
                 "/mcb/restart",
                 null,
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                this.configuration);
     }
 }

@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -12,7 +13,6 @@ import org.junit.runners.Parameterized;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /** Tests detection of a goldshell. */
 @RunWith(Parameterized.class)
@@ -33,10 +33,8 @@ public class GoldshellDetectITest
                         new GoldshellMacStrategy(
                                 "127.0.0.1",
                                 8080,
-                                1,
-                                TimeUnit.SECONDS),
-                        1,
-                        TimeUnit.SECONDS),
+                                new ApplicationConfiguration()),
+                        new ApplicationConfiguration()),
                 "127.0.0.1",
                 8080,
                 ImmutableMap.of(

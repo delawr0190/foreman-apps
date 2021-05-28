@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -17,7 +18,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /** Runs an integration tests using {@link Goldshell} against a fake API. */
 @RunWith(Parameterized.class)
@@ -34,8 +34,7 @@ public class GoldshellStatsITest
             final MinerStats expected) {
         super(
                 new GoldshellFactory(
-                        1,
-                        TimeUnit.SECONDS).create(
+                        new ApplicationConfiguration()).create(
                         ImmutableMap.<String, Object>builder()
                                 .put(
                                         "apiIp",

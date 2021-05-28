@@ -2,6 +2,7 @@ package mn.foreman.pickaxe.miners.remote;
 
 import mn.foreman.chisel.ChiselMinerDecorator;
 import mn.foreman.claymore.TypeMapping;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.pickaxe.miners.MinerConfiguration;
@@ -64,6 +65,9 @@ public class RemoteConfiguration
     /** The config URL. */
     private final String configUrl;
 
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
+
     /** The nicehash config URL. */
     private final String nicehashConfigUrl;
 
@@ -75,13 +79,15 @@ public class RemoteConfiguration
      * @param amMappingUrl       The autominer mapping URL.
      * @param claymoreMappingUrl The claymore mapping URL.
      * @param apiKey             The API key.
+     * @param configuration      The configuration.
      */
     public RemoteConfiguration(
             final String configUrl,
             final String nicehashConfigUrl,
             final String amMappingUrl,
             final String claymoreMappingUrl,
-            final String apiKey) {
+            final String apiKey,
+            final ApplicationConfiguration configuration) {
         Validate.notNull(
                 configUrl,
                 "configUrl cannot be null");
@@ -117,6 +123,7 @@ public class RemoteConfiguration
         this.amMappingUrl = amMappingUrl;
         this.claymoreMappingUrl = claymoreMappingUrl;
         this.apiKey = apiKey;
+        this.configuration = configuration;
     }
 
     @Override
@@ -203,7 +210,8 @@ public class RemoteConfiguration
                 configs,
                 niceHashConfig,
                 amMappings,
-                typeMappingBuilder.build());
+                typeMappingBuilder.build(),
+                this.configuration);
     }
 
     /**
@@ -215,6 +223,7 @@ public class RemoteConfiguration
      * @param amMappings       The autominer mappings.
      * @param claymoreMappings The claymore mappings.
      * @param dest             The destination {@link List}.
+     * @param configuration    The configuration.
      */
     private static void addNiceHashCandidates(
             final MinerConfig config,
@@ -222,7 +231,8 @@ public class RemoteConfiguration
             final List<ApiType> candidates,
             final Map<String, ApiType> amMappings,
             final TypeMapping claymoreMappings,
-            final List<Miner> dest) {
+            final List<Miner> dest,
+            final ApplicationConfiguration configuration) {
         for (int i = 0; i < 5; i++) {
             final int port = portStart + i;
             dest.addAll(
@@ -235,7 +245,8 @@ public class RemoteConfiguration
                                             config,
                                             candidates,
                                             amMappings,
-                                            claymoreMappings))
+                                            claymoreMappings,
+                                            configuration))
                             .flatMap(List::stream)
                             .collect(Collectors.toList()));
         }
@@ -250,6 +261,7 @@ public class RemoteConfiguration
      * @param niceHashCandidates  The NiceHash configuration.
      * @param amMappings          The autominer mappings.
      * @param claymoreMultipliers The claymore multipliers.
+     * @param configuration       The configuration.
      *
      * @return The {@link Miner miners}.
      */
@@ -259,7 +271,8 @@ public class RemoteConfiguration
             final MinerConfig config,
             final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings,
-            final TypeMapping claymoreMultipliers) {
+            final TypeMapping claymoreMultipliers,
+            final ApplicationConfiguration configuration) {
         LOG.debug("Adding miner for {}", config);
 
         final MinerFactory minerFactory =
@@ -277,9 +290,11 @@ public class RemoteConfiguration
                                     nicehash,
                                     autominer,
                                     claymore,
-                                    miners);
+                                    miners,
+                                    configuration);
                             return miners;
-                        });
+                        },
+                        configuration);
 
         final List<Miner> miners = new LinkedList<>();
         miners.add(MinerUtils.toMiner(port, config, minerFactory));
@@ -311,6 +326,7 @@ public class RemoteConfiguration
      * @param niceHashCandidates  The NiceHash configurations.
      * @param amMappings          The autominer mappings.
      * @param claymoreMultipliers The claymore multipliers.
+     * @param configuration       The configuration.
      *
      * @return The {@link Miner miners}.
      */
@@ -318,7 +334,8 @@ public class RemoteConfiguration
             final List<MinerConfig> configs,
             final List<ApiType> niceHashCandidates,
             final Map<String, ApiType> amMappings,
-            final TypeMapping claymoreMultipliers) {
+            final TypeMapping claymoreMultipliers,
+            final ApplicationConfiguration configuration) {
         return configs
                 .stream()
                 .filter(config -> config.apiType != null)
@@ -329,7 +346,8 @@ public class RemoteConfiguration
                                 config,
                                 niceHashCandidates,
                                 amMappings,
-                                claymoreMultipliers))
+                                claymoreMultipliers,
+                                configuration))
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }

@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -7,7 +8,6 @@ import mn.foreman.util.http.HttpHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test rebooting a goldshell. */
 public class GoldshellFactoryResetITest
@@ -19,8 +19,7 @@ public class GoldshellFactoryResetITest
                 8080,
                 8080,
                 new GoldshellFactoryResetAction(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -125,8 +124,7 @@ public class GoldshellFactoryResetITest
                                                         "    }\n" +
                                                         "]")))),
                 new GoldshellFactory(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.emptyMap(),
                 true);
     }

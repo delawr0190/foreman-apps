@@ -54,7 +54,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
 
 /** An enumeration containing all of the known manufacturers. */
 public enum Manufacturer {
@@ -62,7 +61,7 @@ public enum Manufacturer {
     /** Aixin. */
     AIXIN(
             "aixin",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new HonorKnightDetectionStrategy<>(
                             AixinType::forType,
                             new HonorKnightMacStrategy(
@@ -78,36 +77,36 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "4028")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightNetworkAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Antminer. */
     ANTMINER(
             "antminer",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new AntminerDetectionStrategy(
                             "antMiner Configuration",
                             Arrays.asList(
@@ -136,7 +135,7 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "4028")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -172,7 +171,7 @@ public enum Manufacturer {
                                             "antMiner Configuration",
                                             new StockRebootAction("antMiner Configuration"),
                                             new BraiinsRebootAction()))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -182,7 +181,7 @@ public enum Manufacturer {
                                     "antMiner Configuration",
                                     new StockRebootAction("antMiner Configuration"),
                                     new BraiinsRebootAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toSync(
                                     new FirmwareAwareAction(
@@ -217,7 +216,7 @@ public enum Manufacturer {
                                                             AntminerConfValue.FAN_PWM,
                                                             AntminerConfValue.FREQ)),
                                             new BraiinsChangePoolsAction()))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -230,7 +229,7 @@ public enum Manufacturer {
                                             "ant"),
                                     new BraiinsNetworkAction()),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
@@ -238,14 +237,14 @@ public enum Manufacturer {
                                             "antMiner Configuration",
                                             new ObjectMapper()),
                                     new BraiinsPowerModeAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockPasswordAction(
                                             "antMiner Configuration"),
                                     new BraiinsPasswordAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
                             new StockBlinkStrategy(
@@ -254,7 +253,7 @@ public enum Manufacturer {
     /** Avalon. */
     AVALON(
             "avalon",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
                             new AvalonTypeFactory(),
@@ -262,7 +261,7 @@ public enum Manufacturer {
                                     ip,
                                     80),
                             new NullPatchingStrategy()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -274,7 +273,7 @@ public enum Manufacturer {
                                     TimeUnit.SECONDS,
                                     new AvalonChangePoolsAction(
                                             new AvalonRebootAction()))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -285,8 +284,8 @@ public enum Manufacturer {
                                     1,
                                     TimeUnit.SECONDS,
                                     new AvalonRebootAction())),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -299,15 +298,15 @@ public enum Manufacturer {
                                     new AvalonNetworkAction(
                                             new AvalonRebootAction())),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new RetryingAction(
                                     5,
                                     1,
                                     TimeUnit.SECONDS,
                                     new AvalonPasswordAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
                             new AvalonBlinkStrategy())),
@@ -315,7 +314,7 @@ public enum Manufacturer {
     /** Baikal. */
     BAIKAL(
             "baikal",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new BaikalDetectionStrategy(
                             "80",
                             new BaikalFactory().create(
@@ -328,56 +327,56 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "4028")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new BaikalFactory(),
                             new BaikalChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new BaikalFactory(),
                             new BaikalRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Bitfury. */
     BITFURY(
             "bitfury",
-            (args, ip) -> new OpenMinerDetectionStrategy(),
-            (threadPool, blacklist, statsCache) ->
+            (args, ip, configuration) -> new OpenMinerDetectionStrategy(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new OpenMinerFactory(),
                             new OpenMinerChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new OpenMinerFactory(),
                             new OpenMinerRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new OpenMinerPasswordAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Blackminer. */
     BLACKMINER(
             "blackminer",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.VERSION,
                             new BlackminerTypeFactory(),
@@ -388,7 +387,7 @@ public enum Manufacturer {
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString()),
                             new NullPatchingStrategy()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -412,14 +411,14 @@ public enum Manufacturer {
                                             BlackminerConfValue.FAN_PWM,
                                             BlackminerConfValue.FREQ,
                                             BlackminerConfValue.COIN_TYPE))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new BlackminerFactory(),
                             new StockRebootAction("blackMiner Configuration")),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -451,7 +450,7 @@ public enum Manufacturer {
                                                     BlackminerConfValue.FAN_PWM,
                                                     BlackminerConfValue.FREQ,
                                                     BlackminerConfValue.COIN_TYPE)))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -461,17 +460,17 @@ public enum Manufacturer {
                                     "blackMiner Configuration",
                                     "bb"),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new StockPasswordAction(
                                     "blackMiner Configuration")),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Cheetahminer. */
     CHEETAHMINER(
             "cheetahminer",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new HonorKnightDetectionStrategy<>(
                             CheetahminerType::forType,
                             new HonorKnightMacStrategy(
@@ -487,53 +486,53 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "4028")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightNetworkAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Dayun. */
     DAYUN(
             "dayun",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
                             new DayunTypeFactory(),
                             new NullMacStrategy(),
                             new StatsPatchingStrategy()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Dragonmint. */
     DRAGONMINT(
             "dragonmint",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new DragonmintDetectionStrategy<>(
                             DragonmintType::forType,
                             "DragonMint",
@@ -542,21 +541,21 @@ public enum Manufacturer {
                                     80,
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new DragonmintFactory(),
                             new DragonmintChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new DragonmintFactory(),
                             new DragonmintRebootAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -570,7 +569,7 @@ public enum Manufacturer {
                                     statsCache,
                                     new DragonmintFactory(),
                                     new DragonmintChangePoolsAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -578,16 +577,16 @@ public enum Manufacturer {
                             new DragonmintFactory(),
                             new DragonmintNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new DragonmintPasswordAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Ebang. */
     EBANG(
             "ebang",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new EbangDetectionStrategy(
                             new EbangMacStrategy(
                                     ip,
@@ -600,7 +599,7 @@ public enum Manufacturer {
                             2,
                             TimeUnit.SECONDS,
                             new ObjectMapper()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -625,7 +624,7 @@ public enum Manufacturer {
                                     new EbangRebootAction(
                                             1,
                                             TimeUnit.SECONDS))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -637,7 +636,7 @@ public enum Manufacturer {
                             new EbangRebootAction(
                                     1,
                                     TimeUnit.SECONDS)),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toSync(
                                     new EbangFactoryResetAction(
@@ -657,7 +656,7 @@ public enum Manufacturer {
                                             1,
                                             TimeUnit.SECONDS,
                                             new ObjectMapper()))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -671,104 +670,95 @@ public enum Manufacturer {
                                     TimeUnit.SECONDS,
                                     new ObjectMapper()),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** ePIC. */
     EPIC(
             "epic",
-            (args, ip) -> new EpicDetectionStrategy(new NullMacStrategy()),
-            (threadPool, blacklist, statsCache) ->
+            (args, ip, configuration) -> new EpicDetectionStrategy(new NullMacStrategy()),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new EpicFactory(),
                             new EpicChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new EpicFactory(),
                             new EpicRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new EpicPowerModeAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new EpicPasswordAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** FutureBit. */
     FUTUREBIT(
             "futurebit",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new FutureBitTypeFactory()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Goldshell. */
     GOLDSHELL(
             "goldshell",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new GoldshellDetectionStrategy(
                             new GoldshellMacStrategy(
                                     ip,
                                     80,
-                                    1,
-                                    TimeUnit.SECONDS),
-                            1,
-                            TimeUnit.SECONDS),
-            (threadPool, blacklist, statsCache) ->
+                                    configuration),
+                            configuration),
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
                                     new GoldshellFactory(
-                                            1,
-                                            TimeUnit.SECONDS),
+                                            configuration),
                                     new GoldshellChangePoolsAction(
-                                            1,
-                                            TimeUnit.SECONDS)),
+                                            configuration)),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
                                     new GoldshellFactory(
-                                            1,
-                                            TimeUnit.SECONDS),
+                                            configuration),
                                     new GoldshellRebootAction(
-                                            1,
-                                            TimeUnit.SECONDS))),
-            (threadPool, blacklist, statsCache) ->
+                                            configuration))),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new GoldshellFactory(
-                                    1,
-                                    TimeUnit.SECONDS),
+                                    configuration),
                             new GoldshellRebootAction(
-                                    1,
-                                    TimeUnit.SECONDS)),
-            (threadPool, blacklist, statsCache) ->
+                                    configuration)),
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toSync(
                                     new GoldshellFactoryResetAction(
-                                            1,
-                                            TimeUnit.SECONDS),
+                                            configuration),
                                     60,
                                     TimeUnit.SECONDS),
                             AsicActionFactory.toAsync(
@@ -776,40 +766,34 @@ public enum Manufacturer {
                                     blacklist,
                                     statsCache,
                                     new GoldshellFactory(
-                                            1,
-                                            TimeUnit.SECONDS),
+                                            configuration),
                                     new GoldshellChangePoolsAction(
-                                            1,
-                                            TimeUnit.SECONDS))),
-            (threadPool, blacklist, statsCache) ->
+                                            configuration))),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new GoldshellFactory(
-                                    1,
-                                    TimeUnit.SECONDS),
+                                    configuration),
                             new GoldshellNetworkAction(
-                                    1,
-                                    TimeUnit.SECONDS),
+                                    configuration),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new GoldshellPasswordAction(
-                                    1,
-                                    TimeUnit.SECONDS)),
-            (threadPool, blacklist, statsCache) ->
+                                    configuration)),
+            (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
                             new GoldshellBlinkStrategy(
-                                    1,
-                                    TimeUnit.SECONDS))),
+                                    configuration))),
 
     /** HonorKnight. */
     HONORKNIGHT(
             "honorknight",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new HonorKnightDetectionStrategy<>(
                             HonorKnightType::forType,
                             new HonorKnightMacStrategy(
@@ -825,51 +809,51 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "4028")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new HonorKnightFactory(),
                             new HonorKnightNetworkAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** HyperBit. */
     HYPERBIT(
             "hyperbit",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new HyperbitTypeFactory()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Innosilicon. */
     INNOSILICON(
             "innosilicon",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new DragonmintDetectionStrategy<>(
                             InnosiliconType::forType,
                             "Innosilicon",
@@ -878,21 +862,21 @@ public enum Manufacturer {
                                     80,
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintRebootAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -906,7 +890,7 @@ public enum Manufacturer {
                                     statsCache,
                                     new InnosiliconFactory(ApiType.HS_API),
                                     new DragonmintChangePoolsAction())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -914,16 +898,16 @@ public enum Manufacturer {
                             new InnosiliconFactory(ApiType.HS_API),
                             new DragonmintNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new DragonmintPasswordAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Miner-Va. */
     MINERVA(
             "miner-va",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.STATS,
                             new MinerVaTypeFactory(),
@@ -931,18 +915,18 @@ public enum Manufacturer {
                                     ip,
                                     4028),
                             new NullPatchingStrategy()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** MultMiner. */
     MULTMINER(
             "multminer",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new MultMinerDetectionStrategy(
                             new MultMinerFactory().create(
                                     EntryStream
@@ -954,30 +938,30 @@ public enum Manufacturer {
                                                     "apiPort",
                                                     "80")
                                             .toMap())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new MultMinerFactory(),
                             new MultMinerChangePoolsAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new MultMinerFactory(),
                             new MultMinerRebootAction()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Obelisk. */
     OBELISK(
             "obelisk",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new ObeliskDetectionStrategy<>(
                             new ObeliskMacStrategy(
                                     ip,
@@ -998,7 +982,7 @@ public enum Manufacturer {
                             1,
                             TimeUnit.SECONDS,
                             new ObjectMapper()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1008,7 +992,7 @@ public enum Manufacturer {
                                     1,
                                     TimeUnit.SECONDS,
                                     new ObjectMapper())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1017,7 +1001,7 @@ public enum Manufacturer {
                             new ObeliskRebootAction(
                                     1,
                                     TimeUnit.SECONDS)),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -1036,7 +1020,7 @@ public enum Manufacturer {
                                             1,
                                             TimeUnit.SECONDS,
                                             new ObjectMapper()))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1047,34 +1031,34 @@ public enum Manufacturer {
                                     TimeUnit.SECONDS,
                                     new ObjectMapper()),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new ObeliskPasswordAction(
                                     1,
                                     TimeUnit.SECONDS,
                                     new ObjectMapper())),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Spondoolies. */
     SPONDOOLIES(
             "spondoolies",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.SUMMARY,
                             new SpondooliesTypeFactory()),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** StrongU. */
     STRONGU(
             "strongu",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new StrongUTypeFactory(),
@@ -1085,7 +1069,7 @@ public enum Manufacturer {
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString()),
                             new NullPatchingStrategy()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1114,7 +1098,7 @@ public enum Manufacturer {
                                             StrongUConfValue.START_VOLT,
                                             StrongUConfValue.PLL_START,
                                             StrongUConfValue.PLL_STEP))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1122,7 +1106,7 @@ public enum Manufacturer {
                             new StrongUFactory(),
                             new StockRebootAction(
                                     "stuMiner Configuration")),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
@@ -1159,7 +1143,7 @@ public enum Manufacturer {
                                                     StrongUConfValue.START_VOLT,
                                                     StrongUConfValue.PLL_START,
                                                     StrongUConfValue.PLL_STEP)))),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1169,17 +1153,17 @@ public enum Manufacturer {
                                     "stuMiner Configuration",
                                     "stu"),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new StockPasswordAction(
                                     "stuMiner Configuration")),
-            (threadPool, blacklist, statsCache) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Whatsminer. */
     WHATSMINER(
             "whatsminer",
-            (args, ip) ->
+            (args, ip, configuration) ->
                     new FirmwareAwareDetectionStrategy(
                             new WhatsminerDetectionStrategy(
                                     new NewFirmwareMacStrategy(
@@ -1202,7 +1186,7 @@ public enum Manufacturer {
                                             ip,
                                             4028),
                                     new NullPatchingStrategy())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1211,7 +1195,7 @@ public enum Manufacturer {
                             new WhatsminerFirmwareAwareAction(
                                     new WhatsminerChangePoolsActionOld(),
                                     new WhatsminerChangePoolsActionNew())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1220,14 +1204,14 @@ public enum Manufacturer {
                             new WhatsminerFirmwareAwareAction(
                                     new WhatsminerRebootActionOld(),
                                     new WhatsminerRebootActionNew())),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
                             new WhatsminerFactory(),
                             new WhatsminerFactoryResetStrategy()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
@@ -1235,13 +1219,13 @@ public enum Manufacturer {
                             new WhatsminerFactory(),
                             new WhatsminerNetworkAction(),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new WhatsminerPowerModeAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new WhatsminerPasswordAction()),
-            (threadPool, blacklist, statsCache) ->
+            (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
                             new WhatsminerBlinkStrategy()));
@@ -1265,7 +1249,7 @@ public enum Manufacturer {
     private final ActionSupplier changePoolsStrategy;
 
     /** The strategy for detecting. */
-    private final BiFunction<Map<String, Object>, String, DetectionStrategy> detectionStrategy;
+    private final DetectionSupplier detectionStrategy;
 
     /** The strategy for performing a factory reset. */
     private final ActionSupplier factoryResetStrategy;
@@ -1300,7 +1284,7 @@ public enum Manufacturer {
      */
     Manufacturer(
             final String name,
-            final BiFunction<Map<String, Object>, String, DetectionStrategy> detectionStrategy,
+            final DetectionSupplier detectionStrategy,
             final ActionSupplier changePoolsStrategy,
             final ActionSupplier rebootStrategy,
             final ActionSupplier factoryResetStrategy,
@@ -1333,74 +1317,86 @@ public enum Manufacturer {
     /**
      * Returns the strategy for blinking LEDs.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The strategy for blinking LEDs.
      */
     public AsicAction getBlinkStrategy(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.blinkStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
      * Returns the strategy for changing pools.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The strategy for changing pools.
      */
     public AsicAction getChangePoolsAction(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.changePoolsStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
      * Returns the strategy.
      *
-     * @param args The args.
-     * @param ip   The IP.
+     * @param args          The args.
+     * @param ip            The IP.
+     * @param configuration The configuration.
      *
      * @return The strategy.
      */
     public DetectionStrategy getDetectionStrategy(
             final Map<String, Object> args,
-            final String ip) {
-        return this.detectionStrategy.apply(
+            final String ip,
+            final ApplicationConfiguration configuration) {
+        return this.detectionStrategy.create(
                 args,
-                ip);
+                ip,
+                configuration);
     }
 
     /**
      * Returns the strategy for factory resets.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The action for factory resets.
      */
     public AsicAction getFactoryResetStrategy(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.factoryResetStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
@@ -1415,77 +1411,89 @@ public enum Manufacturer {
     /**
      * Returns the strategy for configuring networks.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The action for factory resets.
      */
     public AsicAction getNetworkStrategy(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.networkStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
      * Returns the strategy for changing passwords.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The strategy for changing pools.
      */
     public AsicAction getPasswordStrategy(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.passwordStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
      * Returns the strategy for changing power modes.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The strategy for changing power modes.
      */
     public AsicAction getPowerModeStrategy(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.powerModeStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /**
      * Returns the action for rebooting.
      *
-     * @param threadPool The thread pool.
-     * @param blacklist  The blacklist.
-     * @param statsCache The stats cache.
+     * @param threadPool    The thread pool.
+     * @param blacklist     The blacklist.
+     * @param statsCache    The stats cache.
+     * @param configuration The configuration.
      *
      * @return The action for rebooting.
      */
     public AsicAction getRebootAction(
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         return this.rebootStrategy.create(
                 threadPool,
                 blacklist,
-                statsCache);
+                statsCache,
+                configuration);
     }
 
     /** Provides a supplier for creating {@link AsicAction actions}. */
@@ -1495,15 +1503,25 @@ public enum Manufacturer {
         /**
          * Creates an {@link AsicAction}.
          *
-         * @param threadPool The thread pool.
-         * @param blacklist  The blacklist.
-         * @param statsCache The cache.
+         * @param threadPool    The thread pool.
+         * @param blacklist     The blacklist.
+         * @param statsCache    The cache.
+         * @param configuration The configuration.
          *
          * @return The action.
          */
         AsicAction create(
                 ScheduledExecutorService threadPool,
                 Set<MinerID> blacklist,
-                StatsCache statsCache);
+                StatsCache statsCache,
+                ApplicationConfiguration configuration);
+    }
+
+    private interface DetectionSupplier {
+
+        DetectionStrategy create(
+                Map<String, Object> args,
+                String ip,
+                ApplicationConfiguration configuration);
     }
 }

@@ -2,33 +2,26 @@ package mn.foreman.goldshell;
 
 import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
+import mn.foreman.model.ApplicationConfiguration;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /** Changes Goldshell network settings. */
 public class GoldshellNetworkAction
         extends AbstractNetworkAction {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
-    public GoldshellNetworkAction(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+    public GoldshellNetworkAction(final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -54,7 +47,6 @@ public class GoldshellNetworkAction
                                 network.netmask,
                                 "Router",
                                 network.gateway)),
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                this.configuration);
     }
 }

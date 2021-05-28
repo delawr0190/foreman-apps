@@ -1,5 +1,6 @@
 package mn.foreman.pickaxe.command.asic;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.cache.StatsCache;
 import mn.foreman.pickaxe.command.CommandStrategy;
@@ -30,6 +31,9 @@ public class AsicStrategyFactory
     /** The blacklist. */
     private final Set<MinerID> blacklist;
 
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
+
     /** The post processor for rebooting. */
     private final PostCommandProcessor postRebootProcessor;
 
@@ -43,18 +47,22 @@ public class AsicStrategyFactory
      * Constructor.
      *
      * @param postRebootProcessor The post processor for rebooting.
+     * @param threadPool          The thread pool.
      * @param blacklist           The blacklist.
      * @param statsCache          The cache.
+     * @param configuration       The configuration.
      */
     public AsicStrategyFactory(
             final PostCommandProcessor postRebootProcessor,
             final ScheduledExecutorService threadPool,
             final Set<MinerID> blacklist,
-            final StatsCache statsCache) {
+            final StatsCache statsCache,
+            final ApplicationConfiguration configuration) {
         this.postRebootProcessor = postRebootProcessor;
         this.threadPool = threadPool;
         this.blacklist = blacklist;
         this.statsCache = statsCache;
+        this.configuration = configuration;
     }
 
     @Override
@@ -65,10 +73,15 @@ public class AsicStrategyFactory
                 strategy = Optional.of(new DiscoverStrategy());
                 break;
             case "scan":
-                strategy = Optional.of(new ScanStrategy());
+                strategy = Optional.of(
+                        new ScanStrategy(
+                                this.configuration));
                 break;
             case "targeted-scan":
-                strategy = Optional.of(new ScanStrategy(new MacFilteringStrategy()));
+                strategy = Optional.of(
+                        new ScanStrategy(
+                                new MacFilteringStrategy(),
+                                this.configuration));
                 break;
             case "change-pools":
                 strategy =
@@ -79,7 +92,8 @@ public class AsicStrategyFactory
                                                 manufacturer.getChangePoolsAction(
                                                         this.threadPool,
                                                         this.blacklist,
-                                                        this.statsCache)));
+                                                        this.statsCache,
+                                                        this.configuration)));
                 break;
             case "reboot":
                 strategy =
@@ -90,13 +104,16 @@ public class AsicStrategyFactory
                                                 manufacturer.getRebootAction(
                                                         this.threadPool,
                                                         this.blacklist,
-                                                        this.statsCache)));
+                                                        this.statsCache,
+                                                        this.configuration)));
                 break;
             case "digest":
                 strategy = Optional.of(new DigestStrategy());
                 break;
             case "raw-stats":
-                strategy = Optional.of(new RawStatsStrategy());
+                strategy = Optional.of(
+                        new RawStatsStrategy(
+                                this.configuration));
                 break;
             case "factory-reset":
                 strategy =
@@ -107,7 +124,8 @@ public class AsicStrategyFactory
                                                 manufacturer.getFactoryResetStrategy(
                                                         this.threadPool,
                                                         this.blacklist,
-                                                        this.statsCache)));
+                                                        this.statsCache,
+                                                        this.configuration)));
                 break;
             case "eval":
                 strategy = Optional.of(new EvalStrategy());
@@ -123,7 +141,8 @@ public class AsicStrategyFactory
                                         manufacturer.getNetworkStrategy(
                                                 this.threadPool,
                                                 this.blacklist,
-                                                this.statsCache)));
+                                                this.statsCache,
+                                                this.configuration)));
                 break;
             case "terminate":
                 strategy = Optional.of(new TerminateStrategy());
@@ -136,7 +155,8 @@ public class AsicStrategyFactory
                                         manufacturer.getPowerModeStrategy(
                                                 this.threadPool,
                                                 this.blacklist,
-                                                this.statsCache)));
+                                                this.statsCache,
+                                                this.configuration)));
                 break;
             case "password":
                 strategy = Optional.of(
@@ -146,7 +166,8 @@ public class AsicStrategyFactory
                                         manufacturer.getPasswordStrategy(
                                                 this.threadPool,
                                                 this.blacklist,
-                                                this.statsCache)));
+                                                this.statsCache,
+                                                this.configuration)));
                 break;
             case "blink":
                 strategy = Optional.of(
@@ -156,7 +177,8 @@ public class AsicStrategyFactory
                                         manufacturer.getBlinkStrategy(
                                                 this.threadPool,
                                                 this.blacklist,
-                                                this.statsCache)));
+                                                this.statsCache,
+                                                this.configuration)));
                 break;
             case "obelisk-get":
                 strategy = Optional.of(new ObeliskGetStrategy());

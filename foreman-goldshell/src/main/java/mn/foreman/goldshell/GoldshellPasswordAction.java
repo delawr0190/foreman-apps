@@ -1,11 +1,11 @@
 package mn.foreman.goldshell;
 
 import mn.foreman.model.AbstractPasswordAction;
+import mn.foreman.model.ApplicationConfiguration;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link GoldshellPasswordAction} provides an {@link AbstractPasswordAction}
@@ -14,23 +14,17 @@ import java.util.concurrent.TimeUnit;
 public class GoldshellPasswordAction
         extends AbstractPasswordAction {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
     public GoldshellPasswordAction(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+            final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -51,7 +45,6 @@ public class GoldshellPasswordAction
                         newPassword,
                         "cfmpassword",
                         newPassword),
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                this.configuration);
     }
 }

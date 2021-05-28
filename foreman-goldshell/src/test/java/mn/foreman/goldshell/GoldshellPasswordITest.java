@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractSyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -7,7 +8,6 @@ import mn.foreman.util.http.HttpHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test changing passwords on a goldshell. */
 public class GoldshellPasswordITest
@@ -18,8 +18,7 @@ public class GoldshellPasswordITest
         super(
                 8080,
                 new GoldshellPasswordAction(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,

@@ -34,6 +34,7 @@ import mn.foreman.lolminer.LolminerFactory;
 import mn.foreman.minerva.MinerVaFactory;
 import mn.foreman.miniz.MinizFactory;
 import mn.foreman.mkxminer.MkxminerFactory;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.multiminer.MultiminerFactory;
@@ -76,259 +77,259 @@ public enum ApiType {
     /** bminer. */
     BMINER_API(
             1,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new BminerFactory();
             }),
 
     /** castxmr. */
     CASTXMR_API(
             2,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new CastxmrFactory();
             }),
 
     /** ccminer. */
     CCMINER_API(
             3,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new CcminerFactory();
             }),
 
     /** dstm. */
     DSTM_API(
             4,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new DstmFactory();
             }),
 
     /** ethminer. */
     ETHMINER_API(
             5,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new EthminerFactory();
             }),
 
     /** ewbf. */
     EWBF_API(
             6,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new EwbfFactory();
             }),
 
     /** excavator. */
     EXCAVATOR_API(
             7,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new ExcavatorFactory();
             }),
 
     /** jceminer. */
     JCEMINER_API(
             8,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new JceminerFactory();
             }),
 
     /** lolminer. */
     LOLMINER_API(
             9,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new LolminerFactory();
             }),
 
     /** sgminer. */
     SGMINER_API(
             10,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new SgminerFactory();
             }),
 
     /** srbminer. */
     SRBMINER_API(
             11,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new SrbminerFactory();
             }),
 
     /** trex. */
     TREX_API(
             12,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new TrexFactory();
             }),
 
     /** xmrig */
     XMRIG_API(
             13,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new XmrigFactory();
             }),
 
     /** xmrstak (gpu). */
     XMRSTAK_GPU_API(
             14,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new XmrstakFactory(XmrstakType.GPU);
             }),
 
     /** claymore-eth. */
     CLAYMORE_ETH_API(
             15,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new ClaymoreFactory(claymore);
             }),
 
     /** claymore-zec. */
     CLAYMORE_ZEC_API(
             16,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new ClaymoreFactory(claymore);
             }),
 
     /** Antminer API that reports rates in Hs. */
     ANTMINER_HS_API(
             17,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new AntminerFactory(new BigDecimal(0.000000001));
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_MHS_API(
             18,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new AntminerFactory(new BigDecimal(0.001));
             }),
 
     /** Antminer API that reports rates in GHs. */
     ANTMINER_GHS_API(
             19,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new AntminerFactory(BigDecimal.ONE);
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_KHS_API(
             20,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new AntminerFactory(new BigDecimal(0.000001));
             }),
 
     /** baikal. */
     BAIKAL_API(
             21,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new BaikalFactory();
             }),
 
     /** dragonmint. */
     DRAGONMINT_API(
             22,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new DragonmintFactory();
             }),
 
     /** Innosilicon. */
     INNOSILICON_HS_API(
             23,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new InnosiliconFactory(mn.foreman.innosilicon.ApiType.HS_API);
             }),
 
     /** Innosilicon. */
     INNOSILICON_KHS_API(
             24,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new InnosiliconFactory(mn.foreman.innosilicon.ApiType.KHS_API);
             }),
 
     /** Innosilicon. */
     INNOSILICON_MHS_API(
             25,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new InnosiliconFactory(mn.foreman.innosilicon.ApiType.MHS_API);
             }),
 
     /** Innosilicon. */
     INNOSILICON_GHS_API(
             26,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new InnosiliconFactory(mn.foreman.innosilicon.ApiType.GHS_API);
             }),
 
     /** Dayun. */
     DAYUN_API(
             27,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new DayunFactory();
             }),
 
     /** Whatsminer. */
     WHATSMINER_API(
             28,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new WhatsminerFactory();
             }),
 
     /** Avalon. */
     AVALON_API(
             29,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new AvalonFactory();
             }),
 
     /** Gminer. */
     GMINER_API(
             30,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new GminerFactory();
             }),
 
     /** mkxminer. */
     MKXMINER_API(
             31,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new MkxminerFactory();
             }),
 
     /** Blackminer API. */
     BLACKMINER_API(
             32,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new BlackminerFactory();
             }),
 
     /** rhminer. */
     RHMINER_API(
             33,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new RhminerFactory();
             }),
 
     /** multiminer. */
     MULTIMINER_API(
             34,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new MultiminerFactory();
             }),
 
     /** hspminer. */
     HSPMINER_API(
             35,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new HspminerFactory();
             }),
 
     /** nanominer. */
     NANOMINER_API(
             36,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new NanominerFactory();
             }),
 
     /** nicehash. */
     NICEHASH_API(
             37,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new NiceHashMinerFactory(
                         nicehashMiners.create(
                                 config,
@@ -340,21 +341,21 @@ public enum ApiType {
     /** optiminer. */
     OPTIMINER_API(
             38,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new OptiminerFactory();
             }),
 
     /** grinpro. */
     GRINPRO_API(
             39,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new GrinProFactory();
             }),
 
     /** autominer. */
     AUTOMINER_API(
             40,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 final MinerMapping.Builder mappingBuilder =
                         new MinerMapping.Builder();
                 autominer.forEach(
@@ -367,135 +368,134 @@ public enum ApiType {
                                                 nicehash,
                                                 autominer,
                                                 claymore,
-                                                nicehashMiners)));
+                                                nicehashMiners,
+                                                configuration)));
                 return new AutoMinerFactory(mappingBuilder.build());
             }),
 
     /** spondoolies. */
     SPONDOOLIES_API(
             41,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new SpondooliesFactory();
             }),
 
     /** nbminer. */
     NBMINER_API(
             42,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new NbminerFactory();
             }),
 
     /** miniz. */
     MINIZ_API(
             43,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new MinizFactory();
             }),
 
     /** futurebit. */
     FUTUREBIT_API(
             44,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new FutureBitFactory();
             }),
 
     /** swarm. */
     SWARM_API(
             45,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new SwarmFactory();
             }),
 
     /** xmrstak (cpu). */
     XMRSTAK_CPU_API(
             46,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new XmrstakFactory(XmrstakType.CPU);
             }),
 
     /** cpuminer. */
     CPUMINER_API(
             47,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new CpuminerFactory();
             }),
 
     /** iximiner. */
     IXIMINER_API(
             48,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new IximinerFactory();
             }),
 
     /** aixin. */
     AIXIN_API(
             49,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new HonorKnightFactory();
             }),
 
     /** hyperbit. */
     HYPERBIT_API(
             50,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new HyperbitFactory();
             }),
 
     /** obelisk. */
     OBELISK_API(
             51,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new ObeliskFactory();
             }),
 
     /** strongu. */
     STRONGU_API(
             52,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new StrongUFactory();
             }),
 
     /** multminer. */
     MULTMINER_API(
             53,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new MultMinerFactory();
             }),
 
     /** miner-va. */
     MINERVA_API(
             54,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new MinerVaFactory();
             }),
 
     /** open-miner. */
     OPENMINER_API(
             55,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new OpenMinerFactory();
             }),
 
     /** ePIC. */
     EPIC_API(
             56,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new EpicFactory();
             }),
 
     /** goldshell. */
     GOLDSHELL_API(
             57,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
-                return new GoldshellFactory(
-                        1,
-                        TimeUnit.SECONDS);
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
+                return new GoldshellFactory(configuration);
             }),
 
     /** ebang. */
     EBANG_API(
             58,
-            (port, config, nicehash, autominer, claymore, nicehashMiners) -> {
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
                 return new EbangFactory(
                         1,
                         TimeUnit.SECONDS,
@@ -561,6 +561,7 @@ public enum ApiType {
      * @param autominer      The autominer config.
      * @param claymore       The claymore config.
      * @param nicehashMiners The nicehash miners.
+     * @param configuration  The configuration.
      *
      * @return The new factory.
      */
@@ -570,14 +571,16 @@ public enum ApiType {
             final List<ApiType> nicehash,
             final Map<String, ApiType> autominer,
             final TypeMapping claymore,
-            final MinerSupplier nicehashMiners) {
+            final MinerSupplier nicehashMiners,
+            final ApplicationConfiguration configuration) {
         return this.factorySupplier.create(
                 port,
                 config,
                 nicehash,
                 autominer,
                 claymore,
-                nicehashMiners);
+                nicehashMiners,
+                configuration);
     }
 
     /** A factory for creating {@link MinerFactory factories}. */
@@ -593,6 +596,7 @@ public enum ApiType {
          * @param autominer      The autominer config.
          * @param claymore       The claymore config.
          * @param nicehashMiners The nicehash candidates.
+         * @param configuration  The configuration.
          *
          * @return The factory.
          */
@@ -602,7 +606,8 @@ public enum ApiType {
                 List<ApiType> nicehash,
                 Map<String, ApiType> autominer,
                 TypeMapping claymore,
-                MinerSupplier nicehashMiners);
+                MinerSupplier nicehashMiners,
+                ApplicationConfiguration configuration);
     }
 
     /**

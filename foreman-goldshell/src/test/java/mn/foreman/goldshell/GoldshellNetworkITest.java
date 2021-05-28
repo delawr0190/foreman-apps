@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -8,7 +9,6 @@ import mn.foreman.util.http.HttpHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test changing network settings on a Whatsminer. */
 public class GoldshellNetworkITest
@@ -20,8 +20,7 @@ public class GoldshellNetworkITest
                 8080,
                 8080,
                 new GoldshellNetworkAction(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -126,8 +125,7 @@ public class GoldshellNetworkITest
                                                         "    }\n" +
                                                         "]")))),
                 new GoldshellFactory(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 TestUtils.toNetworkJson(8080, false),
                 true);
     }

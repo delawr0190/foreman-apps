@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -9,7 +10,6 @@ import mn.foreman.util.http.MultiHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Test changing pools on a goldshell. */
 public class GoldshellChangePoolsITest
@@ -21,8 +21,7 @@ public class GoldshellChangePoolsITest
                 8080,
                 8080,
                 new GoldshellChangePoolsAction(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -127,8 +126,7 @@ public class GoldshellChangePoolsITest
                                                                 "    }\n" +
                                                                 "]"))))),
                 new GoldshellFactory(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 TestUtils.toPoolJson(),
                 true);
     }

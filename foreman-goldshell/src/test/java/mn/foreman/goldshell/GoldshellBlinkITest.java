@@ -1,5 +1,6 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractBlinkActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -8,7 +9,6 @@ import mn.foreman.util.http.MultiHandler;
 import com.google.common.collect.ImmutableMap;
 
 import java.util.Collections;
-import java.util.concurrent.TimeUnit;
 
 /** Tests blinking LEDs on Whatsminers. */
 public class GoldshellBlinkITest
@@ -19,8 +19,7 @@ public class GoldshellBlinkITest
         super(
                 8080,
                 new GoldshellBlinkStrategy(
-                        1,
-                        TimeUnit.SECONDS),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,

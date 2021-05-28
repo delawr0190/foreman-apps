@@ -1,5 +1,7 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.http.HttpEntity;
@@ -18,7 +20,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -35,14 +36,13 @@ public class GoldshellQuery {
     /**
      * Runs a PUT query.
      *
-     * @param ip                 The IP.
-     * @param port               The port.
-     * @param uri                The URI.
-     * @param param              The param.
-     * @param reference          The response type.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout (units).
-     * @param <T>                The response type.
+     * @param ip            The IP.
+     * @param port          The port.
+     * @param uri           The URI.
+     * @param param         The param.
+     * @param reference     The response type.
+     * @param configuration The configuration.
+     * @param <T>           The response type.
      *
      * @return The response object.
      */
@@ -52,8 +52,7 @@ public class GoldshellQuery {
             final String uri,
             final Object param,
             final TypeReference<T> reference,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration configuration) {
         final AtomicReference<String> response = new AtomicReference<>();
         if (run(
                 ip,
@@ -62,8 +61,7 @@ public class GoldshellQuery {
                 param,
                 response::set,
                 false,
-                socketTimeout,
-                socketTimeoutUnits)) {
+                configuration.getReadSocketTimeout())) {
             final String responseString = response.get();
             if (responseString != null) {
                 try {
@@ -82,12 +80,11 @@ public class GoldshellQuery {
     /**
      * Runs a PUT query.
      *
-     * @param ip                 The IP.
-     * @param port               The port.
-     * @param uri                The URI.
-     * @param param              The param.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout (units).
+     * @param ip            The IP.
+     * @param port          The port.
+     * @param uri           The URI.
+     * @param param         The param.
+     * @param configuration The configuration.
      *
      * @return Whether or not the query was successful.
      */
@@ -96,8 +93,7 @@ public class GoldshellQuery {
             final int port,
             final String uri,
             final Object param,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration configuration) {
         return run(
                 ip,
                 port,
@@ -106,21 +102,19 @@ public class GoldshellQuery {
                 s -> {
                 },
                 true,
-                socketTimeout,
-                socketTimeoutUnits);
+                configuration.getWriteSocketTimeout());
     }
 
     /**
      * Runs an API query.
      *
-     * @param ip                 The IP.
-     * @param port               The port.
-     * @param uri                The URI.
-     * @param param              The param.
-     * @param callback           The response callback.
-     * @param isPut              Whether or not a PUT operation.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout (units).
+     * @param ip           The IP.
+     * @param port         The port.
+     * @param uri          The URI.
+     * @param param        The param.
+     * @param callback     The response callback.
+     * @param isPut        Whether or not a PUT operation.
+     * @param socketConfig The configuration.
      *
      * @return Whether or not the call was successful.
      */
@@ -131,12 +125,12 @@ public class GoldshellQuery {
             final Object param,
             final Consumer<String> callback,
             final boolean isPut,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration.SocketConfig socketConfig) {
         boolean success = false;
 
         final int socketTimeoutMillis =
-                (int) socketTimeoutUnits.toMillis(socketTimeout);
+                (int) socketConfig.getSocketTimeoutUnits().toMillis(
+                        socketConfig.getSocketTimeout());
 
         final RequestConfig requestConfig =
                 RequestConfig.custom()

@@ -3,6 +3,7 @@ package mn.foreman.goldshell;
 import mn.foreman.goldshell.json.Cgminer;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractMiner;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -17,7 +18,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 /**
  * An {@link AbstractMiner} implementation that will query a Goldshell miner.
@@ -25,11 +25,8 @@ import java.util.concurrent.TimeUnit;
 public class Goldshell
         extends AbstractMiner {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /** The stats whitelist. */
     private final List<String> statsWhitelist;
@@ -37,27 +34,24 @@ public class Goldshell
     /**
      * Constructor.
      *
-     * @param apiIp              The IP.
-     * @param apiPort            The port.
-     * @param statsWhitelist     The stats whitelist.
-     * @param macStrategy        The mac strategy.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param apiIp          The IP.
+     * @param apiPort        The port.
+     * @param statsWhitelist The stats whitelist.
+     * @param macStrategy    The mac strategy.
+     * @param configuration  The configuration.
      */
     Goldshell(
             final String apiIp,
             final int apiPort,
             final List<String> statsWhitelist,
             final MacStrategy macStrategy,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration configuration) {
         super(
                 apiIp,
                 apiPort,
                 macStrategy);
         this.statsWhitelist = new ArrayList<>(statsWhitelist);
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.configuration = configuration;
     }
 
     @Override
@@ -65,6 +59,8 @@ public class Goldshell
             final MinerStats.Builder statsBuilder)
             throws MinerException {
         final Map<String, Object> rawStats = new LinkedHashMap<>();
+        final ApplicationConfiguration.SocketConfig socketConfig =
+                this.configuration.getReadSocketTimeout();
         final Cgminer cgminer =
                 Query.restQuery(
                         this.apiIp,
@@ -73,8 +69,8 @@ public class Goldshell
                         "GET",
                         new TypeReference<Cgminer>() {
                         },
-                        this.socketTimeout,
-                        this.socketTimeoutUnits,
+                        socketConfig.getSocketTimeout(),
+                        socketConfig.getSocketTimeoutUnits(),
                         rawJson -> rawStats.putAll(
                                 Flatten.flattenAndFilter(
                                         rawJson,
@@ -87,8 +83,8 @@ public class Goldshell
                         "GET",
                         new TypeReference<List<mn.foreman.goldshell.json.Pool>>() {
                         },
-                        this.socketTimeout,
-                        this.socketTimeoutUnits,
+                        socketConfig.getSocketTimeout(),
+                        socketConfig.getSocketTimeoutUnits(),
                         rawJson -> rawStats.putAll(
                                 Flatten.flattenAndFilter(
                                         rawJson,

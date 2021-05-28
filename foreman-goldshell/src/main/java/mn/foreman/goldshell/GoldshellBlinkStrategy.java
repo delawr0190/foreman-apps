@@ -1,35 +1,29 @@
 package mn.foreman.goldshell;
 
 import mn.foreman.goldshell.json.Setting;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.BlinkStrategy;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /** A {@link BlinkStrategy} for blinking LEDs on a goldshell. */
 public class GoldshellBlinkStrategy
         implements BlinkStrategy {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
     public GoldshellBlinkStrategy(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+            final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -77,8 +71,7 @@ public class GoldshellBlinkStrategy
                         null,
                         new TypeReference<Setting>() {
                         },
-                        this.socketTimeout,
-                        this.socketTimeoutUnits)
+                        this.configuration)
                         .orElseThrow(() -> new MinerException("Failed to obtain settings"));
         setting.ledControl = on;
         return GoldshellQuery.runPut(
@@ -86,7 +79,6 @@ public class GoldshellBlinkStrategy
                 port,
                 "/mcb/setting",
                 setting,
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                this.configuration);
     }
 }

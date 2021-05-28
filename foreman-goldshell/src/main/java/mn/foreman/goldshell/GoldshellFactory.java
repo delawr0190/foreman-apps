@@ -1,12 +1,12 @@
 package mn.foreman.goldshell;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
@@ -15,23 +15,16 @@ import java.util.concurrent.TimeUnit;
 public class GoldshellFactory
         implements MinerFactory {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
-    public GoldshellFactory(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+    public GoldshellFactory(final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @SuppressWarnings("unchecked")
@@ -48,9 +41,7 @@ public class GoldshellFactory
                 new GoldshellMacStrategy(
                         ip,
                         port,
-                        this.socketTimeout,
-                        this.socketTimeoutUnits),
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                        this.configuration),
+                this.configuration);
     }
 }

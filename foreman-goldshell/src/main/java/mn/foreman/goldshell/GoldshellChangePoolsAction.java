@@ -2,13 +2,13 @@ package mn.foreman.goldshell;
 
 import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 
 import com.google.common.collect.ImmutableMap;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link GoldshellChangePoolsAction} provides an {@link
@@ -18,23 +18,17 @@ import java.util.concurrent.TimeUnit;
 public class GoldshellChangePoolsAction
         extends AbstractChangePoolsAction {
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout units. */
-    private final TimeUnit socketTimeoutUnits;
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /**
      * Constructor.
      *
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout units.
+     * @param configuration The configuration.
      */
     public GoldshellChangePoolsAction(
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+            final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
     }
 
     @Override
@@ -48,8 +42,7 @@ public class GoldshellChangePoolsAction
                 port,
                 "/mcb/pools",
                 toPools(pools),
-                this.socketTimeout,
-                this.socketTimeoutUnits);
+                this.configuration);
     }
 
     /**

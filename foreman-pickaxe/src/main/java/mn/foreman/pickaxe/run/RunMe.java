@@ -6,6 +6,7 @@ import mn.foreman.api.JdkWebUtil;
 import mn.foreman.api.endpoints.miners.Miners;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.Commands;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.cache.SelfExpiringStatsCache;
@@ -50,6 +51,10 @@ public class RunMe {
                         "FOREMAN_BASE_URL",
                         "https://api.foreman.mn");
     }
+
+    /** The app configuration. */
+    private final ApplicationConfiguration applicationConfiguration =
+            new ApplicationConfiguration();
 
     /** The blacklisted miners. */
     private final Set<MinerID> blacklistedMiners =
@@ -124,7 +129,8 @@ public class RunMe {
                                 "api/autominer"),
                         toFullUrl(
                                 "api/claymore"),
-                        configuration.getApiKey());
+                        configuration.getApiKey(),
+                        this.applicationConfiguration);
         this.foremanApi =
                 new ForemanApiImpl(
                         configuration.getClientId(),
@@ -244,7 +250,8 @@ public class RunMe {
                                 new NullPostProcessor(),
                                 this.threadPool,
                                 this.blacklistedMiners,
-                                this.statsCache));
+                                this.statsCache,
+                                this.applicationConfiguration));
         this.threadPool.scheduleAtFixedRate(
                 () -> {
                     try {
@@ -293,6 +300,24 @@ public class RunMe {
                         }
                     } catch (final Exception e) {
                         LOG.warn("Exception occurred while querying", e);
+                    }
+
+                    try {
+                        this.foremanApi
+                                .pickaxe()
+                                .config()
+                                .ifPresent(pickaxeConfiguration -> {
+                                    // Modify the application's running
+                                    // configuration based on the web config
+                                    this.applicationConfiguration.setReadSocketTimeout(
+                                            pickaxeConfiguration.readSocketTimeout,
+                                            TimeUnit.valueOf(pickaxeConfiguration.readSocketTimeoutUnits));
+                                    this.applicationConfiguration.setWriteSocketTimeout(
+                                            pickaxeConfiguration.writeSocketTimeout,
+                                            TimeUnit.valueOf(pickaxeConfiguration.writeSocketTimeoutUnits));
+                                });
+                    } catch (final Exception e) {
+                        LOG.warn("Failed to obtain app config", e);
                     }
                 },
                 0,

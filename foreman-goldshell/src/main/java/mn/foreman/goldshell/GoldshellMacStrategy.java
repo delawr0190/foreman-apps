@@ -1,16 +1,19 @@
 package mn.foreman.goldshell;
 
 import mn.foreman.goldshell.json.Setting;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 /** A {@link MacStrategy} for obtaining a MAC from a goldshell. */
 public class GoldshellMacStrategy
         implements MacStrategy {
+
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
 
     /** The ip. */
     private final String ip;
@@ -18,29 +21,20 @@ public class GoldshellMacStrategy
     /** The port. */
     private final int port;
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout (units). */
-    private final TimeUnit socketTimeoutUnits;
-
     /**
      * Constructor.
      *
-     * @param ip                 The ip.
-     * @param port               The port.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout (units).
+     * @param ip            The ip.
+     * @param port          The port.
+     * @param configuration The configuration.
      */
     public GoldshellMacStrategy(
             final String ip,
             final int port,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration configuration) {
         this.ip = ip;
         this.port = port;
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.configuration = configuration;
     }
 
     @Override
@@ -52,8 +46,7 @@ public class GoldshellMacStrategy
                 null,
                 new TypeReference<Setting>() {
                 },
-                this.socketTimeout,
-                this.socketTimeoutUnits)
+                this.configuration)
                 .map(value -> {
                     if (value.name != null) {
                         return value.name.toLowerCase();

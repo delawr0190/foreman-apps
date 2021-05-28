@@ -5,6 +5,7 @@ import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
 import mn.foreman.claymore.TypeMapping;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.MinerStats;
@@ -26,6 +27,18 @@ import java.util.*;
  */
 public class RawStatsStrategy
         implements CommandStrategy {
+
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
+
+    /**
+     * Constructor.
+     *
+     * @param configuration The configuration.
+     */
+    public RawStatsStrategy(final ApplicationConfiguration configuration) {
+        this.configuration = configuration;
+    }
 
     @Override
     public void runCommand(
@@ -145,7 +158,8 @@ public class RawStatsStrategy
                         Collections.emptyMap(),
                         new TypeMapping.Builder().build(),
                         (config, nicehash, autominer, claymore) ->
-                                Collections.emptyList());
+                                Collections.emptyList(),
+                        this.configuration);
 
         final Miner miner =
                 MinerUtils.toMiner(

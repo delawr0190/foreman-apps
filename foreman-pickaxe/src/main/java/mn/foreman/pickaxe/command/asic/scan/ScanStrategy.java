@@ -5,6 +5,7 @@ import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.CommandUpdate;
 import mn.foreman.api.model.DoneStatus;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MinerType;
@@ -42,21 +43,34 @@ public class ScanStrategy
     private static final ExecutorService THREAD_POOL =
             Executors.newCachedThreadPool();
 
+    /** The configuration. */
+    private final ApplicationConfiguration configuration;
+
     /** The filtering strategy. */
     private final FilteringStrategy filteringStrategy;
 
-    /** Constructor. */
-    public ScanStrategy() {
-        this(new NullFilteringStrategy());
+    /**
+     * Constructor.
+     *
+     * @param configuration The configuration.
+     */
+    public ScanStrategy(final ApplicationConfiguration configuration) {
+        this(
+                new NullFilteringStrategy(),
+                configuration);
     }
 
     /**
      * Constructor.
      *
      * @param filteringStrategy The strategy for filtering.
+     * @param configuration     The configuration.
      */
-    public ScanStrategy(final FilteringStrategy filteringStrategy) {
+    public ScanStrategy(
+            final FilteringStrategy filteringStrategy,
+            final ApplicationConfiguration configuration) {
         this.filteringStrategy = filteringStrategy;
+        this.configuration = configuration;
     }
 
     @SuppressWarnings("unchecked")
@@ -346,6 +360,7 @@ public class ScanStrategy
             scanFutures.add(
                     THREAD_POOL.submit(
                             new Scanner(
+                                    this.configuration,
                                     args,
                                     ipsToScan,
                                     manufacturer,
@@ -418,6 +433,9 @@ public class ScanStrategy
         /** The arguments. */
         private final Map<String, Object> args;
 
+        /** The configuration. */
+        private final ApplicationConfiguration configuration;
+
         /** The IPs to scan. */
         private final BlockingQueue<Long> ipsToScan;
 
@@ -433,18 +451,21 @@ public class ScanStrategy
         /**
          * Constructor.
          *
-         * @param args         The arguments.
-         * @param ipsToScan    The IPs to scan.
-         * @param manufacturer The manufacturer.
-         * @param port         The port.
-         * @param scanResults  The results.
+         * @param configuration The configuration.
+         * @param args          The arguments.
+         * @param ipsToScan     The IPs to scan.
+         * @param manufacturer  The manufacturer.
+         * @param port          The port.
+         * @param scanResults   The results.
          */
         private Scanner(
+                final ApplicationConfiguration configuration,
                 final Map<String, Object> args,
                 final BlockingQueue<Long> ipsToScan,
                 final Manufacturer manufacturer,
                 final int port,
                 final BlockingQueue<ScanResult> scanResults) {
+            this.configuration = configuration;
             this.args = args;
             this.ipsToScan = ipsToScan;
             this.manufacturer = manufacturer;
@@ -463,7 +484,8 @@ public class ScanStrategy
                         final DetectionStrategy detectionStrategy =
                                 this.manufacturer.getDetectionStrategy(
                                         this.args,
-                                        ip);
+                                        ip,
+                                        this.configuration);
 
                         LOG.debug("Scanning {}:{}", ip, this.port);
 
