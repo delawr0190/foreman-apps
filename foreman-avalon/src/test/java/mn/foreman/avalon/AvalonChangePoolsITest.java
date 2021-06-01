@@ -52,7 +52,23 @@ public class AvalonChangePoolsITest
                         {
                                 // Avalon 1047
                                 ImmutableMap.of(
-                                        "ascset|0,setpool,my-auth-username,my-auth-password,stratum+tcp://my-test-pool1.com:5588,my-test-username1,my-test-password1",
+                                        "ascset|0,setpool,my-auth-username,my-auth-password,0,stratum+tcp://my-test-pool1.com:5588,my-test-username1,my-test-password1",
+                                        new RpcHandler(
+                                                "STATUS=I,When=8337,Code=118,Msg=ASC 0 set info:\n" +
+                                                        "pool success set to stratum+tcp://btc.ss.poolin.com:443\n" +
+                                                        "worker is cctrix.001\n" +
+                                                        "workerpassword is 123\n" +
+                                                        "Please reboot miner to make config work.\n" +
+                                                        ",Description=cgminer 4.11.1"),
+                                        "ascset|0,setpool,my-auth-username,my-auth-password,1,stratum+tcp://my-test-pool2.com:5588,my-test-username2,my-test-password2",
+                                        new RpcHandler(
+                                                "STATUS=I,When=8337,Code=118,Msg=ASC 0 set info:\n" +
+                                                        "pool success set to stratum+tcp://btc.ss.poolin.com:443\n" +
+                                                        "worker is cctrix.001\n" +
+                                                        "workerpassword is 123\n" +
+                                                        "Please reboot miner to make config work.\n" +
+                                                        ",Description=cgminer 4.11.1"),
+                                        "ascset|0,setpool,my-auth-username,my-auth-password,2,stratum+tcp://my-test-pool3.com:5588,my-test-username3,my-test-password3",
                                         new RpcHandler(
                                                 "STATUS=I,When=8337,Code=118,Msg=ASC 0 set info:\n" +
                                                         "pool success set to stratum+tcp://btc.ss.poolin.com:443\n" +

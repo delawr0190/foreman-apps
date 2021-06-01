@@ -39,26 +39,34 @@ public class AvalonChangePoolsAction
             final int port,
             final Map<String, Object> parameters,
             final List<Pool> pools) {
-        final Pool pool = pools.get(0);
-
         final String username = parameters.get("username").toString();
         final String password = parameters.get("password").toString();
 
-        boolean success =
-                AvalonUtils.query(
-                        ip,
-                        port,
-                        String.format(
-                                "ascset|0,setpool,%s,%s,%s,%s,%s",
-                                username,
-                                password,
-                                pool.getUrl(),
-                                pool.getUsername(),
-                                pool.getPassword()),
-                        (s, request) ->
-                                request.connected() &&
-                                        s != null &&
-                                        s.toLowerCase().contains("success"));
+        boolean success = false;
+
+        for (int i = 0; i < pools.size(); i++) {
+            final Pool pool = pools.get(i);
+            final String url = pool.getUrl();
+            if (url != null && !url.isEmpty()) {
+                success |=
+                        AvalonUtils.query(
+                                ip,
+                                port,
+                                String.format(
+                                        "ascset|0,setpool,%s,%s,%d,%s,%s,%s",
+                                        username,
+                                        password,
+                                        i,
+                                        pool.getUrl(),
+                                        pool.getUsername(),
+                                        pool.getPassword()),
+                                (s, request) ->
+                                        request.connected() &&
+                                                s != null &&
+                                                s.toLowerCase().contains("success"));
+            }
+        }
+
         if (success) {
             try {
                 success =
