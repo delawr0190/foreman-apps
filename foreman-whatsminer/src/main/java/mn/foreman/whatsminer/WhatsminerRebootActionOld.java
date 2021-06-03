@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 
@@ -15,6 +16,19 @@ import java.util.concurrent.atomic.AtomicReference;
 /** Performs a reboot of a Whatsminer miner. */
 public class WhatsminerRebootActionOld
         implements AsicAction.CompletableAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerRebootActionOld(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     public boolean run(
@@ -54,7 +68,8 @@ public class WhatsminerRebootActionOld
                                 .callback((integer, s) ->
                                         success.set(integer == HttpStatus.SC_OK))
                                 .timeout(e -> success.set(true))
-                                .build()));
+                                .build()),
+                this.applicationConfiguration.getWriteSocketTimeout());
 
         return success.get();
     }

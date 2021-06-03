@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
@@ -34,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -50,13 +50,12 @@ public class WhatsminerQuery {
      * Queries a Whatsminer, performing a login operation first to obtain a
      * session cookie.
      *
-     * @param ip                 The ip.
-     * @param port               The port.
-     * @param username           The username.
-     * @param password           The password.
-     * @param socketTimeout      The socket timeout.
-     * @param socketTimeoutUnits The socket timeout (units).
-     * @param queries            The queries.
+     * @param ip           The ip.
+     * @param port         The port.
+     * @param username     The username.
+     * @param password     The password.
+     * @param queries      The queries.
+     * @param socketConfig The config.
      *
      * @throws MinerException on failure.
      */
@@ -65,9 +64,8 @@ public class WhatsminerQuery {
             final int port,
             final String username,
             final String password,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits,
-            final List<Query> queries)
+            final List<Query> queries,
+            final ApplicationConfiguration.SocketConfig socketConfig)
             throws MinerException {
         // Test hook
         if (port == 8080 || port == 8081) {
@@ -76,8 +74,7 @@ public class WhatsminerQuery {
                     port,
                     username,
                     password,
-                    socketTimeout,
-                    socketTimeoutUnits,
+                    socketConfig,
                     queries);
         } else {
             try {
@@ -86,8 +83,7 @@ public class WhatsminerQuery {
                         443,
                         username,
                         password,
-                        socketTimeout,
-                        socketTimeoutUnits,
+                        socketConfig,
                         queries);
             } catch (final MinerException me) {
                 doQuery(
@@ -95,8 +91,7 @@ public class WhatsminerQuery {
                         80,
                         username,
                         password,
-                        socketTimeout,
-                        socketTimeoutUnits,
+                        socketConfig,
                         queries);
             }
         }
@@ -106,40 +101,12 @@ public class WhatsminerQuery {
      * Queries a Whatsminer, performing a login operation first to obtain a
      * session cookie.
      *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param username The username.
-     * @param password The password.
-     * @param queries  The queries.
-     *
-     * @throws MinerException on failure.
-     */
-    public static void query(
-            final String ip,
-            final int port,
-            final String username,
-            final String password,
-            final List<Query> queries)
-            throws MinerException {
-        query(
-                ip,
-                port,
-                username,
-                password,
-                1,
-                TimeUnit.SECONDS,
-                queries);
-    }
-
-    /**
-     * Queries a Whatsminer, performing a login operation first to obtain a
-     * session cookie.
-     *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param username The username.
-     * @param password The password.
-     * @param queries  The queries.
+     * @param ip           The ip.
+     * @param port         The port.
+     * @param username     The username.
+     * @param password     The password.
+     * @param socketConfig The socket config.
+     * @param queries      The queries.
      *
      * @throws MinerException on failure.
      */
@@ -148,8 +115,7 @@ public class WhatsminerQuery {
             final int port,
             final String username,
             final String password,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits,
+            final ApplicationConfiguration.SocketConfig socketConfig,
             final List<Query> queries)
             throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
@@ -157,8 +123,16 @@ public class WhatsminerQuery {
                 RequestConfig
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
-                        .setConnectTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
-                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(20))
+                        .setConnectTimeout(
+                                (int) socketConfig
+                                        .getSocketTimeoutUnits()
+                                        .toMillis(
+                                                socketConfig.getSocketTimeout()))
+                        .setSocketTimeout(
+                                (int) socketConfig
+                                        .getSocketTimeoutUnits()
+                                        .toMillis(
+                                                socketConfig.getSocketTimeout()))
                         .setCircularRedirectsAllowed(true)
                         .build();
 

@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -25,7 +26,8 @@ public class WhatsminerNetworkITest
         super(
                 8080,
                 4028,
-                new WhatsminerNetworkAction(),
+                new WhatsminerNetworkAction(
+                        new ApplicationConfiguration()),
                 Arrays.asList(
                         () -> new FakeRpcMinerServer(
                                 4028,
@@ -332,7 +334,8 @@ public class WhatsminerNetworkITest
                             }
                             return null;
                         }),
-                new WhatsminerFactory(),
+                new WhatsminerFactory(
+                        new ApplicationConfiguration()),
                 TestUtils.toNetworkJson(4029, false),
                 true);
     }

@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -23,7 +24,8 @@ public class WhatsminerFactoryResetITest
         super(
                 8080,
                 4028,
-                new WhatsminerFactoryResetStrategy(),
+                new WhatsminerFactoryResetStrategy(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> {
                             try {
@@ -327,7 +329,7 @@ public class WhatsminerFactoryResetITest
                             }
                             return null;
                         }),
-                new WhatsminerFactory(),
+                new WhatsminerFactory(new ApplicationConfiguration()),
                 Collections.emptyMap(),
                 true);
     }

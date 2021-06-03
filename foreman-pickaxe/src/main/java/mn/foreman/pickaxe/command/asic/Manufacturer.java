@@ -1168,8 +1168,10 @@ public enum Manufacturer {
                             new WhatsminerDetectionStrategy(
                                     new NewFirmwareMacStrategy(
                                             ip,
-                                            4028),
-                                    new WhatsminerFactory().create(
+                                            4028,
+                                            configuration),
+                                    new WhatsminerFactory(
+                                            configuration).create(
                                             EntryStream
                                                     .of(args)
                                                     .append(
@@ -1178,57 +1180,70 @@ public enum Manufacturer {
                                                     .append(
                                                             "apiPort",
                                                             "4028")
-                                                    .toMap())),
+                                                    .toMap()),
+                                    configuration),
                             new CgMinerDetectionStrategy(
                                     CgMinerCommand.STATS,
                                     new WhatsminerTypeFactory(),
                                     new NewFirmwareMacStrategy(
                                             ip,
-                                            4028),
+                                            4028,
+                                            configuration),
                                     new NullPatchingStrategy())),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new WhatsminerFactory(),
+                            new WhatsminerFactory(configuration),
                             new WhatsminerFirmwareAwareAction(
-                                    new WhatsminerChangePoolsActionOld(),
-                                    new WhatsminerChangePoolsActionNew())),
+                                    new WhatsminerChangePoolsActionOld(
+                                            configuration),
+                                    new WhatsminerChangePoolsActionNew(
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new WhatsminerFactory(),
+                            new WhatsminerFactory(configuration),
                             new WhatsminerFirmwareAwareAction(
-                                    new WhatsminerRebootActionOld(),
-                                    new WhatsminerRebootActionNew())),
+                                    new WhatsminerRebootActionOld(
+                                            configuration),
+                                    new WhatsminerRebootActionNew(
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new WhatsminerFactory(),
-                            new WhatsminerFactoryResetStrategy()),
+                            new WhatsminerFactory(
+                                    configuration),
+                            new WhatsminerFactoryResetStrategy(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new WhatsminerFactory(),
-                            new WhatsminerNetworkAction(),
+                            new WhatsminerFactory(
+                                    configuration),
+                            new WhatsminerNetworkAction(
+                                    configuration),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
-                            new WhatsminerPowerModeAction()),
+                            new WhatsminerPowerModeAction(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
-                            new WhatsminerPasswordAction()),
+                            new WhatsminerPasswordAction(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
-                            new WhatsminerBlinkStrategy()));
+                            new WhatsminerBlinkStrategy(
+                                    configuration)));
 
     /** All of the known manufacturers. */
     private static final ConcurrentMap<String, Manufacturer> TYPES =

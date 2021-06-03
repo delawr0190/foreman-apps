@@ -1,6 +1,7 @@
 package mn.foreman.whatsminer;
 
 import mn.foreman.model.AbstractPasswordAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;
@@ -14,6 +15,19 @@ import java.util.Map;
 /** Changes the Whatsminer password. */
 public class WhatsminerPasswordAction
         extends AbstractPasswordAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerPasswordAction(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected boolean doChange(
@@ -33,7 +47,8 @@ public class WhatsminerPasswordAction
                             "old",
                             oldPassword,
                             "new",
-                            newPassword));
+                            newPassword),
+                    this.applicationConfiguration);
         } catch (final ApiException ae) {
             throw new MinerException("Firmware outdated or bad password", ae);
         } catch (final PermissionDeniedException pde) {

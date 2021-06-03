@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -28,6 +27,9 @@ public class WhatsminerDetectionStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(WhatsminerDetectionStrategy.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The strategy. */
     private final MacStrategy macStrategy;
 
@@ -37,14 +39,17 @@ public class WhatsminerDetectionStrategy
     /**
      * Constructor.
      *
-     * @param macStrategy The strategy.
-     * @param miner       The miner.
+     * @param macStrategy              The strategy.
+     * @param miner                    The miner.
+     * @param applicationConfiguration The configuration.
      */
     public WhatsminerDetectionStrategy(
             final MacStrategy macStrategy,
-            final Miner miner) {
+            final Miner miner,
+            final ApplicationConfiguration applicationConfiguration) {
         this.macStrategy = macStrategy;
         this.miner = miner;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -63,8 +68,7 @@ public class WhatsminerDetectionStrategy
                             .setApiIp(ip)
                             .setApiPort(4028)
                             .setConnectTimeout(
-                                    1,
-                                    TimeUnit.SECONDS)
+                                    this.applicationConfiguration.getReadSocketTimeout())
                             .addRequest(
                                     new CgMinerRequest.Builder()
                                             .setCommand(CgMinerCommand.POOLS)
@@ -78,8 +82,6 @@ public class WhatsminerDetectionStrategy
                     Integer.parseInt(args.getOrDefault("webPort", "443").toString()),
                     args.getOrDefault("username", "").toString(),
                     args.getOrDefault("password", "").toString(),
-                    2,
-                    TimeUnit.SECONDS,
                     Collections.singletonList(
                             WhatsminerQuery.Query
                                     .builder()
@@ -100,7 +102,8 @@ public class WhatsminerDetectionStrategy
                                                     .ifPresent(typeRef::set);
                                         }
                                     })
-                                    .build()));
+                                    .build()),
+                    this.applicationConfiguration.getReadSocketTimeout());
         } catch (final MinerException me) {
             LOG.debug("No miner found on {}:{}", ip, port, me);
         }

@@ -4,6 +4,7 @@ import mn.foreman.io.ApiRequest;
 import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.whatsminer.latest.error.ApiException;
 import mn.foreman.whatsminer.latest.error.PermissionDeniedException;
 
@@ -47,47 +48,12 @@ public class WhatsminerApi {
     /**
      * Runs a command against a Whatminer miner.
      *
-     * @param ip       The IP.
-     * @param port     The port.
-     * @param password The password.
-     * @param command  The command.
-     * @param args     The arguments.
-     *
-     * @return Whether or not the command was successful.
-     *
-     * @throws ApiException              on failure.
-     * @throws PermissionDeniedException on write API not enabled.
-     */
-    public static boolean runCommand(
-            final String ip,
-            final int port,
-            final String password,
-            final Command command,
-            final Map<String, String> args)
-            throws ApiException, PermissionDeniedException {
-        return runCommand(
-                ip,
-                port,
-                password,
-                command,
-                args,
-                30,
-                TimeUnit.SECONDS,
-                response -> {
-                });
-    }
-
-    /**
-     * Runs a command against a Whatminer miner.
-     *
-     * @param ip                     The IP.
-     * @param port                   The port.
-     * @param password               The password.
-     * @param command                The command.
-     * @param args                   The arguments.
-     * @param responseCallback       The callback for processing responses.
-     * @param connectionTimeout      The connection timeout.
-     * @param connectionTimeoutUnits The connection timeout units.
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param password                 The password.
+     * @param command                  The command.
+     * @param args                     The arguments.
+     * @param applicationConfiguration The configuration.
      *
      * @return Whether or not the command was successful.
      *
@@ -100,28 +66,66 @@ public class WhatsminerApi {
             final String password,
             final Command command,
             final Map<String, String> args,
-            final int connectionTimeout,
-            final TimeUnit connectionTimeoutUnits,
+            final ApplicationConfiguration applicationConfiguration)
+            throws ApiException, PermissionDeniedException {
+        return runCommand(
+                ip,
+                port,
+                password,
+                command,
+                args,
+                applicationConfiguration,
+                response -> {
+                });
+    }
+
+    /**
+     * Runs a command against a Whatminer miner.
+     *
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param password                 The password.
+     * @param command                  The command.
+     * @param args                     The arguments.
+     * @param responseCallback         The callback for processing responses.
+     * @param applicationConfiguration The configuration.
+     *
+     * @return Whether or not the command was successful.
+     *
+     * @throws ApiException              on failure.
+     * @throws PermissionDeniedException on write API not enabled.
+     */
+    public static boolean runCommand(
+            final String ip,
+            final int port,
+            final String password,
+            final Command command,
+            final Map<String, String> args,
+            final ApplicationConfiguration applicationConfiguration,
             final ResponseCallback responseCallback)
             throws ApiException, PermissionDeniedException {
         if (command.isWrite()) {
+            final ApplicationConfiguration.SocketConfig socketConfig =
+                    applicationConfiguration.getWriteSocketTimeout();
             return runWrite(
                     ip,
                     port,
                     password,
                     command,
                     args,
-                    connectionTimeout,
-                    connectionTimeoutUnits,
+                    socketConfig.getSocketTimeout(),
+                    socketConfig.getSocketTimeoutUnits(),
                     responseCallback);
         }
+        final ApplicationConfiguration.SocketConfig socketConfig =
+                applicationConfiguration.getReadSocketTimeout();
         return runRead(
                 ip,
                 port,
                 command,
                 args,
-                connectionTimeout,
-                connectionTimeoutUnits,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits(),
                 responseCallback);
     }
 

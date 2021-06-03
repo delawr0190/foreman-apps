@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractSyncActionITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -16,7 +17,8 @@ public class WhatsminerPasswordITest
     public WhatsminerPasswordITest() {
         super(
                 4028,
-                new WhatsminerPasswordAction(),
+                new WhatsminerPasswordAction(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,

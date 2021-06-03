@@ -1,6 +1,7 @@
 package mn.foreman.whatsminer;
 
 import mn.foreman.model.AbstractPowerModeAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;
@@ -15,6 +16,19 @@ import java.util.Map;
 /** Sets the Whatsminer power mode. */
 public class WhatsminerPowerModeAction
         extends AbstractPowerModeAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerPowerModeAction(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected boolean doChange(
@@ -37,7 +51,8 @@ public class WhatsminerPowerModeAction
                     command,
                     command == Command.POWER_OFF
                             ? ImmutableMap.of("respbefore", "true")
-                            : Collections.emptyMap());
+                            : Collections.emptyMap(),
+                    this.applicationConfiguration);
         } catch (final ApiException ae) {
             throw new MinerException("Firmware outdated or bad password", ae);
         } catch (final PermissionDeniedException pde) {

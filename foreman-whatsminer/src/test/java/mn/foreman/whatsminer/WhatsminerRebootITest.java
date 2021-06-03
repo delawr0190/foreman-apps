@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -41,8 +42,10 @@ public class WhatsminerRebootITest
                 8080,
                 4028,
                 new WhatsminerFirmwareAwareAction(
-                        new WhatsminerRebootActionOld(),
-                        new WhatsminerRebootActionNew()),
+                        new WhatsminerRebootActionOld(
+                                new ApplicationConfiguration()),
+                        new WhatsminerRebootActionNew(
+                                new ApplicationConfiguration())),
                 Arrays.asList(
                         () -> new FakeRpcMinerServer(
                                 4028,
@@ -50,7 +53,7 @@ public class WhatsminerRebootITest
                         () -> new FakeHttpMinerServer(
                                 8080,
                                 httpHandlers)),
-                new WhatsminerFactory(),
+                new WhatsminerFactory(new ApplicationConfiguration()),
                 TestUtils.toPoolJson(),
                 true);
     }

@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -40,7 +41,7 @@ public class WhatsminerStatsITest
             final List<String> statsWhitelist,
             final MinerStats expectedStats) {
         super(
-                new WhatsminerFactory()
+                new WhatsminerFactory(new ApplicationConfiguration())
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",

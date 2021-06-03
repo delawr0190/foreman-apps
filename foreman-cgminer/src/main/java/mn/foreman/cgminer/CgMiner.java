@@ -7,10 +7,7 @@ import mn.foreman.io.ApiRequest;
 import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
-import mn.foreman.model.AbstractBuilder;
-import mn.foreman.model.AbstractMiner;
-import mn.foreman.model.MacStrategy;
-import mn.foreman.model.NullMacStrategy;
+import mn.foreman.model.*;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
@@ -485,6 +482,20 @@ public class CgMiner
          */
         public Builder setCommandKey(final String key) {
             this.commandKey = key;
+            return this;
+        }
+
+        /**
+         * Sets the connect timeout.
+         *
+         * @param socketConfig The configuration.
+         *
+         * @return This builder.
+         */
+        public Builder setConnectTimeout(
+                final ApplicationConfiguration.SocketConfig socketConfig) {
+            this.connectTimeout = socketConfig.getSocketTimeout();
+            this.connectTimeoutUnits = socketConfig.getSocketTimeoutUnits();
             return this;
         }
 

@@ -1,6 +1,7 @@
 package mn.foreman.whatsminer;
 
 import mn.foreman.cgminer.RequestFailureCallback;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -29,6 +29,9 @@ public class SleepModeInspectionCallback
     private static final Logger LOG =
             LoggerFactory.getLogger(SleepModeInspectionCallback.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The IP. */
     private final String ip;
 
@@ -41,17 +44,20 @@ public class SleepModeInspectionCallback
     /**
      * Constructor.
      *
-     * @param ip         The IP.
-     * @param port       The port.
-     * @param parameters The parameters.
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param parameters               The parameters.
+     * @param applicationConfiguration The configuration.
      */
     SleepModeInspectionCallback(
             final String ip,
             final String port,
-            final Map<String, Object> parameters) {
+            final Map<String, Object> parameters,
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = (Integer.parseInt(port) == 8081 ? 4029 : 4028);
         this.parameters = parameters;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @SuppressWarnings("unchecked")
@@ -70,8 +76,7 @@ public class SleepModeInspectionCallback
                             "").toString(),
                     Command.STATUS,
                     Collections.emptyMap(),
-                    1,
-                    TimeUnit.SECONDS,
+                    this.applicationConfiguration,
                     response -> {
                         final Map<String, String> msg =
                                 (Map<String, String>) response;

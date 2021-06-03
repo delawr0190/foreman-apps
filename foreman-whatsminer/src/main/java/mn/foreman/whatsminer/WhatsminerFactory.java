@@ -3,6 +3,7 @@ package mn.foreman.whatsminer;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -11,7 +12,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
@@ -19,6 +19,19 @@ import java.util.concurrent.TimeUnit;
  */
 public class WhatsminerFactory
         extends CgMinerFactory {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerFactory(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected Miner create(
@@ -67,8 +80,7 @@ public class WhatsminerFactory
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
+                                this.applicationConfiguration.getReadSocketTimeout())
                         .setCommandKey("cmd")
                         .addRequest(
                                 new CgMinerRequest.Builder()
@@ -85,20 +97,21 @@ public class WhatsminerFactory
                         .setMacStrategy(
                                 new NewFirmwareMacStrategy(
                                         apiIp,
-                                        Integer.parseInt(apiPort)))
+                                        Integer.parseInt(apiPort),
+                                        this.applicationConfiguration))
                         .setFailureCallback(
                                 new SleepModeInspectionCallback(
                                         apiIp,
                                         apiPort,
-                                        config))
+                                        config,
+                                        this.applicationConfiguration))
                         .build(),
                 // 202008
                 new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
+                                this.applicationConfiguration.getReadSocketTimeout())
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)
@@ -118,20 +131,21 @@ public class WhatsminerFactory
                         .setMacStrategy(
                                 new NewFirmwareMacStrategy(
                                         apiIp,
-                                        Integer.parseInt(apiPort)))
+                                        Integer.parseInt(apiPort),
+                                        this.applicationConfiguration))
                         .setFailureCallback(
                                 new SleepModeInspectionCallback(
                                         apiIp,
                                         apiPort,
-                                        config))
+                                        config,
+                                        this.applicationConfiguration))
                         .build(),
                 // 202007
                 new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
+                                this.applicationConfiguration.getReadSocketTimeout())
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)
@@ -151,15 +165,15 @@ public class WhatsminerFactory
                         .setMacStrategy(
                                 new NewFirmwareMacStrategy(
                                         apiIp,
-                                        Integer.parseInt(apiPort)))
+                                        Integer.parseInt(apiPort),
+                                        this.applicationConfiguration))
                         .build(),
                 // Old firmware
                 new CgMiner.Builder(cgContext, statsWhitelist)
                         .setApiIp(apiIp)
                         .setApiPort(apiPort)
                         .setConnectTimeout(
-                                1,
-                                TimeUnit.SECONDS)
+                                this.applicationConfiguration.getReadSocketTimeout())
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.POOLS)

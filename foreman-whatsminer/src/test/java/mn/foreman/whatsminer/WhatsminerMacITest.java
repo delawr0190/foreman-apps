@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractMacITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -15,7 +16,8 @@ public class WhatsminerMacITest
     /** Constructor. */
     public WhatsminerMacITest() {
         super(
-                new WhatsminerFactory(),
+                new WhatsminerFactory(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         new FakeRpcMinerServer(
                                 4028,

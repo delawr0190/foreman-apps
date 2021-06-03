@@ -3,6 +3,7 @@ package mn.foreman.whatsminer;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.NullPatchingStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.model.FirmwareAwareDetectionStrategy;
 import mn.foreman.util.AbstractDetectITest;
@@ -49,19 +50,23 @@ public class WhatsminerDetectITest
                         new WhatsminerDetectionStrategy(
                                 new NewFirmwareMacStrategy(
                                         "127.0.0.1",
-                                        4028),
-                                new WhatsminerFactory().create(
+                                        4028,
+                                        new ApplicationConfiguration()),
+                                new WhatsminerFactory(
+                                        new ApplicationConfiguration()).create(
                                         ImmutableMap.of(
                                                 "apiIp",
                                                 "127.0.0.1",
                                                 "apiPort",
-                                                "4028"))),
+                                                "4028")),
+                                new ApplicationConfiguration()),
                         new CgMinerDetectionStrategy(
                                 CgMinerCommand.STATS,
                                 new WhatsminerTypeFactory(),
                                 new NewFirmwareMacStrategy(
                                         "127.0.0.1",
-                                        4028),
+                                        4028,
+                                        new ApplicationConfiguration()),
                                 new NullPatchingStrategy())),
                 fakeServers,
                 args,

@@ -2,6 +2,7 @@ package mn.foreman.whatsminer;
 
 import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
@@ -17,6 +18,19 @@ import java.util.concurrent.atomic.AtomicReference;
 /** A strategy for changing pools on Whatsminer miners. */
 public class WhatsminerChangePoolsActionOld
         extends AbstractChangePoolsAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerChangePoolsActionOld(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected boolean doChange(
@@ -96,7 +110,8 @@ public class WhatsminerChangePoolsActionOld
                                 .callback((integer, s) ->
                                         success.set(integer == HttpStatus.SC_OK))
                                 .timeout(e -> success.set(true))
-                                .build()));
+                                .build()),
+                this.applicationConfiguration.getWriteSocketTimeout());
 
         return success.get();
     }

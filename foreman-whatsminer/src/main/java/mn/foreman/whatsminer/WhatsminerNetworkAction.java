@@ -2,6 +2,7 @@ package mn.foreman.whatsminer;
 
 import mn.foreman.api.model.Network;
 import mn.foreman.model.AbstractNetworkAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
 import mn.foreman.whatsminer.latest.WhatsminerApi;
@@ -15,6 +16,19 @@ import java.util.Map;
 /** Changes Whatsminer network settings. */
 public class WhatsminerNetworkAction
         extends AbstractNetworkAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerNetworkAction(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected boolean doChange(
@@ -46,7 +60,8 @@ public class WhatsminerNetworkAction
                             .put(
                                     "host",
                                     network.hostname)
-                            .build());
+                            .build(),
+                    this.applicationConfiguration);
         } catch (final ApiException ae) {
             throw new MinerException("Firmware outdated or bad password", ae);
         } catch (final PermissionDeniedException pde) {

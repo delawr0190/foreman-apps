@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.BlinkStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.whatsminer.latest.Command;
@@ -15,6 +16,19 @@ import java.util.concurrent.TimeUnit;
 /** A {@link BlinkStrategy} for blinking LEDs on a Whatsminer. */
 public class WhatsminerBlinkStrategy
         implements BlinkStrategy {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerBlinkStrategy(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     public boolean startBlink(
@@ -75,7 +89,8 @@ public class WhatsminerBlinkStrategy
                     (port == 8081 || port == 4029 ? 4029 : 4028),
                     parameters.getOrDefault("password", "").toString(),
                     Command.SET_LED,
-                    args);
+                    args,
+                    this.applicationConfiguration);
         } catch (final ApiException ae) {
             throw new MinerException("Firmware outdated or bad password", ae);
         } catch (final PermissionDeniedException pde) {

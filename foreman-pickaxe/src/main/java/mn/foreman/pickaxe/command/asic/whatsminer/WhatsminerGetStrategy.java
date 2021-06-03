@@ -4,6 +4,7 @@ import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.whatsminer.WhatsminerQuery;
@@ -21,6 +22,19 @@ import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 /** Performs a whatsminer GET. */
 public class WhatsminerGetStrategy
         implements CommandStrategy {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public WhatsminerGetStrategy(
+            final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     public void runCommand(
@@ -67,7 +81,8 @@ public class WhatsminerGetStrategy
                                         code.set(integer);
                                         data.set(s);
                                     })
-                                    .build()));
+                                    .build()),
+                    this.applicationConfiguration.getReadSocketTimeout());
         } catch (final MinerException e) {
             data.set(ExceptionUtils.getStackTrace(e));
         }

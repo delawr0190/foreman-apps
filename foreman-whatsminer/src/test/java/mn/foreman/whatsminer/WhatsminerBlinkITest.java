@@ -1,5 +1,6 @@
 package mn.foreman.whatsminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractBlinkActionITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -16,7 +17,8 @@ public class WhatsminerBlinkITest
     public WhatsminerBlinkITest() {
         super(
                 4028,
-                new WhatsminerBlinkStrategy(),
+                new WhatsminerBlinkStrategy(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,
