@@ -67,6 +67,26 @@ public class AvalonChangePoolsAction
             }
         }
 
+        if (!success) {
+            // Older firmware didn't require indexes
+            final Pool pool = pools.get(0);
+            success =
+                    AvalonUtils.query(
+                            ip,
+                            port,
+                            String.format(
+                                    "ascset|0,setpool,%s,%s,%s,%s,%s",
+                                    username,
+                                    password,
+                                    pool.getUrl(),
+                                    pool.getUsername(),
+                                    pool.getPassword()),
+                            (s, request) ->
+                                    request.connected() &&
+                                            s != null &&
+                                            s.toLowerCase().contains("success"));
+        }
+
         if (success) {
             try {
                 success =
