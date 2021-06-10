@@ -267,7 +267,7 @@ public enum ApiType {
     WHATSMINER_API(
             28,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new WhatsminerFactory();
+                return new WhatsminerFactory(configuration);
             }),
 
     /** Avalon. */

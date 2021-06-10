@@ -23,8 +23,6 @@ import mn.foreman.pickaxe.process.MetricsProcessingStrategy;
 import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
@@ -70,13 +68,6 @@ public class RunMe {
 
     /** The {@link ForemanApi}. */
     private final ForemanApi foremanApi;
-
-    /** Cache MAC addresses for 6 hours. */
-    private final Cache<MinerID, String> macCache =
-            CacheBuilder
-                    .newBuilder()
-                    .expireAfterWrite(6, TimeUnit.HOURS)
-                    .build();
 
     /** The thread pool for sending metrics. */
     private final Executor metricsThreadPool =
@@ -334,11 +325,9 @@ public class RunMe {
                                 .get()
                                 .stream()
                                 .filter(miner -> !this.blacklistedMiners.contains(miner.getMinerID()))
-                                .filter(miner -> this.macCache.getIfPresent(miner.getMinerID()) == null)
                                 .forEach(miner -> {
                                     try {
                                         LOG.info("Attempting to obtain MAC for {}", miner);
-                                        final MinerID minerID = miner.getMinerID();
                                         miner
                                                 .getMacAddress()
                                                 .map(String::toLowerCase)
@@ -349,9 +338,6 @@ public class RunMe {
                                                     apiMiner.apiPort = miner.getApiPort();
                                                     newMacs.put(
                                                             apiMiner,
-                                                            mac);
-                                                    this.macCache.put(
-                                                            minerID,
                                                             mac);
                                                 });
                                     } catch (final Exception e) {
@@ -448,7 +434,6 @@ public class RunMe {
                                 e);
                         this.blacklistedMiners.add(minerID);
                         this.statsCache.invalidate(minerID);
-                        this.macCache.invalidate(minerID);
                     }
                 });
     }

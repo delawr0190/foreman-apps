@@ -152,7 +152,7 @@ public class AsicStrategyFactory
                 commandStrategy = new EvalStrategy();
                 break;
             case WHATSMINER_GET:
-                commandStrategy = new WhatsminerGetStrategy();
+                commandStrategy = new WhatsminerGetStrategy(this.configuration);
                 break;
             case NETWORK:
                 commandStrategy =
