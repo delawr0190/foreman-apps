@@ -235,6 +235,22 @@ public enum Manufacturer {
                                     "antMiner Configuration",
                                     new StockPowerModeAction(
                                             "antMiner Configuration",
+                                            Arrays.asList(
+                                                    AntminerConfValue.POOL_1_URL,
+                                                    AntminerConfValue.POOL_1_USER,
+                                                    AntminerConfValue.POOL_1_PASS,
+                                                    AntminerConfValue.POOL_2_URL,
+                                                    AntminerConfValue.POOL_2_USER,
+                                                    AntminerConfValue.POOL_2_PASS,
+                                                    AntminerConfValue.POOL_3_URL,
+                                                    AntminerConfValue.POOL_3_USER,
+                                                    AntminerConfValue.POOL_3_PASS,
+                                                    AntminerConfValue.NO_BEEPER,
+                                                    AntminerConfValue.NO_TEMP_OVER_CTRL,
+                                                    AntminerConfValue.FAN_CTRL,
+                                                    AntminerConfValue.FAN_PWM,
+                                                    AntminerConfValue.FREQ,
+                                                    AntminerConfValue.VOLTAGE),
                                             new ObjectMapper()),
                                     new BraiinsPowerModeAction())),
             (threadPool, blacklist, statsCache, configuration) ->

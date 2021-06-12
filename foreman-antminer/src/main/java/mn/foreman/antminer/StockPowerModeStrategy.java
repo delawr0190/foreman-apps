@@ -66,25 +66,33 @@ public class StockPowerModeStrategy
             final boolean hasFunctioningChips) {
         boolean reallyHasErrors = hasErrors;
         Asic.PowerMode powerMode = Asic.PowerMode.NORMAL;
-        if (hasErrors && !hasFunctioningChips) {
-            try {
-                final AtomicBoolean sleeping = new AtomicBoolean(false);
-                Query.digestGet(
-                        this.ip,
-                        this.port,
-                        this.realm,
-                        "/cgi-bin/get_miner_conf.cgi",
-                        this.username,
-                        this.password,
-                        (code, s) -> sleeping.set(s.contains("\"bitmain-work-mode\" : \"1\"")),
-                        this.socketTimeout,
-                        this.socketTimeoutUnits);
-                if (sleeping.get()) {
-                    powerMode = Asic.PowerMode.SLEEPING;
-                    reallyHasErrors = false;
+
+        // Could be an older model and actually sleeping
+        final String mode = values.getOrDefault("Mode", "");
+        if ("254".equals(mode)) {
+            powerMode = Asic.PowerMode.SLEEPING;
+        } else {
+            // Could be a new gen miner that needs to be explicitly checked
+            if (hasErrors && !hasFunctioningChips) {
+                try {
+                    final AtomicBoolean sleeping = new AtomicBoolean(false);
+                    Query.digestGet(
+                            this.ip,
+                            this.port,
+                            this.realm,
+                            "/cgi-bin/get_miner_conf.cgi",
+                            this.username,
+                            this.password,
+                            (code, s) -> sleeping.set(s.contains("\"bitmain-work-mode\" : \"1\"")),
+                            this.socketTimeout,
+                            this.socketTimeoutUnits);
+                    if (sleeping.get()) {
+                        powerMode = Asic.PowerMode.SLEEPING;
+                        reallyHasErrors = false;
+                    }
+                } catch (final Exception e) {
+                    // Ignore
                 }
-            } catch (final Exception e) {
-                // Ignore
             }
         }
         builder

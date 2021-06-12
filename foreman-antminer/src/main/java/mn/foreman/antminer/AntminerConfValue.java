@@ -143,10 +143,18 @@ public enum AntminerConfValue
                     "bitmain-freq",
                     "_ant_freq",
                     confValues,
+                    dest)),
+
+    /** Voltage. */
+    VOLTAGE((params, confValues, pools, dest) ->
+            ConfValueUtils.addField(
+                    "bitmain-voltage",
+                    "_ant_voltage",
+                    confValues,
                     dest));
 
     /** The setter. */
-    private Setter setter;
+    private final Setter setter;
 
     /**
      * Constructor.

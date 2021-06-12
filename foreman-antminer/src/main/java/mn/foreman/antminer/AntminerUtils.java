@@ -222,6 +222,17 @@ public class AntminerUtils {
     /**
      * Checks to see if the miner is a new generation.
      *
+     * @param conf The conf.
+     *
+     * @return Whether or not the miner is a new gen.
+     */
+    public static boolean isNewGen(final Map<String, Object> conf) {
+        return conf.containsKey("bitmain-pwth");
+    }
+
+    /**
+     * Checks to see if the miner is a new generation.
+     *
      * @param ip       The ip.
      * @param port     The port.
      * @param realm    The realm.
@@ -238,15 +249,14 @@ public class AntminerUtils {
             final String realm,
             final String username,
             final String password) throws Exception {
-        final Map<String, Object> minerConf =
+        return isNewGen(
                 getConf(
                         ip,
                         port,
                         realm,
                         "/cgi-bin/get_miner_conf.cgi",
                         username,
-                        password);
-        return minerConf.containsKey("bitmain-pwth");
+                        password));
     }
 
     /**
