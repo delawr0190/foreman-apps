@@ -54,6 +54,9 @@ public enum WhatsminerType
     /** M31S. */
     WHATSMINER_M31S("WhatsMiner M31S", "whatsminer-m31s"),
 
+    /** M31S+. */
+    WHATSMINER_M31SP("WhatsMiner M31S+", "whatsminer-m31s+"),
+
     /** M32. */
     WHATSMINER_M32("WhatsMiner M32", "whatsminer-m32");
 
