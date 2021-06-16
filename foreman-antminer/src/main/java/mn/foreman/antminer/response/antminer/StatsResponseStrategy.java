@@ -146,6 +146,7 @@ public class StatsResponseStrategy
         this.powerModeStrategy.setPowerMode(
                 asicBuilder,
                 values,
+                hashRate,
                 hasErrors,
                 hasFunctioningChips);
 

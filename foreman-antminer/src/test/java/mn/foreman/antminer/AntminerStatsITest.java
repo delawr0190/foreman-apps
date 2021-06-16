@@ -321,6 +321,7 @@ public class AntminerStatsITest
                                         .addAsic(
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("0.00"))
+                                                        .setPowerMode(Asic.PowerMode.IDLE)
                                                         .setBoards(4)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -1418,7 +1419,7 @@ public class AntminerStatsITest
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("0.0"))
                                                         .setBoards(3)
-                                                        .setPowerMode(Asic.PowerMode.NORMAL)
+                                                        .setPowerMode(Asic.PowerMode.IDLE)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(4)
@@ -1545,7 +1546,7 @@ public class AntminerStatsITest
                                                 new Asic.Builder()
                                                         .setHashRate(new BigDecimal("0.0"))
                                                         .setBoards(3)
-                                                        .setPowerMode(Asic.PowerMode.NORMAL)
+                                                        .setPowerMode(Asic.PowerMode.IDLE)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
                                                                         .setCount(4)

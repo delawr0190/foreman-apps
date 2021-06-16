@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.io.Query;
 import mn.foreman.model.miners.asic.Asic;
 
+import java.math.BigDecimal;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -62,6 +63,7 @@ public class StockPowerModeStrategy
     public void setPowerMode(
             final Asic.Builder builder,
             final Map<String, String> values,
+            final BigDecimal hashRate,
             final boolean hasErrors,
             final boolean hasFunctioningChips) {
         boolean reallyHasErrors = hasErrors;
@@ -95,6 +97,13 @@ public class StockPowerModeStrategy
                 }
             }
         }
+
+        // Might be stuck
+        if (powerMode == Asic.PowerMode.NORMAL &&
+                hashRate.compareTo(BigDecimal.ZERO) == 0) {
+            powerMode = Asic.PowerMode.IDLE;
+        }
+
         builder
                 .setPowerMode(powerMode)
                 .hasErrors(reallyHasErrors);

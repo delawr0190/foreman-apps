@@ -281,6 +281,10 @@ public class Asic {
     /** ASIC power modes. */
     public enum PowerMode {
 
+        /** Idle. */
+        @JsonProperty("idle")
+        IDLE,
+
         /** Sleeping. */
         @JsonProperty("sleeping")
         SLEEPING,
