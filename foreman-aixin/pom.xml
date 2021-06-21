@@ -7,11 +7,11 @@
     <parent>
         <groupId>mn.foreman</groupId>
         <artifactId>foreman-buildmaster</artifactId>
-        <version>3.66.0</version>
+        <version>3.67.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>foreman-aixin</artifactId>
-    <version>3.66.0</version>
+    <version>3.67.0-SNAPSHOT</version>
     <name>foreman: foreman-aixin</name>
 
     <packaging>jar</packaging>
