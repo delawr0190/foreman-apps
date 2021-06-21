@@ -165,12 +165,8 @@ public class VersionDecorator
         return ((this.type.get() == null) || (this.nextQueryTime <= System.currentTimeMillis()));
     }
 
-    /**
-     * Updates the type.
-     *
-     * @throws MinerException on failure.
-     */
-    private void updateType() throws MinerException {
+    /** Updates the type. */
+    private void updateType() {
         AntminerUtils.getType(
                 this.ip,
                 this.port,
