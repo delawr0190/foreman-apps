@@ -13,6 +13,9 @@ public enum RemoteCommand {
     /** Scan for miners. */
     SCAN("scan", false),
 
+    /** Scan for miners over a range of IPs. */
+    SCAN_RANGES("scan-ranges", false),
+
     /** Scan for a specific MAC address. */
     TARGETED_SCAN("targeted-scan", false),
 

@@ -13,15 +13,12 @@ import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.asic.Manufacturer;
 
 import com.google.common.collect.ImmutableMap;
-import com.google.common.net.InetAddresses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.LongStream;
 
 import static mn.foreman.pickaxe.command.util.CommandUtils.safeGet;
 
@@ -49,15 +46,22 @@ public class ScanStrategy
     /** The filtering strategy. */
     private final FilteringStrategy filteringStrategy;
 
+    /** The source strategy. */
+    private final IpSourceStrategy ipSourceStrategy;
+
     /**
      * Constructor.
      *
-     * @param configuration The configuration.
+     * @param configuration    The configuration.
+     * @param ipSourceStrategy The source strategy.
      */
-    public ScanStrategy(final ApplicationConfiguration configuration) {
+    public ScanStrategy(
+            final ApplicationConfiguration configuration,
+            final IpSourceStrategy ipSourceStrategy) {
         this(
                 new NullFilteringStrategy(),
-                configuration);
+                configuration,
+                ipSourceStrategy);
     }
 
     /**
@@ -65,12 +69,15 @@ public class ScanStrategy
      *
      * @param filteringStrategy The strategy for filtering.
      * @param configuration     The configuration.
+     * @param ipSourceStrategy  The strategy for generating the IPs to scan.
      */
     public ScanStrategy(
             final FilteringStrategy filteringStrategy,
-            final ApplicationConfiguration configuration) {
+            final ApplicationConfiguration configuration,
+            final IpSourceStrategy ipSourceStrategy) {
         this.filteringStrategy = filteringStrategy;
         this.configuration = configuration;
+        this.ipSourceStrategy = ipSourceStrategy;
     }
 
     @SuppressWarnings("unchecked")
@@ -83,8 +90,6 @@ public class ScanStrategy
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
-        final long start = ipToLong(safeGet(args, "start"));
-        final long stop = ipToLong(safeGet(args, "stop"));
         final int port = Integer.parseInt(safeGet(args, "port"));
         final List<String> targetMacs =
                 (List<String>) args.getOrDefault(
@@ -97,8 +102,6 @@ public class ScanStrategy
                         command,
                         foremanApi,
                         safeGet(args, "manufacturer"),
-                        start,
-                        stop,
                         port,
                         targetMacs,
                         args,
@@ -108,35 +111,6 @@ public class ScanStrategy
             default:
                 break;
         }
-    }
-
-    /**
-     * Converts the IP as a long to an IP address.
-     *
-     * @param ip IP to convert.
-     *
-     * @return The ip.
-     */
-    private static String ipFromLong(final long ip) {
-        return String.format("%d.%d.%d.%d",
-                (ip >>> 24) & 0xff,
-                (ip >>> 16) & 0xff,
-                (ip >>> 8) & 0xff,
-                (ip) & 0xff);
-    }
-
-    /**
-     * Converts the IP as a string to a long.
-     *
-     * @param ip IP to convert.
-     *
-     * @return The ip.
-     */
-    @SuppressWarnings("UnstableApiUsage")
-    private static long ipToLong(final String ip) {
-        final InetAddress inetAddress = InetAddresses.forString(ip);
-        final int ipInt = InetAddresses.coerceToInteger(inetAddress);
-        return ipInt & 0xFFFFFFFFL;
     }
 
     /**
@@ -234,8 +208,6 @@ public class ScanStrategy
      * @param command      The command.
      * @param foremanApi   The Foreman API handle.
      * @param manufacturer The manufacturer.
-     * @param start        Where to start.
-     * @param stop         Where to stop.
      * @param port         The port to inspect.
      * @param targetMacs   The target MACs.
      * @param args         The arguments.
@@ -246,8 +218,6 @@ public class ScanStrategy
             final CommandStart command,
             final ForemanApi foremanApi,
             final String manufacturer,
-            final long start,
-            final long stop,
             final int port,
             final List<String> targetMacs,
             final Map<String, Object> args,
@@ -255,11 +225,9 @@ public class ScanStrategy
             final Callback callback) {
         Manufacturer
                 .fromName(manufacturer)
-                .ifPresent(value -> runScan(
+                .ifPresent(value -> scanInRange(
                         foremanApi,
                         command.id,
-                        start,
-                        stop,
                         port,
                         targetMacs,
                         args,
@@ -269,61 +237,10 @@ public class ScanStrategy
     }
 
     /**
-     * Scans for miners.
-     *
-     * @param foremanApi   The Foreman API handle.
-     * @param id           The command ID.
-     * @param start        Where to start.
-     * @param stop         Where to stop.
-     * @param port         The port to inspect.
-     * @param targetMacs   The target macs.
-     * @param args         The arguments.
-     * @param builder      The builder to use for creating the final result.
-     * @param manufacturer The manufacturer.
-     * @param callback     The callback.
-     */
-    private void runScan(
-            final ForemanApi foremanApi,
-            final String id,
-            final long start,
-            final long stop,
-            final int port,
-            final List<String> targetMacs,
-            final Map<String, Object> args,
-            final Manufacturer manufacturer,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
-        if (stop - start <= 65_536) {
-            scanInRange(
-                    foremanApi,
-                    id,
-                    start,
-                    stop,
-                    port,
-                    targetMacs,
-                    args,
-                    manufacturer,
-                    builder,
-                    callback);
-        } else {
-            callback.done(
-                    builder.status(
-                            CommandDone.Status
-                                    .builder()
-                                    .type(DoneStatus.FAILED)
-                                    .message("Subnet range is too large")
-                                    .build())
-                            .build());
-        }
-    }
-
-    /**
      * Scans a valid range.
      *
      * @param foremanApi   The Foreman API handle.
      * @param id           The command ID.
-     * @param start        Where to start.
-     * @param stop         Where to stop.
      * @param port         The port to inspect.
      * @param targetMacs   The target macs.
      * @param args         The arguments.
@@ -334,41 +251,49 @@ public class ScanStrategy
     private void scanInRange(
             final ForemanApi foremanApi,
             final String id,
-            final long start,
-            final long stop,
             final int port,
             final List<String> targetMacs,
             final Map<String, Object> args,
             final Manufacturer manufacturer,
             final CommandDone.CommandDoneBuilder builder,
             final Callback callback) {
-        final BlockingQueue<Long> ipsToScan = new LinkedBlockingDeque<>();
-        LongStream
-                .rangeClosed(start, stop)
-                .forEach(ipsToScan::add);
+        final BlockingQueue<String> ipsToScan =
+                this.ipSourceStrategy.toIps(
+                        args);
+        if (ipsToScan.size() < 65_536) {
+            final AtomicInteger scanned = new AtomicInteger(0);
+            final AtomicInteger remaining = new AtomicInteger(ipsToScan.size());
 
-        final AtomicInteger scanned = new AtomicInteger(0);
-        final AtomicInteger remaining = new AtomicInteger(ipsToScan.size());
+            final BlockingQueue<ScanResult> scanResults =
+                    new LinkedBlockingDeque<>();
+            final BlockingQueue<Object> foundMiners =
+                    new LinkedBlockingDeque<>();
 
-        final BlockingQueue<ScanResult> scanResults =
-                new LinkedBlockingDeque<>();
-        final BlockingQueue<Object> foundMiners =
-                new LinkedBlockingDeque<>();
+            final List<Future<?>> scanFutures = new ArrayList<>(SCAN_THREADS);
+            for (int i = 0; i < SCAN_THREADS; i++) {
+                scanFutures.add(
+                        THREAD_POOL.submit(
+                                new Scanner(
+                                        this.configuration,
+                                        args,
+                                        ipsToScan,
+                                        manufacturer,
+                                        port,
+                                        scanResults)));
+            }
 
-        final List<Future<?>> scanFutures = new ArrayList<>(SCAN_THREADS);
-        for (int i = 0; i < SCAN_THREADS; i++) {
-            scanFutures.add(
-                    THREAD_POOL.submit(
-                            new Scanner(
-                                    this.configuration,
-                                    args,
-                                    ipsToScan,
-                                    manufacturer,
-                                    port,
-                                    scanResults)));
-        }
+            while (!areScansDone(scanFutures)) {
+                processResults(
+                        scanResults,
+                        scanned,
+                        remaining,
+                        foundMiners,
+                        foremanApi,
+                        id,
+                        targetMacs);
+            }
 
-        while (!areScansDone(scanFutures)) {
+            // Once more for the race
             processResults(
                     scanResults,
                     scanned,
@@ -377,33 +302,32 @@ public class ScanStrategy
                     foremanApi,
                     id,
                     targetMacs);
+
+            final List<Object> miners = new LinkedList<>();
+            foundMiners.drainTo(miners);
+
+            callback.done(
+                    builder
+                            .result(
+                                    ImmutableMap.of(
+                                            "miners",
+                                            miners))
+                            .status(
+                                    CommandDone.Status
+                                            .builder()
+                                            .type(DoneStatus.SUCCESS)
+                                            .build())
+                            .build());
+        } else {
+            callback.done(
+                    builder.status(
+                            CommandDone.Status
+                                    .builder()
+                                    .type(DoneStatus.FAILED)
+                                    .message("Subnet range is too large")
+                                    .build())
+                            .build());
         }
-
-        // Once more for the race
-        processResults(
-                scanResults,
-                scanned,
-                remaining,
-                foundMiners,
-                foremanApi,
-                id,
-                targetMacs);
-
-        final List<Object> miners = new LinkedList<>();
-        foundMiners.drainTo(miners);
-
-        callback.done(
-                builder
-                        .result(
-                                ImmutableMap.of(
-                                        "miners",
-                                        miners))
-                        .status(
-                                CommandDone.Status
-                                        .builder()
-                                        .type(DoneStatus.SUCCESS)
-                                        .build())
-                        .build());
     }
 
     /** A {@link ScanResult} represents the result of a sigle IP scan. */
@@ -437,7 +361,7 @@ public class ScanStrategy
         private final ApplicationConfiguration configuration;
 
         /** The IPs to scan. */
-        private final BlockingQueue<Long> ipsToScan;
+        private final BlockingQueue<String> ipsToScan;
 
         /** The manufacturer. */
         private final Manufacturer manufacturer;
@@ -461,7 +385,7 @@ public class ScanStrategy
         private Scanner(
                 final ApplicationConfiguration configuration,
                 final Map<String, Object> args,
-                final BlockingQueue<Long> ipsToScan,
+                final BlockingQueue<String> ipsToScan,
                 final Manufacturer manufacturer,
                 final int port,
                 final BlockingQueue<ScanResult> scanResults) {
@@ -477,10 +401,8 @@ public class ScanStrategy
         public void run() {
             try {
                 while (true) {
-                    final Long ipLong = this.ipsToScan.poll(5, TimeUnit.SECONDS);
-                    if (ipLong != null) {
-                        final String ip = ipFromLong(ipLong);
-
+                    final String ip = this.ipsToScan.poll(5, TimeUnit.SECONDS);
+                    if (ip != null) {
                         final DetectionStrategy detectionStrategy =
                                 this.manufacturer.getDetectionStrategy(
                                         this.args,

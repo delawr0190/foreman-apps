@@ -12,7 +12,9 @@ import mn.foreman.pickaxe.command.asic.eval.EvalStrategy;
 import mn.foreman.pickaxe.command.asic.obelisk.ObeliskGetStrategy;
 import mn.foreman.pickaxe.command.asic.rawstats.RawStatsStrategy;
 import mn.foreman.pickaxe.command.asic.scan.MacFilteringStrategy;
+import mn.foreman.pickaxe.command.asic.scan.RangesSourceStrategy;
 import mn.foreman.pickaxe.command.asic.scan.ScanStrategy;
+import mn.foreman.pickaxe.command.asic.scan.StartStopSourceStrategy;
 import mn.foreman.pickaxe.command.asic.terminate.TerminateStrategy;
 import mn.foreman.pickaxe.command.asic.whatsminer.WhatsminerGetStrategy;
 
@@ -96,16 +98,24 @@ public class AsicStrategyFactory
             case DISCOVER:
                 commandStrategy = new DiscoverStrategy();
                 break;
+            case SCAN_RANGES:
+                commandStrategy =
+                        new ScanStrategy(
+                                this.configuration,
+                                new RangesSourceStrategy());
+                break;
             case SCAN:
                 commandStrategy =
                         new ScanStrategy(
-                                this.configuration);
+                                this.configuration,
+                                new StartStopSourceStrategy());
                 break;
             case TARGETED_SCAN:
                 commandStrategy =
                         new ScanStrategy(
                                 new MacFilteringStrategy(),
-                                this.configuration);
+                                this.configuration,
+                                new StartStopSourceStrategy());
                 break;
             case CHANGE_POOLS:
                 commandStrategy =
