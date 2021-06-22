@@ -4,7 +4,6 @@ import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
-import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -49,41 +48,39 @@ public class AntminerFactory
 
         final Context context = new Context();
         final CgMiner antminer =
-                new CgMiner.Builder(context, statsWhitelist)
-                        .setApiIp(apiIp)
-                        .setApiPort(apiPort)
-                        .addRequest(
-                                new CgMinerRequest.Builder()
-                                        .addCommand(CgMinerCommand.POOLS)
-                                        .addCommand(CgMinerCommand.STATS)
-                                        .build(),
-                                new MultiResponseStrategy(
-                                        Arrays.asList(
-                                                new PoolsResponseStrategy(
-                                                        new MrrRigIdCallback(context),
-                                                        new LastShareTimeCallback(context)),
-                                                new RateMultiplyingDecorator(
-                                                        "STATS",
-                                                        "GHS 5s",
-                                                        this.multiplier,
-                                                        new StatsResponseStrategy(
-                                                                context,
-                                                                new StockPowerModeStrategy(
-                                                                        apiIp,
-                                                                        port,
-                                                                        "antMiner Configuration",
-                                                                        username,
-                                                                        password,
-                                                                        200,
-                                                                        TimeUnit.MILLISECONDS))))))
-                        .setMacStrategy(
-                                new StockMacStrategy(
-                                        apiIp,
-                                        port,
-                                        "antMiner Configuration",
-                                        username,
-                                        password))
-                        .build();
+                toMiner(
+                        apiIp,
+                        apiPort,
+                        context,
+                        statsWhitelist,
+                        Arrays.asList(
+                                ImmutableMap.of(
+                                        CgMinerCommand.POOLS,
+                                        new PoolsResponseStrategy(
+                                                new MrrRigIdCallback(context),
+                                                new LastShareTimeCallback(context))),
+                                ImmutableMap.of(
+                                        CgMinerCommand.STATS,
+                                        new RateMultiplyingDecorator(
+                                                "STATS",
+                                                "GHS 5s",
+                                                this.multiplier,
+                                                new StatsResponseStrategy(
+                                                        context,
+                                                        new StockPowerModeStrategy(
+                                                                apiIp,
+                                                                port,
+                                                                "antMiner Configuration",
+                                                                username,
+                                                                password,
+                                                                200,
+                                                                TimeUnit.MILLISECONDS))))),
+                        new StockMacStrategy(
+                                apiIp,
+                                port,
+                                "antMiner Configuration",
+                                username,
+                                password));
 
         final ResponseStrategy braiinsStrategy =
                 new BraiinsResponseStrategy(
