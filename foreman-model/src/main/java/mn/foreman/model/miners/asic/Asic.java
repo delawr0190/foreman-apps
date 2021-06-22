@@ -16,6 +16,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.*;
 
 /**
@@ -617,6 +618,20 @@ public class Asic {
         public Builder setFanInfo(final FanInfo fanInfo) {
             this.fanInfo = fanInfo;
             return this;
+        }
+
+        /**
+         * Sets the hash rate.
+         *
+         * @param hashRate The hash rate.
+         *
+         * @return The builder instance.
+         */
+        public Builder setHashRate(final double hashRate) {
+            return setHashRate(
+                    BigDecimal
+                            .valueOf(hashRate)
+                            .setScale(2, RoundingMode.HALF_UP));
         }
 
         /**

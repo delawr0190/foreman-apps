@@ -1,34 +1,32 @@
 package mn.foreman.innosilicon;
 
-import java.math.BigDecimal;
-
 /** An Innosilicon API type. */
 public enum ApiType {
 
     /** API that returns GHs in the MHS field. */
-    GHS_API(new BigDecimal(1000)),
+    GHS_API(1000),
 
     /** API that returns KHs in the MHS field. */
-    KHS_API(new BigDecimal(0.001)),
+    KHS_API(0.001),
 
     /** API that returns MHs in the MHS field. */
-    MHS_API(BigDecimal.ONE),
+    MHS_API(1),
 
     /** API that returns Hs in the MHS field. */
-    HS_API(new BigDecimal(0.000001));
+    HS_API(0.000001);
 
     /**
      * How much to multiply the rates that are returned by to get them to match
      * the label units.
      */
-    private final BigDecimal multiplier;
+    private final double multiplier;
 
     /**
      * Constructor.
      *
      * @param multiplier The multiplier.
      */
-    ApiType(final BigDecimal multiplier) {
+    ApiType(final double multiplier) {
         this.multiplier = multiplier;
     }
 
@@ -37,7 +35,7 @@ public enum ApiType {
      *
      * @return The multiplier.
      */
-    public BigDecimal getMultiplier() {
+    public double getMultiplier() {
         return this.multiplier;
     }
 }

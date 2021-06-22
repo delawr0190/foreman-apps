@@ -62,7 +62,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -190,28 +189,28 @@ public enum ApiType {
     ANTMINER_HS_API(
             17,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(new BigDecimal(0.000000001));
+                return new AntminerFactory(0.000000001);
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_MHS_API(
             18,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(new BigDecimal(0.001));
+                return new AntminerFactory(0.001);
             }),
 
     /** Antminer API that reports rates in GHs. */
     ANTMINER_GHS_API(
             19,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(BigDecimal.ONE);
+                return new AntminerFactory(1);
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_KHS_API(
             20,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(new BigDecimal(0.000001));
+                return new AntminerFactory(0.000001);
             }),
 
     /** baikal. */

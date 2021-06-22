@@ -45,7 +45,6 @@ import mn.foreman.whatsminer.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import one.util.streamex.EntryStream;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
@@ -125,7 +124,7 @@ public enum Manufacturer {
                                     new StockHostnameStrategy(
                                             "antMiner Configuration"),
                                     new BraiinsHostnameStrategy()),
-                            new AntminerFactory(BigDecimal.ONE).create(
+                            new AntminerFactory(1).create(
                                     EntryStream
                                             .of(args)
                                             .append(
@@ -141,7 +140,7 @@ public enum Manufacturer {
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(BigDecimal.ONE),
+                                    new AntminerFactory(1),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockChangePoolsAction(
@@ -166,7 +165,7 @@ public enum Manufacturer {
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(BigDecimal.ONE),
+                                    new AntminerFactory(1),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockRebootAction("antMiner Configuration"),
@@ -176,7 +175,7 @@ public enum Manufacturer {
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AntminerFactory(BigDecimal.ONE),
+                            new AntminerFactory(1),
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockRebootAction("antMiner Configuration"),
@@ -195,7 +194,7 @@ public enum Manufacturer {
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(BigDecimal.ONE),
+                                    new AntminerFactory(1),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockChangePoolsAction(
@@ -221,7 +220,7 @@ public enum Manufacturer {
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AntminerFactory(BigDecimal.ONE),
+                            new AntminerFactory(1),
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockNetworkAction(

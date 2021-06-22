@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +35,7 @@ public class AntminerMacITest
             final Map<String, HandlerInterface> serverHandlers,
             final String expectedMac) {
         super(
-                new AntminerFactory(BigDecimal.ONE),
+                new AntminerFactory(1),
                 Arrays.asList(
                         new FakeHttpMinerServer(
                                 8080,

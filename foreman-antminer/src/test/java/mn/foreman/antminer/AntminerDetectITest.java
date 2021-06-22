@@ -13,7 +13,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -60,7 +59,7 @@ public class AntminerDetectITest
                                 new StockHostnameStrategy(
                                         "antMiner Configuration"),
                                 new BraiinsHostnameStrategy()),
-                        new AntminerFactory(BigDecimal.ONE).create(
+                        new AntminerFactory(1).create(
                                 ImmutableMap.of(
                                         "apiIp",
                                         "127.0.0.1",

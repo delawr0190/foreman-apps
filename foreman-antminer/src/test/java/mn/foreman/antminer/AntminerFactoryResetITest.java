@@ -7,8 +7,6 @@ import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.math.BigDecimal;
-
 /** Test factory resetting an Antminer. */
 public class AntminerFactoryResetITest
         extends AntminerAsyncActionITest {
@@ -20,7 +18,7 @@ public class AntminerFactoryResetITest
                         ImmutableMap.of(
                                 "webPort",
                                 "8080")),
-                new AntminerFactory(BigDecimal.ONE),
+                new AntminerFactory(1),
                 new StockFactoryResetAction("antMiner Configuration"),
                 AntminerTestUtils.toFactoryResetHandlers("antMiner Configuration"),
                 ImmutableMap.of(

@@ -4,7 +4,6 @@ import mn.foreman.cgminer.response.CgMinerResponse;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.MinerStats;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ public class RateMultiplyingDecorator
     private final String hashRateKey;
 
     /** The rate multiplier. */
-    private final BigDecimal multiplier;
+    private final double multiplier;
 
     /** The object key. */
     private final String objectKey;
@@ -44,7 +43,7 @@ public class RateMultiplyingDecorator
     public RateMultiplyingDecorator(
             final String objectKey,
             final String hashRateKey,
-            final BigDecimal multiplier,
+            final double multiplier,
             final ResponseStrategy real) {
         this.objectKey = objectKey;
         this.hashRateKey = hashRateKey;
@@ -102,14 +101,12 @@ public class RateMultiplyingDecorator
             final Map<String, String> values,
             final String key) {
         if (values.containsKey(key)) {
-            final BigDecimal rate = new BigDecimal(values.get(key));
-            // Only scale the value if the rate isn't 0
-            if (rate.compareTo(BigDecimal.ZERO) != 0) {
+            final double rate = Double.parseDouble(values.get(key));
+            if (rate > 0) {
+                // Only scale the value if the rate isn't 0
                 values.put(
                         key,
-                        new BigDecimal(values.get(key))
-                                .multiply(this.multiplier)
-                                .toString());
+                        Double.toString(rate * this.multiplier));
             }
         }
     }

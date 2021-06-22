@@ -10,7 +10,6 @@ import mn.foreman.model.MinerFactory;
 
 import com.google.common.collect.ImmutableMap;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -25,14 +24,14 @@ public class AntminerFactory
         extends CgMinerFactory {
 
     /** The hash rate multiplier. */
-    private final BigDecimal multiplier;
+    private final double multiplier;
 
     /**
      * Constructor.
      *
      * @param multiplier The hash rate multiplier.
      */
-    public AntminerFactory(final BigDecimal multiplier) {
+    public AntminerFactory(final double multiplier) {
         this.multiplier = multiplier;
     }
 

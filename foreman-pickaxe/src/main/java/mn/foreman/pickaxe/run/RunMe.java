@@ -354,7 +354,7 @@ public class RunMe {
                     }
                 },
                 1,
-                5,
+                10,
                 TimeUnit.MINUTES);
     }
 

@@ -14,7 +14,6 @@ import mn.foreman.model.miners.asic.Asic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -81,9 +80,8 @@ public class StatsResponseStrategy
     private void addAsicStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        final BigDecimal hashRate =
-                new BigDecimal(values.get("GHS 5s"))
-                        .multiply(new BigDecimal(Math.pow(1000, 3)));
+        final double hashRate =
+                Double.parseDouble(values.get("GHS 5s")) * Math.pow(1000, 3);
 
         final Asic.Builder asicBuilder =
                 new Asic.Builder();

@@ -2,7 +2,6 @@ package mn.foreman.antminer;
 
 import mn.foreman.model.miners.asic.Asic;
 
-import java.math.BigDecimal;
 import java.util.Map;
 
 /** A strategy for determining the power mode. */
@@ -20,7 +19,7 @@ public interface PowerModeStrategy {
     void setPowerMode(
             Asic.Builder builder,
             Map<String, String> values,
-            BigDecimal hashRate,
+            double hashRate,
             boolean hasErrors,
             boolean hasFunctioningChips);
 }

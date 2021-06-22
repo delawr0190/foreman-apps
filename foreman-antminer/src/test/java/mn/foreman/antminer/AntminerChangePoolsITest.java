@@ -12,7 +12,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,7 +38,7 @@ public class AntminerChangePoolsITest
                         ImmutableMap.of(
                                 "webPort",
                                 "8080")),
-                new AntminerFactory(BigDecimal.ONE),
+                new AntminerFactory(1),
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockChangePoolsAction(

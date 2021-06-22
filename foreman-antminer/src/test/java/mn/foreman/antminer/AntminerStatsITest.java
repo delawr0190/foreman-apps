@@ -35,7 +35,7 @@ public class AntminerStatsITest
      * @param expectedStats  The expected stats.
      */
     public AntminerStatsITest(
-            final BigDecimal multiplier,
+            final double multiplier,
             final Map<String, ServerHandler> httpHandlers,
             final Map<String, HandlerInterface> handlers,
             final List<String> statsWhitelist,
@@ -72,7 +72,7 @@ public class AntminerStatsITest
                 new Object[][]{
                         {
                                 // Antminer D3
-                                new BigDecimal("0.001"),
+                                0.001,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -117,7 +117,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("16346640000.00000"))
+                                                        .setHashRate(new BigDecimal("16346640000.00"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -146,7 +146,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer E3
-                                new BigDecimal("0.001"),
+                                0.001,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -174,7 +174,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("197300000.00000"))
+                                                        .setHashRate(new BigDecimal("197300000.00"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -233,7 +233,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer L3
-                                new BigDecimal("0.001"),
+                                0.001,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -261,7 +261,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("504560000.00000"))
+                                                        .setHashRate(new BigDecimal("504560000.00"))
                                                         .setBoards(4)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -292,7 +292,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer L3
-                                new BigDecimal("0.001"),
+                                0.001,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -352,7 +352,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S17
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -445,7 +445,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (bOS+)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.builder()
                                         .put(
@@ -529,7 +529,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (bOS)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.builder()
                                         .put(
@@ -605,7 +605,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (Hiveon)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -678,7 +678,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (NiceHash)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -759,7 +759,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (asicseer)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -832,7 +832,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (bad temps)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -889,7 +889,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9 (mskminer)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -939,7 +939,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("9039731000000.000"))
+                                                        .setHashRate(new BigDecimal("9039731000000.00"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -961,7 +961,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer T15
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -1036,7 +1036,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer Z11
-                                new BigDecimal(0.000000001),
+                                0.000000001,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -1064,7 +1064,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("145474.390000000009060376525549735366826635540871137663998524658381938934326171875000000000"))
+                                                        .setHashRate(new BigDecimal("145474.39"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -1087,7 +1087,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S19 (really cold)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -1158,7 +1158,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S9k
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -1231,7 +1231,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S19 (sleeping)
-                                BigDecimal.ONE,
+                                1,
                                 ImmutableMap.of(
                                         "/cgi-bin/get_miner_conf.cgi",
                                         new HttpHandler(
@@ -1314,7 +1314,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("0.0"))
+                                                        .setHashRate(new BigDecimal("0.00"))
                                                         .setBoards(2)
                                                         .setPowerMode(Asic.PowerMode.SLEEPING)
                                                         .setFanInfo(
@@ -1350,7 +1350,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S19 (overheating)
-                                BigDecimal.ONE,
+                                1,
                                 ImmutableMap.of(
                                         "/cgi-bin/get_miner_conf.cgi",
                                         new HttpHandler(
@@ -1417,7 +1417,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("0.0"))
+                                                        .setHashRate(new BigDecimal("0.00"))
                                                         .setBoards(3)
                                                         .setPowerMode(Asic.PowerMode.IDLE)
                                                         .setFanInfo(
@@ -1461,7 +1461,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S19 (overheating)
-                                BigDecimal.ONE,
+                                1,
                                 ImmutableMap.of(
                                         "/cgi-bin/get_miner_conf.cgi",
                                         new HttpHandler(
@@ -1544,7 +1544,7 @@ public class AntminerStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("0.0"))
+                                                        .setHashRate(new BigDecimal("0.00"))
                                                         .setBoards(3)
                                                         .setPowerMode(Asic.PowerMode.IDLE)
                                                         .setFanInfo(
@@ -1588,7 +1588,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer T17+ (sleeping)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
@@ -1646,7 +1646,7 @@ public class AntminerStatsITest
                         },
                         {
                                 // Antminer S17+ (sleeping)
-                                BigDecimal.ONE,
+                                1,
                                 Collections.emptyMap(),
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",

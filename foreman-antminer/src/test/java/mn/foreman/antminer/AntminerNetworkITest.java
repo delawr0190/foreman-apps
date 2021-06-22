@@ -14,7 +14,6 @@ import com.google.common.collect.ImmutableMap;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
-import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -43,7 +42,7 @@ public class AntminerNetworkITest
                 TestUtils.toNetworkJson(
                         4029,
                         includeHostname),
-                new AntminerFactory(BigDecimal.ONE),
+                new AntminerFactory(1),
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockNetworkAction(
