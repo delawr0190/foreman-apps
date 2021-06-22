@@ -106,7 +106,7 @@ public class InnosiliconStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("51274.5999999999976797275346275875596013804624817566946148872375488281250000000"))
+                                                        .setHashRate(new BigDecimal("51274.6000000"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
@@ -188,7 +188,7 @@ public class InnosiliconStatsITest
                                                         .build())
                                         .addAsic(
                                                 new Asic.Builder()
-                                                        .setHashRate(new BigDecimal("51274.5999999999976797275346275875596013804624817566946148872375488281250000000"))
+                                                        .setHashRate(new BigDecimal("51274.6000000"))
                                                         .setBoards(3)
                                                         .setFanInfo(
                                                                 new FanInfo.Builder()
