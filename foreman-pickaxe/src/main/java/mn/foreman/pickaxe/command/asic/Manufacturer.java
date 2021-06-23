@@ -114,17 +114,22 @@ public enum Manufacturer {
                                             80,
                                             "antMiner Configuration",
                                             args.getOrDefault("username", "").toString(),
-                                            args.getOrDefault("password", "").toString()),
+                                            args.getOrDefault("password", "").toString(),
+                                            configuration),
                                     new BraiinsMacStrategy(
                                             ip,
                                             80,
                                             args.getOrDefault("username", "").toString(),
-                                            args.getOrDefault("password", "").toString())),
+                                            args.getOrDefault("password", "").toString(),
+                                            configuration)),
                             Arrays.asList(
                                     new StockHostnameStrategy(
-                                            "antMiner Configuration"),
+                                            "antMiner Configuration",
+                                            configuration),
                                     new BraiinsHostnameStrategy()),
-                            new AntminerFactory(1).create(
+                            new AntminerFactory(
+                                    1,
+                                    configuration).create(
                                     EntryStream
                                             .of(args)
                                             .append(
@@ -133,14 +138,17 @@ public enum Manufacturer {
                                             .append(
                                                     "apiPort",
                                                     "4028")
-                                            .toMap())),
+                                            .toMap()),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(1),
+                                    new AntminerFactory(
+                                            1,
+                                            configuration),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockChangePoolsAction(
@@ -159,42 +167,59 @@ public enum Manufacturer {
                                                             AntminerConfValue.NO_TEMP_OVER_CTRL,
                                                             AntminerConfValue.FAN_CTRL,
                                                             AntminerConfValue.FAN_PWM,
-                                                            AntminerConfValue.FREQ)),
-                                            new BraiinsChangePoolsAction())),
+                                                            AntminerConfValue.FREQ),
+                                                    configuration),
+                                            new BraiinsChangePoolsAction(
+                                                    configuration),
+                                            configuration)),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(1),
+                                    new AntminerFactory(
+                                            1,
+                                            configuration),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
-                                            new StockRebootAction("antMiner Configuration"),
-                                            new BraiinsRebootAction()))),
+                                            new StockRebootAction(
+                                                    "antMiner Configuration",
+                                                    configuration),
+                                            new BraiinsRebootAction(),
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AntminerFactory(1),
+                            new AntminerFactory(
+                                    1,
+                                    configuration),
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
-                                    new StockRebootAction("antMiner Configuration"),
-                                    new BraiinsRebootAction())),
+                                    new StockRebootAction(
+                                            "antMiner Configuration",
+                                            configuration),
+                                    new BraiinsRebootAction(),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toSync(
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockFactoryResetAction(
-                                                    "antMiner Configuration"),
-                                            new BraiinsFactoryResetAction()),
+                                                    "antMiner Configuration",
+                                                    configuration),
+                                            new BraiinsFactoryResetAction(),
+                                            configuration),
                                     60,
                                     TimeUnit.SECONDS),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new AntminerFactory(1),
+                                    new AntminerFactory(
+                                            1,
+                                            configuration),
                                     new FirmwareAwareAction(
                                             "antMiner Configuration",
                                             new StockChangePoolsAction(
@@ -213,20 +238,27 @@ public enum Manufacturer {
                                                             AntminerConfValue.NO_TEMP_OVER_CTRL,
                                                             AntminerConfValue.FAN_CTRL,
                                                             AntminerConfValue.FAN_PWM,
-                                                            AntminerConfValue.FREQ)),
-                                            new BraiinsChangePoolsAction()))),
+                                                            AntminerConfValue.FREQ),
+                                                    configuration),
+                                            new BraiinsChangePoolsAction(
+                                                    configuration),
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AntminerFactory(1),
+                            new AntminerFactory(
+                                    1,
+                                    configuration),
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockNetworkAction(
                                             "antMiner Configuration",
-                                            "ant"),
-                                    new BraiinsNetworkAction()),
+                                            "ant",
+                                            configuration),
+                                    new BraiinsNetworkAction(),
+                                    configuration),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
@@ -250,20 +282,25 @@ public enum Manufacturer {
                                                     AntminerConfValue.FAN_PWM,
                                                     AntminerConfValue.FREQ,
                                                     AntminerConfValue.VOLTAGE),
-                                            new ObjectMapper()),
-                                    new BraiinsPowerModeAction())),
+                                            new ObjectMapper(),
+                                            configuration),
+                                    new BraiinsPowerModeAction(),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new FirmwareAwareAction(
                                     "antMiner Configuration",
                                     new StockPasswordAction(
-                                            "antMiner Configuration"),
-                                    new BraiinsPasswordAction())),
+                                            "antMiner Configuration",
+                                            configuration),
+                                    new BraiinsPasswordAction(),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
                             new StockBlinkStrategy(
-                                    "antMiner Configuration"))),
+                                    "antMiner Configuration",
+                                    configuration))),
 
     /** Avalon. */
     AVALON(
@@ -400,14 +437,15 @@ public enum Manufacturer {
                                     80,
                                     "blackMiner Configuration",
                                     args.getOrDefault("username", "").toString(),
-                                    args.getOrDefault("password", "").toString()),
+                                    args.getOrDefault("password", "").toString(),
+                                    configuration),
                             new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new BlackminerFactory(),
+                            new BlackminerFactory(configuration),
                             new StockChangePoolsAction(
                                     "blackMiner Configuration",
                                     Arrays.asList(
@@ -425,28 +463,32 @@ public enum Manufacturer {
                                             BlackminerConfValue.FAN_CTRL,
                                             BlackminerConfValue.FAN_PWM,
                                             BlackminerConfValue.FREQ,
-                                            BlackminerConfValue.COIN_TYPE))),
+                                            BlackminerConfValue.COIN_TYPE),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new BlackminerFactory(),
-                            new StockRebootAction("blackMiner Configuration")),
+                            new BlackminerFactory(configuration),
+                            new StockRebootAction(
+                                    "blackMiner Configuration",
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new BlackminerFactory(),
+                                    new BlackminerFactory(configuration),
                                     new StockFactoryResetAction(
-                                            "blackMiner Configuration")),
+                                            "blackMiner Configuration",
+                                            configuration)),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new BlackminerFactory(),
+                                    new BlackminerFactory(configuration),
                                     new StockChangePoolsAction(
                                             "blackMiner Configuration",
                                             Arrays.asList(
@@ -464,22 +506,25 @@ public enum Manufacturer {
                                                     BlackminerConfValue.FAN_CTRL,
                                                     BlackminerConfValue.FAN_PWM,
                                                     BlackminerConfValue.FREQ,
-                                                    BlackminerConfValue.COIN_TYPE)))),
+                                                    BlackminerConfValue.COIN_TYPE),
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new BlackminerFactory(),
+                            new BlackminerFactory(configuration),
                             new StockNetworkAction(
                                     "blackMiner Configuration",
-                                    "bb"),
+                                    "bb",
+                                    configuration),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new StockPasswordAction(
-                                    "blackMiner Configuration")),
+                                    "blackMiner Configuration",
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Cheetahminer. */
@@ -1082,14 +1127,15 @@ public enum Manufacturer {
                                     80,
                                     "stuMiner Configuration",
                                     args.getOrDefault("username", "").toString(),
-                                    args.getOrDefault("password", "").toString()),
+                                    args.getOrDefault("password", "").toString(),
+                                    configuration),
                             new NullPatchingStrategy()),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new StrongUFactory(),
+                            new StrongUFactory(configuration),
                             new StockChangePoolsAction(
                                     "stuMiner Configuration",
                                     Arrays.asList(
@@ -1112,29 +1158,32 @@ public enum Manufacturer {
                                             StrongUConfValue.WORK_VOLT,
                                             StrongUConfValue.START_VOLT,
                                             StrongUConfValue.PLL_START,
-                                            StrongUConfValue.PLL_STEP))),
+                                            StrongUConfValue.PLL_STEP),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new StrongUFactory(),
+                            new StrongUFactory(configuration),
                             new StockRebootAction(
-                                    "stuMiner Configuration")),
+                                    "stuMiner Configuration",
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     new ChainedAsicAction(
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new StrongUFactory(),
+                                    new StrongUFactory(configuration),
                                     new StockFactoryResetAction(
-                                            "stuMiner Configuration")),
+                                            "stuMiner Configuration",
+                                            configuration)),
                             AsicActionFactory.toAsync(
                                     threadPool,
                                     blacklist,
                                     statsCache,
-                                    new StrongUFactory(),
+                                    new StrongUFactory(configuration),
                                     new StockChangePoolsAction(
                                             "stuMiner Configuration",
                                             Arrays.asList(
@@ -1157,22 +1206,25 @@ public enum Manufacturer {
                                                     StrongUConfValue.WORK_VOLT,
                                                     StrongUConfValue.START_VOLT,
                                                     StrongUConfValue.PLL_START,
-                                                    StrongUConfValue.PLL_STEP)))),
+                                                    StrongUConfValue.PLL_STEP),
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new StrongUFactory(),
+                            new StrongUFactory(configuration),
                             new StockNetworkAction(
                                     "stuMiner Configuration",
-                                    "stu"),
+                                    "stu",
+                                    configuration),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new StockPasswordAction(
-                                    "stuMiner Configuration")),
+                                    "stuMiner Configuration",
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Whatsminer. */

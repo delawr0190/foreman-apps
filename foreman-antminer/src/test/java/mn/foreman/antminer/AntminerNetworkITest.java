@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -42,13 +43,17 @@ public class AntminerNetworkITest
                 TestUtils.toNetworkJson(
                         4029,
                         includeHostname),
-                new AntminerFactory(1),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockNetworkAction(
                                 "antMiner Configuration",
-                                "ant"),
-                        new BraiinsNetworkAction()),
+                                "ant",
+                                new ApplicationConfiguration()),
+                        new BraiinsNetworkAction(),
+                        new ApplicationConfiguration()),
                 Arrays.asList(
                         () -> new FakeHttpMinerServer(
                                 8080,

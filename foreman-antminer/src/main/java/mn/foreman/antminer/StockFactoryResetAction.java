@@ -1,14 +1,17 @@
 package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /** A strategy that performs an antminer factory reset. */
 public class StockFactoryResetAction
         implements AsicAction.CompletableAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
 
     /** The realm. */
     private final String realm;
@@ -16,10 +19,14 @@ public class StockFactoryResetAction
     /**
      * Constructor.
      *
-     * @param realm The realm.
+     * @param realm                    The realm.
+     * @param applicationConfiguration The configuration.
      */
-    public StockFactoryResetAction(final String realm) {
+    public StockFactoryResetAction(
+            final String realm,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -41,8 +48,7 @@ public class StockFactoryResetAction
                     password,
                     (code, s) -> {
                     },
-                    5,
-                    TimeUnit.SECONDS);
+                    this.applicationConfiguration.getWriteSocketTimeout());
         } catch (final Exception e) {
             // Ignore
         }

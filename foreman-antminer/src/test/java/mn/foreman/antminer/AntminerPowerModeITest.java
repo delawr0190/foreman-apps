@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
@@ -42,7 +43,9 @@ public class AntminerPowerModeITest
                                 "8080",
                                 "mode",
                                 sleeping ? "sleeping" : "normal")),
-                new AntminerFactory(1),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockPowerModeAction(
@@ -63,8 +66,10 @@ public class AntminerPowerModeITest
                                         AntminerConfValue.FAN_PWM,
                                         AntminerConfValue.FREQ,
                                         AntminerConfValue.VOLTAGE),
-                                new ObjectMapper()),
-                        new BraiinsPowerModeAction()),
+                                new ObjectMapper(),
+                                new ApplicationConfiguration()),
+                        new BraiinsPowerModeAction(),
+                        new ApplicationConfiguration()),
                 httpHandlers,
                 rpcHandlers,
                 foundResult);

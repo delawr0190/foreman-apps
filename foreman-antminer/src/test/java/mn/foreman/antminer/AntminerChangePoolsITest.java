@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
@@ -38,7 +39,9 @@ public class AntminerChangePoolsITest
                         ImmutableMap.of(
                                 "webPort",
                                 "8080")),
-                new AntminerFactory(1),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockChangePoolsAction(
@@ -57,8 +60,11 @@ public class AntminerChangePoolsITest
                                         AntminerConfValue.NO_TEMP_OVER_CTRL,
                                         AntminerConfValue.FAN_CTRL,
                                         AntminerConfValue.FAN_PWM,
-                                        AntminerConfValue.FREQ)),
-                        new BraiinsChangePoolsAction()),
+                                        AntminerConfValue.FREQ),
+                                new ApplicationConfiguration()),
+                        new BraiinsChangePoolsAction(
+                                new ApplicationConfiguration()),
+                        new ApplicationConfiguration()),
                 httpHandlers,
                 rpcHandlers,
                 foundResult);

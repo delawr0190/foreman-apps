@@ -3,6 +3,7 @@ package mn.foreman.blackminer;
 import mn.foreman.antminer.StockFactoryResetAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.rpc.RpcHandler;
 
 import com.google.common.collect.ImmutableMap;
@@ -17,8 +18,11 @@ public class BlackminerFactoryResetITest
     public BlackminerFactoryResetITest() {
         super(
                 Collections.emptyMap(),
-                new BlackminerFactory(),
-                new StockFactoryResetAction("blackMiner Configuration"),
+                new BlackminerFactory(
+                        new ApplicationConfiguration()),
+                new StockFactoryResetAction(
+                        "blackMiner Configuration",
+                        new ApplicationConfiguration()),
                 AntminerTestUtils.toFactoryResetHandlers("blackMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"summary\"}",

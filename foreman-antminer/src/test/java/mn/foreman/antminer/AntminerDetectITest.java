@@ -1,6 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.FakeMinerServer;
@@ -49,22 +50,28 @@ public class AntminerDetectITest
                                         8080,
                                         "antMiner Configuration",
                                         "root",
-                                        "root"),
+                                        "root",
+                                        new ApplicationConfiguration()),
                                 new BraiinsMacStrategy(
                                         "127.0.0.1",
                                         8080,
                                         "root",
-                                        "root")),
+                                        "root",
+                                        new ApplicationConfiguration())),
                         Arrays.asList(
                                 new StockHostnameStrategy(
-                                        "antMiner Configuration"),
+                                        "antMiner Configuration",
+                                        new ApplicationConfiguration()),
                                 new BraiinsHostnameStrategy()),
-                        new AntminerFactory(1).create(
+                        new AntminerFactory(
+                                1,
+                                new ApplicationConfiguration()).create(
                                 ImmutableMap.of(
                                         "apiIp",
                                         "127.0.0.1",
                                         "apiPort",
-                                        "4028"))),
+                                        "4028")),
+                        new ApplicationConfiguration()),
                 servers,
                 args,
                 found ? Detection.builder()

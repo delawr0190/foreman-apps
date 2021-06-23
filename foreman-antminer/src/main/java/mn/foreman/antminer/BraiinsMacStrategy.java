@@ -1,5 +1,6 @@
 package mn.foreman.antminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,6 +26,9 @@ public class BraiinsMacStrategy
     private static final ObjectMapper OBJECT_MAPPER =
             new ObjectMapper();
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The IP. */
     private final String ip;
 
@@ -40,20 +44,23 @@ public class BraiinsMacStrategy
     /**
      * Constructor.
      *
-     * @param ip       The IP.
-     * @param port     The port.
-     * @param username The username.
-     * @param password The password.
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param applicationConfiguration The configuration.
      */
     public BraiinsMacStrategy(
             final String ip,
             final int port,
             final String username,
-            final String password) {
+            final String password,
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = port;
         this.username = username;
         this.password = password;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -83,7 +90,8 @@ public class BraiinsMacStrategy
                                 LOG.warn("Exception occurred while querying", e);
                             }
                         }
-                    });
+                    },
+                    this.applicationConfiguration.getReadSocketTimeout());
         } catch (final Exception e) {
             // Ignore if we can't get the MAC
         }
@@ -108,22 +116,5 @@ public class BraiinsMacStrategy
             }
         }
         return Optional.empty();
-    }
-
-    /**
-     * Gets the MAC if it exists.
-     *
-     * @param values The values.
-     *
-     * @return The MAC.
-     */
-    private static String toMac(final Map<String, Object> values) {
-        if (values.containsKey("macaddr")) {
-            return values.get("macaddr").toString();
-        } else if (values.containsKey("conf_macaddr")) {
-            return values.get("conf_macaddr").toString();
-        } else {
-            return null;
-        }
     }
 }

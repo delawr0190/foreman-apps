@@ -189,28 +189,36 @@ public enum ApiType {
     ANTMINER_HS_API(
             17,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(0.000000001);
+                return new AntminerFactory(
+                        0.000000001,
+                        configuration);
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_MHS_API(
             18,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(0.001);
+                return new AntminerFactory(
+                        0.001,
+                        configuration);
             }),
 
     /** Antminer API that reports rates in GHs. */
     ANTMINER_GHS_API(
             19,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(1);
+                return new AntminerFactory(
+                        1,
+                        configuration);
             }),
 
     /** Antminer API that reports rates in MHs. */
     ANTMINER_KHS_API(
             20,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AntminerFactory(0.000001);
+                return new AntminerFactory(
+                        0.000001,
+                        configuration);
             }),
 
     /** baikal. */
@@ -294,7 +302,7 @@ public enum ApiType {
     BLACKMINER_API(
             32,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new BlackminerFactory();
+                return new BlackminerFactory(configuration);
             }),
 
     /** rhminer. */
@@ -453,7 +461,7 @@ public enum ApiType {
     STRONGU_API(
             52,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new StrongUFactory();
+                return new StrongUFactory(configuration);
             }),
 
     /** multminer. */

@@ -1,6 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractSyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -37,8 +38,10 @@ public class AntminerPasswordITest
                 new FirmwareAwareAction(
                         "antMiner Configuration",
                         new StockPasswordAction(
-                                "antMiner Configuration"),
-                        new BraiinsPasswordAction()),
+                                "antMiner Configuration",
+                                new ApplicationConfiguration()),
+                        new BraiinsPasswordAction(),
+                        new ApplicationConfiguration()),
                 Arrays.asList(
                         () -> new FakeRpcMinerServer(
                                 4028,

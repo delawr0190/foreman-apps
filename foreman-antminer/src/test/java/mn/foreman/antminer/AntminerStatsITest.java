@@ -1,6 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -41,7 +42,9 @@ public class AntminerStatsITest
             final List<String> statsWhitelist,
             final MinerStats expectedStats) {
         super(
-                new AntminerFactory(multiplier).create(
+                new AntminerFactory(
+                        multiplier,
+                        new ApplicationConfiguration()).create(
                         ImmutableMap.of(
                                 "apiIp",
                                 "127.0.0.1",

@@ -1,6 +1,7 @@
 package mn.foreman.strongu;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractMacITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -16,7 +17,7 @@ public class StrongUMacITest
     /** Constructor. */
     public StrongUMacITest() {
         super(
-                new StrongUFactory(),
+                new StrongUFactory(new ApplicationConfiguration()),
                 Collections.singletonList(
                         new FakeHttpMinerServer(
                                 8080,

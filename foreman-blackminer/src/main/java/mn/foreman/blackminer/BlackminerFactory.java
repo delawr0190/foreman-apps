@@ -5,6 +5,7 @@ import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.model.AlternatingMiner;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -24,6 +25,18 @@ public class BlackminerFactory
 
     /** The mapper for JSON. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public BlackminerFactory(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected Miner create(
@@ -53,7 +66,7 @@ public class BlackminerFactory
      *
      * @return The {@link Miner}.
      */
-    private static Miner toCgminer(
+    private Miner toCgminer(
             final Map<String, Object> config,
             final String apiIp,
             final int apiPort,
@@ -108,7 +121,8 @@ public class BlackminerFactory
                                         port,
                                         "blackMiner Configuration",
                                         username,
-                                        password))
+                                        password,
+                                        this.applicationConfiguration))
                         .setConnectTimeout(
                                 1,
                                 TimeUnit.SECONDS)
@@ -126,7 +140,7 @@ public class BlackminerFactory
      *
      * @return The {@link Miner}.
      */
-    private static Miner toWeb(
+    private Miner toWeb(
             final Map<String, Object> config) {
         final String apiIp = config.get("apiIp").toString();
         final String username =
@@ -146,7 +160,8 @@ public class BlackminerFactory
                                 port,
                                 "blackMiner Configuration",
                                 username,
-                                password)),
+                                password,
+                                this.applicationConfiguration)),
                 username,
                 password,
                 port,

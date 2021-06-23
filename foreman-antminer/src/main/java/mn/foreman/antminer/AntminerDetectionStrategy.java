@@ -9,6 +9,9 @@ import java.util.*;
 public class AntminerDetectionStrategy
         implements DetectionStrategy {
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The hostname strategies. */
     private final List<HostnameStrategy> hostnameStrategies;
 
@@ -24,20 +27,23 @@ public class AntminerDetectionStrategy
     /**
      * Constructor.
      *
-     * @param realm              The realm.
-     * @param macStrategies      The mac strategies.
-     * @param hostnameStrategies The hostname strategies.
-     * @param miner              The miner for obtaining stats.
+     * @param realm                    The realm.
+     * @param macStrategies            The mac strategies.
+     * @param hostnameStrategies       The hostname strategies.
+     * @param miner                    The miner for obtaining stats.
+     * @param applicationConfiguration The configuration.
      */
     public AntminerDetectionStrategy(
             final String realm,
             final List<MacStrategy> macStrategies,
             final List<HostnameStrategy> hostnameStrategies,
-            final Miner miner) {
+            final Miner miner,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
         this.macStrategies = new ArrayList<>(macStrategies);
         this.hostnameStrategies = new ArrayList<>(hostnameStrategies);
         this.miner = miner;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -63,7 +69,8 @@ public class AntminerDetectionStrategy
                             username,
                             password,
                             (s1, s2, s3) -> {
-                            });
+                            },
+                            this.applicationConfiguration.getReadSocketTimeout());
             if (type.isPresent()) {
                 final AntminerType realType = type.get();
 

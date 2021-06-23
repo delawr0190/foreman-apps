@@ -1,5 +1,6 @@
 package mn.foreman.io;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -141,6 +142,47 @@ public class Query {
      * @param password          The digest auth password.
      * @param content           The GET content.
      * @param responseProcessor The response processor.
+     * @param socketConfig      The configuration.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestGet(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final BiConsumer<Integer, String> responseProcessor,
+            final ApplicationConfiguration.SocketConfig socketConfig)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                false,
+                content,
+                null,
+                responseProcessor,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
+    }
+
+    /**
+     * Performs an HTTP GET operation against an API that requires digest auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The digest auth username.
+     * @param password          The digest auth password.
+     * @param content           The GET content.
+     * @param responseProcessor The response processor.
      *
      * @throws Exception on failure to connect.
      */
@@ -167,6 +209,45 @@ public class Query {
                 responseProcessor,
                 5,
                 TimeUnit.SECONDS);
+    }
+
+    /**
+     * Performs an HTTP GET operation against an API that requires digest auth.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The digest auth username.
+     * @param password          The digest auth password.
+     * @param responseProcessor The response processor.
+     * @param socketConfig      The configuration.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestGet(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final BiConsumer<Integer, String> responseProcessor,
+            final ApplicationConfiguration.SocketConfig socketConfig)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                false,
+                null,
+                null,
+                responseProcessor,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
     }
 
     /**
@@ -240,6 +321,49 @@ public class Query {
                 responseProcessor,
                 1,
                 TimeUnit.SECONDS);
+    }
+
+    /**
+     * Performs an HTTP post operation.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param realm             The realm.
+     * @param path              The path.
+     * @param username          The username.
+     * @param password          The password.
+     * @param content           The content.
+     * @param payload           The payload.
+     * @param responseProcessor The response processor.
+     * @param socketConfig      The configuration.
+     *
+     * @throws Exception on failure to connect.
+     */
+    public static void digestPost(
+            final String host,
+            final int port,
+            final String realm,
+            final String path,
+            final String username,
+            final String password,
+            final List<Map<String, Object>> content,
+            final String payload,
+            final BiConsumer<Integer, String> responseProcessor,
+            final ApplicationConfiguration.SocketConfig socketConfig)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                realm,
+                path,
+                username,
+                password,
+                true,
+                content,
+                payload,
+                responseProcessor,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
     }
 
     /**

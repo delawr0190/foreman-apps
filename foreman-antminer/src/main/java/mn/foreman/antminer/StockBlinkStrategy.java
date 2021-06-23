@@ -1,6 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.BlinkStrategy;
 import mn.foreman.util.ParamUtils;
 
@@ -22,16 +23,23 @@ public class StockBlinkStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(StockBlinkStrategy.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The realm. */
     private final String realm;
 
     /**
      * Constructor.
      *
-     * @param realm The realm.
+     * @param realm                    The realm.
+     * @param applicationConfiguration The configuration.
      */
-    public StockBlinkStrategy(final String realm) {
+    public StockBlinkStrategy(
+            final String realm,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -89,7 +97,8 @@ public class StockBlinkStrategy
                     port,
                     this.realm,
                     username,
-                    password)) {
+                    password,
+                    this.applicationConfiguration.getReadSocketTimeout())) {
                 success =
                         newAction.run(
                                 ip,
@@ -139,7 +148,8 @@ public class StockBlinkStrategy
                 password,
                 null,
                 "{\"blink\":" + blink + "}",
-                (integer, s) -> status.set(s.contains("B")));
+                (integer, s) -> status.set(s.contains("B")),
+                this.applicationConfiguration.getWriteSocketTimeout());
         return status.get();
     }
 
@@ -174,7 +184,8 @@ public class StockBlinkStrategy
                                     action)),
                     null,
                     (integer, s) -> {
-                    });
+                    },
+                    this.applicationConfiguration.getWriteSocketTimeout());
         } catch (final Exception e) {
             // Ignore
         }

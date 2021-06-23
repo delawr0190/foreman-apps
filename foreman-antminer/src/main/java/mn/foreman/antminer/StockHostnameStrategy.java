@@ -1,5 +1,7 @@
 package mn.foreman.antminer;
 
+import mn.foreman.model.ApplicationConfiguration;
+
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
@@ -8,16 +10,23 @@ import java.util.concurrent.atomic.AtomicReference;
 public class StockHostnameStrategy
         implements HostnameStrategy {
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The realm. */
     private final String realm;
 
     /**
      * Constructor.
      *
-     * @param realm The realm.
+     * @param realm                    The realm.
+     * @param applicationConfiguration The configuration.
      */
-    public StockHostnameStrategy(final String realm) {
+    public StockHostnameStrategy(
+            final String realm,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -38,7 +47,8 @@ public class StockHostnameStrategy
                 username,
                 password,
                 this.realm,
-                "hostname")
+                "hostname",
+                this.applicationConfiguration.getReadSocketTimeout())
                 .ifPresent(hostname::set);
         return Optional.ofNullable(hostname.get());
     }

@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.cgminer.CgMiner;
 import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.ContextKey;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.error.MinerException;
@@ -33,6 +34,9 @@ public class VersionDecorator
 
     /** The miner for querying antminers. */
     private final CgMiner antminer;
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
 
     /** The miner for querying braiins. */
     private final CgMiner braiins;
@@ -68,15 +72,16 @@ public class VersionDecorator
     /**
      * Constructor.
      *
-     * @param ip       The IP.
-     * @param port     The port.
-     * @param webPort  The web port.
-     * @param realm    The realm.
-     * @param username The username.
-     * @param password The password.
-     * @param context  The context to update.
-     * @param antminer The antminer.
-     * @param braiins  The braiins.
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param webPort                  The web port.
+     * @param realm                    The realm.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param context                  The context to update.
+     * @param antminer                 The antminer.
+     * @param braiins                  The braiins.
+     * @param applicationConfiguration The configuration.
      */
     VersionDecorator(
             final String ip,
@@ -87,7 +92,8 @@ public class VersionDecorator
             final String password,
             final Context context,
             final CgMiner antminer,
-            final CgMiner braiins) {
+            final CgMiner braiins,
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = Integer.parseInt(port);
         this.webPort = Integer.parseInt(webPort);
@@ -97,6 +103,7 @@ public class VersionDecorator
         this.context = context;
         this.antminer = antminer;
         this.braiins = braiins;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -181,7 +188,8 @@ public class VersionDecorator
                     this.context.addSimple(
                             ContextKey.COMPILE_TIME,
                             s2);
-                })
+                },
+                this.applicationConfiguration.getReadSocketTimeout())
                 .ifPresent(type -> {
                     this.type.set(type);
                     this.nextQueryTime =

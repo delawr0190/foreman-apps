@@ -3,6 +3,7 @@ package mn.foreman.strongu;
 import mn.foreman.antminer.StockRebootAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.rpc.RpcHandler;
 import mn.foreman.util.rpc.SkipFirstDecorator;
 
@@ -18,8 +19,10 @@ public class StrongURebootITest
     public StrongURebootITest() {
         super(
                 Collections.emptyMap(),
-                new StrongUFactory(),
-                new StockRebootAction("stuMiner Configuration"),
+                new StrongUFactory(new ApplicationConfiguration()),
+                new StockRebootAction(
+                        "stuMiner Configuration",
+                        new ApplicationConfiguration()),
                 AntminerTestUtils.toRebootHandlers("stuMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"summary\"}",

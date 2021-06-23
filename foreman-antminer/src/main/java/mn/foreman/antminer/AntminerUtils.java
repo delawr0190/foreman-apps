@@ -5,6 +5,7 @@ import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.EmptySiteException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class AntminerUtils {
             new ObjectMapper();
 
     /** The type key. */
-    private static String TYPE = "Type";
+    private static final String TYPE = "Type";
 
     static {
         final List<AntminerType> braiinsTypes =
@@ -46,12 +46,13 @@ public class AntminerUtils {
     /**
      * Obtains the miner conf.
      *
-     * @param ip       The IP.
-     * @param port     The port.
-     * @param realm    The realm.
-     * @param uri      The URI.
-     * @param username The username.
-     * @param password The password.
+     * @param ip           The IP.
+     * @param port         The port.
+     * @param realm        The realm.
+     * @param uri          The URI.
+     * @param username     The username.
+     * @param password     The password.
+     * @param socketConfig The socket config.
      *
      * @return The conf.
      *
@@ -63,7 +64,8 @@ public class AntminerUtils {
             final String realm,
             final String uri,
             final String username,
-            final String password) throws Exception {
+            final String password,
+            final ApplicationConfiguration.SocketConfig socketConfig) throws Exception {
         final AtomicReference<Map<String, Object>> minerConfRef =
                 new AtomicReference<>();
         Query.digestGet(
@@ -86,20 +88,21 @@ public class AntminerUtils {
                         LOG.warn("Exception occurred while querying", e);
                     }
                 },
-                5,
-                TimeUnit.SECONDS);
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
         return minerConfRef.get();
     }
 
     /**
      * Returns a system attribute.
      *
-     * @param ip       The IP.
-     * @param port     The port.
-     * @param username The username.
-     * @param password The password.
-     * @param realm    The realm.
-     * @param key      The key.
+     * @param ip           The IP.
+     * @param port         The port.
+     * @param username     The username.
+     * @param password     The password.
+     * @param realm        The realm.
+     * @param key          The key.
+     * @param socketConfig The socket config.
      *
      * @return The attribute value.
      */
@@ -109,7 +112,8 @@ public class AntminerUtils {
             final String username,
             final String password,
             final String realm,
-            final String key) {
+            final String key,
+            final ApplicationConfiguration.SocketConfig socketConfig) {
         final AtomicReference<String> attribute = new AtomicReference<>();
         try {
             Query.digestGet(
@@ -135,8 +139,8 @@ public class AntminerUtils {
                             // Ignore if we can't get
                         }
                     },
-                    5,
-                    TimeUnit.SECONDS);
+                    socketConfig.getSocketTimeout(),
+                    socketConfig.getSocketTimeoutUnits());
         } catch (final Exception e) {
             // Ignore if we can't get
         }
@@ -153,6 +157,7 @@ public class AntminerUtils {
      * @param username     The username.
      * @param password     The password.
      * @param typeCallback The callback.
+     * @param socketConfig The socket config.
      *
      * @return The type.
      */
@@ -163,13 +168,15 @@ public class AntminerUtils {
             final String realm,
             final String username,
             final String password,
-            final TypeCallback typeCallback) {
+            final TypeCallback typeCallback,
+            final ApplicationConfiguration.SocketConfig socketConfig) {
         final AtomicReference<AntminerType> finalType =
                 new AtomicReference<>();
         final CgMiner cgMiner =
                 new CgMiner.Builder(new Context(), Collections.emptyList())
                         .setApiIp(ip)
                         .setApiPort(port)
+                        .setConnectTimeout(socketConfig)
                         .addRequest(
                                 new CgMinerRequest.Builder()
                                         .setCommand(CgMinerCommand.VERSION)
@@ -203,7 +210,8 @@ public class AntminerUtils {
                         username,
                         password,
                         realm,
-                        "minertype").ifPresent(
+                        "minertype",
+                        socketConfig).ifPresent(
                         value -> {
                             typeCallback.accept(
                                     "",
@@ -233,11 +241,12 @@ public class AntminerUtils {
     /**
      * Checks to see if the miner is a new generation.
      *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param realm    The realm.
-     * @param username The username.
-     * @param password The password.
+     * @param ip           The ip.
+     * @param port         The port.
+     * @param realm        The realm.
+     * @param username     The username.
+     * @param password     The password.
+     * @param socketConfig The socket config.
      *
      * @return Whether or not the miner is a new gen.
      *
@@ -248,7 +257,9 @@ public class AntminerUtils {
             final int port,
             final String realm,
             final String username,
-            final String password) throws Exception {
+            final String password,
+            final ApplicationConfiguration.SocketConfig socketConfig)
+            throws Exception {
         return isNewGen(
                 getConf(
                         ip,
@@ -256,7 +267,8 @@ public class AntminerUtils {
                         realm,
                         "/cgi-bin/get_miner_conf.cgi",
                         username,
-                        password));
+                        password,
+                        socketConfig));
     }
 
     /**

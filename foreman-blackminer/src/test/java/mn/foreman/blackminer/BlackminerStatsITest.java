@@ -1,5 +1,6 @@
 package mn.foreman.blackminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
@@ -81,7 +82,8 @@ public class BlackminerStatsITest
                 new Object[][]{
                         {
                                 // Blackminer F1 Mini
-                                new BlackminerFactory(),
+                                new BlackminerFactory(
+                                        new ApplicationConfiguration()),
                                 4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
@@ -169,7 +171,8 @@ public class BlackminerStatsITest
                         },
                         {
                                 // Blackminer F1
-                                new BlackminerFactory(),
+                                new BlackminerFactory(
+                                        new ApplicationConfiguration()),
                                 4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
@@ -284,7 +287,8 @@ public class BlackminerStatsITest
                         },
                         {
                                 // Blackminer F1 Ultra
-                                new BlackminerFactory(),
+                                new BlackminerFactory(
+                                        new ApplicationConfiguration()),
                                 4028,
                                 Arrays.asList(
                                         new FakeRpcMinerServer(
@@ -398,7 +402,8 @@ public class BlackminerStatsITest
                         },
                         {
                                 // Blackminer F2
-                                new BlackminerFactory(),
+                                new BlackminerFactory(
+                                        new ApplicationConfiguration()),
                                 8080,
                                 Collections.singletonList(
                                         new FakeHttpMinerServer(

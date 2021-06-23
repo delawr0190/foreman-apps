@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.api.model.Pool;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -25,6 +26,9 @@ public class StockChangePoolsAction
     /** The mapper for json processing. */
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The props. */
     private final List<ConfValue> props;
 
@@ -34,14 +38,17 @@ public class StockChangePoolsAction
     /**
      * Constructor.
      *
-     * @param realm The realm.
-     * @param props The props.
+     * @param realm                    The realm.
+     * @param props                    The props.
+     * @param applicationConfiguration The configuration.
      */
     public StockChangePoolsAction(
             final String realm,
-            final List<ConfValue> props) {
+            final List<ConfValue> props,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
         this.props = new ArrayList<>(props);
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -65,7 +72,8 @@ public class StockChangePoolsAction
                             this.realm,
                             "/cgi-bin/get_miner_conf.cgi",
                             username,
-                            password);
+                            password,
+                            this.applicationConfiguration.getReadSocketTimeout());
             if (minerConf != null) {
                 success =
                         changeConf(
@@ -224,7 +232,8 @@ public class StockChangePoolsAction
                 password,
                 contentList,
                 payload,
-                (integer, s) -> response.set(s));
+                (integer, s) -> response.set(s),
+                this.applicationConfiguration.getWriteSocketTimeout());
 
         final String responseString = response.get();
         return !evalResponse || responseString != null && responseString.toLowerCase().contains("ok");

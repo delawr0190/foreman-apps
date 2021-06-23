@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.api.model.Pool;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractPowerModeAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.util.ParamUtils;
 
@@ -14,6 +15,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 /** Sets the Antminer power mode. */
 public class StockPowerModeAction
         extends AbstractPowerModeAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
 
     /** The json mapper. */
     private final ObjectMapper objectMapper;
@@ -27,17 +31,20 @@ public class StockPowerModeAction
     /**
      * Constructor.
      *
-     * @param realm        The realm.
-     * @param props        The properties.
-     * @param objectMapper The mapper.
+     * @param realm                    The realm.
+     * @param props                    The properties.
+     * @param objectMapper             The mapper.
+     * @param applicationConfiguration The configuration.
      */
     public StockPowerModeAction(
             final String realm,
             final List<ConfValue> props,
-            final ObjectMapper objectMapper) {
+            final ObjectMapper objectMapper,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
         this.props = props;
         this.objectMapper = objectMapper;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -61,7 +68,8 @@ public class StockPowerModeAction
                             this.realm,
                             "/cgi-bin/get_miner_conf.cgi",
                             username,
-                            password);
+                            password,
+                            this.applicationConfiguration.getReadSocketTimeout());
             if (AntminerUtils.isNewGen(conf)) {
                 changeNew(
                         conf,
@@ -92,6 +100,13 @@ public class StockPowerModeAction
         return status.get();
     }
 
+    /**
+     * Converts the provided map to pools.
+     *
+     * @param conf The properties to convert.
+     *
+     * @return The pools.
+     */
     @SuppressWarnings("unchecked")
     private static List<Pool> toPools(final Map<String, Object> conf) {
         final List<Map<String, String>> pools =
@@ -160,7 +175,8 @@ public class StockPowerModeAction
                     password,
                     null,
                     this.objectMapper.writeValueAsString(newConf),
-                    (integer, s) -> status.set(s != null && s.toLowerCase().contains("ok")));
+                    (integer, s) -> status.set(s != null && s.toLowerCase().contains("ok")),
+                    this.applicationConfiguration.getWriteSocketTimeout());
         }
     }
 
@@ -215,7 +231,8 @@ public class StockPowerModeAction
                     content,
                     null,
                     (integer, s) -> {
-                    });
+                    },
+                    this.applicationConfiguration.getWriteSocketTimeout());
             status.set(true);
         }
     }

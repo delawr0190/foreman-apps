@@ -2,6 +2,7 @@ package mn.foreman.blackminer;
 
 import mn.foreman.antminer.StockChangePoolsAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
@@ -35,7 +36,8 @@ public class BlackminerChangePoolsITest
             final Map<String, HandlerInterface> rpcHandlers) {
         super(
                 toTestData(algoChanged),
-                new BlackminerFactory(),
+                new BlackminerFactory(
+                        new ApplicationConfiguration()),
                 new StockChangePoolsAction(
                         "blackMiner Configuration",
                         Arrays.asList(
@@ -53,7 +55,8 @@ public class BlackminerChangePoolsITest
                                 BlackminerConfValue.FAN_CTRL,
                                 BlackminerConfValue.FAN_PWM,
                                 BlackminerConfValue.FREQ,
-                                BlackminerConfValue.COIN_TYPE)),
+                                BlackminerConfValue.COIN_TYPE),
+                        new ApplicationConfiguration()),
                 httpHandlers,
                 rpcHandlers);
     }

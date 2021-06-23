@@ -1,15 +1,18 @@
 package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.asic.Asic;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Determines the power mode for a stock Antminer. */
 public class StockPowerModeStrategy
         implements PowerModeStrategy {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
 
     /** The ip. */
     private final String ip;
@@ -23,23 +26,18 @@ public class StockPowerModeStrategy
     /** The realm. */
     private final String realm;
 
-    /** The socket timeout. */
-    private final int socketTimeout;
-
-    /** The socket timeout (units). */
-    private final TimeUnit socketTimeoutUnits;
-
     /** The username. */
     private final String username;
 
     /**
      * Constructor.
      *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param realm    The realm.
-     * @param username The username.
-     * @param password The password.
+     * @param ip                       The ip.
+     * @param port                     The port.
+     * @param realm                    The realm.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param applicationConfiguration The configuration.
      */
     public StockPowerModeStrategy(
             final String ip,
@@ -47,15 +45,13 @@ public class StockPowerModeStrategy
             final String realm,
             final String username,
             final String password,
-            final int socketTimeout,
-            final TimeUnit socketTimeoutUnits) {
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = port;
         this.realm = realm;
         this.username = username;
         this.password = password;
-        this.socketTimeout = socketTimeout;
-        this.socketTimeoutUnits = socketTimeoutUnits;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -85,8 +81,7 @@ public class StockPowerModeStrategy
                             this.username,
                             this.password,
                             (code, s) -> sleeping.set(s.contains("\"bitmain-work-mode\" : \"1\"")),
-                            this.socketTimeout,
-                            this.socketTimeoutUnits);
+                            this.applicationConfiguration.getReadSocketTimeout());
                     if (sleeping.get()) {
                         powerMode = Asic.PowerMode.SLEEPING;
                         reallyHasErrors = false;

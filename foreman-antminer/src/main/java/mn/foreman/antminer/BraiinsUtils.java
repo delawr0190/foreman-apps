@@ -1,5 +1,6 @@
 package mn.foreman.antminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.google.common.collect.ImmutableMap;
@@ -32,7 +33,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -72,15 +72,19 @@ class BraiinsUtils {
             final boolean isGet,
             final List<Map<String, Object>> urlParams,
             final String requestContent,
-            final BiConsumer<Integer, String> callback)
+            final BiConsumer<Integer, String> callback,
+            final ApplicationConfiguration.SocketConfig socketConfig)
             throws MinerException {
         final CookieStore cookieStore = new BasicCookieStore();
+        final int timeoutMillis =
+                (int) socketConfig.getSocketTimeoutUnits().toMillis(
+                        socketConfig.getSocketTimeout());
         final RequestConfig requestConfig =
                 RequestConfig
                         .custom()
                         .setCookieSpec(CookieSpecs.STANDARD)
-                        .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(100))
-                        .setSocketTimeout((int) TimeUnit.SECONDS.toMillis(1))
+                        .setConnectTimeout(timeoutMillis)
+                        .setSocketTimeout(timeoutMillis)
                         .build();
 
         // Login first

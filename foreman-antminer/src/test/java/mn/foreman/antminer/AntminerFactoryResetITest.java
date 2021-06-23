@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.rpc.RpcHandler;
 
@@ -18,8 +19,12 @@ public class AntminerFactoryResetITest
                         ImmutableMap.of(
                                 "webPort",
                                 "8080")),
-                new AntminerFactory(1),
-                new StockFactoryResetAction("antMiner Configuration"),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
+                new StockFactoryResetAction(
+                        "antMiner Configuration",
+                        new ApplicationConfiguration()),
                 AntminerTestUtils.toFactoryResetHandlers("antMiner Configuration"),
                 ImmutableMap.of(
                         "{\"command\":\"version\"}",

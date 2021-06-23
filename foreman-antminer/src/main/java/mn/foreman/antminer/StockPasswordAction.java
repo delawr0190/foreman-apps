@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractPasswordAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.util.ParamUtils;
 
@@ -24,16 +25,23 @@ public class StockPasswordAction
     /** The mapper for json processing. */
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The realm. */
     private final String realm;
 
     /**
      * Constructor.
      *
-     * @param realm The realm.
+     * @param realm                    The realm.
+     * @param applicationConfiguration The configuration.
      */
-    public StockPasswordAction(final String realm) {
+    public StockPasswordAction(
+            final String realm,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -51,7 +59,8 @@ public class StockPasswordAction
                     port,
                     this.realm,
                     parameters.getOrDefault("username", "root").toString(),
-                    oldPassword)) {
+                    oldPassword,
+                    this.applicationConfiguration.getReadSocketTimeout())) {
                 changeNew(
                         ip,
                         port,
@@ -115,7 +124,8 @@ public class StockPasswordAction
                 oldPassword,
                 null,
                 contentString,
-                (integer, s) -> status.set(s != null && s.toLowerCase().contains("ok")));
+                (integer, s) -> status.set(s != null && s.toLowerCase().contains("ok")),
+                this.applicationConfiguration.getWriteSocketTimeout());
     }
 
     /**
@@ -154,6 +164,7 @@ public class StockPasswordAction
                         ParamUtils.toParam(
                                 "new_pw_ctrl",
                                 newPassword)),
-                (integer, s) -> status.set(integer == HttpStatus.SC_OK));
+                (integer, s) -> status.set(integer == HttpStatus.SC_OK),
+                this.applicationConfiguration.getWriteSocketTimeout());
     }
 }

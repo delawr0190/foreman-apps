@@ -1,8 +1,8 @@
 package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractBlinkActionITest;
-import mn.foreman.util.FakeMinerServer;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.MultiHandler;
@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Map;
-import java.util.function.Supplier;
 
 /** Tests blinking LEDs on Antminers. */
 @RunWith(Parameterized.class)
@@ -32,9 +31,10 @@ public class AntminerBlinkITest
         super(
                 8080,
                 new StockBlinkStrategy(
-                        "antMiner Configuration"),
+                        "antMiner Configuration",
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
-                        (Supplier<FakeMinerServer>) () -> new FakeHttpMinerServer(
+                        () -> new FakeHttpMinerServer(
                                 8080,
                                 httpHandlers)),
                 Collections.emptyMap(),

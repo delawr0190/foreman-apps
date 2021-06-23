@@ -1,6 +1,7 @@
 package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractMacITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -35,7 +36,9 @@ public class AntminerMacITest
             final Map<String, HandlerInterface> serverHandlers,
             final String expectedMac) {
         super(
-                new AntminerFactory(1),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
                 Arrays.asList(
                         new FakeHttpMinerServer(
                                 8080,

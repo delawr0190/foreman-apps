@@ -2,6 +2,7 @@ package mn.foreman.strongu;
 
 import mn.foreman.antminer.StockChangePoolsAction;
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.HttpHandler;
 import mn.foreman.util.http.ServerHandler;
@@ -34,7 +35,7 @@ public class StrongUChangePoolsITest
             final Map<String, HandlerInterface> rpcHandlers) {
         super(
                 TestUtils.toPoolJson(),
-                new StrongUFactory(),
+                new StrongUFactory(new ApplicationConfiguration()),
                 new StockChangePoolsAction(
                         "stuMiner Configuration",
                         Arrays.asList(
@@ -57,7 +58,8 @@ public class StrongUChangePoolsITest
                                 StrongUConfValue.WORK_VOLT,
                                 StrongUConfValue.START_VOLT,
                                 StrongUConfValue.PLL_START,
-                                StrongUConfValue.PLL_STEP)),
+                                StrongUConfValue.PLL_STEP),
+                        new ApplicationConfiguration()),
                 httpHandlers,
                 rpcHandlers);
     }
@@ -155,7 +157,7 @@ public class StrongUChangePoolsITest
         return headers
                 .entrySet()
                 .stream()
-                .filter(entry -> "Authorization" .equals(entry.getKey()))
+                .filter(entry -> "Authorization".equals(entry.getKey()))
                 .map(Map.Entry::getValue)
                 .anyMatch(header -> {
                     final String headerString = header.get(0);

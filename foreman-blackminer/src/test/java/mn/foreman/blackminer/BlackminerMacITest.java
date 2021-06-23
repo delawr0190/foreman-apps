@@ -1,6 +1,7 @@
 package mn.foreman.blackminer;
 
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractMacITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -16,7 +17,8 @@ public class BlackminerMacITest
     /** Constructor. */
     public BlackminerMacITest() {
         super(
-                new BlackminerFactory(),
+                new BlackminerFactory(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         new FakeHttpMinerServer(
                                 8080,

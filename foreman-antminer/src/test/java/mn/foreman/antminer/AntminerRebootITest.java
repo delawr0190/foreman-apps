@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.antminer.util.AntminerAsyncActionITest;
 import mn.foreman.antminer.util.AntminerTestUtils;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.ServerHandler;
 import mn.foreman.util.rpc.HandlerInterface;
@@ -34,8 +35,12 @@ public class AntminerRebootITest
                         ImmutableMap.of(
                                 "webPort",
                                 "8080")),
-                new AntminerFactory(1),
-                new StockRebootAction("antMiner Configuration"),
+                new AntminerFactory(
+                        1,
+                        new ApplicationConfiguration()),
+                new StockRebootAction(
+                        "antMiner Configuration",
+                        new ApplicationConfiguration()),
                 httpHandlers,
                 rpcHandlers,
                 true,

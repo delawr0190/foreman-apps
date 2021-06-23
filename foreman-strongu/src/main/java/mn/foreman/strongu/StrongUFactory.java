@@ -4,6 +4,7 @@ import mn.foreman.antminer.StockMacStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -18,6 +19,18 @@ import java.util.Map;
  */
 public class StrongUFactory
         extends CgMinerFactory {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public StrongUFactory(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected Miner create(
@@ -66,7 +79,8 @@ public class StrongUFactory
                                 Integer.parseInt(config.getOrDefault("port", "80").toString()),
                                 "stuMiner Configuration",
                                 config.getOrDefault("username", "").toString(),
-                                config.getOrDefault("password", "").toString()))
+                                config.getOrDefault("password", "").toString(),
+                                this.applicationConfiguration))
                 .build();
     }
 }

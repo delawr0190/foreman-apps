@@ -2,6 +2,7 @@ package mn.foreman.antminer;
 
 import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -25,8 +26,19 @@ public class BraiinsChangePoolsAction
     private static final Logger LOG =
             LoggerFactory.getLogger(BraiinsChangePoolsAction.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public BraiinsChangePoolsAction(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
+
     @Override
-    @SuppressWarnings("unchecked")
     protected boolean doChange(
             final String ip,
             final int port,
@@ -59,9 +71,39 @@ public class BraiinsChangePoolsAction
                                 password,
                                 pools,
                                 objectMapper,
-                                success));
+                                success),
+                this.applicationConfiguration.getWriteSocketTimeout());
 
         return success.get();
+    }
+
+    /**
+     * Converts the provided pools to the pools as json.
+     *
+     * @param pools The new pools.
+     *
+     * @return The new json group.
+     */
+    private static List<Map<String, Object>> toGroup(final List<Pool> pools) {
+        final Map<String, Object> group = new HashMap<>();
+        group.put("name", "Foreman Group");
+
+        final List<Map<String, String>> newPools = new LinkedList<>();
+        pools
+                .stream()
+                .filter(pool -> pool.getUrl() != null && !pool.getUrl().isEmpty())
+                .map(pool ->
+                        ImmutableMap.of(
+                                "url",
+                                pool.getUrl(),
+                                "user",
+                                pool.getUsername(),
+                                "password",
+                                pool.getPassword()))
+                .forEach(newPools::add);
+        group.put("pool", newPools);
+
+        return Collections.singletonList(group);
     }
 
     /**
@@ -78,7 +120,7 @@ public class BraiinsChangePoolsAction
      * @param success      The change pools success flag.
      */
     @SuppressWarnings("unchecked")
-    private static void processGetConfig(
+    private void processGetConfig(
             final int statusCode,
             final String data,
             final String ip,
@@ -123,7 +165,8 @@ public class BraiinsChangePoolsAction
                                         port,
                                         username,
                                         password,
-                                        success));
+                                        success),
+                        this.applicationConfiguration.getWriteSocketTimeout());
             }
         } catch (final Exception e) {
             LOG.warn("Exception occurred while parsing config", e);
@@ -140,7 +183,7 @@ public class BraiinsChangePoolsAction
      * @param password   The password.
      * @param success    The change pools save action.
      */
-    private static void processSaveConfig(
+    private void processSaveConfig(
             final int statusCode,
             final String ip,
             final int port,
@@ -159,39 +202,11 @@ public class BraiinsChangePoolsAction
                         Collections.emptyList(),
                         null,
                         (newStatusCode, newNewData) ->
-                                success.set(newStatusCode == HttpStatus.SC_OK));
+                                success.set(newStatusCode == HttpStatus.SC_OK),
+                        this.applicationConfiguration.getWriteSocketTimeout());
             }
         } catch (final Exception e) {
             LOG.warn("Exception occurred while parsing config", e);
         }
-    }
-
-    /**
-     * Converts the provided pools to the pools as json.
-     *
-     * @param pools The new pools.
-     *
-     * @return The new json group.
-     */
-    private static List<Map<String, Object>> toGroup(final List<Pool> pools) {
-        final Map<String, Object> group = new HashMap<>();
-        group.put("name", "Foreman Group");
-
-        final List<Map<String, String>> newPools = new LinkedList<>();
-        pools
-                .stream()
-                .filter(pool -> pool.getUrl() != null && !pool.getUrl().isEmpty())
-                .map(pool ->
-                        ImmutableMap.of(
-                                "url",
-                                pool.getUrl(),
-                                "user",
-                                pool.getUsername(),
-                                "password",
-                                pool.getPassword()))
-                .forEach(newPools::add);
-        group.put("pool", newPools);
-
-        return Collections.singletonList(group);
     }
 }

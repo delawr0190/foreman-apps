@@ -29,8 +29,7 @@ public class BlackminerDetectITest
      * @param handlers       The handlers.
      * @param expectedType   The expected type.
      * @param additionalArgs The additional arguments.
-     *
-     * @[param detectionArgs The detection args.
+     * @param detectionArgs  The detection args.
      */
     public BlackminerDetectITest(
             final Map<String, HandlerInterface> handlers,

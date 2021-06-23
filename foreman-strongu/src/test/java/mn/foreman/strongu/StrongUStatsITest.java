@@ -1,6 +1,7 @@
 package mn.foreman.strongu;
 
 import mn.foreman.cgminer.CgMiner;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -34,7 +35,7 @@ public class StrongUStatsITest
             final Map<String, HandlerInterface> handlers,
             final MinerStats expectedStats) {
         super(
-                new StrongUFactory().create(
+                new StrongUFactory(new ApplicationConfiguration()).create(
                         ImmutableMap.of(
                                 "apiIp",
                                 "127.0.0.1",

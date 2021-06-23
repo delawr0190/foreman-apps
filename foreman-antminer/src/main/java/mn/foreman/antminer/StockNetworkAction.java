@@ -3,6 +3,7 @@ package mn.foreman.antminer;
 import mn.foreman.api.model.Network;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractNetworkAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -29,6 +30,9 @@ public class StockNetworkAction
     /** Mapper for reading and writing JSON. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The key. */
     private final String key;
 
@@ -38,14 +42,17 @@ public class StockNetworkAction
     /**
      * Constructor.
      *
-     * @param realm The realm.
-     * @param key   The key.
+     * @param realm                    The realm.
+     * @param key                      The key.
+     * @param applicationConfiguration The configuration.
      */
     public StockNetworkAction(
             final String realm,
-            final String key) {
+            final String key,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
         this.key = key;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -71,7 +78,8 @@ public class StockNetworkAction
                             this.realm,
                             "/cgi-bin/get_system_info.cgi",
                             username,
-                            password);
+                            password,
+                            this.applicationConfiguration.getReadSocketTimeout());
             final String previousHostname =
                     systemInfo
                             .entrySet()
@@ -176,7 +184,8 @@ public class StockNetworkAction
                         if (s != null && s.contains("error")) {
                             errorMessage.set(s);
                         }
-                    });
+                    },
+                    this.applicationConfiguration.getWriteSocketTimeout());
         } catch (final Exception e) {
             // Miner disconnects when the IP is changed
             LOG.info("Exception occurred while updating settings", e);

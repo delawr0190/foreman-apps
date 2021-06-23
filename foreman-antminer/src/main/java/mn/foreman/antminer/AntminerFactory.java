@@ -4,6 +4,7 @@ import mn.foreman.antminer.response.antminer.StatsResponseStrategy;
 import mn.foreman.antminer.response.braiins.BraiinsResponseStrategy;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
@@ -13,7 +14,6 @@ import com.google.common.collect.ImmutableMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 /**
  * A {@link MinerFactory} implementation that parses a configuration and creates
@@ -23,16 +23,23 @@ import java.util.concurrent.TimeUnit;
 public class AntminerFactory
         extends CgMinerFactory {
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The hash rate multiplier. */
     private final double multiplier;
 
     /**
      * Constructor.
      *
-     * @param multiplier The hash rate multiplier.
+     * @param multiplier               The hash rate multiplier.
+     * @param applicationConfiguration The configuration.
      */
-    public AntminerFactory(final double multiplier) {
+    public AntminerFactory(
+            final double multiplier,
+            final ApplicationConfiguration applicationConfiguration) {
         this.multiplier = multiplier;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -72,14 +79,15 @@ public class AntminerFactory
                                                                 "antMiner Configuration",
                                                                 username,
                                                                 password,
-                                                                200,
-                                                                TimeUnit.MILLISECONDS))))),
+                                                                this.applicationConfiguration))))),
                         new StockMacStrategy(
                                 apiIp,
                                 port,
                                 "antMiner Configuration",
                                 username,
-                                password));
+                                password,
+                                this.applicationConfiguration),
+                        this.applicationConfiguration);
 
         final ResponseStrategy braiinsStrategy =
                 new BraiinsResponseStrategy(
@@ -111,7 +119,9 @@ public class AntminerFactory
                                 apiIp,
                                 port,
                                 username,
-                                password));
+                                password,
+                                this.applicationConfiguration),
+                        this.applicationConfiguration);
 
         return new VersionDecorator(
                 apiIp,
@@ -122,7 +132,8 @@ public class AntminerFactory
                 password,
                 context,
                 antminer,
-                braiins);
+                braiins,
+                this.applicationConfiguration);
     }
 
     /**
@@ -143,10 +154,12 @@ public class AntminerFactory
             final Context context,
             final List<String> statsWhitelist,
             final List<Map<CgMinerCommand, ResponseStrategy>> requests,
-            final MacStrategy macStrategy) {
+            final MacStrategy macStrategy,
+            final ApplicationConfiguration applicationConfiguration) {
         return new CgMiner.Builder(context, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
+                .setConnectTimeout(applicationConfiguration.getReadSocketTimeout())
                 .addRequests(requests)
                 .setMacStrategy(macStrategy)
                 .build();

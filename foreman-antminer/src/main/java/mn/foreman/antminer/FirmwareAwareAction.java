@@ -1,5 +1,6 @@
 package mn.foreman.antminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
@@ -25,6 +26,9 @@ public class FirmwareAwareAction
     /** The action for stock firmware antminers. */
     private final AsicAction.CompletableAction antminerAction;
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The action for braiins firmware antminers. */
     private final AsicAction.CompletableAction braiinsAction;
 
@@ -34,17 +38,20 @@ public class FirmwareAwareAction
     /**
      * Constructor.
      *
-     * @param realm          The realm.
-     * @param antminerAction The antminer action.
-     * @param braiinsAction  The braiins action.
+     * @param realm                    The realm.
+     * @param antminerAction           The antminer action.
+     * @param braiinsAction            The braiins action.
+     * @param applicationConfiguration The configuration.
      */
     public FirmwareAwareAction(
             final String realm,
             final AsicAction.CompletableAction antminerAction,
-            final AsicAction.CompletableAction braiinsAction) {
+            final AsicAction.CompletableAction braiinsAction,
+            final ApplicationConfiguration applicationConfiguration) {
         this.realm = realm;
         this.antminerAction = antminerAction;
         this.braiinsAction = braiinsAction;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -66,7 +73,8 @@ public class FirmwareAwareAction
                 this.realm,
                 args.getOrDefault("username", "root").toString(),
                 args.getOrDefault("password", "root").toString(),
-                (s1, s2, s3) -> completed.set(true))
+                (s1, s2, s3) -> completed.set(true),
+                this.applicationConfiguration.getReadSocketTimeout())
                 .ifPresent(typeReference::set);
 
         if (completed.get()) {
