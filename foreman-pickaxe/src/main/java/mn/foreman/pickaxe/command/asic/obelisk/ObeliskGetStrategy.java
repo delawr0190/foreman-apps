@@ -1,10 +1,10 @@
 package mn.foreman.pickaxe.command.asic.obelisk;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
 import mn.foreman.obelisk.ObeliskQuery;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;
@@ -25,9 +25,8 @@ public class ObeliskGetStrategy
     @Override
     public void runCommand(
             final CommandStart command,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = command.args;
 
         final String ip =
@@ -72,7 +71,8 @@ public class ObeliskGetStrategy
             }
         }
 
-        callback.done(
+        commandCompletionCallback.done(
+                command.id,
                 builder
                         .result(
                                 ImmutableMap.of(

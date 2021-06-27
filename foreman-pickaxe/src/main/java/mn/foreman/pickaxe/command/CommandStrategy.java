@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.command;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 
@@ -13,25 +12,12 @@ public interface CommandStrategy {
     /**
      * Runs the provided command.
      *
-     * @param start      The command.
-     * @param foremanApi The API to use for querying Foreman.
-     * @param builder    The builder for done messages.
-     * @param callback   The callback.
+     * @param start                     The command.
+     * @param commandCompletionCallback The callback.
+     * @param builder                   The builder for done messages.
      */
     void runCommand(
             CommandStart start,
-            ForemanApi foremanApi,
-            CommandDone.CommandDoneBuilder builder,
-            Callback callback);
-
-    /** Callback for indicated the completion of a command. */
-    interface Callback {
-
-        /**
-         * Completes the command.
-         *
-         * @param done The done.
-         */
-        void done(final CommandDone done);
-    }
+            CommandCompletionCallback commandCompletionCallback,
+            CommandDone.CommandDoneBuilder builder);
 }

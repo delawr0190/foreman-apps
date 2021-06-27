@@ -20,6 +20,28 @@ public class ApplicationConfiguration {
                             1,
                             TimeUnit.SECONDS));
 
+    /** The maximum number of commands to POST at a time. */
+    private int commandCompletionBatchSize = 500;
+
+    /**
+     * Returns the completion batch size.
+     *
+     * @return The completion batch size.
+     */
+    public int getCommandCompletionBatchSize() {
+        return this.commandCompletionBatchSize;
+    }
+
+    /**
+     * Sets the command completion batch size.
+     *
+     * @param commandCompletionBatchSize The command completion batch size.
+     */
+    public void setCommandCompletionBatchSize(
+            final int commandCompletionBatchSize) {
+        this.commandCompletionBatchSize = commandCompletionBatchSize;
+    }
+
     /**
      * Returns the socket configuration.
      *
@@ -72,10 +94,12 @@ public class ApplicationConfiguration {
     public String toString() {
         return String.format(
                 "%s [ " +
+                        "commandCompletionBatchSize=%d, " +
                         "readConfig=%s, " +
                         "writeConfig=%s" +
                         " ]",
                 getClass().getSimpleName(),
+                this.commandCompletionBatchSize,
                 this.readSocketConfig,
                 this.writeSocketConfig);
     }

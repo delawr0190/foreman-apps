@@ -1,10 +1,10 @@
 package mn.foreman.pickaxe.command.asic.discover;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
 import mn.foreman.discover.Discovery;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;
@@ -25,9 +25,8 @@ public class DiscoverStrategy
     @Override
     public void runCommand(
             final CommandStart command,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = command.args;
 
         final Optional<DiscoverType> typeOptional =
@@ -54,7 +53,8 @@ public class DiscoverStrategy
                     discoverStrategy.discover(
                             ip,
                             Integer.parseInt(port));
-            callback.done(
+            commandCompletionCallback.done(
+                    command.id,
                     builder
                             .result(
                                     ImmutableMap.of(

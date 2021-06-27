@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.command.asic.rawstats;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
@@ -10,6 +9,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.asic.Asic;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.miners.remote.ApiType;
 import mn.foreman.pickaxe.miners.remote.json.MinerConfig;
@@ -43,16 +43,16 @@ public class RawStatsStrategy
     @Override
     public void runCommand(
             final CommandStart start,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         try {
             doRunCommand(
                     start,
                     builder,
-                    callback);
+                    commandCompletionCallback);
         } catch (final Exception e) {
-            callback.done(
+            commandCompletionCallback.done(
+                    start.id,
                     builder.status(
                             CommandDone.Status
                                     .builder()
@@ -119,9 +119,10 @@ public class RawStatsStrategy
     /**
      * Runs the command.
      *
-     * @param start    The command to run.
-     * @param builder  The done builder.
-     * @param callback The callback for when the command is done.
+     * @param start                     The command to run.
+     * @param builder                   The done builder.
+     * @param commandCompletionCallback The callback for when the command is
+     *                                  done.
      *
      * @throws Exception on failure.
      */
@@ -129,7 +130,7 @@ public class RawStatsStrategy
     private void doRunCommand(
             final CommandStart start,
             final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) throws Exception {
+            final CommandCompletionCallback commandCompletionCallback) throws Exception {
         final Map<String, Object> args = start.args;
 
         final String apiIp =
@@ -176,7 +177,8 @@ public class RawStatsStrategy
                         .stream()
                         .map(Asic::getRawStats)
                         .collect(HashMap::new, Map::putAll, Map::putAll);
-        callback.done(
+        commandCompletionCallback.done(
+                start.id,
                 builder
                         .result(
                                 ImmutableMap.of(

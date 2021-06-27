@@ -11,8 +11,7 @@ import mn.foreman.model.Miner;
 import mn.foreman.model.MinerID;
 import mn.foreman.model.cache.SelfExpiringStatsCache;
 import mn.foreman.model.cache.StatsCache;
-import mn.foreman.pickaxe.command.CommandProcessor;
-import mn.foreman.pickaxe.command.CommandProcessorImpl;
+import mn.foreman.pickaxe.command.*;
 import mn.foreman.pickaxe.command.asic.AsicStrategyFactory;
 import mn.foreman.pickaxe.command.asic.NullPostProcessor;
 import mn.foreman.pickaxe.configuration.Configuration;
@@ -24,6 +23,7 @@ import mn.foreman.util.VersionUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
@@ -129,7 +129,9 @@ public class RunMe {
                         new ObjectMapper(),
                         new JdkWebUtil(
                                 FOREMAN_BASE_URL,
-                                configuration.getApiKey()));
+                                configuration.getApiKey(),
+                                2,
+                                TimeUnit.MINUTES));
     }
 
     /**
@@ -152,11 +154,23 @@ public class RunMe {
                 new MetricsSenderImpl(
                         metricsProcessingStrategy);
 
+        final CommandFinalizer finalizer =
+                new CommandFinalizerImpl(
+                        this.foremanApi);
+        final BlockingQueue<QueuedCommand> queuedCommands =
+                new LinkedBlockingQueue<>();
+        final CommandCompletionCallback commandCompletionCallback =
+                new QueuedCompletionCallback(
+                        queuedCommands);
+
         startConfigQuerying();
         startUpdateMiners();
         startBlacklistFlush();
         startMacQuerying();
-        startCommandQuerying();
+        startCommandQuerying(commandCompletionCallback);
+        startCommandFinishing(
+                queuedCommands,
+                finalizer);
 
         //noinspection InfiniteLoopStatement
         while (true) {
@@ -228,11 +242,46 @@ public class RunMe {
                 TimeUnit.MINUTES);
     }
 
-    /** Schedules command and control querying. */
-    private void startCommandQuerying() {
+    /**
+     * Schedules command result processing.
+     *
+     * @param queuedCommands The commands.
+     * @param finalizer      The finalizer.
+     */
+    private void startCommandFinishing(
+            final BlockingQueue<QueuedCommand> queuedCommands,
+            final CommandFinalizer finalizer) {
+        this.threadPool.execute(() -> {
+            //noinspection InfiniteLoopStatement
+            while (true) {
+                try {
+                    final List<QueuedCommand> reservedCommands =
+                            new LinkedList<>();
+                    if (Queues.drain(
+                            queuedCommands,
+                            reservedCommands,
+                            this.applicationConfiguration.getCommandCompletionBatchSize(),
+                            10,
+                            TimeUnit.SECONDS) > 0) {
+                        finalizer.finish(reservedCommands);
+                    }
+                } catch (final Exception e) {
+                    LOG.warn("Exception occurred while processing commands", e);
+                }
+            }
+        });
+    }
+
+    /**
+     * Schedules command and control querying.
+     *
+     * @param commandCompletionCallback The callback.
+     */
+    private void startCommandQuerying(
+            final CommandCompletionCallback commandCompletionCallback) {
         final CommandProcessor commandProcessor =
                 new CommandProcessorImpl(
-                        this.foremanApi,
+                        commandCompletionCallback,
                         new AsicStrategyFactory(
                                 new NullPostProcessor(),
                                 this.threadPool,
@@ -303,6 +352,8 @@ public class RunMe {
                                     this.applicationConfiguration.setWriteSocketTimeout(
                                             pickaxeConfiguration.writeSocketTimeout,
                                             TimeUnit.valueOf(pickaxeConfiguration.writeSocketTimeoutUnits));
+                                    this.applicationConfiguration.setCommandCompletionBatchSize(
+                                            pickaxeConfiguration.commandCompletionBatchSize);
                                     LOG.debug("New config: {}", this.applicationConfiguration);
                                 });
                     } catch (final Exception e) {

@@ -1,9 +1,9 @@
 package mn.foreman.pickaxe.command.asic.digest;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;
@@ -23,9 +23,8 @@ public class DigestStrategy
     @Override
     public void runCommand(
             final CommandStart command,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = command.args;
 
         final Optional<DigestType> typeOptional =
@@ -53,7 +52,8 @@ public class DigestStrategy
                             ip,
                             port,
                             args);
-            callback.done(
+            commandCompletionCallback.done(
+                    command.id,
                     builder
                             .result(
                                     ImmutableMap.of(

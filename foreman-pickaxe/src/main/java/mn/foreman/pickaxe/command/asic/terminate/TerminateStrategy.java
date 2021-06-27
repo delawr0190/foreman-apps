@@ -1,9 +1,9 @@
 package mn.foreman.pickaxe.command.asic.terminate;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 
 import com.google.common.collect.ImmutableMap;
@@ -15,10 +15,10 @@ public class TerminateStrategy
     @Override
     public void runCommand(
             final CommandStart start,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
-        callback.done(
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
+        commandCompletionCallback.done(
+                start.id,
                 builder
                         .result(
                                 ImmutableMap.of(

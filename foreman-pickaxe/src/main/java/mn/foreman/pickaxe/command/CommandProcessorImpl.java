@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.command;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 
@@ -17,8 +16,8 @@ public class CommandProcessorImpl
     private static final Logger LOG =
             LoggerFactory.getLogger(CommandProcessorImpl.class);
 
-    /** The api handler. */
-    private final ForemanApi foremanApi;
+    /** The callback. */
+    private final CommandCompletionCallback commandCompletionCallback;
 
     /** The factory for making strategies. */
     private final StrategyFactory strategyFactory;
@@ -26,13 +25,13 @@ public class CommandProcessorImpl
     /**
      * Constructor.
      *
-     * @param foremanApi      The API handler.
-     * @param strategyFactory The factory for making strategies.
+     * @param commandCompletionCallback The callback.
+     * @param strategyFactory           The factory for making strategies.
      */
     public CommandProcessorImpl(
-            final ForemanApi foremanApi,
+            final CommandCompletionCallback commandCompletionCallback,
             final StrategyFactory strategyFactory) {
-        this.foremanApi = foremanApi;
+        this.commandCompletionCallback = commandCompletionCallback;
         this.strategyFactory = strategyFactory;
     }
 
@@ -66,44 +65,15 @@ public class CommandProcessorImpl
                         .builder()
                         .command(start.command);
         try {
-            if (this.foremanApi
-                    .pickaxe()
-                    .commandStarted(start)
-                    .isPresent()) {
-                strategy.runCommand(
-                        start,
-                        this.foremanApi,
-                        builder,
-                        new CommandCallback(start));
-            }
+            this.commandCompletionCallback.start(
+                    start.id,
+                    start);
+            strategy.runCommand(
+                    start,
+                    this.commandCompletionCallback,
+                    builder);
         } catch (final Exception me) {
             LOG.warn("Exception occurred while processing command", me);
-        }
-    }
-
-    /** A callback for when the command is completed. */
-    private class CommandCallback
-            implements CommandStrategy.Callback {
-
-        /** The start command. */
-        private final CommandStart start;
-
-        /**
-         * Constructor.
-         *
-         * @param start The start command.
-         */
-        CommandCallback(final CommandStart start) {
-            this.start = start;
-        }
-
-        @Override
-        public void done(final CommandDone done) {
-            CommandProcessorImpl.this.foremanApi
-                    .pickaxe()
-                    .commandDone(
-                            done,
-                            this.start.id);
         }
     }
 }

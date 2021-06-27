@@ -1,11 +1,11 @@
 package mn.foreman.pickaxe.command.asic.whatsminer;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
 import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.whatsminer.WhatsminerQuery;
 
@@ -39,9 +39,8 @@ public class WhatsminerGetStrategy
     @Override
     public void runCommand(
             final CommandStart command,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = command.args;
 
         final String ip =
@@ -87,7 +86,8 @@ public class WhatsminerGetStrategy
             data.set(ExceptionUtils.getStackTrace(e));
         }
 
-        callback.done(
+        commandCompletionCallback.done(
+                command.id,
                 builder
                         .result(
                                 ImmutableMap.of(

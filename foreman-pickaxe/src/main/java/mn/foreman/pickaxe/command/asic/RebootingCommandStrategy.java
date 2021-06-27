@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.command.asic;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.DoneStatus;
@@ -8,6 +7,7 @@ import mn.foreman.model.AsicAction;
 import mn.foreman.model.CompletionCallback;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.error.NotAuthenticatedException;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.PostCommandProcessor;
 
@@ -54,9 +54,8 @@ public class RebootingCommandStrategy
     @Override
     public void runCommand(
             final CommandStart start,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = start.args;
 
         final String type = safeGet(args, "type");
@@ -71,7 +70,7 @@ public class RebootingCommandStrategy
                         start,
                         args,
                         builder,
-                        callback);
+                        commandCompletionCallback);
                 break;
             default:
                 break;
@@ -81,12 +80,13 @@ public class RebootingCommandStrategy
     /**
      * Performs the ASIC action.
      *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param start    The start command.
-     * @param args     The arguments.
-     * @param builder  The builder to use for creating the final result.
-     * @param callback The completion callback.
+     * @param ip                        The ip.
+     * @param port                      The port.
+     * @param start                     The start command.
+     * @param args                      The arguments.
+     * @param builder                   The builder to use for creating the
+     *                                  final result.
+     * @param commandCompletionCallback The completion callback.
      */
     private void runAsicAction(
             final String ip,
@@ -94,7 +94,7 @@ public class RebootingCommandStrategy
             final CommandStart start,
             final Map<String, Object> args,
             final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback) {
         final String manufacturer = safeGet(args, "manufacturer");
         final Optional<Manufacturer> type =
                 Manufacturer.fromName(manufacturer);
@@ -113,7 +113,7 @@ public class RebootingCommandStrategy
                         new CallbackImpl(
                                 start,
                                 builder,
-                                callback,
+                                commandCompletionCallback,
                                 this.postProcessor);
                 final AsicAction asicAction =
                         this.supplier.apply(manufacturerType);
@@ -124,7 +124,8 @@ public class RebootingCommandStrategy
                         completionCallback);
             } catch (final NotAuthenticatedException nae) {
                 LOG.warn("Failed to authentication with the miner", nae);
-                callback.done(
+                commandCompletionCallback.done(
+                        start.id,
                         builder
                                 .status(
                                         CommandDone.Status
@@ -136,7 +137,8 @@ public class RebootingCommandStrategy
                                 .build());
             } catch (final MinerException me) {
                 LOG.warn("An unexpected exception occurred", me);
-                callback.done(
+                commandCompletionCallback.done(
+                        start.id,
                         builder
                                 .status(
                                         CommandDone.Status
@@ -158,7 +160,7 @@ public class RebootingCommandStrategy
         private final CommandDone.CommandDoneBuilder builder;
 
         /** The callback. */
-        private final Callback callback;
+        private final CommandCompletionCallback commandCompletionCallback;
 
         /** The process for post command completion. */
         private final PostCommandProcessor postProcessor;
@@ -169,26 +171,28 @@ public class RebootingCommandStrategy
         /**
          * Constructor.
          *
-         * @param start         The start.
-         * @param builder       The builder.
-         * @param callback      The callback.
-         * @param postProcessor The processor for post command completion.
+         * @param start                     The start.
+         * @param builder                   The builder.
+         * @param commandCompletionCallback The callback.
+         * @param postProcessor             The processor for post command
+         *                                  completion.
          */
         CallbackImpl(
                 final CommandStart start,
                 final CommandDone.CommandDoneBuilder builder,
-                final Callback callback,
+                final CommandCompletionCallback commandCompletionCallback,
                 final PostCommandProcessor postProcessor) {
             this.start = start;
             this.builder = builder;
-            this.callback = callback;
+            this.commandCompletionCallback = commandCompletionCallback;
             this.postProcessor = postProcessor;
         }
 
         @Override
         public void failed(final String message) {
             LOG.warn("Failed to complete action");
-            this.callback.done(
+            this.commandCompletionCallback.done(
+                    this.start.id,
                     this.builder
                             .status(
                                     CommandDone.Status
@@ -202,7 +206,8 @@ public class RebootingCommandStrategy
         @Override
         public void success() {
             LOG.info("Action completed!");
-            this.callback.done(
+            this.commandCompletionCallback.done(
+                    this.start.id,
                     this.builder
                             .status(
                                     CommandDone.Status

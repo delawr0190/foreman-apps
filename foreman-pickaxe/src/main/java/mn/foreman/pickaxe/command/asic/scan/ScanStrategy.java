@@ -1,6 +1,5 @@
 package mn.foreman.pickaxe.command.asic.scan;
 
-import mn.foreman.api.ForemanApi;
 import mn.foreman.api.model.CommandDone;
 import mn.foreman.api.model.CommandStart;
 import mn.foreman.api.model.CommandUpdate;
@@ -9,6 +8,7 @@ import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MinerType;
+import mn.foreman.pickaxe.command.CommandCompletionCallback;
 import mn.foreman.pickaxe.command.CommandStrategy;
 import mn.foreman.pickaxe.command.asic.Manufacturer;
 
@@ -84,9 +84,8 @@ public class ScanStrategy
     @Override
     public void runCommand(
             final CommandStart command,
-            final ForemanApi foremanApi,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandCompletionCallback commandCompletionCallback,
+            final CommandDone.CommandDoneBuilder builder) {
         final Map<String, Object> args = command.args;
 
         final String type = safeGet(args, "type");
@@ -100,13 +99,12 @@ public class ScanStrategy
             case "asic":
                 runAsicScan(
                         command,
-                        foremanApi,
+                        commandCompletionCallback,
                         safeGet(args, "manufacturer"),
                         port,
                         targetMacs,
                         args,
-                        builder,
-                        callback);
+                        builder);
                 break;
             default:
                 break;
@@ -151,20 +149,20 @@ public class ScanStrategy
     /**
      * Processes the scan results.
      *
-     * @param scanResults The results.
-     * @param scanned     The scan counter.
-     * @param remaining   The remaining counter.
-     * @param miners      All of the miners that were found.
-     * @param foremanApi  The API handler.
-     * @param id          The scan command ID.
-     * @param targetMacs  The target mac.
+     * @param scanResults               The results.
+     * @param scanned                   The scan counter.
+     * @param remaining                 The remaining counter.
+     * @param miners                    All of the miners that were found.
+     * @param commandCompletionCallback The API handler.
+     * @param id                        The scan command ID.
+     * @param targetMacs                The target mac.
      */
     private void processResults(
             final BlockingQueue<ScanResult> scanResults,
             final AtomicInteger scanned,
             final AtomicInteger remaining,
             final BlockingQueue<Object> miners,
-            final ForemanApi foremanApi,
+            final CommandCompletionCallback commandCompletionCallback,
             final String id,
             final List<String> targetMacs) {
         final List<ScanResult> lastResults = new LinkedList<>();
@@ -190,73 +188,68 @@ public class ScanStrategy
             update.put("scanned", scanned.get());
             update.put("remaining", remaining.get());
 
-            foremanApi
-                    .pickaxe()
-                    .commandUpdate(
-                            CommandUpdate
-                                    .builder()
-                                    .command("scan")
-                                    .update(update)
-                                    .build(),
-                            id);
+            commandCompletionCallback.update(
+                    id,
+                    CommandUpdate
+                            .builder()
+                            .command("scan")
+                            .update(update)
+                            .build());
         }
     }
 
     /**
      * Scans for an ASIC.
      *
-     * @param command      The command.
-     * @param foremanApi   The Foreman API handle.
-     * @param manufacturer The manufacturer.
-     * @param port         The port to inspect.
-     * @param targetMacs   The target MACs.
-     * @param args         The arguments.
-     * @param builder      The builder to use for creating the final result.
-     * @param callback     The callback.
+     * @param command                   The command.
+     * @param commandCompletionCallback The Foreman API handle.
+     * @param manufacturer              The manufacturer.
+     * @param port                      The port to inspect.
+     * @param targetMacs                The target MACs.
+     * @param args                      The arguments.
+     * @param builder                   The builder to use for creating the
+     *                                  final result.
      */
     private void runAsicScan(
             final CommandStart command,
-            final ForemanApi foremanApi,
+            final CommandCompletionCallback commandCompletionCallback,
             final String manufacturer,
             final int port,
             final List<String> targetMacs,
             final Map<String, Object> args,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandDone.CommandDoneBuilder builder) {
         Manufacturer
                 .fromName(manufacturer)
                 .ifPresent(value -> scanInRange(
-                        foremanApi,
+                        commandCompletionCallback,
                         command.id,
                         port,
                         targetMacs,
                         args,
                         value,
-                        builder,
-                        callback));
+                        builder));
     }
 
     /**
      * Scans a valid range.
      *
-     * @param foremanApi   The Foreman API handle.
-     * @param id           The command ID.
-     * @param port         The port to inspect.
-     * @param targetMacs   The target macs.
-     * @param args         The arguments.
-     * @param builder      The builder to use for creating the final result.
-     * @param manufacturer The manufacturer.
-     * @param callback     The callback.
+     * @param commandCompletionCallback The Foreman API handle.
+     * @param id                        The command ID.
+     * @param port                      The port to inspect.
+     * @param targetMacs                The target macs.
+     * @param args                      The arguments.
+     * @param builder                   The builder to use for creating the
+     *                                  final result.
+     * @param manufacturer              The manufacturer.
      */
     private void scanInRange(
-            final ForemanApi foremanApi,
+            final CommandCompletionCallback commandCompletionCallback,
             final String id,
             final int port,
             final List<String> targetMacs,
             final Map<String, Object> args,
             final Manufacturer manufacturer,
-            final CommandDone.CommandDoneBuilder builder,
-            final Callback callback) {
+            final CommandDone.CommandDoneBuilder builder) {
         final BlockingQueue<String> ipsToScan =
                 this.ipSourceStrategy.toIps(
                         args);
@@ -288,7 +281,7 @@ public class ScanStrategy
                         scanned,
                         remaining,
                         foundMiners,
-                        foremanApi,
+                        commandCompletionCallback,
                         id,
                         targetMacs);
             }
@@ -299,14 +292,15 @@ public class ScanStrategy
                     scanned,
                     remaining,
                     foundMiners,
-                    foremanApi,
+                    commandCompletionCallback,
                     id,
                     targetMacs);
 
             final List<Object> miners = new LinkedList<>();
             foundMiners.drainTo(miners);
 
-            callback.done(
+            commandCompletionCallback.done(
+                    id,
                     builder
                             .result(
                                     ImmutableMap.of(
@@ -319,7 +313,8 @@ public class ScanStrategy
                                             .build())
                             .build());
         } else {
-            callback.done(
+            commandCompletionCallback.done(
+                    id,
                     builder.status(
                             CommandDone.Status
                                     .builder()
