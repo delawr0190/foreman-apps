@@ -38,7 +38,7 @@
         <commons-lang.version>3.7</commons-lang.version>
         <easymock.version>3.5.1</easymock.version>
         <foreman-java-api.version>1.4.0</foreman-java-api.version>
-        <guava.version>24.1.1-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <jackson.version>2.9.10</jackson.version>
         <jackson-databind.version>2.9.10.7</jackson-databind.version>
         <jcraft.version>0.1.55</jcraft.version>
