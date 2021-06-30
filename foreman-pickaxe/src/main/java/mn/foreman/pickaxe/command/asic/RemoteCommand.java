@@ -56,7 +56,10 @@ public enum RemoteCommand {
     BLINK("blink", true),
 
     /** Queries an Obelisk page. */
-    OBILESK_GET("obelisk-get", false);
+    OBILESK_GET("obelisk-get", false),
+
+    /** Firmware upgrading. */
+    FIRMWARE_UPGRADE("firmware-upgrade", true);
 
     /** The known types. */
     private static final Map<String, RemoteCommand> TYPES =

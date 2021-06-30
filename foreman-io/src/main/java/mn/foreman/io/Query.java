@@ -589,6 +589,43 @@ public class Query {
      * @param auth              The auth.
      * @param payload           The payload.
      * @param type              The type.
+     * @param socketConfig      The config.
+     * @param responseProcessor The response processor.
+     * @param <T>               The type.
+     *
+     * @throws Exception on failure.
+     */
+    public static <T> Optional<T> restPost(
+            final String host,
+            final int port,
+            final String path,
+            final String auth,
+            final String payload,
+            final TypeReference<T> type,
+            final ApplicationConfiguration.SocketConfig socketConfig,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        return restPost(
+                host,
+                port,
+                path,
+                auth,
+                payload,
+                type,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits(),
+                responseProcessor);
+    }
+
+    /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param auth              The auth.
+     * @param payload           The payload.
+     * @param type              The type.
      * @param timeout           The timeout.
      * @param timeoutUnits      The timeout (units).
      * @param responseProcessor The response processor.

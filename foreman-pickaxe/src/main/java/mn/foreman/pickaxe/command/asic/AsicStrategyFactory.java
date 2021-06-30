@@ -211,6 +211,17 @@ public class AsicStrategyFactory
                                                 this.statsCache,
                                                 this.configuration));
                 break;
+            case FIRMWARE_UPGRADE:
+                commandStrategy =
+                        new RebootingCommandStrategy(
+                                this.postRebootProcessor,
+                                manufacturer ->
+                                        manufacturer.getFirmwareUpgradeStrategy(
+                                                this.threadPool,
+                                                this.blacklist,
+                                                this.statsCache,
+                                                this.configuration));
+                break;
             case OBILESK_GET:
                 commandStrategy = new ObeliskGetStrategy();
                 break;
