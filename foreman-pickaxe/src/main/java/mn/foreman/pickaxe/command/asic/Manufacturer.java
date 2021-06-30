@@ -302,10 +302,7 @@ public enum Manufacturer {
                             new StockBlinkStrategy(
                                     "antMiner Configuration",
                                     configuration)),
-            (threadPool, blacklist, statsCache, configuration) ->
-                    AsicActionFactory.toSync(
-                            new OpenMinerFirmwareUpgradeAction(
-                                    configuration))),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Avalon. */
     AVALON(
@@ -431,7 +428,10 @@ public enum Manufacturer {
                     AsicActionFactory.toSync(
                             new OpenMinerPasswordAction()),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
-            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
+            (threadPool, blacklist, statsCache, configuration) ->
+                    AsicActionFactory.toSync(
+                            new OpenMinerFirmwareUpgradeAction(
+                                    configuration))),
 
     /** Blackminer. */
     BLACKMINER(
