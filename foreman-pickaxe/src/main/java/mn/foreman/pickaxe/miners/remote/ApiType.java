@@ -281,7 +281,7 @@ public enum ApiType {
     AVALON_API(
             29,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new AvalonFactory();
+                return new AvalonFactory(configuration);
             }),
 
     /** Gminer. */

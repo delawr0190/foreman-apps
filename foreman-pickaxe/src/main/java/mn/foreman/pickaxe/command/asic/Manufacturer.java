@@ -313,44 +313,50 @@ public enum Manufacturer {
                             new AvalonTypeFactory(),
                             new AvalonMacStrategy(
                                     ip,
-                                    80),
-                            new NullPatchingStrategy()),
+                                    80,
+                                    configuration),
+                            new NullPatchingStrategy(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AvalonFactory(),
+                            new AvalonFactory(configuration),
                             new RetryingAction(
                                     5,
                                     1,
                                     TimeUnit.SECONDS,
                                     new AvalonChangePoolsAction(
-                                            new AvalonRebootAction()))),
+                                            new AvalonRebootAction(
+                                                    configuration),
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AvalonFactory(),
+                            new AvalonFactory(configuration),
                             new RetryingAction(
                                     5,
                                     1,
                                     TimeUnit.SECONDS,
-                                    new AvalonRebootAction())),
+                                    new AvalonRebootAction(configuration))),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new AvalonFactory(),
+                            new AvalonFactory(configuration),
                             new RetryingAction(
                                     5,
                                     1,
                                     TimeUnit.SECONDS,
                                     new AvalonNetworkAction(
-                                            new AvalonRebootAction())),
+                                            new AvalonRebootAction(
+                                                    configuration),
+                                            configuration)),
                             AsyncAsicActionUtils::ipChangingHook),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
@@ -359,11 +365,13 @@ public enum Manufacturer {
                                     5,
                                     1,
                                     TimeUnit.SECONDS,
-                                    new AvalonPasswordAction())),
+                                    new AvalonPasswordAction(
+                                            configuration))),
             (threadPool, blacklist, statsCache, configuration) ->
                     new BlinkAction(
                             threadPool,
-                            new AvalonBlinkStrategy()),
+                            new AvalonBlinkStrategy(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
 
     /** Baikal. */
@@ -447,7 +455,8 @@ public enum Manufacturer {
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString(),
                                     configuration),
-                            new NullPatchingStrategy()),
+                            new NullPatchingStrategy(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
@@ -590,7 +599,8 @@ public enum Manufacturer {
                             CgMinerCommand.STATS,
                             new DayunTypeFactory(),
                             new NullMacStrategy(),
-                            new StatsPatchingStrategy()),
+                            new StatsPatchingStrategy(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
@@ -782,7 +792,8 @@ public enum Manufacturer {
             (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
-                            new FutureBitTypeFactory()),
+                            new FutureBitTypeFactory(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
@@ -918,7 +929,8 @@ public enum Manufacturer {
             (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
-                            new HyperbitTypeFactory()),
+                            new HyperbitTypeFactory(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
@@ -993,7 +1005,8 @@ public enum Manufacturer {
                             new MinerVaMacStrategy(
                                     ip,
                                     4028),
-                            new NullPatchingStrategy()),
+                            new NullPatchingStrategy(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
@@ -1128,7 +1141,8 @@ public enum Manufacturer {
             (args, ip, configuration) ->
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.SUMMARY,
-                            new SpondooliesTypeFactory()),
+                            new SpondooliesTypeFactory(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
@@ -1152,7 +1166,8 @@ public enum Manufacturer {
                                     args.getOrDefault("username", "").toString(),
                                     args.getOrDefault("password", "").toString(),
                                     configuration),
-                            new NullPatchingStrategy()),
+                            new NullPatchingStrategy(),
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
@@ -1280,7 +1295,8 @@ public enum Manufacturer {
                                             ip,
                                             4028,
                                             configuration),
-                                    new NullPatchingStrategy())),
+                                    new NullPatchingStrategy(),
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,

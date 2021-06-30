@@ -2,6 +2,7 @@ package mn.foreman.blackminer;
 
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -39,7 +40,8 @@ public class BlackminerDetectITest
         super(
                 new CgMinerDetectionStrategy(
                         CgMinerCommand.VERSION,
-                        new BlackminerTypeFactory()),
+                        new BlackminerTypeFactory(),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,

@@ -2,6 +2,7 @@ package mn.foreman.hyperbit;
 
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -18,7 +19,8 @@ public class BwL21DetectITest
         super(
                 new CgMinerDetectionStrategy(
                         CgMinerCommand.DEVS,
-                        new HyperbitTypeFactory()),
+                        new HyperbitTypeFactory(),
+                        new ApplicationConfiguration()),
                 () -> new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(

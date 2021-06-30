@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -39,7 +40,8 @@ public class AvalonStatsITest
             final Map<String, HandlerInterface> handlers,
             final MinerStats expectedStats) {
         super(
-                new AvalonFactory()
+                new AvalonFactory(
+                        new ApplicationConfiguration())
                         .create(
                                 ImmutableMap.of(
                                         "apiIp",

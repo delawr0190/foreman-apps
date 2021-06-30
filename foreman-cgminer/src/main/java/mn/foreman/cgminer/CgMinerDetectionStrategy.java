@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -28,6 +27,9 @@ public class CgMinerDetectionStrategy
     /** The logger for this class. */
     private static final Logger LOG =
             LoggerFactory.getLogger(CgMinerDetectionStrategy.class);
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
 
     /** The command to run. */
     private final CgMinerCommand command;
@@ -44,21 +46,24 @@ public class CgMinerDetectionStrategy
     /**
      * Constructor.
      *
-     * @param command          The command.
-     * @param typeFactory      The factory for converting to a {@link
-     *                         MinerType}.
-     * @param macStrategy      The MAC strategy.
-     * @param patchingStrategy The patching strategy.
+     * @param command                  The command.
+     * @param typeFactory              The factory for converting to a {@link
+     *                                 MinerType}.
+     * @param macStrategy              The MAC strategy.
+     * @param patchingStrategy         The patching strategy.
+     * @param applicationConfiguration The configuration.
      */
     public CgMinerDetectionStrategy(
             final CgMinerCommand command,
             final TypeFactory typeFactory,
             final MacStrategy macStrategy,
-            final ResponsePatchingStrategy patchingStrategy) {
+            final ResponsePatchingStrategy patchingStrategy,
+            final ApplicationConfiguration applicationConfiguration) {
         this.command = command;
         this.typeFactory = typeFactory;
         this.macStrategy = macStrategy;
         this.patchingStrategy = patchingStrategy;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     /**
@@ -69,12 +74,14 @@ public class CgMinerDetectionStrategy
      */
     public CgMinerDetectionStrategy(
             final CgMinerCommand command,
-            final TypeFactory typeFactory) {
+            final TypeFactory typeFactory,
+            final ApplicationConfiguration applicationConfiguration) {
         this(
                 command,
                 typeFactory,
                 new NullMacStrategy(),
-                new NullPatchingStrategy());
+                new NullPatchingStrategy(),
+                applicationConfiguration);
     }
 
     @Override
@@ -91,9 +98,7 @@ public class CgMinerDetectionStrategy
                     new CgMiner.Builder()
                             .setApiIp(ip)
                             .setApiPort(port)
-                            .setConnectTimeout(
-                                    1,
-                                    TimeUnit.SECONDS)
+                            .setConnectTimeout(this.applicationConfiguration.getReadSocketTimeout())
                             .addRequest(
                                     new CgMinerRequest.Builder()
                                             .setCommand(this.command)

@@ -4,6 +4,7 @@ import mn.foreman.io.ApiRequest;
 import mn.foreman.io.ApiRequestImpl;
 import mn.foreman.io.Connection;
 import mn.foreman.io.ConnectionFactory;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.asic.Asic;
 
@@ -22,10 +23,11 @@ class AvalonUtils {
     /**
      * Queries an Avalon.
      *
-     * @param ip        The ip.
-     * @param port      The port.
-     * @param message   The message.
-     * @param validator The response validator.
+     * @param ip           The ip.
+     * @param port         The port.
+     * @param message      The message.
+     * @param validator    The response validator.
+     * @param socketConfig The socket config.
      *
      * @return The result.
      */
@@ -33,7 +35,36 @@ class AvalonUtils {
             final String ip,
             final int port,
             final String message,
-            final BiFunction<String, ApiRequest, Boolean> validator) {
+            final BiFunction<String, ApiRequest, Boolean> validator,
+            final ApplicationConfiguration.SocketConfig socketConfig) {
+        return query(
+                ip,
+                port,
+                message,
+                validator,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
+    }
+
+    /**
+     * Queries an Avalon.
+     *
+     * @param ip                 The ip.
+     * @param port               The port.
+     * @param message            The message.
+     * @param validator          The response validator.
+     * @param socketTimeout      The timeout.
+     * @param socketTimeoutUnits The units.
+     *
+     * @return The result.
+     */
+    public static boolean query(
+            final String ip,
+            final int port,
+            final String message,
+            final BiFunction<String, ApiRequest, Boolean> validator,
+            final int socketTimeout,
+            final TimeUnit socketTimeoutUnits) {
         boolean success = false;
 
         final ApiRequest request =
@@ -45,13 +76,13 @@ class AvalonUtils {
         final Connection connection =
                 ConnectionFactory.createRawConnection(
                         request,
-                        1,
-                        TimeUnit.SECONDS);
+                        socketTimeout,
+                        socketTimeoutUnits);
         connection.query();
 
         if (request.waitForCompletion(
-                1,
-                TimeUnit.SECONDS)) {
+                socketTimeout,
+                socketTimeoutUnits)) {
             final String response = request.getResponse();
             success =
                     validator.apply(

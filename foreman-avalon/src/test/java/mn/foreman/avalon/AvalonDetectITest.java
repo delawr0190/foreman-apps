@@ -2,6 +2,7 @@ package mn.foreman.avalon;
 
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -33,7 +34,8 @@ public class AvalonDetectITest
         super(
                 new CgMinerDetectionStrategy(
                         CgMinerCommand.STATS,
-                        new AvalonTypeFactory()),
+                        new AvalonTypeFactory(),
+                        new ApplicationConfiguration()),
                 () -> new FakeRpcMinerServer(
                         4028,
                         handlers),

@@ -2,6 +2,7 @@ package mn.foreman.avalon;
 
 import mn.foreman.api.model.Pool;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 
 import org.slf4j.Logger;
@@ -21,16 +22,24 @@ public class AvalonChangePoolsAction
     private static final Logger LOG =
             LoggerFactory.getLogger(AvalonChangePoolsAction.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The action to run when performing a reboot. */
     private final AsicAction.CompletableAction rebootAction;
 
     /**
      * Constructor.
      *
-     * @param rebootAction The action to run when performing a reboot.
+     * @param rebootAction             The action to run when performing a
+     *                                 reboot.
+     * @param applicationConfiguration The configuration.
      */
-    public AvalonChangePoolsAction(final AsicAction.CompletableAction rebootAction) {
+    public AvalonChangePoolsAction(
+            final AsicAction.CompletableAction rebootAction,
+            final ApplicationConfiguration applicationConfiguration) {
         this.rebootAction = rebootAction;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -43,6 +52,9 @@ public class AvalonChangePoolsAction
         final String password = parameters.get("password").toString();
 
         boolean success = false;
+
+        final ApplicationConfiguration.SocketConfig socketConfig =
+                this.applicationConfiguration.getWriteSocketTimeout();
 
         for (int i = 0; i < pools.size(); i++) {
             final Pool pool = pools.get(i);
@@ -63,7 +75,8 @@ public class AvalonChangePoolsAction
                                 (s, request) ->
                                         request.connected() &&
                                                 s != null &&
-                                                s.toLowerCase().contains("success"));
+                                                s.toLowerCase().contains("success"),
+                                socketConfig);
             }
         }
 
@@ -84,7 +97,8 @@ public class AvalonChangePoolsAction
                             (s, request) ->
                                     request.connected() &&
                                             s != null &&
-                                            s.toLowerCase().contains("success"));
+                                            s.toLowerCase().contains("success"),
+                            socketConfig);
         }
 
         if (success) {

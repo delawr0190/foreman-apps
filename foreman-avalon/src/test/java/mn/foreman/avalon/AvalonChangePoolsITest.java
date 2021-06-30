@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -30,12 +31,16 @@ public class AvalonChangePoolsITest
         super(
                 8080,
                 4028,
-                new AvalonChangePoolsAction(new AvalonRebootAction()),
+                new AvalonChangePoolsAction(
+                        new AvalonRebootAction(
+                                new ApplicationConfiguration()),
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,
                                 rpcHandlers)),
-                new AvalonFactory(),
+                new AvalonFactory(
+                        new ApplicationConfiguration()),
                 TestUtils.toPoolJson(),
                 true);
     }

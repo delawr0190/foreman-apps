@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.HandlerInterface;
@@ -28,12 +29,14 @@ public class AvalonRebootITest
         super(
                 8080,
                 4028,
-                new AvalonRebootAction(),
+                new AvalonRebootAction(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,
                                 rpcHandlers)),
-                new AvalonFactory(),
+                new AvalonFactory(
+                        new ApplicationConfiguration()),
                 Collections.emptyMap(),
                 true);
     }

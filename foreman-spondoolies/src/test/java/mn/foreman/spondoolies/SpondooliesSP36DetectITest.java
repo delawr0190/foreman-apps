@@ -2,6 +2,7 @@ package mn.foreman.spondoolies;
 
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -18,7 +19,8 @@ public class SpondooliesSP36DetectITest
         super(
                 new CgMinerDetectionStrategy(
                         CgMinerCommand.SUMMARY,
-                        new SpondooliesTypeFactory()),
+                        new SpondooliesTypeFactory(),
+                        new ApplicationConfiguration()),
                 () -> new FakeRpcMinerServer(
                         4028,
                         ImmutableMap.of(

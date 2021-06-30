@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 
 import org.apache.commons.io.IOUtils;
@@ -23,6 +24,9 @@ public class AvalonMacStrategy
     /** The MAC key. */
     private static final String MAC_KEY = "\"mac\":";
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The IP. */
     private final String ip;
 
@@ -32,14 +36,17 @@ public class AvalonMacStrategy
     /**
      * Constructor.
      *
-     * @param ip   The IP.
-     * @param port The port.
+     * @param ip                       The IP.
+     * @param port                     The port.
+     * @param applicationConfiguration The configuration.
      */
     public AvalonMacStrategy(
             final String ip,
-            final int port) {
+            final int port,
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = port;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -85,6 +92,11 @@ public class AvalonMacStrategy
     private Optional<String> query(final String uri) {
         String mac = null;
         try {
+            final ApplicationConfiguration.SocketConfig socketConfig =
+                    this.applicationConfiguration.getReadSocketTimeout();
+            final int socketTimeout =
+                    (int) socketConfig.getSocketTimeoutUnits().toMillis(
+                            socketConfig.getSocketTimeout());
             final URL url =
                     new URL(
                             String.format(
@@ -95,8 +107,8 @@ public class AvalonMacStrategy
             final HttpURLConnection connection =
                     (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
-            connection.setConnectTimeout(100);
-            connection.setReadTimeout(1000);
+            connection.setConnectTimeout(socketTimeout);
+            connection.setReadTimeout(socketTimeout);
 
             final int code = connection.getResponseCode();
             if (code == HttpURLConnection.HTTP_OK) {

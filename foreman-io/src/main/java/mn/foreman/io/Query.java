@@ -487,6 +487,7 @@ public class Query {
      * @param path              The path.
      * @param content           The content.
      * @param responseProcessor The response processor.
+     * @param socketConfig      The configuration.
      *
      * @throws Exception on failure.
      */
@@ -495,7 +496,8 @@ public class Query {
             final int port,
             final String path,
             final List<Map<String, Object>> content,
-            final BiConsumer<Integer, String> responseProcessor)
+            final BiConsumer<Integer, String> responseProcessor,
+            final ApplicationConfiguration.SocketConfig socketConfig)
             throws Exception {
         doDigest(
                 host,
@@ -507,6 +509,69 @@ public class Query {
                 true,
                 content,
                 null,
+                responseProcessor,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits());
+    }
+
+    /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param content           The content.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure.
+     */
+    public static void post(
+            final String host,
+            final int port,
+            final String path,
+            final List<Map<String, Object>> content,
+            final BiConsumer<Integer, String> responseProcessor,
+            final int timeout,
+            final TimeUnit timeoutUnits)
+            throws Exception {
+        doDigest(
+                host,
+                port,
+                null,
+                path,
+                null,
+                null,
+                true,
+                content,
+                null,
+                responseProcessor,
+                timeout,
+                timeoutUnits);
+    }
+
+    /**
+     * Performs a POST with content.
+     *
+     * @param host              The host.
+     * @param port              The port.
+     * @param path              The path.
+     * @param content           The content.
+     * @param responseProcessor The response processor.
+     *
+     * @throws Exception on failure.
+     */
+    public static void post(
+            final String host,
+            final int port,
+            final String path,
+            final List<Map<String, Object>> content,
+            final BiConsumer<Integer, String> responseProcessor)
+            throws Exception {
+        post(
+                host,
+                port,
+                path,
+                content,
                 responseProcessor,
                 20,
                 TimeUnit.SECONDS);
@@ -1129,6 +1194,9 @@ public class Query {
                         url.getPort(),
                         url.getProtocol());
 
+        final int socketTimeoutMillis =
+                (int) socketTimeoutUnits.toMillis(socketTimeout);
+
         CloseableHttpClient httpClient = null;
         try {
             final HttpClientContext context = HttpClientContext.create();
@@ -1162,8 +1230,8 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(200))
-                                                .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
+                                                .setConnectTimeout(socketTimeoutMillis)
+                                                .setSocketTimeout(socketTimeoutMillis)
                                                 .build())
                                 .build();
                 context.setAuthCache(authCache);
@@ -1175,8 +1243,8 @@ public class Query {
                                 .setDefaultRequestConfig(
                                         RequestConfig
                                                 .custom()
-                                                .setConnectTimeout((int) TimeUnit.MILLISECONDS.toMillis(200))
-                                                .setSocketTimeout((int) socketTimeoutUnits.toMillis(socketTimeout))
+                                                .setConnectTimeout(socketTimeoutMillis)
+                                                .setSocketTimeout(socketTimeoutMillis)
                                                 .build())
                                 .build();
             }

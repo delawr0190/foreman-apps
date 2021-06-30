@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractSyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -28,7 +29,8 @@ public class AvalonPasswordITest
             final Map<String, ServerHandler> httpsHandlers) {
         super(
                 8080,
-                new AvalonPasswordAction(),
+                new AvalonPasswordAction(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,

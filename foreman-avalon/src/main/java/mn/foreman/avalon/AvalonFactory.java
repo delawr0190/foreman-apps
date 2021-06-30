@@ -3,6 +3,7 @@ package mn.foreman.avalon;
 import mn.foreman.cgminer.*;
 import mn.foreman.cgminer.request.CgMinerCommand;
 import mn.foreman.cgminer.request.CgMinerRequest;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -18,6 +19,18 @@ import java.util.Map;
  */
 public class AvalonFactory
         extends CgMinerFactory {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public AvalonFactory(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected Miner create(
@@ -44,6 +57,7 @@ public class AvalonFactory
         return new CgMiner.Builder(cgContext, statsWhitelist)
                 .setApiIp(apiIp)
                 .setApiPort(apiPort)
+                .setConnectTimeout(this.applicationConfiguration.getReadSocketTimeout())
                 .addRequest(
                         new CgMinerRequest.Builder()
                                 .addCommand(CgMinerCommand.POOLS)
@@ -58,7 +72,8 @@ public class AvalonFactory
                 .setMacStrategy(
                         new AvalonMacStrategy(
                                 apiIp,
-                                Integer.parseInt(config.getOrDefault("port", "80").toString())))
+                                Integer.parseInt(config.getOrDefault("port", "80").toString()),
+                                this.applicationConfiguration))
                 .build();
     }
 }

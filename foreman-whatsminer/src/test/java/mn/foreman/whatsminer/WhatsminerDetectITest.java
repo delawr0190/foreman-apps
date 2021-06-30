@@ -67,7 +67,8 @@ public class WhatsminerDetectITest
                                         "127.0.0.1",
                                         4028,
                                         new ApplicationConfiguration()),
-                                new NullPatchingStrategy())),
+                                new NullPatchingStrategy(),
+                                new ApplicationConfiguration())),
                 fakeServers,
                 args,
                 Detection.builder()

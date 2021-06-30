@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractMacITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -29,7 +30,8 @@ public class AvalonMacITest
             final Map<String, ServerHandler> handlers,
             final String expectedMac) {
         super(
-                new AvalonFactory(),
+                new AvalonFactory(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         new FakeHttpMinerServer(
                                 8080,

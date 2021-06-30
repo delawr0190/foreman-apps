@@ -1,5 +1,6 @@
 package mn.foreman.avalon;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractBlinkActionITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
 import mn.foreman.util.rpc.RpcHandler;
@@ -16,7 +17,8 @@ public class AvalonBlinkITest
     public AvalonBlinkITest() {
         super(
                 4028,
-                new AvalonBlinkStrategy(),
+                new AvalonBlinkStrategy(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeRpcMinerServer(
                                 4028,

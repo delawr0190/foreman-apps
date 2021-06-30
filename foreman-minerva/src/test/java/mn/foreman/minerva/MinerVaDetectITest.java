@@ -3,6 +3,7 @@ package mn.foreman.minerva;
 import mn.foreman.cgminer.CgMinerDetectionStrategy;
 import mn.foreman.cgminer.NullPatchingStrategy;
 import mn.foreman.cgminer.request.CgMinerCommand;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.rpc.FakeRpcMinerServer;
@@ -41,7 +42,8 @@ public class MinerVaDetectITest
                         new MinerVaMacStrategy(
                                 "127.0.0.1",
                                 4028),
-                        new NullPatchingStrategy()),
+                        new NullPatchingStrategy(),
+                        new ApplicationConfiguration()),
                 () -> new FakeRpcMinerServer(
                         4028,
                         handlers),
