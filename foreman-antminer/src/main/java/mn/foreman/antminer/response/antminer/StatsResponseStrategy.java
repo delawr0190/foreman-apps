@@ -1,6 +1,7 @@
 package mn.foreman.antminer.response.antminer;
 
 import mn.foreman.antminer.PowerModeStrategy;
+import mn.foreman.antminer.RateUnit;
 import mn.foreman.cgminer.Context;
 import mn.foreman.cgminer.ContextKey;
 import mn.foreman.cgminer.PoolsResponseStrategy;
@@ -147,6 +148,15 @@ public class StatsResponseStrategy
                 hashRate,
                 hasErrors,
                 hasFunctioningChips);
+
+        final String rateIdeal = values.get("total_rateideal");
+        final String rateUnit = values.get("rate_unit");
+        if (rateIdeal != null && !rateIdeal.isEmpty() &&
+                rateUnit != null && !rateUnit.isEmpty()) {
+            asicBuilder.setHashRateIdeal(
+                    RateUnit.toUnit(rateUnit).getMultiplier() *
+                            Double.parseDouble(rateIdeal));
+        }
 
         // Context data
         this.context.getSimple(ContextKey.MRR_RIG_ID)

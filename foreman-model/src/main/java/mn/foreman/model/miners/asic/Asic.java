@@ -17,6 +17,7 @@ import org.apache.commons.lang3.math.NumberUtils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -643,6 +644,23 @@ public class Asic {
          */
         public Builder setHashRate(final BigDecimal hashRate) {
             this.hashRate = hashRate;
+            return this;
+        }
+
+        /**
+         * Sets the ideal hash rate.
+         *
+         * @param hashRateIdeal The rate.
+         *
+         * @return This builder instance.
+         */
+        public Asic.Builder setHashRateIdeal(
+                final double hashRateIdeal) {
+            final DecimalFormat decimalFormat = new DecimalFormat("#");
+            decimalFormat.setMaximumFractionDigits(8);
+            addAttribute(
+                    "hash_rate_ideal",
+                    decimalFormat.format(hashRateIdeal));
             return this;
         }
 

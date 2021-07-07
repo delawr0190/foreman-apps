@@ -12,6 +12,9 @@ public enum CgMinerPoolStatus {
     /** The pool is dead. */
     DEAD("Dead"),
 
+    /** The pool is dead (Bitmain typo). */
+    DEED("Deed"),
+
     /** The pool is sick. */
     SICK("Sick"),
 

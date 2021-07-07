@@ -441,6 +441,7 @@ public class AntminerStatsITest
                                                                         new BigDecimal("50"),
                                                                         "STATS.1.temp2",
                                                                         new BigDecimal("53")))
+                                                        .setHashRateIdeal(53619000000000D)
                                                         .setMinerType("Antminer S17")
                                                         .setCompileTime("Fri Aug 25 17:28:57 CST 2017")
                                                         .build())
@@ -1032,6 +1033,7 @@ public class AntminerStatsITest
                                                                         new BigDecimal("0"),
                                                                         "STATS.1.temp7",
                                                                         new BigDecimal("0")))
+                                                        .setHashRateIdeal(21000000000000D)
                                                         .setMinerType("Antminer T15")
                                                         .setCompileTime("Fri Dec 13 15:46:16 CST 2019")
                                                         .build())
@@ -1154,6 +1156,7 @@ public class AntminerStatsITest
                                                         .addTemp(26)
                                                         .addTemp(24)
                                                         .hasErrors(false)
+                                                        .setHashRateIdeal(111859000000000D)
                                                         .setMinerType("Antminer S19 Pro")
                                                         .setCompileTime("Wed Oct 21 10:18:10 CST 2020")
                                                         .build())
@@ -1346,6 +1349,7 @@ public class AntminerStatsITest
                                                         .addTemp(40)
                                                         .addTemp(40)
                                                         .hasErrors(false)
+                                                        .setHashRateIdeal(63919000000000D)
                                                         .setMinerType("Antminer S19")
                                                         .setCompileTime("Fri Dec 11 11:15:40 CST 2020")
                                                         .build())
@@ -1457,6 +1461,7 @@ public class AntminerStatsITest
                                                         .addTemp(97)
                                                         .addTemp(87)
                                                         .hasErrors(true)
+                                                        .setHashRateIdeal(111859000000000D)
                                                         .setMinerType("Antminer S19")
                                                         .setCompileTime("Fri Dec 11 11:15:40 CST 2020")
                                                         .build())
@@ -1584,6 +1589,7 @@ public class AntminerStatsITest
                                                         .addTemp(81)
                                                         .addTemp(88)
                                                         .hasErrors(true)
+                                                        .setHashRateIdeal(111859000000000D)
                                                         .setMinerType("Antminer S19 Pro")
                                                         .setCompileTime("Mon Oct 26 17:55:33 CST 2020")
                                                         .build())
@@ -1642,6 +1648,7 @@ public class AntminerStatsITest
                                                                         .setSpeedUnits("RPM")
                                                                         .build())
                                                         .hasErrors(false)
+                                                        .setHashRateIdeal(0D)
                                                         .setMinerType("Antminer T17+")
                                                         .setCompileTime("Tue Jun  2 10:11:10 CST 2020")
                                                         .build())
@@ -1700,6 +1707,7 @@ public class AntminerStatsITest
                                                                         .setSpeedUnits("RPM")
                                                                         .build())
                                                         .hasErrors(false)
+                                                        .setHashRateIdeal(0D)
                                                         .setMinerType("Antminer S17+")
                                                         .setCompileTime("Tue Jun  2 10:31:07 CST 2020")
                                                         .build())
