@@ -2,6 +2,7 @@ package mn.foreman.openminer.response;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class Agg {
 
     /** The board slots. */
     @JsonProperty("slots")
+    @JsonDeserialize(using = SlotDeserializer.class)
     public Map<String, Slot> slots;
 
     /** The connected pool. */

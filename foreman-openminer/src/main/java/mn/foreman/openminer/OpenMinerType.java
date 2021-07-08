@@ -13,8 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 public enum OpenMinerType
         implements MinerType {
 
+    /** Bitfury B8 - uninitialized. */
+    B8_UNINITIALIZED(0, "bitfury-b8"),
+
     /** Bitfury B8. */
-    B8(6, "bitfury-b8"),
+    B8_INITIALIZED(6, "bitfury-b8"),
 
     /** Bitfury Tardis. */
     TARDIS(8, "bitfury-tardis");
