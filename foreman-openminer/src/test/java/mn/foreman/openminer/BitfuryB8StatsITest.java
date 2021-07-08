@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.miners.FanInfo;
 import mn.foreman.model.miners.MinerStats;
 import mn.foreman.model.miners.Pool;
@@ -34,7 +35,8 @@ public class BitfuryB8StatsITest
             final Map<String, ServerHandler> handlers,
             final MinerStats stats) {
         super(
-                new OpenMinerFactory().create(
+                new OpenMinerFactory(new ApplicationConfiguration())
+                        .create(
                         ImmutableMap.<String, Object>builder()
                                 .put(
                                         "apiIp",

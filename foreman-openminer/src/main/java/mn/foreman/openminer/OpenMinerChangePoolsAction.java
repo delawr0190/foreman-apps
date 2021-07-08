@@ -3,6 +3,7 @@ package mn.foreman.openminer;
 import mn.foreman.api.model.Pool;
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractChangePoolsAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.util.PoolUtils;
 
@@ -13,7 +14,6 @@ import org.apache.http.HttpStatus;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -27,9 +27,18 @@ public class OpenMinerChangePoolsAction
     /** The mapper for JSON. */
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    /** Constructor. */
-    public OpenMinerChangePoolsAction() {
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public OpenMinerChangePoolsAction(
+            final ApplicationConfiguration applicationConfiguration) {
         super(1);
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -55,7 +64,8 @@ public class OpenMinerChangePoolsAction
                         ip,
                         realPort,
                         username,
-                        password)
+                        password,
+                        this.applicationConfiguration)
                         .orElseThrow(
                                 () -> new MinerException("Failed to login"));
         final Map<String, Object> currentSettings =
@@ -67,8 +77,7 @@ public class OpenMinerChangePoolsAction
                                 authToken,
                                 new TypeReference<Map<String, Object>>() {
                                 },
-                                1,
-                                TimeUnit.SECONDS));
+                                this.applicationConfiguration.getReadSocketTimeout()));
 
         final Pool pool = pools.get(0);
         final String[] host = PoolUtils.sanitizeUrl(pool.getUrl()).split(":");
@@ -87,8 +96,7 @@ public class OpenMinerChangePoolsAction
                     OBJECT_MAPPER.writeValueAsString(currentSettings),
                     new TypeReference<Map<String, String>>() {
                     },
-                    5,
-                    TimeUnit.SECONDS,
+                    this.applicationConfiguration.getWriteSocketTimeout(),
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to change pools", e);

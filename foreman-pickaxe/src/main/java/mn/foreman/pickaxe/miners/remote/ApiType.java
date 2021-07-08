@@ -482,7 +482,7 @@ public enum ApiType {
     OPENMINER_API(
             55,
             (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
-                return new OpenMinerFactory();
+                return new OpenMinerFactory(configuration);
             }),
 
     /** ePIC. */

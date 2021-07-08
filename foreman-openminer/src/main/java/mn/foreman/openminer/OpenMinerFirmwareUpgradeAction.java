@@ -51,7 +51,8 @@ public class OpenMinerFirmwareUpgradeAction
                         ip,
                         realPort,
                         username,
-                        password)
+                        password,
+                        this.applicationConfiguration)
                         .orElseThrow(
                                 () -> new MinerException("Failed to login"));
 

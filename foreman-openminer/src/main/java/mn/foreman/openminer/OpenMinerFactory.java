@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Miner;
 import mn.foreman.model.MinerFactory;
 
@@ -13,6 +14,18 @@ import java.util.Map;
  */
 public class OpenMinerFactory
         implements MinerFactory {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public OpenMinerFactory(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @SuppressWarnings("unchecked")
     @Override
@@ -41,6 +54,8 @@ public class OpenMinerFactory
                         ip,
                         port,
                         username,
-                        password));
+                        password,
+                        this.applicationConfiguration),
+                this.applicationConfiguration);
     }
 }

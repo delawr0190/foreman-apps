@@ -1111,6 +1111,77 @@ public class Query {
     /**
      * Utility method to perform a query against a REST API.
      *
+     * @param apiIp        The API IP.
+     * @param apiPort      The API port.
+     * @param uri          The URI.
+     * @param token        The token.
+     * @param type         The response class.
+     * @param socketConfig The configuration.
+     * @param <T>          The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQueryBearer(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String token,
+            final TypeReference<T> type,
+            final ApplicationConfiguration.SocketConfig socketConfig)
+            throws MinerException {
+        return restQueryBearer(
+                apiIp,
+                apiPort,
+                uri,
+                token,
+                type,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits(),
+                s -> {
+                });
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
+     * @param apiIp               The API IP.
+     * @param apiPort             The API port.
+     * @param uri                 The URI.
+     * @param token               The token.
+     * @param type                The response class.
+     * @param connectTimeout      The connection timeout.
+     * @param connectTimeoutUnits The connection timeout units.
+     * @param <T>                 The response type.
+     *
+     * @return The response.
+     *
+     * @throws MinerException on failure to query.
+     */
+    public static <T> T restQueryBearer(
+            final String apiIp,
+            final int apiPort,
+            final String uri,
+            final String token,
+            final TypeReference<T> type,
+            final ApplicationConfiguration.SocketConfig socketConfig,
+            final Consumer<String> consumer)
+            throws MinerException {
+        return restQueryBearer(
+                apiIp,
+                apiPort,
+                uri,
+                token,
+                type,
+                socketConfig.getSocketTimeout(),
+                socketConfig.getSocketTimeoutUnits(),
+                consumer);
+    }
+
+    /**
+     * Utility method to perform a query against a REST API.
+     *
      * @param apiIp               The API IP.
      * @param apiPort             The API port.
      * @param uri                 The URI.

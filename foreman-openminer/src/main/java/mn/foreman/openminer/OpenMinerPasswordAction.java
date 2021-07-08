@@ -2,13 +2,13 @@ package mn.foreman.openminer;
 
 import mn.foreman.io.Query;
 import mn.foreman.model.AbstractPasswordAction;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.HttpStatus;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -17,6 +17,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class OpenMinerPasswordAction
         extends AbstractPasswordAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public OpenMinerPasswordAction(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     protected boolean doChange(
@@ -42,7 +54,8 @@ public class OpenMinerPasswordAction
                         ip,
                         realPort,
                         username,
-                        password)
+                        password,
+                        this.applicationConfiguration)
                         .orElseThrow(
                                 () -> new MinerException("Failed to login"));
 
@@ -59,8 +72,7 @@ public class OpenMinerPasswordAction
                             newPassword),
                     new TypeReference<Map<String, String>>() {
                     },
-                    5,
-                    TimeUnit.SECONDS,
+                    this.applicationConfiguration.getWriteSocketTimeout(),
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to change password", e);

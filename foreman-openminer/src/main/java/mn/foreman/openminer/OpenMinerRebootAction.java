@@ -1,6 +1,7 @@
 package mn.foreman.openminer;
 
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.AsicAction;
 import mn.foreman.model.error.MinerException;
 
@@ -8,12 +9,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.http.HttpStatus;
 
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Reboots an OpenMiner miner. */
 public class OpenMinerRebootAction
         implements AsicAction.CompletableAction {
+
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public OpenMinerRebootAction(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
 
     @Override
     public boolean run(
@@ -37,7 +49,8 @@ public class OpenMinerRebootAction
                         ip,
                         realPort,
                         username,
-                        password)
+                        password,
+                        this.applicationConfiguration)
                         .orElseThrow(
                                 () -> new MinerException("Failed to login"));
 
@@ -51,8 +64,7 @@ public class OpenMinerRebootAction
                     "{\"action\":\"reboot\",\"parameters\":{}}",
                     new TypeReference<Map<String, Object>>() {
                     },
-                    5,
-                    TimeUnit.SECONDS,
+                    this.applicationConfiguration.getWriteSocketTimeout(),
                     (integer, s) -> success.set(integer == HttpStatus.SC_OK));
         } catch (final Exception e) {
             throw new MinerException("Failed to reboot", e);

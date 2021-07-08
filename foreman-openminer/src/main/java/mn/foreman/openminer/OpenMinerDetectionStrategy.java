@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.model.DetectionStrategy;
 import mn.foreman.model.MinerType;
@@ -26,6 +27,18 @@ public class OpenMinerDetectionStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(OpenMinerDetectionStrategy.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
+    /**
+     * Constructor.
+     *
+     * @param applicationConfiguration The configuration.
+     */
+    public OpenMinerDetectionStrategy(final ApplicationConfiguration applicationConfiguration) {
+        this.applicationConfiguration = applicationConfiguration;
+    }
+
     @Override
     public Optional<Detection> detect(
             final String ip,
@@ -45,13 +58,15 @@ public class OpenMinerDetectionStrategy
                         : port;
 
         try {
-            final Agg stats = OpenMinerUtils.getStats(
-                    ip,
-                    realPort,
-                    username,
-                    password,
-                    s -> {
-                    });
+            final Agg stats =
+                    OpenMinerUtils.getStats(
+                            ip,
+                            realPort,
+                            username,
+                            password,
+                            s -> {
+                            },
+                            this.applicationConfiguration);
             final int boards =
                     stats
                             .slots
@@ -83,7 +98,8 @@ public class OpenMinerDetectionStrategy
         } catch (final MinerException me) {
             LOG.debug("No openminer found on {}:{}",
                     ip,
-                    port);
+                    port,
+                    me);
         }
         return Optional.ofNullable(detection);
     }

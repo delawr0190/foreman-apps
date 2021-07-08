@@ -1,6 +1,7 @@
 package mn.foreman.openminer;
 
 import mn.foreman.io.Query;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.openminer.response.Agg;
 
@@ -8,7 +9,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
@@ -18,10 +18,11 @@ public class OpenMinerUtils {
     /**
      * Returns the auth token that was obtained.
      *
-     * @param apiIp    The API ip.
-     * @param port     The API port.
-     * @param username The username.
-     * @param password The password.
+     * @param apiIp                    The API ip.
+     * @param port                     The API port.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param applicationConfiguration The configuration.
      *
      * @return The token.
      *
@@ -31,7 +32,9 @@ public class OpenMinerUtils {
             final String apiIp,
             final int port,
             final String username,
-            final String password) throws MinerException {
+            final String password,
+            final ApplicationConfiguration applicationConfiguration)
+            throws MinerException {
         final AtomicReference<String> response = new AtomicReference<>();
         try {
             final Optional<Map<String, String>> result =
@@ -43,8 +46,7 @@ public class OpenMinerUtils {
                             "{\"email\":\"" + username + "\",\"password\":\"" + password + "\"}",
                             new TypeReference<Map<String, String>>() {
                             },
-                            5,
-                            TimeUnit.SECONDS,
+                            applicationConfiguration.getWriteSocketTimeout(),
                             (integer, s) -> {
                             });
             if (result.isPresent()) {
@@ -62,11 +64,12 @@ public class OpenMinerUtils {
     /**
      * Auths with the miner and gets stats.
      *
-     * @param apiIp       The ip.
-     * @param port        The port.
-     * @param username    The username.
-     * @param password    The password.
-     * @param rawCallback The raw callback.
+     * @param apiIp                    The ip.
+     * @param port                     The port.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param rawCallback              The raw callback.
+     * @param applicationConfiguration The socket config.
      *
      * @return The stats.
      *
@@ -77,13 +80,16 @@ public class OpenMinerUtils {
             final int port,
             final String username,
             final String password,
-            final Consumer<String> rawCallback) throws MinerException {
+            final Consumer<String> rawCallback,
+            final ApplicationConfiguration applicationConfiguration)
+            throws MinerException {
         final String bearerToken =
                 OpenMinerUtils.getAuthToken(
                         apiIp,
                         port,
                         username,
-                        password).orElseThrow(
+                        password,
+                        applicationConfiguration).orElseThrow(
                         () -> new MinerException("Failed to login to OpenMiner"));
         return Query.restQueryBearer(
                 apiIp,
@@ -92,8 +98,7 @@ public class OpenMinerUtils {
                 bearerToken,
                 new TypeReference<Agg>() {
                 },
-                1,
-                TimeUnit.SECONDS,
+                applicationConfiguration.getReadSocketTimeout(),
                 rawCallback);
     }
 }

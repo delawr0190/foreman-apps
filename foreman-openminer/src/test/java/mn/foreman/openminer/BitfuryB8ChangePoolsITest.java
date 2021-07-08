@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.TestUtils;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -18,7 +19,8 @@ public class BitfuryB8ChangePoolsITest
         super(
                 8080,
                 8080,
-                new OpenMinerChangePoolsAction(),
+                new OpenMinerChangePoolsAction(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -866,7 +868,8 @@ public class BitfuryB8ChangePoolsITest
                                                         "  \"slavePingMin\": 808\n" +
                                                         "}",
                                                 Collections.emptyMap())))),
-                new OpenMinerFactory(),
+                new OpenMinerFactory(
+                        new ApplicationConfiguration()),
                 TestUtils.toPoolJson(),
                 true);
     }

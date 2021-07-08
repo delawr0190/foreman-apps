@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.openminer.response.Agg;
@@ -17,6 +18,9 @@ public class OpenMinerMacStrategy
     private static final Logger LOG =
             LoggerFactory.getLogger(OpenMinerMacStrategy.class);
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The ip. */
     private final String ip;
 
@@ -32,20 +36,23 @@ public class OpenMinerMacStrategy
     /**
      * Constructor.
      *
-     * @param ip       The ip.
-     * @param port     The port.
-     * @param username The username.
-     * @param password The password.
+     * @param ip                       The ip.
+     * @param port                     The port.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param applicationConfiguration The configuration.
      */
     public OpenMinerMacStrategy(
             final String ip,
             final int port,
             final String username,
-            final String password) {
+            final String password,
+            final ApplicationConfiguration applicationConfiguration) {
         this.ip = ip;
         this.port = port;
         this.username = username;
         this.password = password;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -59,7 +66,8 @@ public class OpenMinerMacStrategy
                             this.username,
                             this.password,
                             s -> {
-                            });
+                            },
+                            this.applicationConfiguration);
             mac = stats.mac;
         } catch (final MinerException me) {
             LOG.warn("Failed to obtain MAC", me);

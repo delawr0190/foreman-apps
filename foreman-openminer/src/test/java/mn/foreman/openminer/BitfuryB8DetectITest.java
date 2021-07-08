@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.Detection;
 import mn.foreman.util.AbstractDetectITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
@@ -34,7 +35,8 @@ public class BitfuryB8DetectITest
             final Map<String, Object> detectionArgs,
             final OpenMinerType type) {
         super(
-                new OpenMinerDetectionStrategy(),
+                new OpenMinerDetectionStrategy(
+                        new ApplicationConfiguration()),
                 "127.0.0.1",
                 8080,
                 ImmutableMap.of(

@@ -1,5 +1,6 @@
 package mn.foreman.openminer;
 
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.util.AbstractAsyncActionITest;
 import mn.foreman.util.http.FakeHttpMinerServer;
 import mn.foreman.util.http.HttpHandler;
@@ -17,7 +18,8 @@ public class BitfuryB8PasswordITest
         super(
                 8080,
                 8080,
-                new OpenMinerPasswordAction(),
+                new OpenMinerPasswordAction(
+                        new ApplicationConfiguration()),
                 Collections.singletonList(
                         () -> new FakeHttpMinerServer(
                                 8080,
@@ -861,7 +863,8 @@ public class BitfuryB8PasswordITest
                                                         "  \"slavePingMin\": 808\n" +
                                                         "}",
                                                 Collections.emptyMap())))),
-                new OpenMinerFactory(),
+                new OpenMinerFactory(
+                        new ApplicationConfiguration()),
                 ImmutableMap.of(
                         "oldPassword",
                         "Qw1Qw1Qw1",

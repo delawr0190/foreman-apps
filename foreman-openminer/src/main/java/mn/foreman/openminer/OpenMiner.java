@@ -1,6 +1,7 @@
 package mn.foreman.openminer;
 
 import mn.foreman.model.AbstractMiner;
+import mn.foreman.model.ApplicationConfiguration;
 import mn.foreman.model.MacStrategy;
 import mn.foreman.model.error.MinerException;
 import mn.foreman.model.miners.FanInfo;
@@ -24,6 +25,9 @@ import java.util.Map;
 public class OpenMiner
         extends AbstractMiner {
 
+    /** The configuration. */
+    private final ApplicationConfiguration applicationConfiguration;
+
     /** The password. */
     private final String password;
 
@@ -36,12 +40,13 @@ public class OpenMiner
     /**
      * Constructor.
      *
-     * @param apiIp          The API ip.
-     * @param apiPort        The API port.
-     * @param username       The username.
-     * @param password       The password.
-     * @param statsWhitelist The stats whitelist.
-     * @param macStrategy    The mac strategy.
+     * @param apiIp                    The API ip.
+     * @param apiPort                  The API port.
+     * @param username                 The username.
+     * @param password                 The password.
+     * @param statsWhitelist           The stats whitelist.
+     * @param macStrategy              The mac strategy.
+     * @param applicationConfiguration The configuration.
      */
     OpenMiner(
             final String apiIp,
@@ -49,7 +54,8 @@ public class OpenMiner
             final String username,
             final String password,
             final List<String> statsWhitelist,
-            final MacStrategy macStrategy) {
+            final MacStrategy macStrategy,
+            final ApplicationConfiguration applicationConfiguration) {
         super(
                 apiIp,
                 apiPort,
@@ -57,6 +63,7 @@ public class OpenMiner
         this.username = username;
         this.password = password;
         this.statsWhitelist = statsWhitelist;
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @Override
@@ -75,7 +82,8 @@ public class OpenMiner
                                         rawJson,
                                         this.statsWhitelist));
                     }
-                });
+                },
+                this.applicationConfiguration);
         addAgg(
                 stats,
                 rawStats,

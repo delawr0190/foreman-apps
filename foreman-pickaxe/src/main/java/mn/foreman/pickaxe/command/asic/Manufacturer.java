@@ -414,27 +414,34 @@ public enum Manufacturer {
     /** Bitfury. */
     BITFURY(
             "bitfury",
-            (args, ip, configuration) -> new OpenMinerDetectionStrategy(),
+            (args, ip, configuration) ->
+                    new OpenMinerDetectionStrategy(
+                            configuration),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new OpenMinerFactory(),
-                            new OpenMinerChangePoolsAction()),
+                            new OpenMinerFactory(
+                                    configuration),
+                            new OpenMinerChangePoolsAction(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toAsync(
                             threadPool,
                             blacklist,
                             statsCache,
-                            new OpenMinerFactory(),
-                            new OpenMinerRebootAction()),
+                            new OpenMinerFactory(
+                                    configuration),
+                            new OpenMinerRebootAction(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
-                            new OpenMinerPasswordAction()),
+                            new OpenMinerPasswordAction(
+                                    configuration)),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
