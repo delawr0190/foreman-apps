@@ -59,8 +59,6 @@ public class AvalonPowerModeITest
                                 // Avalon 1047
                                 ImmutableMap.of(
                                         "ascset|0,hashpower,0",
-                                        new RpcHandler(""),
-                                        "ascset|0,reboot,0",
                                         new RpcHandler("")),
                                 "sleeping"
                         },

@@ -45,18 +45,13 @@ public class AvalonPowerModeAction
         boolean success;
         try {
             if (mode == PowerMode.SLEEPING) {
-                if (success = AvalonUtils.query(
-                        ip,
-                        port,
-                        "ascset|0,hashpower,0",
-                        (s, request) -> request.connected(),
-                        this.applicationConfiguration.getWriteSocketTimeout())) {
-                    success =
-                            this.rebootAction.run(
-                                    ip,
-                                    port,
-                                    parameters);
-                }
+                success =
+                        AvalonUtils.query(
+                                ip,
+                                port,
+                                "ascset|0,hashpower,0",
+                                (s, request) -> request.connected(),
+                                this.applicationConfiguration.getWriteSocketTimeout());
             } else {
                 success =
                         this.rebootAction.run(

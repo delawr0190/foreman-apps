@@ -358,7 +358,15 @@ public enum Manufacturer {
                                                     configuration),
                                             configuration)),
                             AsyncAsicActionUtils::ipChangingHook),
-            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) ->
+                    AsicActionFactory.toSync(
+                            new RetryingAction(
+                                    5,
+                                    1,
+                                    TimeUnit.SECONDS,
+                                    new AvalonPowerModeAction(
+                                            configuration,
+                                            new AvalonRebootAction(configuration)))),
             (threadPool, blacklist, statsCache, configuration) ->
                     AsicActionFactory.toSync(
                             new RetryingAction(
