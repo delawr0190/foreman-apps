@@ -32,7 +32,10 @@ public enum GoldshellType
     HS5("Goldshell-HS5", "goldshell-hs5"),
 
     /** CK5. */
-    CK5("Goldshell-CK5", "goldshell-ck5");
+    CK5("Goldshell-CK5", "goldshell-ck5"),
+
+    /** KDBox. */
+    KDBOX("Goldshell-KDBox", "goldshell-kdbox");
 
     /** All of the types by model. */
     private static final Map<String, GoldshellType> TYPE_MAP =
