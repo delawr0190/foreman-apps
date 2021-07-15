@@ -81,8 +81,14 @@ public class StatsResponseStrategy
     private void addAsicStats(
             final MinerStats.Builder builder,
             final Map<String, String> values) {
-        final double hashRate =
+        double hashRate =
                 Double.parseDouble(values.get("GHS 5s")) * Math.pow(1000, 3);
+
+        // Some Z11s have different hash rates
+        if (values.getOrDefault("ID", "").contains("ZCASH") &&
+                hashRate < 1000) {
+            hashRate *= 1000;
+        }
 
         final Asic.Builder asicBuilder =
                 new Asic.Builder();

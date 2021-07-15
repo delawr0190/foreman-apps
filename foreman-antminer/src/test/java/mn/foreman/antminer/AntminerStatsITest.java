@@ -1046,6 +1046,57 @@ public class AntminerStatsITest
                                 ImmutableMap.of(
                                         "{\"command\":\"version\"}",
                                         new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1626265803,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Tue Mar 12 19:47:06 CST 2019\",\"Type\":\"Antminer Z11\"}],\"id\":1}"),
+                                        "{\"command\":\"stats\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1626265803,\"Code\":70,\"Msg\":\"CGMiner stats\",\"Description\":\"cgminer 4.9.0\"}],\"STATS\":[{\"CGMiner\":\"4.9.0\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Tue Mar 12 19:47:06 CST 2019\",\"Type\":\"Antminer Z11\"}{\"STATS\":0,\"ID\":\"ZCASH0\",\"Elapsed\":68493,\"Calls\":0,\"Wait\":0.000000,\"Max\":0.000000,\"Min\":99999999.000000,\"GHS 5s\":\"141.54\",\"GHS av\":139.59,\"miner_count\":3,\"fan_num\":2,\"fan1\":5640,\"fan2\":5760,\"fan3\":0,\"fan4\":0,\"fan5\":0,\"fan6\":0,\"temp_num\":3,\"temp1\":63,\"temp2\":63,\"temp3\":63,\"temp4\":0,\"temp2_1\":90,\"temp2_2\":83,\"temp2_3\":90,\"temp2_4\":0,\"temp_max\":63,\"Device Hardware%\":0.0000,\"no_matching_work\":0,\"chain_acn1\":3,\"chain_acn2\":3,\"chain_acn3\":3,\"chain_acn4\":0,\"chain_acs1\":\" ooo\",\"chain_acs2\":\" ooo\",\"chain_acs3\":\" ooo\",\"chain_acs4\":\"\",\"chain_hw1\":2197,\"chain_hw2\":3610,\"chain_hw3\":3907,\"chain_hw4\":0,\"frequency1\":731,\"frequency2\":731,\"frequency3\":731,\"frequency4\":0,\"chain_rate1\":\"53.24\",\"chain_rate2\":\"42.26\",\"chain_rate3\":\"46.03\",\"chain_rate4\":\"\"}],\"id\":1}"),
+                                        "{\"command\":\"pools\"}",
+                                        new RpcHandler(
+                                                "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612234361,\"Code\":7,\"Msg\":\"3 Pool(s)\",\"Description\":\"cgminer 4.9.0\"}],\"POOLS\":[{\"POOL\":0,\"URL\":\"stratum+tcp://equihash.luxor.tech:700\",\"Status\":\"Alive\",\"Priority\":0,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":1061,\"Accepted\":2848,\"Rejected\":20,\"Discarded\":11751,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"x.001\",\"Last Share Time\":\"0:00:02\",\"Diff\":\"21\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":53843.00000000,\"Difficulty Rejected\":350.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":21.00000000,\"Has Stratum\":true,\"Stratum Active\":true,\"Stratum URL\":\"equihash.luxor.tech\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.6458,\"Pool Stale%\":0.0000},{\"POOL\":1,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":1,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000},{\"POOL\":2,\"URL\":\"\",\"Status\":\"Dead\",\"Priority\":2,\"Quota\":1,\"Long Poll\":\"N\",\"Getworks\":0,\"Accepted\":0,\"Rejected\":0,\"Discarded\":0,\"Stale\":0,\"Get Failures\":0,\"Remote Failures\":0,\"User\":\"\",\"Last Share Time\":\"0\",\"Diff\":\"\",\"Diff1 Shares\":0,\"Proxy Type\":\"\",\"Proxy\":\"\",\"Difficulty Accepted\":0.00000000,\"Difficulty Rejected\":0.00000000,\"Difficulty Stale\":0.00000000,\"Last Share Difficulty\":0.00000000,\"Has Stratum\":false,\"Stratum Active\":false,\"Stratum URL\":\"\",\"Has GBT\":false,\"Best Share\":0,\"Pool Rejected%\":0.0000,\"Pool Stale%\":0.0000}],\"id\":1}")),
+                                Arrays.asList(
+                                        "STATS.1.temp6",
+                                        "STATS.1.temp7"),
+                                new MinerStats.Builder()
+                                        .setApiIp("127.0.0.1")
+                                        .setApiPort(4028)
+                                        .addPool(
+                                                new Pool.Builder()
+                                                        .setName("equihash.luxor.tech:700")
+                                                        .setWorker("x.001")
+                                                        .setStatus(true, true)
+                                                        .setPriority(0)
+                                                        .setCounts(2848, 20, 0)
+                                                        .build())
+                                        .addAsic(
+                                                new Asic.Builder()
+                                                        .setHashRate(new BigDecimal("141540.00"))
+                                                        .setBoards(3)
+                                                        .setFanInfo(
+                                                                new FanInfo.Builder()
+                                                                        .setCount(2)
+                                                                        .addSpeed(5640)
+                                                                        .addSpeed(5760)
+                                                                        .setSpeedUnits("RPM")
+                                                                        .build())
+                                                        .addTemp(63)
+                                                        .addTemp(63)
+                                                        .addTemp(63)
+                                                        .addTemp(90)
+                                                        .addTemp(83)
+                                                        .addTemp(90)
+                                                        .hasErrors(false)
+                                                        .setMinerType("Antminer Z11")
+                                                        .setCompileTime("Tue Mar 12 19:47:06 CST 2019")
+                                                        .build())
+                                        .build()
+                        },
+                        {
+                                // Antminer Z11 (chipless)
+                                0.000000001,
+                                Collections.emptyMap(),
+                                ImmutableMap.of(
+                                        "{\"command\":\"version\"}",
+                                        new RpcHandler(
                                                 "{\"STATUS\":[{\"STATUS\":\"S\",\"When\":1612234363,\"Code\":22,\"Msg\":\"CGMiner versions\",\"Description\":\"cgminer 4.9.0\"}],\"VERSION\":[{\"CGMiner\":\"4.9.0\",\"API\":\"3.1\",\"Miner\":\"9.0.0.5\",\"CompileTime\":\"Sat May 23 19:07:17 CST 2020 (Chipless v3.0 Auto Paid)\",\"Type\":\"Antminer Z11\"}],\"id\":1}"),
                                         "{\"command\":\"stats\"}",
                                         new RpcHandler(
