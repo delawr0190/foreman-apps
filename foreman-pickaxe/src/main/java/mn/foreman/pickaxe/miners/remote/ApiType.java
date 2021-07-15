@@ -27,6 +27,7 @@ import mn.foreman.grinpro.GrinProFactory;
 import mn.foreman.honorknight.HonorKnightFactory;
 import mn.foreman.hspminer.HspminerFactory;
 import mn.foreman.hyperbit.HyperbitFactory;
+import mn.foreman.ibelink.IBeLinkFactory;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.iximiner.IximinerFactory;
 import mn.foreman.jceminer.JceminerFactory;
@@ -507,6 +508,13 @@ public enum ApiType {
                         1,
                         TimeUnit.SECONDS,
                         new ObjectMapper());
+            }),
+
+    /** ibelink. */
+    IBELINK_API(
+            59,
+            (port, config, nicehash, autominer, claymore, nicehashMiners, configuration) -> {
+                return new IBeLinkFactory(configuration);
             });
 
     /** A mapping of {@link #type} to {@link ApiType}. */

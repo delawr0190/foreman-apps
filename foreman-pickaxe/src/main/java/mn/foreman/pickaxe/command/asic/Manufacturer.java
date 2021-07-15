@@ -23,6 +23,8 @@ import mn.foreman.futurebit.FutureBitTypeFactory;
 import mn.foreman.goldshell.*;
 import mn.foreman.honorknight.*;
 import mn.foreman.hyperbit.HyperbitTypeFactory;
+import mn.foreman.ibelink.IBeLinkMacStrategy;
+import mn.foreman.ibelink.IBeLinkTypeFactory;
 import mn.foreman.innosilicon.ApiType;
 import mn.foreman.innosilicon.InnosiliconFactory;
 import mn.foreman.innosilicon.InnosiliconType;
@@ -945,6 +947,28 @@ public enum Manufacturer {
                     new CgMinerDetectionStrategy(
                             CgMinerCommand.DEVS,
                             new HyperbitTypeFactory(),
+                            configuration),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
+            (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction()),
+
+    /** iBeLink. */
+    IBELINK(
+            "ibelink",
+            (args, ip, configuration) ->
+                    new CgMinerDetectionStrategy(
+                            CgMinerCommand.DEVS,
+                            new IBeLinkTypeFactory(),
+                            new IBeLinkMacStrategy(
+                                    ip,
+                                    4029,
+                                    configuration),
+                            new StatsPatchingStrategy(),
                             configuration),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),
             (threadPool, blacklist, statsCache, configuration) -> new NullAsicAction(),

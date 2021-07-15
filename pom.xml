@@ -91,6 +91,7 @@
         <module>foreman-honorknight</module>
         <module>foreman-hspminer</module>
         <module>foreman-hyperbit</module>
+        <module>foreman-ibelink</module>
         <module>foreman-innosilicon</module>
         <module>foreman-io</module>
         <module>foreman-iximiner</module>
@@ -294,12 +295,17 @@
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
-                <artifactId>foreman-io</artifactId>
+                <artifactId>foreman-ibelink</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>mn.foreman</groupId>
                 <artifactId>foreman-innosilicon</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>mn.foreman</groupId>
+                <artifactId>foreman-io</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
